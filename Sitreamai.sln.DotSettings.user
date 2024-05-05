@@ -1,0 +1,39 @@
+﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=D_003A_005CProjects_005CSitreamai_005CSitreamai_005CLib_005CACE_002Eexe/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=D_003A_005CProjects_005CSitreamai_005CSitreamai_005CLib_005CAutoUpdater_002Edll/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=D_003A_005CProjects_005CSitreamai_005CSitreamai_005CLib_005CCommonServiceLocator_002Edll/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=D_003A_005CProjects_005CSitreamai_005CSitreamai_005CLib_005CControlzEx_002Edll/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=D_003A_005CProjects_005CSitreamai_005CSitreamai_005CLib_005CCSharpImageLibrary_002Edll/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=D_003A_005CProjects_005CSitreamai_005CSitreamai_005CLib_005CGalaSoft_002EMvvmLight_002Edll/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=D_003A_005CProjects_005CSitreamai_005CSitreamai_005CLib_005CGalaSoft_002EMvvmLight_002EExtras_002Edll/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=D_003A_005CProjects_005CSitreamai_005CSitreamai_005CLib_005CGalaSoft_002EMvvmLight_002EPlatform_002Edll/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=D_003A_005CProjects_005CSitreamai_005CSitreamai_005CLib_005CLB_005FCommon_002Edll/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=D_003A_005CProjects_005CSitreamai_005CSitreamai_005CLib_005CMahApps_002EMetro_002Edll/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=D_003A_005CProjects_005CSitreamai_005CSitreamai_005CLib_005CMahApps_002EMetro_002EIconPacks_002ECore_002Edll/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=D_003A_005CProjects_005CSitreamai_005CSitreamai_005CLib_005CMahApps_002EMetro_002EIconPacks_002EMaterial_002Edll/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=D_003A_005CProjects_005CSitreamai_005CSitreamai_005CLib_005CMahApps_002EMetro_002EIconPacks_002EMaterialDesign_002Edll/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=D_003A_005CProjects_005CSitreamai_005CSitreamai_005CLib_005CMahApps_002EMetro_002EIconPacks_002EMaterialLight_002Edll/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=D_003A_005CProjects_005CSitreamai_005CSitreamai_005CLib_005CMaichartConverter_002Edll/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=D_003A_005CProjects_005CSitreamai_005CSitreamai_005CLib_005CMicrosoft_002EIO_002ERecyclableMemoryStream_002Edll/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=D_003A_005CProjects_005CSitreamai_005CSitreamai_005CLib_005CMicrosoft_002EXaml_002EBehaviors_002Edll/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=D_003A_005CProjects_005CSitreamai_005CSitreamai_005CLib_005CNAudio_002Edll/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=D_003A_005CProjects_005CSitreamai_005CSitreamai_005CLib_005COokii_002EDialogs_002EWpf_002Edll/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=D_003A_005CProjects_005CSitreamai_005CSitreamai_005CLib_005CPfim_002Edll/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=D_003A_005CProjects_005CSitreamai_005CSitreamai_005CLib_005CSharpNoise_002Edll/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=D_003A_005CProjects_005CSitreamai_005CSitreamai_005CLib_005CSystem_002ECore_002Edll/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=D_003A_005CProjects_005CSitreamai_005CSitreamai_005CLib_005CSystem_002EHalf_002Edll/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=D_003A_005CProjects_005CSitreamai_005CSitreamai_005CLib_005CSystem_002ENumerics_002EVectors_002Edll/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=D_003A_005CProjects_005CSitreamai_005CSitreamai_005CLib_005CSystem_002EWindows_002EInteractivity_002Edll/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=D_003A_005CProjects_005CSitreamai_005CSitreamai_005CLib_005CUsefulThings_002Edll/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=D_003A_005CProjects_005CSitreamai_005CSitreamai_005CLib_005CWriteableBitmapEx_002EWpf_002Edll/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=D_003A_005CProjects_005CSitreamai_005CSitreamai_005CLib_005CXv2CoreLib_002Edll/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=D_003A_005CProjects_005CSitreamai_005CSitreamai_005CLib_005CYAXLib_002Edll/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=D_003A_005CProjects_005CXV2_002DTools_005CXV2_0020Tools_002Esln/@EntryIndexedValue">True</s:Boolean>
+	<s:String x:Key="/Default/Environment/AssemblyExplorer/XmlDocument/@EntryValue">&lt;AssemblyExplorer&gt;&#xD;
+  &lt;Assembly Path="D:\Projects\Sitreamai\Sitreamai\Lib\MaichartConverter.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\Projects\Sitreamai\Sitreamai\Lib\LB_Common.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\Projects\Sitreamai\Sitreamai\Lib\Xv2CoreLib.dll" /&gt;&#xD;
+  &lt;Assembly Path="C:\Program Files\dotnet\packs\Microsoft.NETCore.App.Ref\8.0.3\ref\net8.0\System.Core.dll" /&gt;&#xD;
+&lt;/AssemblyExplorer&gt;</s:String>
+	
+	<s:Boolean x:Key="/Default/ResxEditorPersonal/Initialized/@EntryValue">True</s:Boolean></wpf:ResourceDictionary>
