@@ -179,7 +179,7 @@ public class MusicXml
                       <levelDecimal>{trackDecimalLevels[4]}</levelDecimal>
                       <notesDesigner>
                         <id>999</id>
-                        <str>luvlily</str>
+                        <str/>
                       </notesDesigner>
                       <notesType>0</notesType>
                       <musicLevelID>{trackLevelIds[4]}</musicLevelID>
