@@ -9,10 +9,13 @@ public class MusicXmlConverter
         var trackLevels = (string[])chart.SimaiTrackInformation.TrackLevels.Clone();
         var trackDecimalLevels = (string[])chart.SimaiTrackInformation.TrackDecimalLevels.Clone();
         var trackLevelIds = new int[7];
+        var trackLevelActive = new bool[7];
         for (var i = 0; i < 7; i++)
         {
+            trackLevelActive[i] = true;
             if (string.IsNullOrEmpty(trackLevels[i]))
             {
+                trackLevelActive[i] = false;
                 trackLevels[i] = "0";
             }
             else if (trackLevels[i].EndsWith('+'))
@@ -38,10 +41,12 @@ public class MusicXmlConverter
             {
                 trackDecimalLevels[i] = "0";
             }
+
             if (!int.TryParse(trackLevels[i], out _))
             {
-              trackLevels[i] = "0";
+                trackLevels[i] = "0";
             }
+
             trackLevelIds[i] = GetLevelId(int.Parse(trackLevels[i]) * 10 + int.Parse(trackDecimalLevels[i]));
         }
 
@@ -109,7 +114,7 @@ public class MusicXmlConverter
                     <str>解放なし</str>
                   </subEventName>
                   <lockType>0</lockType>
-                  <subLockType>{(trackLevels[5] == "0" ? 1 : 0)}</subLockType>
+                  <subLockType>{(trackLevelActive[5] ? 1 : 0)}</subLockType>
                   <dotNetListView>true</dotNetListView>
                   <notesData>
                     <Notes>
@@ -125,7 +130,7 @@ public class MusicXmlConverter
                       <notesType>0</notesType>
                       <musicLevelID>{trackLevelIds[1]}</musicLevelID>
                       <maxNotes>0</maxNotes>
-                      <isEnable>{(trackLevels[1] != "0" ? "true" : "false")}</isEnable>
+                      <isEnable>{(trackLevelActive[1] ? "true" : "false")}</isEnable>
                     </Notes>
                     <Notes>
                       <file>
@@ -140,7 +145,7 @@ public class MusicXmlConverter
                       <notesType>0</notesType>
                       <musicLevelID>{trackLevelIds[2]}</musicLevelID>
                       <maxNotes>0</maxNotes>
-                      <isEnable>{(trackLevels[2] != "0" ? "true" : "false")}</isEnable>
+                      <isEnable>{(trackLevelActive[2] ? "true" : "false")}</isEnable>
                     </Notes>
                     <Notes>
                       <file>
@@ -155,7 +160,7 @@ public class MusicXmlConverter
                       <notesType>0</notesType>
                       <musicLevelID>{trackLevelIds[3]}</musicLevelID>
                       <maxNotes>0</maxNotes>
-                      <isEnable>{(trackLevels[3] != "0" ? "true" : "false")}</isEnable>
+                      <isEnable>{(trackLevelActive[3] ? "true" : "false")}</isEnable>
                     </Notes>
                     <Notes>
                       <file>
@@ -170,7 +175,7 @@ public class MusicXmlConverter
                       <notesType>0</notesType>
                       <musicLevelID>{trackLevelIds[4]}</musicLevelID>
                       <maxNotes>0</maxNotes>
-                      <isEnable>{(trackLevels[4] != "0" ? "true" : "false")}</isEnable>
+                      <isEnable>{(trackLevelActive[4] ? "true" : "false")}</isEnable>
                     </Notes>
                      <Notes>
                       <file>
@@ -185,7 +190,7 @@ public class MusicXmlConverter
                       <notesType>0</notesType>
                       <musicLevelID>{trackLevelIds[5]}</musicLevelID>
                       <maxNotes>0</maxNotes>
-                      <isEnable>{(trackLevels[5] != "0" ? "true" : "false")}</isEnable>
+                      <isEnable>{(trackLevelActive[5] ? "true" : "false")}</isEnable>
                     </Notes>
                     <Notes>
                       <file>
