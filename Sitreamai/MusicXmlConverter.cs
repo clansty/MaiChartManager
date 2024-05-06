@@ -1,14 +1,11 @@
-﻿using System.Linq;
-using MaiLib;
-
-namespace Sitreamai;
+﻿namespace Sitreamai;
 
 public class MusicXmlConverter
 {
     public string Convert(Converter converter)
     {
         var chart = converter.SimaiTokenizer;
-        
+
         var trackLevels = (string[])chart.SimaiTrackInformation.TrackLevels.Clone();
         var trackDecimalLevels = (string[])chart.SimaiTrackInformation.TrackDecimalLevels.Clone();
         var trackLevelIds = new int[7];
@@ -20,11 +17,15 @@ public class MusicXmlConverter
             }
             else if (trackLevels[i].EndsWith('+'))
             {
-                trackLevels[i] = trackLevels[i][..(trackLevels[i].Length - 1)];
+                trackLevels[i] = trackLevels[i][..^1];
                 if (string.IsNullOrEmpty(trackDecimalLevels[i]))
                 {
                     trackDecimalLevels[i] = "5";
                 }
+            }
+            else if (!float.TryParse(trackLevels[i], out _))
+            {
+                trackLevels[i] = "0";
             }
             else if (trackLevels[i].Contains('.'))
             {
@@ -33,11 +34,14 @@ public class MusicXmlConverter
                 trackDecimalLevels[i] = parts[1];
             }
 
-            if (string.IsNullOrEmpty(trackDecimalLevels[i]))
+            if (!int.TryParse(trackDecimalLevels[i], out _))
             {
                 trackDecimalLevels[i] = "0";
             }
-
+            if (!int.TryParse(trackLevels[i], out _))
+            {
+              trackLevels[i] = "0";
+            }
             trackLevelIds[i] = GetLevelId(int.Parse(trackLevels[i]) * 10 + int.Parse(trackDecimalLevels[i]));
         }
 
