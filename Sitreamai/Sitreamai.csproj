@@ -40,6 +40,8 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Remove="Lib\**" />
+    <None Remove="Resources\template.acb" />
+    <EmbeddedResource Include="Resources\template.acb" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Lib\**" />
