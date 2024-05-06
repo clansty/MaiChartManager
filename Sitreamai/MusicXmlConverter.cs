@@ -1,26 +1,14 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using MaiLib;
 
 namespace Sitreamai;
 
-public class MusicXml
+public class MusicXmlConverter
 {
-    public static string build(int musicId, SimaiTokenizer chart, out string strMusicId)
+    public string Convert(Converter converter)
     {
-        var parser = new SimaiParser();
-        var candidate = parser.ChartOfToken(chart.ChartCandidates.Values.First());
-
-        var isDx = chart.SimaiTrackInformation.IsDXChart || candidate.IsDxChart;
-
-        var dxMusicId = musicId;
-        if (isDx)
-        {
-            dxMusicId += 10000;
-        }
-
-        strMusicId = dxMusicId.ToString().PadLeft(6, '0');
-
+        var chart = converter.SimaiTokenizer;
+        
         var trackLevels = (string[])chart.SimaiTrackInformation.TrackLevels.Clone();
         var trackDecimalLevels = (string[])chart.SimaiTrackInformation.TrackDecimalLevels.Clone();
         var trackLevelIds = new int[7];
@@ -30,7 +18,7 @@ public class MusicXml
             {
                 trackLevels[i] = "0";
             }
-            else if (trackLevels[i].EndsWith("+"))
+            else if (trackLevels[i].EndsWith('+'))
             {
                 trackLevels[i] = trackLevels[i][..(trackLevels[i].Length - 1)];
                 if (string.IsNullOrEmpty(trackDecimalLevels[i]))
@@ -53,12 +41,6 @@ public class MusicXml
             trackLevelIds[i] = GetLevelId(int.Parse(trackLevels[i]) * 10 + int.Parse(trackDecimalLevels[i]));
         }
 
-        var bpm = chart.SimaiTrackInformation.TrackBPM;
-        if (string.IsNullOrEmpty(bpm))
-        {
-            bpm = candidate.BPMChanges.ChangeNotes[0].BPM.ToString();
-        }
-
         var sortName = chart.SimaiTrackInformation.TrackSortName;
         if (string.IsNullOrEmpty(sortName))
         {
@@ -68,7 +50,7 @@ public class MusicXml
         return $"""
                 <?xml version="1.0" encoding="utf-8"?>
                 <MusicData xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-                  <dataName>music{strMusicId}</dataName>
+                  <dataName>music{converter.MusicPadIdDx}</dataName>
                   <netOpenName>
                     <id>230922</id>
                     <str>Net230922</str>
@@ -79,7 +61,7 @@ public class MusicXml
                   </releaseTagName>
                   <disable>false</disable>
                   <name>
-                    <id>{dxMusicId}</id>
+                    <id>{converter.MusicIdDx}</id>
                     <str>{chart.SimaiTrackInformation.TrackName}</str>
                   </name>
                   <rightsInfoName>
@@ -88,25 +70,25 @@ public class MusicXml
                   </rightsInfoName>
                   <sortName>{sortName}</sortName>
                   <artistName>
-                    <id>{musicId}</id>
+                    <id>{converter.MusicId}</id>
                     <str>{chart.SimaiTrackInformation.TrackComposer}</str>
                   </artistName>
                   <genreName>
                     <id>101</id>
                     <str>POPSアニメ</str>
                   </genreName>
-                  <bpm>{bpm}</bpm>
+                  <bpm>{converter.Bpm}</bpm>
                   <version>22001</version>
                   <AddVersion>
                     <id>100</id>
                     <str>test</str>
                   </AddVersion>
                   <movieName>
-                    <id>{musicId}</id>
+                    <id>{converter.MusicId}</id>
                     <str>{chart.SimaiTrackInformation.TrackName}</str>
                   </movieName>
                   <cueName>
-                    <id>{musicId}</id>
+                    <id>{converter.MusicId}</id>
                     <str>{chart.SimaiTrackInformation.TrackName}</str>
                   </cueName>
                   <dresscode>false</dresscode>
@@ -128,7 +110,7 @@ public class MusicXml
                   <notesData>
                     <Notes>
                       <file>
-                        <path>{strMusicId}_00.ma2</path>
+                        <path>{converter.MusicPadIdDx}_00.ma2</path>
                       </file>
                       <level>{trackLevels[1]}</level>
                       <levelDecimal>{trackDecimalLevels[1]}</levelDecimal>
@@ -143,7 +125,7 @@ public class MusicXml
                     </Notes>
                     <Notes>
                       <file>
-                        <path>{strMusicId}_01.ma2</path>
+                        <path>{converter.MusicPadIdDx}_01.ma2</path>
                       </file>
                       <level>{trackLevels[2]}</level>
                       <levelDecimal>{trackDecimalLevels[2]}</levelDecimal>
@@ -158,7 +140,7 @@ public class MusicXml
                     </Notes>
                     <Notes>
                       <file>
-                        <path>{strMusicId}_02.ma2</path>
+                        <path>{converter.MusicPadIdDx}_02.ma2</path>
                       </file>
                       <level>{trackLevels[3]}</level>
                       <levelDecimal>{trackDecimalLevels[3]}</levelDecimal>
@@ -173,7 +155,7 @@ public class MusicXml
                     </Notes>
                     <Notes>
                       <file>
-                        <path>{strMusicId}_03.ma2</path>
+                        <path>{converter.MusicPadIdDx}_03.ma2</path>
                       </file>
                       <level>{trackLevels[4]}</level>
                       <levelDecimal>{trackDecimalLevels[4]}</levelDecimal>
@@ -188,7 +170,7 @@ public class MusicXml
                     </Notes>
                      <Notes>
                       <file>
-                        <path>{strMusicId}_04.ma2</path>
+                        <path>{converter.MusicPadIdDx}_04.ma2</path>
                       </file>
                       <level>{trackLevels[5]}</level>
                       <levelDecimal>{trackDecimalLevels[5]}</levelDecimal>
@@ -203,7 +185,7 @@ public class MusicXml
                     </Notes>
                     <Notes>
                       <file>
-                        <path>{strMusicId}_05.ma2</path>
+                        <path>{converter.MusicPadIdDx}_05.ma2</path>
                       </file>
                       <level>0</level>
                       <levelDecimal>0</levelDecimal>
