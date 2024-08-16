@@ -23,7 +23,7 @@ public class MusicXmlConverter
                 trackLevels[i] = trackLevels[i][..^1];
                 if (string.IsNullOrEmpty(trackDecimalLevels[i]))
                 {
-                    trackDecimalLevels[i] = "5";
+                    trackDecimalLevels[i] = "6";
                 }
             }
             else if (!float.TryParse(trackLevels[i], out _))
@@ -89,7 +89,7 @@ public class MusicXmlConverter
                   <bpm>{converter.Bpm}</bpm>
                   <version>22001</version>
                   <AddVersion>
-                    <id>100</id>
+                    <id>22</id>
                     <str>test</str>
                   </AddVersion>
                   <movieName>
@@ -114,7 +114,7 @@ public class MusicXmlConverter
                     <str>解放なし</str>
                   </subEventName>
                   <lockType>0</lockType>
-                  <subLockType>{(trackLevelActive[5] ? 1 : 0)}</subLockType>
+                  <subLockType>0</subLockType>
                   <dotNetListView>true</dotNetListView>
                   <notesData>
                     <Notes>
@@ -151,8 +151,8 @@ public class MusicXmlConverter
                       <file>
                         <path>{converter.MusicPadIdDx}_02.ma2</path>
                       </file>
-                      <level>{trackLevels[3]}</level>
-                      <levelDecimal>{trackDecimalLevels[3]}</levelDecimal>
+                <level>{trackLevels[3]}</level>
+                <levelDecimal>{trackDecimalLevels[3]}</levelDecimal>
                       <notesDesigner>
                         <id>999</id>
                         <str/>
@@ -166,8 +166,8 @@ public class MusicXmlConverter
                       <file>
                         <path>{converter.MusicPadIdDx}_03.ma2</path>
                       </file>
-                      <level>{trackLevels[4]}</level>
-                      <levelDecimal>{trackDecimalLevels[4]}</levelDecimal>
+                <level>{trackLevels[4]}</level>
+                <levelDecimal>{trackDecimalLevels[4]}</levelDecimal>
                       <notesDesigner>
                         <id>999</id>
                         <str/>
@@ -181,8 +181,8 @@ public class MusicXmlConverter
                       <file>
                         <path>{converter.MusicPadIdDx}_04.ma2</path>
                       </file>
-                      <level>{trackLevels[5]}</level>
-                      <levelDecimal>{trackDecimalLevels[5]}</levelDecimal>
+                <level>{trackLevels[5]}</level>
+                <levelDecimal>{trackDecimalLevels[5]}</levelDecimal>
                       <notesDesigner>
                         <id>999</id>
                         <str/>

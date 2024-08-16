@@ -1,8 +1,8 @@
-
 Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34728.123
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sitreamai", "Sitreamai\Sitreamai.csproj", "{5ABCC8F1-29A2-4493-98EB-AFD2CCF68FB7}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sitremai-GUI", "Sitremai-GUI\Sitremai-GUI.csproj", "{E604EA63-68B1-43CE-8015-97A1278FD6D0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -12,9 +12,10 @@ Global
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{5ABCC8F1-29A2-4493-98EB-AFD2CCF68FB7}.Debug|x64.ActiveCfg = Debug|x64
 		{5ABCC8F1-29A2-4493-98EB-AFD2CCF68FB7}.Debug|x64.Build.0 = Debug|x64
-		{E604EA63-68B1-43CE-8015-97A1278FD6D0}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{E604EA63-68B1-43CE-8015-97A1278FD6D0}.Debug|x64.Build.0 = Debug|Any CPU
-		{E604EA63-68B1-43CE-8015-97A1278FD6D0}.Release|x64.ActiveCfg = Release|Any CPU
-		{E604EA63-68B1-43CE-8015-97A1278FD6D0}.Release|x64.Build.0 = Release|Any CPU
+		{5ABCC8F1-29A2-4493-98EB-AFD2CCF68FB7}.Release|x64.ActiveCfg = Release|x64
+		{5ABCC8F1-29A2-4493-98EB-AFD2CCF68FB7}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 EndGlobal
