@@ -13,6 +13,7 @@ public partial class Launcher : Form
 # if DEBUG
         textBox1.Text = @"D:\Maimai HDD\sdga145";
         button2_Click(null, null);
+        WindowState = FormWindowState.Minimized;
 # endif
     }
 
@@ -70,7 +71,7 @@ public partial class Launcher : Form
         });
         app.UseSwagger();
         app.UseSwaggerUI();
-        app.MapGet("/api", () => "Hello");
+        app.UseFileServer();
         app.MapControllers();
         app.Run();
     }

@@ -1,6 +1,5 @@
 ﻿using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Mvc;
-using Sitreamai;
 
 namespace MaiChartManager.Controllers;
 
@@ -38,10 +37,17 @@ public partial class MusicListController : ControllerBase
     }
 
     [HttpGet]
-    [Route("GetMusicList")]
-    public IEnumerable<MusicXml> GetMusicList()
+    [Route("GetSelectedAssetsDir")]
+    public string GetSelectedAssetsDir()
     {
-        return _settings.MusicList;
+        return Path.GetFileName(_settings.AssetDir);
+    }
+
+    [HttpGet]
+    [Route("GetMusicList")]
+    public IEnumerable<MusicBrief> GetMusicList()
+    {
+        return _settings.MusicList.Select(it => it.GetBrief());
     }
 
     [HttpGet]

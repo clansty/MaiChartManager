@@ -30,6 +30,24 @@
       <Compile Update="Launcher.cs">
         <SubType>Form</SubType>
       </Compile>
+      <Compile Remove="Front\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Remove="Front\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Remove="Front\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Front\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Front\package.json" />
+      <_ContentIncludedByDefault Remove="Front\tsconfig.json" />
     </ItemGroup>
 
 </Project>

@@ -9,9 +9,7 @@ namespace Sitreamai;
 public class MusicXml
 {
     private XmlDocument xmlDoc;
-    [JsonIgnore]
     public string FilePath { get; set; }
-    [JsonIgnore]
     public string GamePath { get; set; }
 
     public MusicXml(string filePath, string gamePath)
@@ -38,7 +36,6 @@ public class MusicXml
 
     private static readonly string[] _jacketExtensions = ["jpg", "png", "jpeg"];
 
-    [JsonIgnore]
     public string jacketPath
     {
         get

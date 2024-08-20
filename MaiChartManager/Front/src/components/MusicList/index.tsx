@@ -1,0 +1,52 @@
+import { defineComponent, effect, ref } from "vue";
+import api from "@/client/api";
+import { MusicBrief } from "@/client/apiGen";
+import { NSelect, NVirtualList } from "naive-ui";
+import MusicEntry from "@/components/MusicList/MusicEntry";
+import { selectMusicId } from "@/store/refs";
+
+export default defineComponent({
+  setup() {
+    const aDirs = ref<string[]>([]);
+    const selectedADir = ref<string>('');
+    const musicList = ref<MusicBrief[]>([]);
+
+    const refresh = async () => {
+      aDirs.value = (await api.GetAssetsDirs()).data;
+      musicList.value = (await api.GetMusicList()).data;
+    }
+
+    effect(async () => {
+      refresh();
+      selectedADir.value = (await api.GetSelectedAssetsDir()).data;
+      console.log(selectedADir.value)
+    });
+
+    const setAssetsDir = async (dir: string) => {
+      await api.SetAssetsDir(dir);
+      selectedADir.value = dir;
+      refresh();
+    }
+
+    return () => (
+      <div class="h-full flex flex-col">
+        <div class="m-b">
+          <NSelect
+            value={selectedADir.value}
+            options={aDirs.value.map(dir => ({label: dir, value: dir}))}
+            onUpdate:value={setAssetsDir}
+          />
+        </div>
+        <NVirtualList class="flex-1" itemSize={20 / 4 * 16} items={musicList.value}>
+          {{
+            default({item}: { item: MusicBrief }) {
+              return (
+                <MusicEntry music={item} selected={selectMusicId.value === item.id} onClick={() => selectMusicId.value = item.id!} key={item.id}/>
+              )
+            }
+          }}
+        </NVirtualList>
+      </div>
+    )
+  }
+})
