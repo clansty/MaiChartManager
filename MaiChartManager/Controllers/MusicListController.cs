@@ -7,7 +7,6 @@ namespace MaiChartManager.Controllers;
 public class MusicListController(StaticSettings settings, ILogger<StaticSettings> logger) : ControllerBase
 {
     [HttpPost]
-    [Consumes("application/json")]
     public void SetAssetsDir([FromBody] string dir)
     {
         settings.AssetDir = dir;

@@ -19,7 +19,6 @@ export default defineComponent({
     effect(async () => {
       refresh();
       selectedADir.value = (await api.GetSelectedAssetsDir()).data;
-      console.log(selectedADir.value)
     });
 
     const setAssetsDir = async (dir: string) => {

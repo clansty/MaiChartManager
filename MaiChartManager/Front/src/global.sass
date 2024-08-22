@@ -1,2 +1,20 @@
 html
   --selected-bg: #EDF8F6
+
+*
+  -webkit-user-drag: none
+
+.levelTabs
+  .n-tabs-wrapper
+    display: grid
+    grid-template-columns: 1em repeat(5, 1fr) 1em
+    gap: 1em
+    width: 100%
+    align-items: end
+    height: 4em
+
+    .n-tabs-tab-wrapper, .n-tabs-tab, .n-tabs-tab__label
+      width: 100%
+
+    .n-tabs-tab-pad
+      display: none

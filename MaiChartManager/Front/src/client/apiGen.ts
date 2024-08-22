@@ -9,6 +9,20 @@
  * ---------------------------------------------------------------
  */
 
+export interface Chart {
+  path?: string | null;
+  /** @format int32 */
+  level?: number;
+  /** @format int32 */
+  levelDecimal?: number;
+  /** @format int32 */
+  levelId?: number;
+  /** @format int32 */
+  maxNotes?: number;
+  enable?: boolean;
+  designer?: string | null;
+}
+
 export interface GenreXml {
   assetDir?: string | null;
   /** @format int32 */
@@ -30,6 +44,28 @@ export interface MusicBrief {
   /** @format int32 */
   nonDxId?: number;
   name?: string | null;
+  hasJacket?: boolean;
+}
+
+export interface MusicXml {
+  filePath?: string | null;
+  /** @format int32 */
+  id?: number;
+  /** @format int32 */
+  nonDxId?: number;
+  modified?: boolean;
+  name?: string | null;
+  /** @format int32 */
+  genreId?: number;
+  /** @format int32 */
+  addVersionId?: number;
+  artist?: string | null;
+  /** @format int32 */
+  version?: number;
+  /** @format int32 */
+  bpm?: number;
+  disable?: boolean;
+  charts?: Chart[] | null;
   hasJacket?: boolean;
 }
 
@@ -293,6 +329,53 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         path: `/api/Genre/GetAllGenres`,
         method: "GET",
         format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Music
+     * @name GetMusicDetail
+     * @request GET:/api/Music/GetMusicDetail/{id}
+     */
+    GetMusicDetail: (id: number, params: RequestParams = {}) =>
+      this.request<MusicXml, any>({
+        path: `/api/Music/GetMusicDetail/${id}`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Music
+     * @name EditMusicName
+     * @request POST:/api/Music/EditMusicName/{id}
+     */
+    EditMusicName: (id: number, data: string, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/api/Music/EditMusicName/${id}`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Music
+     * @name EditMusicArtist
+     * @request POST:/api/Music/EditMusicArtist/{id}
+     */
+    EditMusicArtist: (id: number, data: string, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/api/Music/EditMusicArtist/${id}`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
         ...params,
       }),
 

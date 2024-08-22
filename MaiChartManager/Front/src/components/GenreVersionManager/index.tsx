@@ -3,6 +3,7 @@ import { NButton, NList, NListItem, NModal, NScrollbar } from "naive-ui";
 import { GenreXml } from "@/client/apiGen";
 import api from "@/client/api";
 import GenreDisplay from "./GenreDisplay";
+import { addVersionList, genreList } from "@/store/refs";
 
 export default defineComponent({
   props: {
@@ -10,14 +11,8 @@ export default defineComponent({
   },
   setup(props) {
     const show = ref(false);
-    const genreList = ref<GenreXml[]>([]);
+    const list = props.type === 'genre' ? genreList : addVersionList;
     const text = computed(() => props.type === 'genre' ? '分类' : '版本');
-
-    const refresh = async () => {
-      genreList.value = (await (props.type === 'genre' ? api.GetAllGenres : api.GetAllAddVersions)()).data;
-    }
-
-    effect(refresh);
 
     return () => (
       <NButton onClick={() => show.value = true}>
@@ -31,7 +26,7 @@ export default defineComponent({
         >
           <NScrollbar class="h-80vh">
             <NList>
-              {genreList.value.map(it => <NListItem>
+              {list.value.map(it => <NListItem>
                 <GenreDisplay genre={it}/>
               </NListItem>)}
             </NList>
