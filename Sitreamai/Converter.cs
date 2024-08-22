@@ -66,25 +66,25 @@ public class Converter
             File.WriteAllText(Path.Join(MusicDir, $"{MusicPadIdDx}_0{int.Parse(level) - 2}.ma2"), result);
         }
 
-        // // 找到图片
-        // foreach (var ext in new[] { ".jpg", ".png", ".webp", ".bmp", ".gif" })
-        // {
-        //     var imgPath = Path.Join(FromDir, "bg" + ext);
-        //     if (File.Exists(imgPath))
-        //     {
-        //         File.Copy(imgPath, Path.Join(AssetsDir, "LocalAssets", MusicPadId + ext), true);
-        //     }
-        // }
-        //
-        // // 找到音频
-        // foreach (var ext in new[] { ".mp3", ".wav", ".aac" })
-        // {
-        //     var mp3Path = Path.Join(FromDir, "track" + ext);
-        //     if (File.Exists(mp3Path))
-        //     {
-        //         Audio.ConvertToMai(mp3Path, Path.Join(AssetsDir, "SoundData", $"music{MusicPadId}"));
-        //     }
-        // }
+        // 找到图片
+        foreach (var ext in new[] { ".jpg", ".png", ".webp", ".bmp", ".gif" })
+        {
+            var imgPath = Path.Join(FromDir, "bg" + ext);
+            if (File.Exists(imgPath))
+            {
+                File.Copy(imgPath, Path.Join(AssetsDir, "LocalAssets", MusicPadId + ext), true);
+            }
+        }
+
+        // 找到音频
+        foreach (var ext in new[] { ".mp3", ".wav", ".aac" })
+        {
+            var mp3Path = Path.Join(FromDir, "track" + ext);
+            if (File.Exists(mp3Path))
+            {
+                Audio.ConvertToMai(mp3Path, Path.Join(AssetsDir, "SoundData", $"music{MusicPadId}"));
+            }
+        }
 
         Logger.LogInformation("转换完成");
     }

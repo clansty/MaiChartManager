@@ -9,6 +9,21 @@
  * ---------------------------------------------------------------
  */
 
+export interface GenreXml {
+  assetDir?: string | null;
+  /** @format int32 */
+  id?: number;
+  filePath?: string | null;
+  genreName?: string | null;
+  genreNameTwoLine?: string | null;
+  /** @format int32 */
+  colorR?: number;
+  /** @format int32 */
+  colorG?: number;
+  /** @format int32 */
+  colorB?: number;
+}
+
 export interface MusicBrief {
   /** @format int32 */
   id?: number;
@@ -234,6 +249,21 @@ export class HttpClient<SecurityDataType = unknown> {
  */
 export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDataType> {
   api = {
+    /**
+     * No description
+     *
+     * @tags Genre
+     * @name GetAllGenres
+     * @request GET:/api/Genre/GetAllGenres
+     */
+    GetAllGenres: (params: RequestParams = {}) =>
+      this.request<GenreXml[], any>({
+        path: `/api/Genre/GetAllGenres`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
     /**
      * No description
      *

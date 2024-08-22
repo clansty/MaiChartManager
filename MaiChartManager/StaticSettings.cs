@@ -1,8 +1,9 @@
-﻿using Sitreamai;
+﻿using System.Text.RegularExpressions;
+using Sitreamai.Models;
 
 namespace MaiChartManager;
 
-public class StaticSettings
+public partial class StaticSettings
 {
     private readonly ILogger<StaticSettings> _logger;
     private string _assetDir;
@@ -14,23 +15,32 @@ public class StaticSettings
         {
             AssetDir = "A500";
             ScanMusicList();
+            ScanGenre();
         }
     }
 
-    public static string GamePath { get; set; } = @"D:\Maimai HDD\sdga145";
+    [GeneratedRegex(@"^\w\d{3}$")]
+    private static partial Regex ADirRegex();
+
+    public static string GamePath { get; set; }
+    public static string StreamingAssets => Path.Combine(GamePath, "Sinmai_Data", "StreamingAssets");
+
+    public static IEnumerable<string> AssetsDirs => Directory.EnumerateDirectories(StreamingAssets)
+        .Select(Path.GetFileName).Where(it => ADirRegex().IsMatch(it));
 
     public string AssetDir
     {
         get => _assetDir;
         set
         {
-            if (!value.StartsWith(Path.Combine(GamePath, @"Sinmai_Data\StreamingAssets")))
-                value = Path.Combine(GamePath, @"Sinmai_Data\StreamingAssets", value);
+            if (!value.StartsWith(StreamingAssets))
+                value = Path.Combine(StreamingAssets, value);
             _assetDir = value;
         }
     }
 
     public List<MusicXml> MusicList { get; set; } = new();
+    public List<GenreXml> GenreList { get; set; } = new();
 
     public void ScanMusicList()
     {
@@ -49,5 +59,31 @@ public class StaticSettings
         }
 
         _logger.LogInformation($"Scan music list, found {MusicList.Count} music.");
+    }
+
+    public void ScanGenre()
+    {
+        GenreList.Clear();
+
+        foreach (var a in AssetsDirs)
+        {
+            if (!Directory.Exists(Path.Combine(StreamingAssets, a, "musicGenre"))) continue;
+            foreach (var genreDir in Directory.EnumerateDirectories(Path.Combine(StreamingAssets, a, "musicGenre"), "musicgenre*"))
+            {
+                if (!File.Exists(Path.Combine(genreDir, "MusicGenre.xml"))) continue;
+                var id = int.Parse(Path.GetFileName(genreDir).Substring("musicgenre".Length));
+                var genreXml = new GenreXml(id, a, GamePath);
+
+                var existed = GenreList.Find(it => it.Id == id);
+                if (existed != null)
+                {
+                    GenreList.Remove(existed);
+                }
+
+                GenreList.Add(genreXml);
+            }
+        }
+
+        _logger.LogInformation($"Scan genre list, found {GenreList.Count} genre.");
     }
 }

@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Text.Json.Serialization;
 using System.Xml;
 
-namespace Sitreamai;
+namespace Sitreamai.Models;
 
 public class MusicXml
 {
     private XmlDocument xmlDoc;
     public string FilePath { get; set; }
-    public string GamePath { get; set; }
+    [JsonIgnore] public string GamePath { get; }
 
     public MusicXml(string filePath, string gamePath)
     {
@@ -20,15 +19,11 @@ public class MusicXml
         xmlDoc.Load(filePath);
     }
 
-    public int Id
-    {
-        get => int.Parse(xmlDoc.SelectSingleNode("/MusicData/name/id")?.InnerText);
-        set => xmlDoc.SelectSingleNode("/MusicData/name/id").InnerText = value.ToString();
-    }
+    public int Id => int.Parse(xmlDoc.SelectSingleNode("/MusicData/name/id")?.InnerText);
 
-    public int nonDxId => Id % 10000;
+    public int NonDxId => Id % 10000;
 
-    public string name
+    public string Name
     {
         get => xmlDoc.SelectSingleNode("/MusicData/name/str")?.InnerText;
         set => xmlDoc.SelectSingleNode("/MusicData/name/str").InnerText = value;
@@ -36,13 +31,13 @@ public class MusicXml
 
     private static readonly string[] _jacketExtensions = ["jpg", "png", "jpeg"];
 
-    public string jacketPath
+    public string JacketPath
     {
         get
         {
             foreach (var ext in _jacketExtensions)
             {
-                var path = Path.Combine(GamePath, "LocalAssets", $"{nonDxId:000000}.{ext}");
+                var path = Path.Combine(GamePath, "LocalAssets", $"{NonDxId:000000}.{ext}");
                 if (File.Exists(path))
                 {
                     return path;

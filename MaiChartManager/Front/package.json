@@ -9,7 +9,9 @@
     "preview": "vite preview"
   },
   "devDependencies": {
+    "@iconify-json/material-symbols": "^1.1.88",
     "@types/node": "^22.4.1",
+    "@unocss/preset-icons": "^0.62.2",
     "@unocss/reset": "^0.62.2",
     "@vitejs/plugin-vue-jsx": "^4.0.1",
     "naive-ui": "^2.39.0",

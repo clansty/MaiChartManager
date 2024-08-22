@@ -21,6 +21,7 @@
 
     <ItemGroup>
       <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.8" />
+      <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.4" />
       <PackageReference Include="Swashbuckle.AspNetCore" Version="6.7.1" />
       <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.7.1" />
       <PackageReference Include="UwpDesktop-Updated" Version="10.0.17763.132" />
