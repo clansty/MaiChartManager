@@ -1,6 +1,6 @@
 import { computed, defineComponent, PropType, ref, watch } from "vue";
 import { GenreXml, MusicXml } from "@/client/apiGen";
-import { addVersionList, genreList, selectMusicId } from "@/store/refs";
+import { addVersionList, genreList, selectedADir, selectMusicId } from "@/store/refs";
 import api from "@/client/api";
 import { NFlex, NForm, NFormItem, NInput, NInputNumber, NSelect, NTabPane, NTabs, SelectOption } from "naive-ui";
 import JacketBox from "@/components/MusicEdit/JacketBox";
@@ -14,10 +14,13 @@ const LEVEL_COLOR = ['rgb(34, 187, 91)', 'rgb(251, 156, 45)', 'rgb(246, 72, 97)'
 
 export default defineComponent({
   setup() {
-    const info = ref<MusicXml>();
+    const info = ref<MusicXml | null>();
 
     watch(() => selectMusicId.value, async () => {
-      if (!selectMusicId.value) return;
+      if (!selectMusicId.value) {
+        info.value = null;
+        return;
+      }
       const response = await api.GetMusicDetail(selectMusicId.value);
       info.value = response.data;
     }, {immediate: true});
@@ -26,7 +29,7 @@ export default defineComponent({
     const addVersionOptions = computed(() => addVersionList.value.map(genre => ({label: genre.genreName, value: genre.id})));
     const selectedLevel = ref(0);
 
-    return () => info.value && <NForm showFeedback={false} labelPlacement="top">
+    return () => info.value && <NForm showFeedback={false} labelPlacement="top" disabled={selectedADir.value === 'A000'}>
       <div class="grid cols-[1fr_12em] gap-5">
         <NFlex vertical>
           <NFlex align="center">

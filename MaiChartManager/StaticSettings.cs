@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using MaiChartManager.Models;
 using Sitreamai.Models;
 
 namespace MaiChartManager;
@@ -17,6 +18,7 @@ public partial class StaticSettings
             ScanMusicList();
             ScanGenre();
             ScanVersionList();
+            ScanAssetBundles();
         }
     }
 
@@ -40,9 +42,10 @@ public partial class StaticSettings
         }
     }
 
-    public List<MusicXml> MusicList { get; set; } = new();
+    public List<MusicXmlWithABJacket> MusicList { get; set; } = new();
     public List<GenreXml> GenreList { get; set; } = new();
     public List<VersionXml> VersionList { get; set; } = new();
+    public static Dictionary<int, string> AssetBundleJacketMap { get; set; } = new();
 
     public void ScanMusicList()
     {
@@ -56,7 +59,7 @@ public partial class StaticSettings
         foreach (var subDir in Directory.EnumerateDirectories(musicDir))
         {
             if (!File.Exists(Path.Combine(subDir, "Music.xml"))) continue;
-            var musicXml = new MusicXml(Path.Combine(subDir, "Music.xml"), GamePath);
+            var musicXml = new MusicXmlWithABJacket(Path.Combine(subDir, "Music.xml"), GamePath);
             MusicList.Add(musicXml);
         }
 
@@ -112,5 +115,22 @@ public partial class StaticSettings
         }
 
         _logger.LogInformation($"Scan version list, found {VersionList.Count} version.");
+    }
+
+    public void ScanAssetBundles()
+    {
+        AssetBundleJacketMap.Clear();
+        foreach (var a in AssetsDirs)
+        {
+            if (!Directory.Exists(Path.Combine(StreamingAssets, a, @"AssetBundleImages\jacket"))) continue;
+            foreach (var jacketFile in Directory.EnumerateFiles(Path.Combine(StreamingAssets, a, @"AssetBundleImages\jacket"), "*.ab"))
+            {
+                var idStr = Path.GetFileName(jacketFile).Substring("ui_jacket_".Length, 6);
+                if (!int.TryParse(idStr, out var id)) continue;
+                AssetBundleJacketMap[id] = jacketFile;
+            }
+        }
+
+        _logger.LogInformation($"Scan AssetBundles, found {AssetBundleJacketMap.Count} AssetBundles.");
     }
 }

@@ -2,6 +2,7 @@ import { computed, defineComponent, PropType } from "vue";
 import { Chart } from "@/client/apiGen";
 import { NFlex, NForm, NFormItem, NInput, NInputNumber, NSelect, NSwitch } from "naive-ui";
 import api from "@/client/api";
+import { selectedADir } from "@/store/refs";
 
 const LEVELS = [0, 1, 2, 3, 4, 5, 6, 7, '7+', 8, '8+', 9, '9+', 10, '10+', 11, '11+', 12, '12+', 13, '13+', 14, '14+', 15, '15+'] as const;
 const LEVELS_OPTIONS = LEVELS.map((level, index) => ({label: level, value: index}));
@@ -20,7 +21,7 @@ export default defineComponent({
       }
     })
 
-    return () => <NForm showFeedback={false} labelPlacement="top">
+    return () => <NForm showFeedback={false} labelPlacement="top" disabled={selectedADir.value === 'A000'}>
       <NFlex vertical>
         <NFormItem label="已启用" labelPlacement="left">
           <NSwitch v-model:value={props.chart.enable}/>

@@ -76,11 +76,18 @@ public partial class Launcher : Form
         app.Run();
     }
 
+    private Browser? _browserWin;
+
     private void label1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
     {
-        Process.Start(new ProcessStartInfo(label1.Text.Split('\n')[0])
+        if (_browserWin is null || _browserWin.IsDisposed)
         {
-            UseShellExecute = true
-        });
+            _browserWin = new Browser(label1.Text.Split('\n')[0]);
+            _browserWin.Show();
+        }
+        else
+        {
+            _browserWin.Activate();
+        }
     }
 }

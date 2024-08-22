@@ -21,7 +21,8 @@
 
     <ItemGroup>
       <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.8" />
-      <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.4" />
+      <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2651.64" />
+      <PackageReference Include="SixLabors.ImageSharp" Version="2.1.9" />
       <PackageReference Include="Swashbuckle.AspNetCore" Version="6.7.1" />
       <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.7.1" />
       <PackageReference Include="UwpDesktop-Updated" Version="10.0.17763.132" />
@@ -32,23 +33,45 @@
         <SubType>Form</SubType>
       </Compile>
       <Compile Remove="Front\**" />
+      <Compile Update="Browser.cs">
+        <SubType>Form</SubType>
+      </Compile>
+      <Compile Remove="Libs\**" />
     </ItemGroup>
 
     <ItemGroup>
       <EmbeddedResource Remove="Front\**" />
+      <EmbeddedResource Remove="Libs\**" />
     </ItemGroup>
 
     <ItemGroup>
       <Content Remove="Front\**" />
+      <Content Remove="Libs\**" />
     </ItemGroup>
 
     <ItemGroup>
       <None Remove="Front\**" />
+      <None Remove="Libs\**" />
+      <None Update="Texture2DDecoderNative.dll">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="x64\Texture2DDecoderNative.dll">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
     <ItemGroup>
       <_ContentIncludedByDefault Remove="Front\package.json" />
       <_ContentIncludedByDefault Remove="Front\tsconfig.json" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="AssetStudio">
+        <HintPath>Libs\AssetStudio.dll</HintPath>
+      </Reference>
+      <Reference Include="AssetStudioUtility">
+        <HintPath>Libs\AssetStudioUtility.dll</HintPath>
+      </Reference>
     </ItemGroup>
 
 </Project>

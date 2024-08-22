@@ -127,7 +127,10 @@ partial class Launcher
         AutoScaleMode = AutoScaleMode.Font;
         ClientSize = new System.Drawing.Size(806, 83);
         Controls.Add(tableLayoutPanel1);
+        FormBorderStyle = FormBorderStyle.FixedSingle;
+        MaximizeBox = false;
         Name = "Launcher";
+        SizeGripStyle = SizeGripStyle.Hide;
         Text = "Launcher";
         tableLayoutPanel1.ResumeLayout(false);
         tableLayoutPanel1.PerformLayout();

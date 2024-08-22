@@ -30,22 +30,4 @@ public class MusicListController(StaticSettings settings, ILogger<StaticSettings
     {
         return settings.MusicList.Select(it => it.GetBrief());
     }
-
-    [HttpGet]
-    [Route("{id:int}")]
-    public ActionResult GetJacket(int id)
-    {
-        var music = settings.MusicList.FirstOrDefault(it => it.Id == id);
-        if (music == null)
-        {
-            return NotFound();
-        }
-
-        if (!System.IO.File.Exists(music.JacketPath))
-        {
-            return NotFound();
-        }
-
-        return File(System.IO.File.OpenRead(music.JacketPath), "image/png");
-    }
 }

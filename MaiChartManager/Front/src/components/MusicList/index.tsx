@@ -3,12 +3,11 @@ import api from "@/client/api";
 import { MusicBrief } from "@/client/apiGen";
 import { NSelect, NVirtualList } from "naive-ui";
 import MusicEntry from "@/components/MusicList/MusicEntry";
-import { selectMusicId } from "@/store/refs";
+import { selectedADir, selectMusicId } from "@/store/refs";
 
 export default defineComponent({
   setup() {
     const aDirs = ref<string[]>([]);
-    const selectedADir = ref<string>('');
     const musicList = ref<MusicBrief[]>([]);
 
     const refresh = async () => {
@@ -18,12 +17,12 @@ export default defineComponent({
 
     effect(async () => {
       refresh();
-      selectedADir.value = (await api.GetSelectedAssetsDir()).data;
     });
 
     const setAssetsDir = async (dir: string) => {
       await api.SetAssetsDir(dir);
       selectedADir.value = dir;
+      selectMusicId.value = 0;
       refresh();
     }
 

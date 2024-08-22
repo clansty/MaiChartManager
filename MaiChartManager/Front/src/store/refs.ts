@@ -5,6 +5,7 @@ import api from "@/client/api";
 export const selectMusicId = ref(0)
 export const genreList = ref<GenreXml[]>([]);
 export const addVersionList = ref<VersionXml[]>([]);
+export const selectedADir = ref<string>('');
 
 
 export const updateGenreList = async () => {
@@ -15,4 +16,8 @@ export const updateGenreList = async () => {
 export const updateAddVersionList = async () => {
   const response = await api.GetAllAddVersions();
   addVersionList.value = response.data;
+}
+
+export const updateSelectedAssetDir = async () => {
+  selectedADir.value = (await api.GetSelectedAssetsDir()).data;
 }
