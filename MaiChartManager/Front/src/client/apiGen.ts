@@ -33,6 +33,23 @@ export interface MusicBrief {
   hasJacket?: boolean;
 }
 
+export interface VersionXml {
+  assetDir?: string | null;
+  /** @format int32 */
+  id?: number;
+  filePath?: string | null;
+  genreName?: string | null;
+  genreNameTwoLine?: string | null;
+  /** @format int32 */
+  colorR?: number;
+  /** @format int32 */
+  colorG?: number;
+  /** @format int32 */
+  colorB?: number;
+  /** @format int32 */
+  version?: number;
+}
+
 export type QueryParamsType = Record<string | number, any>;
 export type ResponseFormat = keyof Omit<Body, "body" | "bodyUsed">;
 
@@ -249,6 +266,21 @@ export class HttpClient<SecurityDataType = unknown> {
  */
 export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDataType> {
   api = {
+    /**
+     * No description
+     *
+     * @tags AddVersion
+     * @name GetAllAddVersions
+     * @request GET:/api/AddVersion/GetAllAddVersions
+     */
+    GetAllAddVersions: (params: RequestParams = {}) =>
+      this.request<VersionXml[], any>({
+        path: `/api/AddVersion/GetAllAddVersions`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
     /**
      * No description
      *

@@ -1,28 +1,32 @@
-import { defineComponent, effect, ref } from "vue";
+import { computed, defineComponent, effect, PropType, ref } from "vue";
 import { NButton, NList, NListItem, NModal, NScrollbar } from "naive-ui";
 import { GenreXml } from "@/client/apiGen";
 import api from "@/client/api";
-import GenreDisplay from "@/components/GenreManager/GenreDisplay";
+import GenreDisplay from "./GenreDisplay";
 
 export default defineComponent({
-  setup() {
+  props: {
+    type: String as PropType<"genre" | "version">,
+  },
+  setup(props) {
     const show = ref(false);
     const genreList = ref<GenreXml[]>([]);
+    const text = computed(() => props.type === 'genre' ? '分类' : '版本');
 
     const refresh = async () => {
-      genreList.value = (await api.GetAllGenres()).data;
+      genreList.value = (await (props.type === 'genre' ? api.GetAllGenres : api.GetAllAddVersions)()).data;
     }
 
     effect(refresh);
 
     return () => (
       <NButton onClick={() => show.value = true}>
-        分类管理
+        {text.value}管理
 
         <NModal
           preset="card"
           class="w-[min(70vw,80em)]"
-          title="分类管理"
+          title={`${text.value}管理`}
           v-model:show={show.value}
         >
           <NScrollbar class="h-80vh">

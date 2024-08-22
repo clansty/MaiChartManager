@@ -1,7 +1,7 @@
 import { defineComponent } from 'vue';
 import { NFlex, NGi, NGrid } from "naive-ui";
 import MusicList from "@/components/MusicList";
-import GenreManager from "@/components/GenreManager";
+import GenreVersionManager from "@/components/GenreVersionManager";
 
 export default defineComponent({
   render() {
@@ -11,7 +11,8 @@ export default defineComponent({
       </div>
       <div class="p-xy max-h-100vh of-auto">
         <NFlex>
-          <GenreManager/>
+          <GenreVersionManager type="genre"/>
+          <GenreVersionManager type="version"/>
         </NFlex>
       </div>
     </div>;

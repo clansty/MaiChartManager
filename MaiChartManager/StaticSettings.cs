@@ -16,6 +16,7 @@ public partial class StaticSettings
             AssetDir = "A500";
             ScanMusicList();
             ScanGenre();
+            ScanVersionList();
         }
     }
 
@@ -41,6 +42,7 @@ public partial class StaticSettings
 
     public List<MusicXml> MusicList { get; set; } = new();
     public List<GenreXml> GenreList { get; set; } = new();
+    public List<VersionXml> VersionList { get; set; } = new();
 
     public void ScanMusicList()
     {
@@ -85,5 +87,30 @@ public partial class StaticSettings
         }
 
         _logger.LogInformation($"Scan genre list, found {GenreList.Count} genre.");
+    }
+
+    public void ScanVersionList()
+    {
+        VersionList.Clear();
+        foreach (var a in AssetsDirs)
+        {
+            if (!Directory.Exists(Path.Combine(StreamingAssets, a, "musicVersion"))) continue;
+            foreach (var versionDir in Directory.EnumerateDirectories(Path.Combine(StreamingAssets, a, "musicVersion"), "musicversion*"))
+            {
+                if (!File.Exists(Path.Combine(versionDir, "MusicVersion.xml"))) continue;
+                var id = int.Parse(Path.GetFileName(versionDir).Substring("musicversion".Length));
+                var versionXml = new VersionXml(id, a, GamePath);
+
+                var existed = VersionList.Find(it => it.Id == id);
+                if (existed != null)
+                {
+                    VersionList.Remove(existed);
+                }
+
+                VersionList.Add(versionXml);
+            }
+        }
+
+        _logger.LogInformation($"Scan version list, found {VersionList.Count} version.");
     }
 }
