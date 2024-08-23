@@ -1,5 +1,5 @@
 import { computed, defineComponent, effect, onMounted, PropType, ref, watch } from "vue";
-import { GenreXml, MusicXml } from "@/client/apiGen";
+import { Chart, GenreXml, MusicXml } from "@/client/apiGen";
 import { addVersionList, genreList, selectedADir, selectMusicId } from "@/store/refs";
 import api from "@/client/api";
 import { NFlex, NForm, NFormItem, NInput, NInputNumber, NSelect, NTabPane, NTabs, SelectOption } from "naive-ui";
@@ -85,13 +85,7 @@ const Component = defineComponent({
           {new Array(5).fill(0).map((_, index) =>
             <NTabPane key={index} name={index} tab={DIFFICULTY[index]}>
               {{
-                tab: () => <div class={`w-full py-3 flex justify-center rounded-[.5em_.5em_0_0] ${selectedLevel.value === index && 'c-white font-500 pb-4'}`}
-                                style={{
-                                  backgroundColor: `color-mix(in srgb, ${LEVEL_COLOR[index]}, transparent ${(selectedLevel.value === index) ? 0 : 40}%)`,
-                                  transition: 'background-color 0.5s, padding-bottom 0.5s'
-                                }}>
-                  {DIFFICULTY[index]}
-                </div>,
+                tab: () => <Tab index={index} chart={info.value?.charts![index]!} selected={selectedLevel.value === index}/>,
                 default: () => <ChartPanel chart={info.value?.charts![index]!} songId={info.value?.id!} chartIndex={index} class="pxy pt-2 rounded-[0_0_.5em_.5em]"
                                            style={{backgroundColor: `color-mix(in srgb, ${LEVEL_COLOR[index]}, transparent 90%)`}}/>
               }}
@@ -101,6 +95,31 @@ const Component = defineComponent({
       </NFlex>
     </NForm>;
   },
+})
+
+const Tab = defineComponent({
+  props: {
+    index: {type: Number, required: true},
+    chart: {type: Object as PropType<Chart>, required: true},
+    selected: Boolean,
+  },
+  setup(props) {
+    return () => <div class={`w-full py-3 flex justify-center rounded-[.5em_.5em_0_0] pos-relative of-hidden ${props.selected && 'c-white font-500 pb-4'}`}
+                      style={{
+                        backgroundColor: `color-mix(in srgb, ${LEVEL_COLOR[props.index]}, transparent ${props.selected ? 0 : 40}%)`,
+                        transition: 'background-color 0.3s, padding-bottom 0.3s'
+                      }}>
+      {
+        !props.chart.enable &&
+        <div class="pos-absolute top-0 bottom-0 left-0 right-0" style={{
+          backgroundPosition: '0 0',
+          background: `repeating-linear-gradient(-45deg,
+                        rgba(0, 0, 0, .18) 0, rgba(0, 0, 0, .18) 5%, rgba(0, 0, 0, .1) 5%, rgba(0, 0, 0, .1) 10%)`
+        }}/>
+      }
+      <span class="z-1">{DIFFICULTY[props.index]}</span>
+    </div>
+  }
 })
 
 const GenreOption = defineComponent({
