@@ -1,4 +1,4 @@
-import { computed, defineComponent, PropType, ref, watch } from "vue";
+import { computed, defineComponent, effect, onMounted, PropType, ref, watch } from "vue";
 import { GenreXml, MusicXml } from "@/client/apiGen";
 import { addVersionList, genreList, selectedADir, selectMusicId } from "@/store/refs";
 import api from "@/client/api";
@@ -12,22 +12,39 @@ const DIFFICULTY = ['Basic', 'Advanced', 'Expert', 'Master', 'Re:Master'] as con
 const LEVEL_COLOR = ['rgb(34, 187, 91)', 'rgb(251, 156, 45)', 'rgb(246, 72, 97)', 'rgb(158, 69, 226)',
   'rgb(228, 166, 255)'] as const;
 
-export default defineComponent({
+const Component = defineComponent({
   setup() {
     const info = ref<MusicXml | null>();
+    const selectedLevel = ref(0);
 
-    watch(() => selectMusicId.value, async () => {
+    onMounted(async () => {
       if (!selectMusicId.value) {
         info.value = null;
         return;
       }
       const response = await api.GetMusicDetail(selectMusicId.value);
       info.value = response.data;
-    }, {immediate: true});
+
+      const firstEnabledChart = info.value.charts!.findIndex(chart => chart.enable);
+      if (firstEnabledChart >= 0) {
+        selectedLevel.value = firstEnabledChart;
+      }
+
+      watch(() => info.value?.name, sync('name', api.EditMusicName));
+      watch(() => info.value?.artist, sync('artist', api.EditMusicArtist));
+      watch(() => info.value?.bpm, sync('bpm', api.EditMusicBpm));
+      watch(() => info.value?.version, sync('version', api.EditMusicVersion));
+      watch(() => info.value?.genreId, sync('genreId', api.EditMusicGenre));
+      watch(() => info.value?.addVersionId, sync('addVersionId', api.EditMusicAddVersion));
+    });
 
     const genreOptions = computed(() => genreList.value.map(genre => ({label: genre.genreName, value: genre.id})));
     const addVersionOptions = computed(() => addVersionList.value.map(genre => ({label: genre.genreName, value: genre.id})));
-    const selectedLevel = ref(0);
+
+    const sync = (key: keyof MusicXml, method: Function) => async () => {
+      if (!info.value) return;
+      await method(info.value.id!, info.value[key]!);
+    }
 
     return () => info.value && <NForm showFeedback={false} labelPlacement="top" disabled={selectedADir.value === 'A000'}>
       <div class="grid cols-[1fr_12em] gap-5">
@@ -40,10 +57,10 @@ export default defineComponent({
             </div>
           </NFlex>
           <NFormItem label="歌曲名称">
-            <NInput v-model:value={info.value.name} onBlur={() => api.EditMusicName(info.value!.id!, info.value!.name!)}/>
+            <NInput v-model:value={info.value.name}/>
           </NFormItem>
           <NFormItem label="作者">
-            <NInput v-model:value={info.value.artist} onBlur={() => api.EditMusicArtist(info.value!.id!, info.value!.artist!)}/>
+            <NInput v-model:value={info.value.artist}/>
           </NFormItem>
         </NFlex>
         <JacketBox info={info.value} class="h-12em w-12em"/>
@@ -75,7 +92,7 @@ export default defineComponent({
                                 }}>
                   {DIFFICULTY[index]}
                 </div>,
-                default: () => <ChartPanel chart={info.value?.charts![index]!} songId={info.value?.id!} class="pxy pt-2 rounded-[0_0_.5em_.5em]"
+                default: () => <ChartPanel chart={info.value?.charts![index]!} songId={info.value?.id!} chartIndex={index} class="pxy pt-2 rounded-[0_0_.5em_.5em]"
                                            style={{backgroundColor: `color-mix(in srgb, ${LEVEL_COLOR[index]}, transparent 90%)`}}/>
               }}
             </NTabPane>
@@ -96,4 +113,11 @@ const GenreOption = defineComponent({
       {props.genre.genreName}
     </NFlex>;
   },
+})
+
+export default defineComponent({
+  setup() {
+    // 加载时销毁，防止 watch 被执行
+    return () => <Component key={selectMusicId.value}/>;
+  }
 })

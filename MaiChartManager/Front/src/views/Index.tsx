@@ -1,4 +1,4 @@
-import { defineComponent, effect } from 'vue';
+import { defineComponent, onMounted } from 'vue';
 import { NFlex, NScrollbar } from "naive-ui";
 import MusicList from "@/components/MusicList";
 import GenreVersionManager from "@/components/GenreVersionManager";
@@ -7,9 +7,9 @@ import MusicEdit from "@/components/MusicEdit";
 
 export default defineComponent({
   setup() {
-    effect(updateGenreList)
-    effect(updateAddVersionList)
-    effect(updateSelectedAssetDir)
+    onMounted(updateGenreList)
+    onMounted(updateAddVersionList)
+    onMounted(updateSelectedAssetDir)
   },
   render() {
     return <NFlex justify="center">

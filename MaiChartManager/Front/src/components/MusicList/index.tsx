@@ -1,4 +1,4 @@
-import { defineComponent, effect, ref } from "vue";
+import { defineComponent, onMounted, ref } from "vue";
 import api from "@/client/api";
 import { MusicBrief } from "@/client/apiGen";
 import { NSelect, NVirtualList } from "naive-ui";
@@ -15,7 +15,7 @@ export default defineComponent({
       musicList.value = (await api.GetMusicList()).data;
     }
 
-    effect(async () => {
+    onMounted(async () => {
       refresh();
     });
 

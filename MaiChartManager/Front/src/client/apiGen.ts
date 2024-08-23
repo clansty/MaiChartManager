@@ -320,6 +320,102 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
+     * @tags Chart
+     * @name EditChartLevel
+     * @request POST:/api/Chart/EditChartLevel/{id}/{level}
+     */
+    EditChartLevel: (id: number, level: number, data: number, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/api/Chart/EditChartLevel/${id}/${level}`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Chart
+     * @name EditChartLevelDisplay
+     * @request POST:/api/Chart/EditChartLevelDisplay/{id}/{level}
+     */
+    EditChartLevelDisplay: (id: number, level: number, data: number, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/api/Chart/EditChartLevelDisplay/${id}/${level}`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Chart
+     * @name EditChartLevelDecimal
+     * @request POST:/api/Chart/EditChartLevelDecimal/{id}/{level}
+     */
+    EditChartLevelDecimal: (id: number, level: number, data: number, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/api/Chart/EditChartLevelDecimal/${id}/${level}`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Chart
+     * @name EditChartDesigner
+     * @request POST:/api/Chart/EditChartDesigner/{id}/{level}
+     */
+    EditChartDesigner: (id: number, level: number, data: string, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/api/Chart/EditChartDesigner/${id}/${level}`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Chart
+     * @name EditChartNoteCount
+     * @request POST:/api/Chart/EditChartNoteCount/{id}/{level}
+     */
+    EditChartNoteCount: (id: number, level: number, data: number, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/api/Chart/EditChartNoteCount/${id}/${level}`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Chart
+     * @name EditChartEnable
+     * @request POST:/api/Chart/EditChartEnable/{id}/{level}
+     */
+    EditChartEnable: (id: number, level: number, data: boolean, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/api/Chart/EditChartEnable/${id}/${level}`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
      * @tags Genre
      * @name GetAllGenres
      * @request GET:/api/Genre/GetAllGenres
@@ -382,6 +478,84 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
+     * @tags Music
+     * @name EditMusicBpm
+     * @request POST:/api/Music/EditMusicBpm/{id}
+     */
+    EditMusicBpm: (id: number, data: number, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/api/Music/EditMusicBpm/${id}`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Music
+     * @name EditMusicVersion
+     * @request POST:/api/Music/EditMusicVersion/{id}
+     */
+    EditMusicVersion: (id: number, data: number, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/api/Music/EditMusicVersion/${id}`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Music
+     * @name EditMusicGenre
+     * @request POST:/api/Music/EditMusicGenre/{id}
+     */
+    EditMusicGenre: (id: number, data: number, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/api/Music/EditMusicGenre/${id}`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Music
+     * @name EditMusicAddVersion
+     * @request POST:/api/Music/EditMusicAddVersion/{id}
+     */
+    EditMusicAddVersion: (id: number, data: number, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/api/Music/EditMusicAddVersion/${id}`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Music
+     * @name GetJacket
+     * @request GET:/api/Music/GetJacket/{id}
+     */
+    GetJacket: (id: number, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/api/Music/GetJacket/${id}`,
+        method: "GET",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
      * @tags MusicList
      * @name SetAssetsDir
      * @request POST:/api/MusicList/SetAssetsDir
@@ -437,20 +611,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         path: `/api/MusicList/GetMusicList`,
         method: "GET",
         format: "json",
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags MusicList
-     * @name GetJacket
-     * @request GET:/api/MusicList/GetJacket/{id}
-     */
-    GetJacket: (id: number, params: RequestParams = {}) =>
-      this.request<void, any>({
-        path: `/api/MusicList/GetJacket/${id}`,
-        method: "GET",
         ...params,
       }),
   };

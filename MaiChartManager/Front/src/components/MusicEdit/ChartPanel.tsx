@@ -1,5 +1,5 @@
-import { computed, defineComponent, PropType } from "vue";
-import { Chart } from "@/client/apiGen";
+import { computed, defineComponent, PropType, watch } from "vue";
+import { Chart, MusicXml } from "@/client/apiGen";
 import { NFlex, NForm, NFormItem, NInput, NInputNumber, NSelect, NSwitch } from "naive-ui";
 import api from "@/client/api";
 import { selectedADir } from "@/store/refs";
@@ -10,6 +10,7 @@ const LEVELS_OPTIONS = LEVELS.map((level, index) => ({label: level, value: index
 export default defineComponent({
   props: {
     songId: {type: Number, required: true},
+    chartIndex: {type: Number, required: true},
     chart: {type: Object as PropType<Chart>, required: true},
   },
   setup(props) {
@@ -20,6 +21,18 @@ export default defineComponent({
         props.chart.levelDecimal = Math.round(value * 10 - props.chart.level * 10);
       }
     })
+
+    const sync = (key: keyof Chart, method: Function) => async () => {
+      if (!props.chart) return;
+      await method(props.songId, props.chartIndex, props.chart[key]!);
+    }
+
+    watch(() => props.chart.designer, sync('designer', api.EditChartDesigner));
+    watch(() => props.chart.level, sync('level', api.EditChartLevel));
+    watch(() => props.chart.levelDecimal, sync('levelDecimal', api.EditChartLevelDecimal));
+    watch(() => props.chart.maxNotes, sync('maxNotes', api.EditChartNoteCount));
+    watch(() => props.chart.enable, sync('enable', api.EditChartEnable));
+    watch(() => props.chart.levelId, sync('levelId', api.EditChartLevelDisplay));
 
     return () => <NForm showFeedback={false} labelPlacement="top" disabled={selectedADir.value === 'A000'}>
       <NFlex vertical>

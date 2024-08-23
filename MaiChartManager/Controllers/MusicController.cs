@@ -5,18 +5,16 @@ using Sitreamai.Models;
 namespace MaiChartManager.Controllers;
 
 [ApiController]
-[Route("api/[controller]/[action]")]
+[Route("api/[controller]/[action]/{id:int}")]
 public class MusicController(StaticSettings settings, ILogger<StaticSettings> logger) : ControllerBase
 {
     [HttpGet]
-    [Route("{id:int}")]
     public MusicXml? GetMusicDetail(int id)
     {
         return settings.MusicList.Find(it => it.Id == id);
     }
 
     [HttpPost]
-    [Route("{id:int}")]
     public void EditMusicName(int id, [FromBody] string value)
     {
         var music = settings.MusicList.Find(it => it.Id == id);
@@ -27,7 +25,6 @@ public class MusicController(StaticSettings settings, ILogger<StaticSettings> lo
     }
 
     [HttpPost]
-    [Route("{id:int}")]
     public void EditMusicArtist(int id, [FromBody] string value)
     {
         var music = settings.MusicList.Find(it => it.Id == id);
@@ -37,9 +34,48 @@ public class MusicController(StaticSettings settings, ILogger<StaticSettings> lo
         }
     }
 
+    [HttpPost]
+    public void EditMusicBpm(int id, [FromBody] int value)
+    {
+        var music = settings.MusicList.Find(it => it.Id == id);
+        if (music != null)
+        {
+            music.Bpm = value;
+        }
+    }
+
+    [HttpPost]
+    public void EditMusicVersion(int id, [FromBody] int value)
+    {
+        var music = settings.MusicList.Find(it => it.Id == id);
+        if (music != null)
+        {
+            music.Version = value;
+        }
+    }
+
+    [HttpPost]
+    public void EditMusicGenre(int id, [FromBody] int value)
+    {
+        var music = settings.MusicList.Find(it => it.Id == id);
+        if (music != null)
+        {
+            music.GenreId = value;
+        }
+    }
+
+    [HttpPost]
+    public void EditMusicAddVersion(int id, [FromBody] int value)
+    {
+        var music = settings.MusicList.Find(it => it.Id == id);
+        if (music != null)
+        {
+            music.AddVersionId = value;
+        }
+    }
+
 
     [HttpGet]
-    [Route("{id:int}")]
     public ActionResult GetJacket(int id)
     {
         var music = settings.MusicList.FirstOrDefault(it => it.Id == id);
