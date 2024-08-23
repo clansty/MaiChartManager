@@ -9,8 +9,10 @@ public class MusicXmlWithABJacket(string filePath, string gamePath) : MusicXml(f
     // 在 mod 里文件的 jacket 是优先的
     public new bool HasJacket => JacketPath is not null || AssetBundleJacket is not null;
 
+    public record MusicBrief(int Id, int NonDxId, string Name, bool HasJacket, bool Modified);
+
     public MusicBrief GetBrief()
     {
-        return new MusicBrief(Id, NonDxId, Name, HasJacket);
+        return new MusicBrief(Id, NonDxId, Name, HasJacket, Modified);
     }
 }

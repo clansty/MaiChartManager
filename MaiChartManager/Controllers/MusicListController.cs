@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MaiChartManager.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace MaiChartManager.Controllers;
 
@@ -26,7 +27,7 @@ public class MusicListController(StaticSettings settings, ILogger<StaticSettings
     }
 
     [HttpGet]
-    public IEnumerable<MusicBrief> GetMusicList()
+    public IEnumerable<MusicXmlWithABJacket.MusicBrief> GetMusicList()
     {
         return settings.MusicList.Select(it => it.GetBrief());
     }

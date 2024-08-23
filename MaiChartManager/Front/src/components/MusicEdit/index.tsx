@@ -1,12 +1,12 @@
 import { computed, defineComponent, effect, onMounted, PropType, ref, watch } from "vue";
 import { Chart, GenreXml, MusicXml } from "@/client/apiGen";
-import { addVersionList, genreList, selectedADir, selectMusicId } from "@/store/refs";
+import { addVersionList, genreList, selectedADir, selectedMusicBrief, selectMusicId } from "@/store/refs";
 import api from "@/client/api";
 import { NFlex, NForm, NFormItem, NInput, NInputNumber, NSelect, NTabPane, NTabs, SelectOption } from "naive-ui";
-import JacketBox from "@/components/MusicEdit/JacketBox";
+import JacketBox from "./JacketBox";
 import dxIcon from "@/assets/dxIcon.png";
 import stdIcon from "@/assets/stdIcon.png";
-import ChartPanel from "@/components/MusicEdit/ChartPanel";
+import ChartPanel from "./ChartPanel";
 
 const DIFFICULTY = ['Basic', 'Advanced', 'Expert', 'Master', 'Re:Master'] as const;
 const LEVEL_COLOR = ['rgb(34, 187, 91)', 'rgb(251, 156, 45)', 'rgb(246, 72, 97)', 'rgb(158, 69, 226)',
@@ -43,6 +43,7 @@ const Component = defineComponent({
 
     const sync = (key: keyof MusicXml, method: Function) => async () => {
       if (!info.value) return;
+      selectedMusicBrief.value!.modified = true;
       await method(info.value.id!, info.value[key]!);
     }
 
@@ -86,8 +87,8 @@ const Component = defineComponent({
             <NTabPane key={index} name={index} tab={DIFFICULTY[index]}>
               {{
                 tab: () => <Tab index={index} chart={info.value?.charts![index]!} selected={selectedLevel.value === index}/>,
-                default: () => <ChartPanel chart={info.value?.charts![index]!} songId={info.value?.id!} chartIndex={index} class="pxy pt-2 rounded-[0_0_.5em_.5em]"
-                                           style={{backgroundColor: `color-mix(in srgb, ${LEVEL_COLOR[index]}, transparent 90%)`}}/>
+                default: () => <ChartPanel chart={info.value?.charts![index]!} songId={info.value?.id!} chartIndex={index}
+                                           class="pxy pt-2 rounded-[0_0_.5em_.5em]" style={{backgroundColor: `color-mix(in srgb, ${LEVEL_COLOR[index]}, transparent 90%)`}}/>
               }}
             </NTabPane>
           )}
@@ -114,7 +115,7 @@ const Tab = defineComponent({
         <div class="pos-absolute top-0 bottom-0 left-0 right-0" style={{
           backgroundPosition: '0 0',
           background: `repeating-linear-gradient(-45deg,
-                        rgba(0, 0, 0, .18) 0, rgba(0, 0, 0, .18) 5%, rgba(0, 0, 0, .1) 5%, rgba(0, 0, 0, .1) 10%)`
+                        rgba(255, 255, 255, .3) 0, rgba(255, 255, 255, .3) 5%, rgba(255, 255, 255, .05) 5%, rgba(255, 255, 255, .05) 10%)`
         }}/>
       }
       <span class="z-1">{DIFFICULTY[props.index]}</span>

@@ -45,6 +45,7 @@ export interface MusicBrief {
   nonDxId?: number;
   name?: string | null;
   hasJacket?: boolean;
+  modified?: boolean;
 }
 
 export interface MusicXml {
@@ -536,6 +537,20 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         method: "POST",
         body: data,
         type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Music
+     * @name SaveMusic
+     * @request POST:/api/Music/SaveMusic/{id}
+     */
+    SaveMusic: (id: number, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/api/Music/SaveMusic/${id}`,
+        method: "POST",
         ...params,
       }),
 

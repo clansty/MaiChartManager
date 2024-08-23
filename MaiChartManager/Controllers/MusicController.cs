@@ -74,6 +74,13 @@ public class MusicController(StaticSettings settings, ILogger<StaticSettings> lo
         }
     }
 
+    [HttpPost]
+    public void SaveMusic(int id)
+    {
+        var music = settings.MusicList.Find(it => it.Id == id);
+        music?.Save();
+    }
+
 
     [HttpGet]
     public ActionResult GetJacket(int id)

@@ -2,7 +2,7 @@ import { computed, defineComponent, PropType, watch } from "vue";
 import { Chart, MusicXml } from "@/client/apiGen";
 import { NFlex, NForm, NFormItem, NInput, NInputNumber, NSelect, NSwitch } from "naive-ui";
 import api from "@/client/api";
-import { selectedADir } from "@/store/refs";
+import { selectedADir, selectedMusicBrief } from "@/store/refs";
 
 const LEVELS = [0, 1, 2, 3, 4, 5, 6, 7, '7+', 8, '8+', 9, '9+', 10, '10+', 11, '11+', 12, '12+', 13, '13+', 14, '14+', 15, '15+'] as const;
 const LEVELS_OPTIONS = LEVELS.map((level, index) => ({label: level, value: index}));
@@ -24,6 +24,7 @@ export default defineComponent({
 
     const sync = (key: keyof Chart, method: Function) => async () => {
       if (!props.chart) return;
+      selectedMusicBrief.value!.modified = true;
       await method(props.songId, props.chartIndex, props.chart[key]!);
     }
 

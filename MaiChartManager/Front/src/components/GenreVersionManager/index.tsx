@@ -15,7 +15,7 @@ export default defineComponent({
     const text = computed(() => props.type === 'genre' ? '分类' : '版本');
 
     return () => (
-      <NButton onClick={() => show.value = true}>
+      <NButton secondary onClick={() => show.value = true}>
         {text.value}管理
 
         <NModal
