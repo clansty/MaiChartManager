@@ -379,6 +379,20 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
+     * @tags AddVersion
+     * @name DeleteVersion
+     * @request DELETE:/MaiChartManagerServlet/DeleteVersionApi/{id}
+     */
+    DeleteVersion: (id: number, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/MaiChartManagerServlet/DeleteVersionApi/${id}`,
+        method: "DELETE",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
      * @tags Chart
      * @name EditChartLevel
      * @request POST:/MaiChartManagerServlet/EditChartLevelApi/{id}/{level}
@@ -523,6 +537,20 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
+     * @tags Genre
+     * @name DeleteGenre
+     * @request DELETE:/MaiChartManagerServlet/DeleteGenreApi/{id}
+     */
+    DeleteGenre: (id: number, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/MaiChartManagerServlet/DeleteGenreApi/${id}`,
+        method: "DELETE",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
      * @tags Music
      * @name GetMusicDetail
      * @request GET:/MaiChartManagerServlet/GetMusicDetailApi/{id}
@@ -642,6 +670,20 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       this.request<void, any>({
         path: `/MaiChartManagerServlet/SaveMusicApi/${id}`,
         method: "POST",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Music
+     * @name DeleteMusic
+     * @request DELETE:/MaiChartManagerServlet/DeleteMusicApi/{id}
+     */
+    DeleteMusic: (id: number, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/MaiChartManagerServlet/DeleteMusicApi/${id}`,
+        method: "DELETE",
         ...params,
       }),
 

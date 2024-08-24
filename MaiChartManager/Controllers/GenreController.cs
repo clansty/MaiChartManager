@@ -59,4 +59,18 @@ public class GenreController(StaticSettings settings, ILogger<StaticSettings> lo
         settings.GenreList.Add(genre);
         return "";
     }
+
+    [HttpDelete]
+    [Route("{id:int}")]
+    public void DeleteGenre(int id)
+    {
+        var genre = settings.GenreList.FirstOrDefault(x => x.Id == id);
+        if (genre == null)
+        {
+            throw new Exception("Genre not found");
+        }
+
+        settings.GenreList.Remove(genre);
+        genre.Delete();
+    }
 }

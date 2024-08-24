@@ -81,6 +81,17 @@ public class MusicController(StaticSettings settings, ILogger<StaticSettings> lo
         music?.Save();
     }
 
+    [HttpDelete]
+    public void DeleteMusic(int id)
+    {
+        var music = settings.MusicList.Find(it => it.Id == id);
+        if (music != null)
+        {
+            settings.MusicList.Remove(music);
+            music.Delete();
+        }
+    }
+
 
     [HttpGet]
     public ActionResult GetJacket(int id)

@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Text.Json.Serialization;
 using System.Xml;
+using Microsoft.VisualBasic.FileIO;
 
 namespace Sitreamai.Models;
 
@@ -86,5 +87,10 @@ public class GenreXml
     public void Save()
     {
         xmlDoc.Save(FilePath);
+    }
+
+    public void Delete()
+    {
+        FileSystem.DeleteDirectory(Path.Combine(GamePath, @"Sinmai_Data\StreamingAssets", AssetDir, $"musicGenre/musicgenre{Id:000000}"), UIOption.AllDialogs, RecycleOption.SendToRecycleBin);
     }
 }

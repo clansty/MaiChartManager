@@ -55,4 +55,18 @@ public class AddVersionController(StaticSettings settings, ILogger<StaticSetting
         settings.VersionList.Add(genre);
         return "";
     }
+
+    [HttpDelete]
+    [Route("{id:int}")]
+    public void DeleteVersion(int id)
+    {
+        var genre = settings.VersionList.FirstOrDefault(x => x.Id == id);
+        if (genre == null)
+        {
+            throw new Exception("Version not found");
+        }
+
+        settings.VersionList.Remove(genre);
+        genre.Delete();
+    }
 }

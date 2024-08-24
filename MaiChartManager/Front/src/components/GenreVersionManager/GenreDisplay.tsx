@@ -38,8 +38,45 @@ export default defineComponent({
       _color.value = '';
     }
 
+    const del = async () => {
+      deleteLoad.value = true;
+      if (props.type === 'genre') {
+        await api.DeleteGenre(props.genre.id!);
+      } else {
+        await api.DeleteVersion(props.genre.id!);
+      }
+      updateGenreList();
+      updateAddVersionList();
+    }
+
+    const confirmDelete = ref(false);
+    const deleteLoad = ref(false);
+
+    const Buttons = defineComponent({
+      render() {
+        if (props.genre.assetDir === 'A000')
+          return <div class="i-material-symbols-edit-off text-6 c-gray-6"/>
+        if (props.editing)
+          return <NButton size="large" type="primary" style={{'--n-padding': 0}} secondary onClick={save}><span class="i-material-symbols-done text-6 c-gray-6"/></NButton>
+        if (confirmDelete.value)
+          return <NButton size="large" type={deleteLoad.value ? "default" : "error"} style={{'--n-padding': 0}} secondary onClick={del} loading={deleteLoad.value}
+            // @ts-ignore
+                          onMouseleave={() => confirmDelete.value = false}>
+            {!deleteLoad.value && <span class="i-material-symbols-delete-outline text-6 c-gray-6"/>}
+          </NButton>
+        return <NFlex>
+          <NButton class="w-0 grow-1" size="large" style={{'--n-padding': 0}} secondary onClick={() => props.setEdit(true)}>
+            <span class="i-material-symbols-edit text-6 c-gray-6"/>
+          </NButton>
+          <NButton class="w-0 grow-1" size="large" style={{'--n-padding': 0}} secondary onClick={() => confirmDelete.value = true}>
+            <span class="i-material-symbols-delete-outline text-6 c-gray-6"/>
+          </NButton>
+        </NFlex>
+      }
+    })
+
     return () => (
-      <div class="grid cols-[10em_2em_1.3fr_1fr_3em] items-center gap-5 m-x">
+      <div class="grid cols-[10em_2em_1.3fr_1fr_7em] items-center gap-5 m-x">
         <NFlex class="c-gray-6" size="small">
           {props.genre.id}
           <span class="op-60">@</span>
@@ -66,13 +103,7 @@ export default defineComponent({
             // contenteditable 的换行有疑难杂症
             <pre class="b b-gray-3 b-solid rounded-sm h-12 lh-normal box-content text-align-center flex items-center justify-center my-4">{props.genre.genreNameTwoLine}</pre>
         }
-        {
-          props.genre.assetDir === 'A000' ?
-            <div class="i-material-symbols-edit-off text-6 c-gray-6"/> :
-            props.editing ?
-              <NButton size="large" type="primary" style={{'--n-padding': 0}} secondary onClick={save}><span class="i-material-symbols-done text-6 c-gray-6"/></NButton> :
-              <NButton size="large" style={{'--n-padding': 0}} secondary onClick={() => props.setEdit(true)}><span class="i-material-symbols-edit text-6 c-gray-6"/></NButton>
-        }
+        <Buttons/>
       </div>
     );
   },
