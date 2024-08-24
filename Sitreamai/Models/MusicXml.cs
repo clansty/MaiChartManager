@@ -358,14 +358,14 @@ public class MusicXml
 
     public Chart[] Charts { get; } = new Chart[6];
 
-    private static readonly string[] _jacketExtensions = ["jpg", "png", "jpeg"];
+    public static readonly string[] jacketExtensions = ["jpg", "png", "jpeg"];
 
     [JsonIgnore]
     public string JacketPath
     {
         get
         {
-            foreach (var ext in _jacketExtensions)
+            foreach (var ext in jacketExtensions)
             {
                 var path = Path.Combine(GamePath, "LocalAssets", $"{NonDxId:000000}.{ext}");
                 if (File.Exists(path))

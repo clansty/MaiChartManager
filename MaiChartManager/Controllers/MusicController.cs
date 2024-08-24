@@ -107,6 +107,24 @@ public class MusicController(StaticSettings settings, ILogger<StaticSettings> lo
         return "";
     }
 
+    [HttpPut]
+    public string SetMusicJacket(int id, IFormFile file)
+    {
+        var nonDxId = id % 10000;
+        Directory.CreateDirectory(Path.Combine(StaticSettings.GamePath, "LocalAssets"));
+        var ext = Path.GetExtension(file.FileName);
+        if (!MusicXml.jacketExtensions.Contains(ext[1..]))
+        {
+            return "不支持的图片格式";
+        }
+
+        var path = Path.Combine(StaticSettings.GamePath, "LocalAssets", $"{nonDxId:000000}{ext}");
+        using var write = System.IO.File.Open(path, FileMode.Create);
+        file.CopyTo(write);
+        write.Close();
+        return "";
+    }
+
 
     [HttpGet]
     public ActionResult GetJacket(int id)

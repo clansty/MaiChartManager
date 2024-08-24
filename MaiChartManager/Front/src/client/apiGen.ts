@@ -708,6 +708,30 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags Music
+     * @name SetMusicJacket
+     * @request PUT:/MaiChartManagerServlet/SetMusicJacketApi/{id}
+     */
+    SetMusicJacket: (
+      id: number,
+      data: {
+        /** @format binary */
+        file?: File;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<string, any>({
+        path: `/MaiChartManagerServlet/SetMusicJacketApi/${id}`,
+        method: "PUT",
+        body: data,
+        type: ContentType.FormData,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Music
      * @name GetJacket
      * @request GET:/MaiChartManagerServlet/GetJacketApi/{id}
      */
