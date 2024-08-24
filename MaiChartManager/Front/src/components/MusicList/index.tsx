@@ -1,16 +1,13 @@
-import { defineComponent, onMounted, ref } from "vue";
+import { defineComponent, onMounted } from "vue";
 import api from "@/client/api";
 import { MusicBrief } from "@/client/apiGen";
 import { NFlex, NSelect, NVirtualList } from "naive-ui";
 import MusicEntry from "@/components/MusicList/MusicEntry";
-import { musicList, selectedADir, selectMusicId, updateMusicList } from "@/store/refs";
+import { assetDirs, musicList, selectedADir, selectMusicId, updateMusicList } from "@/store/refs";
 
 export default defineComponent({
   setup() {
-    const aDirs = ref<string[]>([]);
-
     const refresh = async () => {
-      aDirs.value = (await api.GetAssetsDirs()).data;
       await updateMusicList();
     }
 
@@ -29,7 +26,7 @@ export default defineComponent({
       <NFlex vertical class="h-full" size="large">
         <NSelect
           value={selectedADir.value}
-          options={aDirs.value.map(dir => ({label: dir, value: dir}))}
+          options={assetDirs.value.map(dir => ({label: dir, value: dir}))}
           onUpdate:value={setAssetsDir}
         />
         <NVirtualList class="flex-1" itemSize={20 / 4 * 16} items={musicList.value}>

@@ -19,7 +19,7 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      '/api': 'http://localhost:5181'
+      '/MaiChartManagerServlet': 'http://localhost:5181'
     }
   }
 });

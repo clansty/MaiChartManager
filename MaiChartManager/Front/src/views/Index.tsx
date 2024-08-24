@@ -2,7 +2,7 @@ import { defineComponent, onMounted } from 'vue';
 import { NFlex, NScrollbar } from "naive-ui";
 import MusicList from "@/components/MusicList";
 import GenreVersionManager from "@/components/GenreVersionManager";
-import { updateAddVersionList, updateGenreList, updateSelectedAssetDir } from "@/store/refs";
+import { updateAddVersionList, updateAssetDirs, updateGenreList, updateSelectedAssetDir } from "@/store/refs";
 import MusicEdit from "@/components/MusicEdit";
 import SaveButton from "@/components/SaveButton";
 
@@ -11,6 +11,7 @@ export default defineComponent({
     onMounted(updateGenreList)
     onMounted(updateAddVersionList)
     onMounted(updateSelectedAssetDir)
+    onMounted(updateAssetDirs)
   },
   render() {
     return <NFlex justify="center">

@@ -23,6 +23,35 @@ public class VersionXml
         xmlDoc.Load(FilePath);
     }
 
+    public static VersionXml CreateNew(int id, string assetDir, string gamePath)
+    {
+        var dir = Path.Combine(gamePath, @"Sinmai_Data\StreamingAssets", assetDir, $"musicVersion/MusicVersion{id:000000}");
+        Directory.CreateDirectory(dir);
+        var text = $"""
+                    <?xml version="1.0" encoding="utf-8"?>
+                    <MusicVersionData xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+                      <dataName>MusicVersion{id:000000}</dataName>
+                      <name>
+                        <id>{id}</id>
+                        <str></str>
+                      </name>
+                      <genreName></genreName>
+                      <genreNameTwoLine></genreNameTwoLine>
+                      <version>22001</version>
+                      <Color>
+                        <R>110</R>
+                        <G>217</G>
+                        <B>67</B>
+                      </Color>
+                      <FileName>UI_CMN_TabTitle_MaimaiTitle_Ver{id}</FileName>
+                      <priority>0</priority>
+                      <disable>false</disable>
+                    </MusicVersionData>
+                    """;
+
+        File.WriteAllText(Path.Combine(dir, "MusicVersion.xml"), text);
+        return new VersionXml(id, assetDir, gamePath);
+    }
 
     // 游戏识别分类的时候是对比 genreName 而不是 id，所以 genreName 不能重复
     public string GenreName
@@ -59,5 +88,10 @@ public class VersionXml
     {
         get => int.Parse(xmlDoc.SelectSingleNode("/MusicVersionData/version")?.InnerText);
         set => xmlDoc.SelectSingleNode("/MusicVersionData/version").InnerText = value.ToString();
+    }
+
+    public void Save()
+    {
+        xmlDoc.Save(FilePath);
     }
 }

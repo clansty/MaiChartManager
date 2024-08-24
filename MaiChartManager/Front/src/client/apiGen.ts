@@ -327,362 +327,397 @@ export class HttpClient<SecurityDataType = unknown> {
  * @version 1.0
  */
 export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDataType> {
-  /**
-   * No description
-   *
-   * @tags AddVersion
-   * @name GetAllAddVersions
-   * @request GET:/MaiChartManagerServlet/GetAllAddVersionsApi
-   */
-  GetAllAddVersions = (params: RequestParams = {}) =>
-    this.request<VersionXml[], any>({
-      path: `/MaiChartManagerServlet/GetAllAddVersionsApi`,
-      method: "GET",
-      format: "json",
-      ...params,
-    });
+  maiChartManagerServlet = {
+    /**
+     * No description
+     *
+     * @tags AddVersion
+     * @name GetAllAddVersions
+     * @request GET:/MaiChartManagerServlet/GetAllAddVersionsApi
+     */
+    GetAllAddVersions: (params: RequestParams = {}) =>
+      this.request<VersionXml[], any>({
+        path: `/MaiChartManagerServlet/GetAllAddVersionsApi`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
 
-  /**
-   * No description
-   *
-   * @tags Chart
-   * @name EditChartLevel
-   * @request POST:/MaiChartManagerServlet/EditChartLevelApi/{id}/{level}
-   */
-  EditChartLevel = (id: number, level: number, data: number, params: RequestParams = {}) =>
-    this.request<void, any>({
-      path: `/MaiChartManagerServlet/EditChartLevelApi/${id}/${level}`,
-      method: "POST",
-      body: data,
-      type: ContentType.Json,
-      ...params,
-    });
+    /**
+     * No description
+     *
+     * @tags AddVersion
+     * @name EditVersion
+     * @request POST:/MaiChartManagerServlet/EditVersionApi/{id}
+     */
+    EditVersion: (id: number, data: GenreEditRequest, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/MaiChartManagerServlet/EditVersionApi/${id}`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
 
-  /**
-   * No description
-   *
-   * @tags Chart
-   * @name EditChartLevelDisplay
-   * @request POST:/MaiChartManagerServlet/EditChartLevelDisplayApi/{id}/{level}
-   */
-  EditChartLevelDisplay = (id: number, level: number, data: number, params: RequestParams = {}) =>
-    this.request<void, any>({
-      path: `/MaiChartManagerServlet/EditChartLevelDisplayApi/${id}/${level}`,
-      method: "POST",
-      body: data,
-      type: ContentType.Json,
-      ...params,
-    });
+    /**
+     * No description
+     *
+     * @tags AddVersion
+     * @name AddVersion
+     * @request POST:/MaiChartManagerServlet/AddVersionApi
+     */
+    AddVersion: (data: GenreAddRequest, params: RequestParams = {}) =>
+      this.request<string, any>({
+        path: `/MaiChartManagerServlet/AddVersionApi`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
 
-  /**
-   * No description
-   *
-   * @tags Chart
-   * @name EditChartLevelDecimal
-   * @request POST:/MaiChartManagerServlet/EditChartLevelDecimalApi/{id}/{level}
-   */
-  EditChartLevelDecimal = (id: number, level: number, data: number, params: RequestParams = {}) =>
-    this.request<void, any>({
-      path: `/MaiChartManagerServlet/EditChartLevelDecimalApi/${id}/${level}`,
-      method: "POST",
-      body: data,
-      type: ContentType.Json,
-      ...params,
-    });
+    /**
+     * No description
+     *
+     * @tags Chart
+     * @name EditChartLevel
+     * @request POST:/MaiChartManagerServlet/EditChartLevelApi/{id}/{level}
+     */
+    EditChartLevel: (id: number, level: number, data: number, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/MaiChartManagerServlet/EditChartLevelApi/${id}/${level}`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
 
-  /**
-   * No description
-   *
-   * @tags Chart
-   * @name EditChartDesigner
-   * @request POST:/MaiChartManagerServlet/EditChartDesignerApi/{id}/{level}
-   */
-  EditChartDesigner = (id: number, level: number, data: string, params: RequestParams = {}) =>
-    this.request<void, any>({
-      path: `/MaiChartManagerServlet/EditChartDesignerApi/${id}/${level}`,
-      method: "POST",
-      body: data,
-      type: ContentType.Json,
-      ...params,
-    });
+    /**
+     * No description
+     *
+     * @tags Chart
+     * @name EditChartLevelDisplay
+     * @request POST:/MaiChartManagerServlet/EditChartLevelDisplayApi/{id}/{level}
+     */
+    EditChartLevelDisplay: (id: number, level: number, data: number, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/MaiChartManagerServlet/EditChartLevelDisplayApi/${id}/${level}`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
 
-  /**
-   * No description
-   *
-   * @tags Chart
-   * @name EditChartNoteCount
-   * @request POST:/MaiChartManagerServlet/EditChartNoteCountApi/{id}/{level}
-   */
-  EditChartNoteCount = (id: number, level: number, data: number, params: RequestParams = {}) =>
-    this.request<void, any>({
-      path: `/MaiChartManagerServlet/EditChartNoteCountApi/${id}/${level}`,
-      method: "POST",
-      body: data,
-      type: ContentType.Json,
-      ...params,
-    });
+    /**
+     * No description
+     *
+     * @tags Chart
+     * @name EditChartLevelDecimal
+     * @request POST:/MaiChartManagerServlet/EditChartLevelDecimalApi/{id}/{level}
+     */
+    EditChartLevelDecimal: (id: number, level: number, data: number, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/MaiChartManagerServlet/EditChartLevelDecimalApi/${id}/${level}`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
 
-  /**
-   * No description
-   *
-   * @tags Chart
-   * @name EditChartEnable
-   * @request POST:/MaiChartManagerServlet/EditChartEnableApi/{id}/{level}
-   */
-  EditChartEnable = (id: number, level: number, data: boolean, params: RequestParams = {}) =>
-    this.request<void, any>({
-      path: `/MaiChartManagerServlet/EditChartEnableApi/${id}/${level}`,
-      method: "POST",
-      body: data,
-      type: ContentType.Json,
-      ...params,
-    });
+    /**
+     * No description
+     *
+     * @tags Chart
+     * @name EditChartDesigner
+     * @request POST:/MaiChartManagerServlet/EditChartDesignerApi/{id}/{level}
+     */
+    EditChartDesigner: (id: number, level: number, data: string, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/MaiChartManagerServlet/EditChartDesignerApi/${id}/${level}`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
 
-  /**
-   * No description
-   *
-   * @tags Genre
-   * @name GetAllGenres
-   * @request GET:/MaiChartManagerServlet/GetAllGenresApi
-   */
-  GetAllGenres = (params: RequestParams = {}) =>
-    this.request<GenreXml[], any>({
-      path: `/MaiChartManagerServlet/GetAllGenresApi`,
-      method: "GET",
-      format: "json",
-      ...params,
-    });
+    /**
+     * No description
+     *
+     * @tags Chart
+     * @name EditChartNoteCount
+     * @request POST:/MaiChartManagerServlet/EditChartNoteCountApi/{id}/{level}
+     */
+    EditChartNoteCount: (id: number, level: number, data: number, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/MaiChartManagerServlet/EditChartNoteCountApi/${id}/${level}`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
 
-  /**
-   * No description
-   *
-   * @tags Genre
-   * @name EditGenre
-   * @request POST:/MaiChartManagerServlet/EditGenreApi/{id}
-   */
-  EditGenre = (id: number, data: GenreEditRequest, params: RequestParams = {}) =>
-    this.request<void, any>({
-      path: `/MaiChartManagerServlet/EditGenreApi/${id}`,
-      method: "POST",
-      body: data,
-      type: ContentType.Json,
-      ...params,
-    });
+    /**
+     * No description
+     *
+     * @tags Chart
+     * @name EditChartEnable
+     * @request POST:/MaiChartManagerServlet/EditChartEnableApi/{id}/{level}
+     */
+    EditChartEnable: (id: number, level: number, data: boolean, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/MaiChartManagerServlet/EditChartEnableApi/${id}/${level}`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
 
-  /**
-   * No description
-   *
-   * @tags Genre
-   * @name AddGenre
-   * @request POST:/MaiChartManagerServlet/AddGenreApi
-   */
-  AddGenre = (data: GenreAddRequest, params: RequestParams = {}) =>
-    this.request<string, any>({
-      path: `/MaiChartManagerServlet/AddGenreApi`,
-      method: "POST",
-      body: data,
-      type: ContentType.Json,
-      format: "json",
-      ...params,
-    });
+    /**
+     * No description
+     *
+     * @tags Genre
+     * @name GetAllGenres
+     * @request GET:/MaiChartManagerServlet/GetAllGenresApi
+     */
+    GetAllGenres: (params: RequestParams = {}) =>
+      this.request<GenreXml[], any>({
+        path: `/MaiChartManagerServlet/GetAllGenresApi`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
 
-  /**
-   * No description
-   *
-   * @tags Music
-   * @name GetMusicDetail
-   * @request GET:/MaiChartManagerServlet/GetMusicDetailApi/{id}
-   */
-  GetMusicDetail = (id: number, params: RequestParams = {}) =>
-    this.request<MusicXml, any>({
-      path: `/MaiChartManagerServlet/GetMusicDetailApi/${id}`,
-      method: "GET",
-      format: "json",
-      ...params,
-    });
+    /**
+     * No description
+     *
+     * @tags Genre
+     * @name EditGenre
+     * @request POST:/MaiChartManagerServlet/EditGenreApi/{id}
+     */
+    EditGenre: (id: number, data: GenreEditRequest, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/MaiChartManagerServlet/EditGenreApi/${id}`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
 
-  /**
-   * No description
-   *
-   * @tags Music
-   * @name EditMusicName
-   * @request POST:/MaiChartManagerServlet/EditMusicNameApi/{id}
-   */
-  EditMusicName = (id: number, data: string, params: RequestParams = {}) =>
-    this.request<void, any>({
-      path: `/MaiChartManagerServlet/EditMusicNameApi/${id}`,
-      method: "POST",
-      body: data,
-      type: ContentType.Json,
-      ...params,
-    });
+    /**
+     * No description
+     *
+     * @tags Genre
+     * @name AddGenre
+     * @request POST:/MaiChartManagerServlet/AddGenreApi
+     */
+    AddGenre: (data: GenreAddRequest, params: RequestParams = {}) =>
+      this.request<string, any>({
+        path: `/MaiChartManagerServlet/AddGenreApi`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
 
-  /**
-   * No description
-   *
-   * @tags Music
-   * @name EditMusicArtist
-   * @request POST:/MaiChartManagerServlet/EditMusicArtistApi/{id}
-   */
-  EditMusicArtist = (id: number, data: string, params: RequestParams = {}) =>
-    this.request<void, any>({
-      path: `/MaiChartManagerServlet/EditMusicArtistApi/${id}`,
-      method: "POST",
-      body: data,
-      type: ContentType.Json,
-      ...params,
-    });
+    /**
+     * No description
+     *
+     * @tags Music
+     * @name GetMusicDetail
+     * @request GET:/MaiChartManagerServlet/GetMusicDetailApi/{id}
+     */
+    GetMusicDetail: (id: number, params: RequestParams = {}) =>
+      this.request<MusicXml, any>({
+        path: `/MaiChartManagerServlet/GetMusicDetailApi/${id}`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
 
-  /**
-   * No description
-   *
-   * @tags Music
-   * @name EditMusicBpm
-   * @request POST:/MaiChartManagerServlet/EditMusicBpmApi/{id}
-   */
-  EditMusicBpm = (id: number, data: number, params: RequestParams = {}) =>
-    this.request<void, any>({
-      path: `/MaiChartManagerServlet/EditMusicBpmApi/${id}`,
-      method: "POST",
-      body: data,
-      type: ContentType.Json,
-      ...params,
-    });
+    /**
+     * No description
+     *
+     * @tags Music
+     * @name EditMusicName
+     * @request POST:/MaiChartManagerServlet/EditMusicNameApi/{id}
+     */
+    EditMusicName: (id: number, data: string, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/MaiChartManagerServlet/EditMusicNameApi/${id}`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
 
-  /**
-   * No description
-   *
-   * @tags Music
-   * @name EditMusicVersion
-   * @request POST:/MaiChartManagerServlet/EditMusicVersionApi/{id}
-   */
-  EditMusicVersion = (id: number, data: number, params: RequestParams = {}) =>
-    this.request<void, any>({
-      path: `/MaiChartManagerServlet/EditMusicVersionApi/${id}`,
-      method: "POST",
-      body: data,
-      type: ContentType.Json,
-      ...params,
-    });
+    /**
+     * No description
+     *
+     * @tags Music
+     * @name EditMusicArtist
+     * @request POST:/MaiChartManagerServlet/EditMusicArtistApi/{id}
+     */
+    EditMusicArtist: (id: number, data: string, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/MaiChartManagerServlet/EditMusicArtistApi/${id}`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
 
-  /**
-   * No description
-   *
-   * @tags Music
-   * @name EditMusicGenre
-   * @request POST:/MaiChartManagerServlet/EditMusicGenreApi/{id}
-   */
-  EditMusicGenre = (id: number, data: number, params: RequestParams = {}) =>
-    this.request<void, any>({
-      path: `/MaiChartManagerServlet/EditMusicGenreApi/${id}`,
-      method: "POST",
-      body: data,
-      type: ContentType.Json,
-      ...params,
-    });
+    /**
+     * No description
+     *
+     * @tags Music
+     * @name EditMusicBpm
+     * @request POST:/MaiChartManagerServlet/EditMusicBpmApi/{id}
+     */
+    EditMusicBpm: (id: number, data: number, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/MaiChartManagerServlet/EditMusicBpmApi/${id}`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
 
-  /**
-   * No description
-   *
-   * @tags Music
-   * @name EditMusicAddVersion
-   * @request POST:/MaiChartManagerServlet/EditMusicAddVersionApi/{id}
-   */
-  EditMusicAddVersion = (id: number, data: number, params: RequestParams = {}) =>
-    this.request<void, any>({
-      path: `/MaiChartManagerServlet/EditMusicAddVersionApi/${id}`,
-      method: "POST",
-      body: data,
-      type: ContentType.Json,
-      ...params,
-    });
+    /**
+     * No description
+     *
+     * @tags Music
+     * @name EditMusicVersion
+     * @request POST:/MaiChartManagerServlet/EditMusicVersionApi/{id}
+     */
+    EditMusicVersion: (id: number, data: number, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/MaiChartManagerServlet/EditMusicVersionApi/${id}`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
 
-  /**
-   * No description
-   *
-   * @tags Music
-   * @name SaveMusic
-   * @request POST:/MaiChartManagerServlet/SaveMusicApi/{id}
-   */
-  SaveMusic = (id: number, params: RequestParams = {}) =>
-    this.request<void, any>({
-      path: `/MaiChartManagerServlet/SaveMusicApi/${id}`,
-      method: "POST",
-      ...params,
-    });
+    /**
+     * No description
+     *
+     * @tags Music
+     * @name EditMusicGenre
+     * @request POST:/MaiChartManagerServlet/EditMusicGenreApi/{id}
+     */
+    EditMusicGenre: (id: number, data: number, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/MaiChartManagerServlet/EditMusicGenreApi/${id}`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
 
-  /**
-   * No description
-   *
-   * @tags Music
-   * @name GetJacket
-   * @request GET:/MaiChartManagerServlet/GetJacketApi/{id}
-   */
-  GetJacket = (id: number, params: RequestParams = {}) =>
-    this.request<void, any>({
-      path: `/MaiChartManagerServlet/GetJacketApi/${id}`,
-      method: "GET",
-      ...params,
-    });
+    /**
+     * No description
+     *
+     * @tags Music
+     * @name EditMusicAddVersion
+     * @request POST:/MaiChartManagerServlet/EditMusicAddVersionApi/{id}
+     */
+    EditMusicAddVersion: (id: number, data: number, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/MaiChartManagerServlet/EditMusicAddVersionApi/${id}`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
 
-  /**
-   * No description
-   *
-   * @tags MusicList
-   * @name SetAssetsDir
-   * @request POST:/MaiChartManagerServlet/SetAssetsDirApi
-   */
-  SetAssetsDir = (data: string, params: RequestParams = {}) =>
-    this.request<void, any>({
-      path: `/MaiChartManagerServlet/SetAssetsDirApi`,
-      method: "POST",
-      body: data,
-      type: ContentType.Json,
-      ...params,
-    });
+    /**
+     * No description
+     *
+     * @tags Music
+     * @name SaveMusic
+     * @request POST:/MaiChartManagerServlet/SaveMusicApi/{id}
+     */
+    SaveMusic: (id: number, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/MaiChartManagerServlet/SaveMusicApi/${id}`,
+        method: "POST",
+        ...params,
+      }),
 
-  /**
-   * No description
-   *
-   * @tags MusicList
-   * @name GetAssetsDirs
-   * @request GET:/MaiChartManagerServlet/GetAssetsDirsApi
-   */
-  GetAssetsDirs = (params: RequestParams = {}) =>
-    this.request<string[], any>({
-      path: `/MaiChartManagerServlet/GetAssetsDirsApi`,
-      method: "GET",
-      format: "json",
-      ...params,
-    });
+    /**
+     * No description
+     *
+     * @tags Music
+     * @name GetJacket
+     * @request GET:/MaiChartManagerServlet/GetJacketApi/{id}
+     */
+    GetJacket: (id: number, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/MaiChartManagerServlet/GetJacketApi/${id}`,
+        method: "GET",
+        ...params,
+      }),
 
-  /**
-   * No description
-   *
-   * @tags MusicList
-   * @name GetSelectedAssetsDir
-   * @request GET:/MaiChartManagerServlet/GetSelectedAssetsDirApi
-   */
-  GetSelectedAssetsDir = (params: RequestParams = {}) =>
-    this.request<string, any>({
-      path: `/MaiChartManagerServlet/GetSelectedAssetsDirApi`,
-      method: "GET",
-      format: "json",
-      ...params,
-    });
+    /**
+     * No description
+     *
+     * @tags MusicList
+     * @name SetAssetsDir
+     * @request POST:/MaiChartManagerServlet/SetAssetsDirApi
+     */
+    SetAssetsDir: (data: string, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/MaiChartManagerServlet/SetAssetsDirApi`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
 
-  /**
-   * No description
-   *
-   * @tags MusicList
-   * @name GetMusicList
-   * @request GET:/MaiChartManagerServlet/GetMusicListApi
-   */
-  GetMusicList = (params: RequestParams = {}) =>
-    this.request<MusicBrief[], any>({
-      path: `/MaiChartManagerServlet/GetMusicListApi`,
-      method: "GET",
-      format: "json",
-      ...params,
-    });
+    /**
+     * No description
+     *
+     * @tags MusicList
+     * @name GetAssetsDirs
+     * @request GET:/MaiChartManagerServlet/GetAssetsDirsApi
+     */
+    GetAssetsDirs: (params: RequestParams = {}) =>
+      this.request<string[], any>({
+        path: `/MaiChartManagerServlet/GetAssetsDirsApi`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags MusicList
+     * @name GetSelectedAssetsDir
+     * @request GET:/MaiChartManagerServlet/GetSelectedAssetsDirApi
+     */
+    GetSelectedAssetsDir: (params: RequestParams = {}) =>
+      this.request<string, any>({
+        path: `/MaiChartManagerServlet/GetSelectedAssetsDirApi`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags MusicList
+     * @name GetMusicList
+     * @request GET:/MaiChartManagerServlet/GetMusicListApi
+     */
+    GetMusicList: (params: RequestParams = {}) =>
+      this.request<MusicBrief[], any>({
+        path: `/MaiChartManagerServlet/GetMusicListApi`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+  };
 }

@@ -10,11 +10,13 @@
   },
   "devDependencies": {
     "@iconify-json/material-symbols": "^1.1.88",
+    "@types/color": "^3.0.6",
     "@types/node": "^22.4.1",
     "@unocss/preset-icons": "^0.62.2",
     "@unocss/reset": "^0.62.2",
     "@vitejs/plugin-vue-jsx": "^4.0.1",
     "@vueuse/core": "^11.0.1",
+    "color": "^4.2.3",
     "naive-ui": "^2.39.0",
     "sass": "^1.77.8",
     "swagger-typescript-api": "^13.0.21",
@@ -23,6 +25,7 @@
     "unocss": "^0.62.2",
     "vite": "^5.4.1",
     "vue": "^3.4.38",
+    "vue-contenteditable": "^4.1.0",
     "vue-router": "^4.4.3"
   },
   "packageManager": "pnpm@9.7.0+sha512.dc09430156b427f5ecfc79888899e1c39d2d690f004be70e05230b72cb173d96839587545d09429b55ac3c429c801b4dc3c0e002f653830a420fa2dd4e3cf9cf"

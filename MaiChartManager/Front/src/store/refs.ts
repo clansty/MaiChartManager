@@ -7,6 +7,7 @@ export const genreList = ref<GenreXml[]>([]);
 export const addVersionList = ref<VersionXml[]>([]);
 export const selectedADir = ref<string>('');
 export const musicList = ref<MusicBrief[]>([]);
+export const assetDirs = ref<string[]>([]);
 
 export const selectedMusicBrief = computed(() => musicList.value.find(m => m.id === selectMusicId.value));
 
@@ -27,4 +28,8 @@ export const updateSelectedAssetDir = async () => {
 
 export const updateMusicList = async () => {
   musicList.value = (await api.GetMusicList()).data;
+}
+
+export const updateAssetDirs = async () => {
+  assetDirs.value = (await api.GetAssetsDirs()).data;
 }

@@ -1,5 +1,5 @@
 import { computed, defineComponent, PropType, watch } from "vue";
-import { Chart, MusicXml } from "@/client/apiGen";
+import { Chart } from "@/client/apiGen";
 import { NFlex, NForm, NFormItem, NInput, NInputNumber, NSelect, NSwitch } from "naive-ui";
 import api from "@/client/api";
 import { selectedADir, selectedMusicBrief } from "@/store/refs";

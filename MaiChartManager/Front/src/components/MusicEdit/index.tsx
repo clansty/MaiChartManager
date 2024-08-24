@@ -1,4 +1,4 @@
-import { computed, defineComponent, effect, onMounted, PropType, ref, watch } from "vue";
+import { computed, defineComponent, onMounted, PropType, ref, watch } from "vue";
 import { Chart, GenreXml, MusicXml } from "@/client/apiGen";
 import { addVersionList, genreList, selectedADir, selectedMusicBrief, selectMusicId } from "@/store/refs";
 import api from "@/client/api";

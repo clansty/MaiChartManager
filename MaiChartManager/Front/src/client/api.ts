@@ -6,4 +6,4 @@ export default (new Api({
       accept: 'application/json',
     }
   }
-})).api
+})).maiChartManagerServlet
