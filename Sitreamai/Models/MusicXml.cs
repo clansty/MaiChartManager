@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Text.Json.Serialization;
 using System.Xml;
+using Microsoft.VisualBasic.FileIO;
 
 namespace Sitreamai.Models;
 
@@ -210,5 +211,10 @@ public class MusicXml
     {
         Modified = false;
         xmlDoc.Save(FilePath);
+    }
+
+    public void Delete()
+    {
+        FileSystem.DeleteDirectory(Path.GetDirectoryName(FilePath), UIOption.AllDialogs, RecycleOption.SendToRecycleBin);
     }
 }

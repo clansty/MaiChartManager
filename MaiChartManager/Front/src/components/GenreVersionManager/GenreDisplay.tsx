@@ -1,6 +1,6 @@
 import { computed, defineComponent, PropType, ref } from "vue";
-import { GenreXml } from "@/client/apiGen";
-import { NButton, NFlex } from "naive-ui";
+import { GenreXml, HttpResponse } from "@/client/apiGen";
+import { NButton, NFlex, useDialog } from "naive-ui";
 import api from "@/client/api";
 import { updateAddVersionList, updateGenreList } from "@/store/refs";
 import Color from "color";
@@ -19,6 +19,7 @@ export default defineComponent({
       get: () => _color.value || Color([props.genre.colorR, props.genre.colorG, props.genre.colorB]).hex(),
       set: value => _color.value = value,
     })
+    const dialog = useDialog();
 
     const save = async () => {
       props.setEdit(false);
@@ -40,10 +41,16 @@ export default defineComponent({
 
     const del = async () => {
       deleteLoad.value = true;
+      let res: HttpResponse<any>;
       if (props.type === 'genre') {
-        await api.DeleteGenre(props.genre.id!);
+        res = await api.DeleteGenre(props.genre.id!);
       } else {
-        await api.DeleteVersion(props.genre.id!);
+        res = await api.DeleteVersion(props.genre.id!);
+      }
+      if (res.error) {
+        const error = res.error as any;
+        dialog.warning({title: '删除失败', content: error.message || error});
+        return;
       }
       updateGenreList();
       updateAddVersionList();

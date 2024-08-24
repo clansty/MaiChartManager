@@ -66,7 +66,7 @@ public class AddVersionController(StaticSettings settings, ILogger<StaticSetting
             throw new Exception("Version not found");
         }
 
-        settings.VersionList.Remove(genre);
         genre.Delete();
+        settings.VersionList.Remove(genre);
     }
 }

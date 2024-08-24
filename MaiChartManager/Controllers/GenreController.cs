@@ -70,7 +70,7 @@ public class GenreController(StaticSettings settings, ILogger<StaticSettings> lo
             throw new Exception("Genre not found");
         }
 
-        settings.GenreList.Remove(genre);
         genre.Delete();
+        settings.GenreList.Remove(genre);
     }
 }

@@ -87,8 +87,8 @@ public class MusicController(StaticSettings settings, ILogger<StaticSettings> lo
         var music = settings.MusicList.Find(it => it.Id == id);
         if (music != null)
         {
-            settings.MusicList.Remove(music);
             music.Delete();
+            settings.MusicList.Remove(music);
         }
     }
 

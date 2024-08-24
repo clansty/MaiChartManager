@@ -1,4 +1,4 @@
-import { NButton, NFlex, NForm, NFormItem, NInputNumber, NModal, NSelect } from "naive-ui";
+import { NButton, NFlex, NForm, NFormItem, NInputNumber, NModal, NSelect, useDialog } from "naive-ui";
 import { computed, defineComponent, PropType, ref } from "vue";
 import { addVersionList, assetDirs, genreList, selectedADir, updateAddVersionList, updateGenreList } from "@/store/refs";
 import api from "@/client/api";
@@ -12,6 +12,7 @@ export default defineComponent({
     const show = ref(false);
     const text = computed(() => props.type === 'genre' ? '分类' : '版本');
     const list = props.type === 'genre' ? genreList : addVersionList;
+    const dialog = useDialog();
 
     const assetDir = ref('')
     const id = ref(0)
@@ -28,10 +29,20 @@ export default defineComponent({
 
     const save = async () => {
       show.value = false
-      await (props.type === 'genre' ? api.AddGenre : api.AddVersion)({
+      const res = await (props.type === 'genre' ? api.AddGenre : api.AddVersion)({
         assetDir: assetDir.value,
         id: id.value,
       });
+      if (res.error) {
+        const error = res.error as any;
+        dialog.warning({title: '创建失败', content: error.message || error});
+        return;
+      }
+      if (res.data) {
+        dialog.info({title: '创建失败', content: res.data})
+        return;
+      }
+
       await updateAddVersionList();
       await updateGenreList();
       props.setEditId(id.value);
