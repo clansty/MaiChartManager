@@ -4,6 +4,7 @@ import { NFlex, NForm, NFormItem, NInput, NInputNumber, NSelect, NSwitch } from 
 import api from "@/client/api";
 import { selectedADir, selectedMusicBrief } from "@/store/refs";
 import { LEVELS } from "@/consts";
+import ProblemsDisplay from "@/components/ProblemsDisplay";
 
 const LEVELS_OPTIONS = LEVELS.map((level, index) => ({label: level, value: index}));
 
@@ -37,8 +38,11 @@ export default defineComponent({
 
     return () => <NForm showFeedback={false} labelPlacement="top" disabled={selectedADir.value === 'A000'}>
       <NFlex vertical>
-        <NFormItem label="启用" labelPlacement="left">
-          <NSwitch v-model:value={props.chart.enable}/>
+        <NFormItem label="启用" labelPlacement="left" class="ml-2px">
+          <NFlex align="center">
+            <NSwitch v-model:value={props.chart.enable} disabled={!!props.chart.problems?.length}/>
+            <ProblemsDisplay problems={props.chart.problems!}/>
+          </NFlex>
         </NFormItem>
         <NFormItem label="作者">
           <NInput v-model:value={props.chart.designer} placeholder=""/>

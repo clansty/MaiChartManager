@@ -10,7 +10,7 @@ namespace MaiChartManager.Controllers;
 public class MusicController(StaticSettings settings, ILogger<StaticSettings> logger) : ControllerBase
 {
     [HttpGet]
-    public MusicXml? GetMusicDetail(int id)
+    public MusicXmlWithABJacket? GetMusicDetail(int id)
     {
         return settings.MusicList.Find(it => it.Id == id);
     }

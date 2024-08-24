@@ -11,7 +11,7 @@ public class MusicXmlWithABJacket(string filePath, string gamePath) : MusicXml(f
 
     public record ChartAvailable(int index, int levelId);
 
-    public record MusicBrief(int Id, int NonDxId, string Name, bool HasJacket, bool Modified, IEnumerable<ChartAvailable> ChartsAvailable);
+    public record MusicBrief(int Id, int NonDxId, string Name, bool HasJacket, bool Modified, IEnumerable<ChartAvailable> ChartsAvailable, IEnumerable<string> Problems);
 
     public MusicBrief GetBrief()
     {
@@ -24,12 +24,47 @@ public class MusicXmlWithABJacket(string filePath, string gamePath) : MusicXml(f
             }
         }
 
-        return new MusicBrief(Id, NonDxId, Name, HasJacket, Modified, chartsAvailable);
+        return new MusicBrief(Id, NonDxId, Name, HasJacket, Modified, chartsAvailable, Problems);
     }
 
     public new static MusicXmlWithABJacket CreateNew(int id, string gamePath, string assetDir, bool isDx)
     {
         var old = MusicXml.CreateNew(id, gamePath, assetDir, isDx);
         return new MusicXmlWithABJacket(old.FilePath, old.GamePath);
+    }
+
+
+    public List<string> Problems
+    {
+        get
+        {
+            var res = new List<string>();
+            if (!StaticSettings.AcbAwb.ContainsKey($"music{NonDxId:000000}.acb"))
+            {
+                res.Add("音频 ACB 缺失");
+            }
+
+            if (!StaticSettings.AcbAwb.ContainsKey($"music{NonDxId:000000}.awb"))
+            {
+                res.Add("音频 AWB 缺失");
+            }
+
+            if (StaticSettings.GenreList.All(it => it.Id != GenreId))
+            {
+                res.Add("无效的流派");
+            }
+
+            if (StaticSettings.VersionList.All(it => it.Id != AddVersionId))
+            {
+                res.Add("无效的版本");
+            }
+
+            if (Charts.All(it => !it.Enable))
+            {
+                res.Add("没有启用的谱面");
+            }
+
+            return res;
+        }
     }
 }

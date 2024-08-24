@@ -19,6 +19,7 @@ public partial class StaticSettings
             ScanGenre();
             ScanVersionList();
             ScanAssetBundles();
+            ScanSoundData();
         }
     }
 
@@ -43,9 +44,10 @@ public partial class StaticSettings
     }
 
     public List<MusicXmlWithABJacket> MusicList { get; set; } = new();
-    public List<GenreXml> GenreList { get; set; } = new();
-    public List<VersionXml> VersionList { get; set; } = new();
+    public static List<GenreXml> GenreList { get; set; } = new();
+    public static List<VersionXml> VersionList { get; set; } = new();
     public static Dictionary<int, string> AssetBundleJacketMap { get; set; } = new();
+    public static Dictionary<string, string> AcbAwb { get; set; } = new();
 
     public void ScanMusicList()
     {
@@ -132,5 +134,20 @@ public partial class StaticSettings
         }
 
         _logger.LogInformation($"Scan AssetBundles, found {AssetBundleJacketMap.Count} AssetBundles.");
+    }
+
+    public void ScanSoundData()
+    {
+        AcbAwb.Clear();
+        foreach (var a in AssetsDirs)
+        {
+            if (!Directory.Exists(Path.Combine(StreamingAssets, a, @"SoundData"))) continue;
+            foreach (var sound in Directory.EnumerateFiles(Path.Combine(StreamingAssets, a, @"SoundData")))
+            {
+                AcbAwb[Path.GetFileName(sound).ToLower()] = sound;
+            }
+        }
+
+        _logger.LogInformation($"Scan SoundData, found {AcbAwb.Count} SoundData.");
     }
 }

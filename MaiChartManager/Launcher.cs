@@ -68,6 +68,8 @@ public partial class Launcher : Form
             if (serverAddressesFeature == null) return;
 
             label1.Text = string.Join("\n", serverAddressesFeature.Addresses);
+
+            app.Services.GetService<StaticSettings>();
         });
         app.UseSwagger();
         app.UseSwaggerUI();

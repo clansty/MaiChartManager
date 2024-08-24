@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text.Json.Serialization;
 using System.Xml;
@@ -352,6 +353,20 @@ public class MusicXml
                 parent.Modified = true;
                 node.SelectSingleNode("notesDesigner/str").InnerText = value;
                 node.SelectSingleNode("notesDesigner/id").InnerText = "999";
+            }
+        }
+
+        public List<string> Problems
+        {
+            get
+            {
+                var res = new List<string>();
+                if (!File.Exists(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(parent.FilePath), Path)))
+                {
+                    res.Add("谱面文件不存在");
+                }
+
+                return res;
             }
         }
     }

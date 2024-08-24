@@ -10,14 +10,14 @@ public class AddVersionController(StaticSettings settings, ILogger<StaticSetting
     [HttpGet]
     public IEnumerable<VersionXml> GetAllAddVersions()
     {
-        return settings.VersionList;
+        return StaticSettings.VersionList;
     }
 
     [HttpPost]
     [Route("{id:int}")]
     public void EditVersion(int id, GenreController.GenreEditRequest request)
     {
-        var genre = settings.VersionList.FirstOrDefault(x => x.Id == id);
+        var genre = StaticSettings.VersionList.FirstOrDefault(x => x.Id == id);
         if (genre == null)
         {
             throw new Exception("Version not found");
@@ -34,9 +34,9 @@ public class AddVersionController(StaticSettings settings, ILogger<StaticSetting
     [HttpPost]
     public string AddVersion(GenreController.GenreAddRequest req)
     {
-        if (settings.VersionList.Any(x => x.Id == req.id))
+        if (StaticSettings.VersionList.Any(x => x.Id == req.id))
         {
-            var existed = settings.VersionList.First(x => x.Id == req.id);
+            var existed = StaticSettings.VersionList.First(x => x.Id == req.id);
             if (existed.AssetDir == req.assetDir)
             {
                 return "相同的资源目录里已经存在一个 ID 相同的版本了";
@@ -48,11 +48,11 @@ public class AddVersionController(StaticSettings settings, ILogger<StaticSetting
                        "如果要覆盖现有的版本，请在一个数字更大的资源目录中创建";
             }
 
-            settings.VersionList.Remove(existed);
+            StaticSettings.VersionList.Remove(existed);
         }
 
         var genre = VersionXml.CreateNew(req.id, req.assetDir, StaticSettings.GamePath);
-        settings.VersionList.Add(genre);
+        StaticSettings.VersionList.Add(genre);
         return "";
     }
 
@@ -60,13 +60,13 @@ public class AddVersionController(StaticSettings settings, ILogger<StaticSetting
     [Route("{id:int}")]
     public void DeleteVersion(int id)
     {
-        var genre = settings.VersionList.FirstOrDefault(x => x.Id == id);
+        var genre = StaticSettings.VersionList.FirstOrDefault(x => x.Id == id);
         if (genre == null)
         {
             throw new Exception("Version not found");
         }
 
         genre.Delete();
-        settings.VersionList.Remove(genre);
+        StaticSettings.VersionList.Remove(genre);
     }
 }

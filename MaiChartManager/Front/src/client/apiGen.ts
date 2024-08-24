@@ -21,6 +21,7 @@ export interface Chart {
   maxNotes?: number;
   enable?: boolean;
   designer?: string | null;
+  problems?: string[] | null;
 }
 
 export interface ChartAvailable {
@@ -71,9 +72,10 @@ export interface MusicBrief {
   hasJacket?: boolean;
   modified?: boolean;
   chartsAvailable?: ChartAvailable[] | null;
+  problems?: string[] | null;
 }
 
-export interface MusicXml {
+export interface MusicXmlWithABJacket {
   filePath?: string | null;
   /** @format int32 */
   id?: number;
@@ -92,7 +94,9 @@ export interface MusicXml {
   bpm?: number;
   disable?: boolean;
   charts?: Chart[] | null;
+  assetBundleJacket?: string | null;
   hasJacket?: boolean;
+  problems?: string[] | null;
 }
 
 export interface VersionXml {
@@ -556,7 +560,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/MaiChartManagerServlet/GetMusicDetailApi/{id}
      */
     GetMusicDetail: (id: number, params: RequestParams = {}) =>
-      this.request<MusicXml, any>({
+      this.request<MusicXmlWithABJacket, any>({
         path: `/MaiChartManagerServlet/GetMusicDetailApi/${id}`,
         method: "GET",
         format: "json",

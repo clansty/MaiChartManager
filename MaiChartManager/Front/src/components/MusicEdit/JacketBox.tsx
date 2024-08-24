@@ -1,13 +1,13 @@
 import { computed, defineComponent, PropType, ref } from "vue";
-import { ContentType, MusicXml } from "@/client/apiGen";
 import noJacket from "@/assets/noJacket.webp";
 import api from "@/client/api";
 import { useDialog } from "naive-ui";
 import { selectedMusicBrief } from "@/store/refs";
+import { MusicXmlWithABJacket } from "@/client/apiGen";
 
 export default defineComponent({
   props: {
-    info: {type: Object as PropType<MusicXml>, required: true}
+    info: {type: Object as PropType<MusicXmlWithABJacket>, required: true}
   },
   setup(props) {
     const dialog = useDialog();
@@ -50,6 +50,6 @@ export default defineComponent({
       (selectedMusicBrief.value as any).updateTime = updateTime.value
     }
 
-    return () => <img src={jacketUrl.value} class="w-full h-full object-fill rounded-lg cursor-pointer" onClick={upload}/>
+    return () => <img src={jacketUrl.value} class="object-fill rounded-lg cursor-pointer" onClick={upload}/>
   }
 })

@@ -10,7 +10,7 @@ export default defineComponent({
   },
   setup(props) {
     const show = ref(false);
-    const text = computed(() => props.type === 'genre' ? '分类' : '版本');
+    const text = computed(() => props.type === 'genre' ? '流派' : '版本');
     const list = props.type === 'genre' ? genreList : addVersionList;
     const dialog = useDialog();
 

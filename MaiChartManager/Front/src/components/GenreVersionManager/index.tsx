@@ -12,7 +12,7 @@ export default defineComponent({
   setup(props) {
     const show = ref(false);
     const showBuiltIn = useStorage('showBuiltInGenre', true);
-    const text = computed(() => props.type === 'genre' ? '分类' : '版本');
+    const text = computed(() => props.type === 'genre' ? '流派' : '版本');
     const editingId = ref(-1);
 
     const list = computed(() => {
@@ -33,7 +33,7 @@ export default defineComponent({
           <NFlex vertical>
             <NFlex align="center">
               <NCheckbox v-model:checked={showBuiltIn.value}>显示内置</NCheckbox>
-              <CreateButton setEditId={id => editingId.value = id}/>
+              <CreateButton setEditId={id => editingId.value = id} type={props.type}/>
             </NFlex>
             <NScrollbar class="h-80vh">
               <NList>

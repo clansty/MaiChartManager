@@ -1,5 +1,5 @@
 import { computed, defineComponent, onMounted, PropType, ref, watch } from "vue";
-import { Chart, GenreXml, HttpResponse, MusicXml } from "@/client/apiGen";
+import { Chart, GenreXml, MusicXmlWithABJacket } from "@/client/apiGen";
 import { addVersionList, genreList, selectedADir, selectedMusicBrief, selectMusicId, updateAddVersionList, updateGenreList, updateMusicList } from "@/store/refs";
 import api from "@/client/api";
 import { NButton, NFlex, NForm, NFormItem, NInput, NInputNumber, NSelect, NTabPane, NTabs, SelectOption, useDialog } from "naive-ui";
@@ -8,10 +8,11 @@ import dxIcon from "@/assets/dxIcon.png";
 import stdIcon from "@/assets/stdIcon.png";
 import ChartPanel from "./ChartPanel";
 import { DIFFICULTY, LEVEL_COLOR } from "@/consts";
+import ProblemsDisplay from "@/components/ProblemsDisplay";
 
 const Component = defineComponent({
   setup() {
-    const info = ref<MusicXml | null>();
+    const info = ref<MusicXmlWithABJacket | null>();
     const selectedLevel = ref(0);
 
     onMounted(async () => {
@@ -38,16 +39,17 @@ const Component = defineComponent({
     const genreOptions = computed(() => genreList.value.map(genre => ({label: genre.genreName, value: genre.id})));
     const addVersionOptions = computed(() => addVersionList.value.map(genre => ({label: genre.genreName, value: genre.id})));
 
-    const sync = (key: keyof MusicXml, method: Function) => async () => {
+    const sync = (key: keyof MusicXmlWithABJacket, method: Function) => async () => {
       if (!info.value) return;
       selectedMusicBrief.value!.modified = true;
-      await method(info.value.id!, info.value[key]!);
+      await method(info.value.id!, (info.value as any)[key]!);
     }
 
     return () => info.value && <NForm showFeedback={false} labelPlacement="top" disabled={selectedADir.value === 'A000'}>
       <div class="grid cols-[1fr_12em] gap-5">
         <NFlex vertical class="relative">
-          <NFlex align="center" class="absolute right-0 top-0">
+          <NFlex align="center" class="absolute right-0 top-0 mr-2 mt-2">
+            <ProblemsDisplay problems={info.value.problems!}/>
           </NFlex>
           <NFlex align="center">
             <img src={info.value.id! >= 1e4 ? dxIcon : stdIcon} class="h-6"/>
@@ -72,12 +74,12 @@ const Component = defineComponent({
         <NFormItem label="版本">
           <NInputNumber showButton={false} class="w-full" v-model:value={info.value.version} min={0}/>
         </NFormItem>
-        <NFormItem label="分类">
-          <NSelect options={genreOptions.value as any} v-model:value={info.value.genreId}
+        <NFormItem label="流派">
+          <NSelect options={genreOptions.value as any} v-model:value={info.value.genreId} status={genreList.value.some(it => it.id === info.value?.genreId) ? undefined : 'error'}
                    renderLabel={(option: SelectOption) => <GenreOption genre={genreList.value.find(it => it.id === option.value)!}/>}/>
         </NFormItem>
         <NFormItem label="版本分类">
-          <NSelect options={addVersionOptions.value as any} v-model:value={info.value.addVersionId}
+          <NSelect options={addVersionOptions.value as any} v-model:value={info.value.addVersionId} status={addVersionList.value.some(it => it.id === info.value?.addVersionId) ? undefined : 'error'}
                    renderLabel={(option: SelectOption) => <GenreOption genre={addVersionList.value.find(it => it.id === option.value)!}/>}/>
         </NFormItem>
         <NTabs type="line" animated barWidth={0} v-model:value={selectedLevel.value} class="levelTabs"
@@ -128,8 +130,8 @@ const GenreOption = defineComponent({
   },
   setup(props) {
     return () => <NFlex align="center">
-      <div class="h-4 w-4 rounded-full" style={{backgroundColor: `rgb(${props.genre.colorR}, ${props.genre.colorG}, ${props.genre.colorB})`}}/>
-      {props.genre.genreName}
+      <div class="h-4 w-4 rounded-full" style={{backgroundColor: props.genre ? `rgb(${props.genre.colorR}, ${props.genre.colorG}, ${props.genre.colorB})` : 'white'}}/>
+      {props.genre ? props.genre.genreName : '???'}
     </NFlex>;
   },
 })
