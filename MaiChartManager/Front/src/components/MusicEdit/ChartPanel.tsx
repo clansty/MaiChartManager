@@ -37,7 +37,7 @@ export default defineComponent({
 
     return () => <NForm showFeedback={false} labelPlacement="top" disabled={selectedADir.value === 'A000'}>
       <NFlex vertical>
-        <NFormItem label="已启用" labelPlacement="left">
+        <NFormItem label="启用" labelPlacement="left">
           <NSwitch v-model:value={props.chart.enable}/>
         </NFormItem>
         <NFormItem label="作者">

@@ -4,7 +4,7 @@ import MusicList from "@/components/MusicList";
 import GenreVersionManager from "@/components/GenreVersionManager";
 import { updateAddVersionList, updateAssetDirs, updateGenreList, updateSelectedAssetDir } from "@/store/refs";
 import MusicEdit from "@/components/MusicEdit";
-import SaveButton from "@/components/SaveButton";
+import MusicSelectedTopRightToolbar from "@/components/MusicSelectedTopRightToolbar";
 
 export default defineComponent({
   setup() {
@@ -26,7 +26,7 @@ export default defineComponent({
 
             <div class="grow-1"/>
 
-            <SaveButton/>
+            <MusicSelectedTopRightToolbar/>
           </NFlex>
           <NScrollbar class="grow-1">
             <MusicEdit/>

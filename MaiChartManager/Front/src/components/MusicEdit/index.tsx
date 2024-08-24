@@ -1,8 +1,8 @@
 import { computed, defineComponent, onMounted, PropType, ref, watch } from "vue";
-import { Chart, GenreXml, MusicXml } from "@/client/apiGen";
-import { addVersionList, genreList, selectedADir, selectedMusicBrief, selectMusicId } from "@/store/refs";
+import { Chart, GenreXml, HttpResponse, MusicXml } from "@/client/apiGen";
+import { addVersionList, genreList, selectedADir, selectedMusicBrief, selectMusicId, updateAddVersionList, updateGenreList, updateMusicList } from "@/store/refs";
 import api from "@/client/api";
-import { NFlex, NForm, NFormItem, NInput, NInputNumber, NSelect, NTabPane, NTabs, SelectOption } from "naive-ui";
+import { NButton, NFlex, NForm, NFormItem, NInput, NInputNumber, NSelect, NTabPane, NTabs, SelectOption, useDialog } from "naive-ui";
 import JacketBox from "./JacketBox";
 import dxIcon from "@/assets/dxIcon.png";
 import stdIcon from "@/assets/stdIcon.png";
@@ -46,7 +46,9 @@ const Component = defineComponent({
 
     return () => info.value && <NForm showFeedback={false} labelPlacement="top" disabled={selectedADir.value === 'A000'}>
       <div class="grid cols-[1fr_12em] gap-5">
-        <NFlex vertical>
+        <NFlex vertical class="relative">
+          <NFlex align="center" class="absolute right-0 top-0">
+          </NFlex>
           <NFlex align="center">
             <img src={info.value.id! >= 1e4 ? dxIcon : stdIcon} class="h-6"/>
             <div class="c-gray-5">
