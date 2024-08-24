@@ -1,27 +1,32 @@
 <%
-const { routeInfo, utils } = it;
+const {routeInfo, utils} = it;
 const {
-  operationId,
-  method,
-  route,
-  moduleName,
-  responsesTypes,
-  description,
-  tags,
-  summary,
-  pathArgs,
+    operationId,
+    method,
+    route,
+    moduleName,
+    responsesTypes,
+    description,
+    tags,
+    summary,
+    pathArgs,
 } = routeInfo;
-const { _, fmtToJSDocLine, require } = utils;
+const {_, fmtToJSDocLine, require} = utils;
 
 const createCustomOperationId = (method, route, moduleName) => {
-  const splittedRouteBySlash = _.compact(_.replace(route, /\{(\w){1,}\}/g, "").split("/"));
-  return splittedRouteBySlash[splittedRouteBySlash.length - 1];
+    const splittedRouteBySlash = _.compact(_.replace(route, /\{(\w){1,}\}/g, "").split("/"));
+    let res = splittedRouteBySlash[splittedRouteBySlash.length - 1];
+
+    if (res?.endsWith("Api"))
+        res = res.replace(/Api$/, "");
+
+    return res;
 };
 
 if (operationId)
-  return _.camelCase(operationId);
+    return _.camelCase(operationId);
 if (route === "/")
-  return _.camelCase(`${_.lowerCase(method)}Root`);
+    return _.camelCase(`${_.lowerCase(method)}Root`);
 
 return createCustomOperationId(method, route, moduleName);
 %>

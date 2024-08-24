@@ -3,7 +3,7 @@
 namespace MaiChartManager.Controllers;
 
 [ApiController]
-[Route("api/[controller]/[action]/{id:int}/{level:int}")]
+[Route("MaiChartManagerServlet/[action]Api/{id:int}/{level:int}")]
 public class ChartController(StaticSettings settings, ILogger<StaticSettings> logger) : ControllerBase
 {
     [HttpPost]

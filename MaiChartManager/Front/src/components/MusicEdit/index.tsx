@@ -22,7 +22,7 @@ const Component = defineComponent({
       const response = await api.GetMusicDetail(selectMusicId.value);
       info.value = response.data;
 
-      const firstEnabledChart = info.value.charts!.findIndex(chart => chart.enable);
+      const firstEnabledChart = info.value!.charts!.findIndex(chart => chart.enable);
       if (firstEnabledChart >= 0) {
         selectedLevel.value = firstEnabledChart;
       }

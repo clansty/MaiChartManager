@@ -5,7 +5,7 @@ using Sitreamai.Models;
 namespace MaiChartManager.Controllers;
 
 [ApiController]
-[Route("api/[controller]/[action]/{id:int}")]
+[Route("MaiChartManagerServlet/[action]Api/{id:int}")]
 public class MusicController(StaticSettings settings, ILogger<StaticSettings> logger) : ControllerBase
 {
     [HttpGet]

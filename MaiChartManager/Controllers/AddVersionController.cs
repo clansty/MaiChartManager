@@ -4,7 +4,7 @@ using Sitreamai.Models;
 namespace MaiChartManager.Controllers;
 
 [ApiController]
-[Route("api/[controller]/[action]")]
+[Route("MaiChartManagerServlet/[action]Api")]
 public class AddVersionController(StaticSettings settings, ILogger<StaticSettings> logger) : ControllerBase
 {
     [HttpGet]

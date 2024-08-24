@@ -8,7 +8,7 @@ export default defineComponent({
   },
   setup(props) {
     const jacketUrl = computed(() => props.info.hasJacket ?
-      `/api/Music/GetJacket/${props.info.id}` : noJacket)
+      `/MaiChartManagerServlet/GetJacketApi/${props.info.id}` : noJacket)
 
     return () => <div>
       <img src={jacketUrl.value} class="w-full h-full object-fill rounded-lg"/>

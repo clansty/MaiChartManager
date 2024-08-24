@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace MaiChartManager.Controllers;
 
 [ApiController]
-[Route("api/[controller]/[action]")]
+[Route("MaiChartManagerServlet/[action]Api")]
 public class MusicListController(StaticSettings settings, ILogger<StaticSettings> logger) : ControllerBase
 {
     [HttpPost]

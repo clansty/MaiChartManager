@@ -13,7 +13,7 @@ export default defineComponent({
 
   setup(props) {
     const jacketUrl = computed(() => props.music.hasJacket ?
-      `/api/Music/GetJacket/${props.music.id}` : noJacket)
+      `/MaiChartManagerServlet/GetJacketApi/${props.music.id}` : noJacket)
 
     return () => (
       <div class={`flex gap-5 h-20 w-full p-2 m-y-1 hover:bg-zinc-2 rd-md ${props.selected && 'bg-[var(--selected-bg)]'}`} onClick={props.onClick} title={props.music.name!}>
