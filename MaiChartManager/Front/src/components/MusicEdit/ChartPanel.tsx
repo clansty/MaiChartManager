@@ -3,8 +3,8 @@ import { Chart, MusicXml } from "@/client/apiGen";
 import { NFlex, NForm, NFormItem, NInput, NInputNumber, NSelect, NSwitch } from "naive-ui";
 import api from "@/client/api";
 import { selectedADir, selectedMusicBrief } from "@/store/refs";
+import { LEVELS } from "@/consts";
 
-const LEVELS = [0, 1, 2, 3, 4, 5, 6, 7, '7+', 8, '8+', 9, '9+', 10, '10+', 11, '11+', 12, '12+', 13, '13+', 14, '14+', 15, '15+'] as const;
 const LEVELS_OPTIONS = LEVELS.map((level, index) => ({label: level, value: index}));
 
 export default defineComponent({

@@ -28,7 +28,7 @@ export default defineComponent({
     whenever(ctrl_s, save);
 
     return () => selectedMusicBrief.value && (
-      <NButton secondary onClick={save} type={selectedMusicBrief.value.modified ? "success" : undefined}>
+      <NButton secondary onClick={save} type={selectedMusicBrief.value.modified ? "warning" : undefined}>
         保存
         {isAnimationShow.value && <Teleport to="body">
           <div class={animation.box}/>

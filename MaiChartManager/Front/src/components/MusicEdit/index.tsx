@@ -7,10 +7,7 @@ import JacketBox from "./JacketBox";
 import dxIcon from "@/assets/dxIcon.png";
 import stdIcon from "@/assets/stdIcon.png";
 import ChartPanel from "./ChartPanel";
-
-const DIFFICULTY = ['Basic', 'Advanced', 'Expert', 'Master', 'Re:Master'] as const;
-const LEVEL_COLOR = ['rgb(34, 187, 91)', 'rgb(251, 156, 45)', 'rgb(246, 72, 97)', 'rgb(158, 69, 226)',
-  'rgb(228, 166, 255)'] as const;
+import { DIFFICULTY, LEVEL_COLOR } from "@/consts";
 
 const Component = defineComponent({
   setup() {

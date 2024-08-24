@@ -23,6 +23,13 @@ export interface Chart {
   designer?: string | null;
 }
 
+export interface ChartAvailable {
+  /** @format int32 */
+  index?: number;
+  /** @format int32 */
+  levelId?: number;
+}
+
 export interface GenreXml {
   assetDir?: string | null;
   /** @format int32 */
@@ -46,6 +53,7 @@ export interface MusicBrief {
   name?: string | null;
   hasJacket?: boolean;
   modified?: boolean;
+  chartsAvailable?: ChartAvailable[] | null;
 }
 
 export interface MusicXml {
