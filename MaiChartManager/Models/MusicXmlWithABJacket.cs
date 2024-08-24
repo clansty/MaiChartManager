@@ -4,7 +4,7 @@ namespace MaiChartManager.Models;
 
 public class MusicXmlWithABJacket(string filePath, string gamePath) : MusicXml(filePath, gamePath)
 {
-    public string? AssetBundleJacket => StaticSettings.AssetBundleJacketMap.TryGetValue(NonDxId, out var value) ? value : null;
+    public string? AssetBundleJacket => StaticSettings.AssetBundleJacketMap.GetValueOrDefault(NonDxId);
 
     // 在 mod 里文件的 jacket 是优先的
     public new bool HasJacket => JacketPath is not null || AssetBundleJacket is not null;
@@ -25,5 +25,11 @@ public class MusicXmlWithABJacket(string filePath, string gamePath) : MusicXml(f
         }
 
         return new MusicBrief(Id, NonDxId, Name, HasJacket, Modified, chartsAvailable);
+    }
+
+    public new static MusicXmlWithABJacket CreateNew(int id, string gamePath, string assetDir, bool isDx)
+    {
+        var old = MusicXml.CreateNew(id, gamePath, assetDir, isDx);
+        return new MusicXmlWithABJacket(old.FilePath, old.GamePath);
     }
 }

@@ -67,10 +67,10 @@ const Component = defineComponent({
       </div>
       <NFlex vertical>
         <NFormItem label="BPM">
-          <NInputNumber showButton={false} class="w-full" v-model:value={info.value.bpm}/>
+          <NInputNumber showButton={false} class="w-full" v-model:value={info.value.bpm} min={0}/>
         </NFormItem>
         <NFormItem label="版本">
-          <NInputNumber showButton={false} class="w-full" v-model:value={info.value.version}/>
+          <NInputNumber showButton={false} class="w-full" v-model:value={info.value.version} min={0}/>
         </NFormItem>
         <NFormItem label="分类">
           <NSelect options={genreOptions.value as any} v-model:value={info.value.genreId}

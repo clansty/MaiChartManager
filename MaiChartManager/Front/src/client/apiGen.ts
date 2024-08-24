@@ -691,6 +691,23 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags Music
+     * @name AddMusic
+     * @request POST:/MaiChartManagerServlet/AddMusicApi/{id}
+     */
+    AddMusic: (id: number, data: boolean, params: RequestParams = {}) =>
+      this.request<string, any>({
+        path: `/MaiChartManagerServlet/AddMusicApi/${id}`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Music
      * @name GetJacket
      * @request GET:/MaiChartManagerServlet/GetJacketApi/{id}
      */

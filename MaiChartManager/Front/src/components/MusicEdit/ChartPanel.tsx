@@ -47,10 +47,10 @@ export default defineComponent({
           <NSelect options={LEVELS_OPTIONS as any} v-model:value={props.chart.levelId}/>
         </NFormItem>
         <NFormItem label="定数">
-          <NInputNumber showButton={false} class="w-full" precision={1} v-model:value={levelValue.value}/>
+          <NInputNumber showButton={false} class="w-full" precision={1} v-model:value={levelValue.value} min={0}/>
         </NFormItem>
         <NFormItem label="音符数量">
-          <NInputNumber showButton={false} class="w-full" precision={0} v-model:value={props.chart.maxNotes}/>
+          <NInputNumber showButton={false} class="w-full" precision={0} v-model:value={props.chart.maxNotes} min={0}/>
         </NFormItem>
       </NFlex>
     </NForm>;

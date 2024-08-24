@@ -1,4 +1,5 @@
 ﻿using AssetStudio;
+using MaiChartManager.Models;
 using Microsoft.AspNetCore.Mvc;
 using Sitreamai.Models;
 
@@ -90,6 +91,20 @@ public class MusicController(StaticSettings settings, ILogger<StaticSettings> lo
             music.Delete();
             settings.MusicList.Remove(music);
         }
+    }
+
+    [HttpPost]
+    public string AddMusic(int id, [FromBody] bool isDx)
+    {
+        if (settings.MusicList.Any(it => it.Id == id))
+        {
+            return "当前资源目录里已经存在这个 ID 了";
+        }
+
+        var music = MusicXmlWithABJacket.CreateNew(id, StaticSettings.GamePath, settings.AssetDir, isDx);
+        settings.MusicList.Add(music);
+
+        return "";
     }
 
 

@@ -61,7 +61,7 @@ export default defineComponent({
           default: () => <NForm label-placement="left" labelWidth="5em" showFeedback={false}>
             <NFlex vertical size="large">
               <NFormItem label="ID">
-                <NInputNumber v-model:value={id.value} class="w-full"/>
+                <NInputNumber v-model:value={id.value} class="w-full" min={1}/>
               </NFormItem>
               <NFormItem label="资源目录">
                 <NSelect
