@@ -1,8 +1,9 @@
-import { defineComponent, PropType } from "vue";
+import { computed, defineComponent, PropType, ref } from "vue";
 import { GenreXml } from "@/client/apiGen";
 import { NButton, NFlex } from "naive-ui";
 import api from "@/client/api";
 import { updateAddVersionList, updateGenreList } from "@/store/refs";
+import Color from "color";
 
 export default defineComponent({
   props: {
@@ -13,17 +14,28 @@ export default defineComponent({
     type: String as PropType<"genre" | "version">,
   },
   setup(props) {
+    const _color = ref('');
+    const color = computed({
+      get: () => _color.value || Color([props.genre.colorR, props.genre.colorG, props.genre.colorB]).hex(),
+      set: value => _color.value = value,
+    })
+
     const save = async () => {
       props.setEdit(false);
+      let newColor = [props.genre.colorR, props.genre.colorG, props.genre.colorB];
+      if (_color.value) {
+        newColor = Color(_color.value).rgb().array();
+      }
       await (props.type === 'genre' ? api.EditGenre : api.EditVersion)(props.genre.id!, {
         name: props.genre.genreName,
         nameTwoLine: props.genre.genreNameTwoLine,
-        r: props.genre.colorR,
-        g: props.genre.colorG,
-        b: props.genre.colorB,
+        r: newColor[0],
+        g: newColor[1],
+        b: newColor[2],
       });
       updateGenreList();
       updateAddVersionList();
+      _color.value = '';
     }
 
     return () => (
@@ -33,7 +45,9 @@ export default defineComponent({
           <span class="op-60">@</span>
           <span class="op-80">{props.genre.assetDir}</span>
         </NFlex>
-        <div class="h-6 w-6 rounded-full" style={{backgroundColor: `rgb(${props.genre.colorR}, ${props.genre.colorG}, ${props.genre.colorB})`}}/>
+        <div class="h-6 w-6 rounded-full relative of-clip" style={{backgroundColor: color.value}}>
+          <input type="color" v-model={color.value} disabled={!props.editing} class={`op-0 ${props.editing ? 'cursor-pointer' : 'cursor-default'}`}/>
+        </div>
         <input v-model={props.genre.genreName} disabled={!props.editing}
                class={`b b-gray-3 bg-white b-solid rounded-sm lh-normal text-align-center box-content ${props.editing ? 'cursor-text' : 'cursor-default'}`}/>
         {
