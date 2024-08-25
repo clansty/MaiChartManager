@@ -7,7 +7,7 @@ using Xv2CoreLib.ACB;
 
 namespace Sitreamai;
 
-public class Audio
+public static class Audio
 {
     public static void ConvertToMai(string srcPath, string savePath)
     {
