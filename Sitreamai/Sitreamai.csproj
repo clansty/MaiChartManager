@@ -25,6 +25,9 @@
     <Reference Include="MaichartConverter">
       <HintPath>Lib\MaichartConverter.dll</HintPath>
     </Reference>
+    <Reference Include="SimaiSharp">
+      <HintPath>Lib\SimaiSharp.dll</HintPath>
+    </Reference>
     <Reference Include="System.Core">
       <HintPath>Lib\System.Core.dll</HintPath>
     </Reference>

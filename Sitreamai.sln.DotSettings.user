@@ -22,6 +22,8 @@
 	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=D_003A_005CProjects_005CSitreamai_005CSitreamai_005CLib_005COokii_002EDialogs_002EWpf_002Edll/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=D_003A_005CProjects_005CSitreamai_005CSitreamai_005CLib_005CPfim_002Edll/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=D_003A_005CProjects_005CSitreamai_005CSitreamai_005CLib_005CSharpNoise_002Edll/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=D_003A_005CProjects_005CSitreamai_005CSitreamai_005CLib_005CSimaiSharp_002Edeps_002Ejson/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=D_003A_005CProjects_005CSitreamai_005CSitreamai_005CLib_005CSimaiSharp_002Edll/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=D_003A_005CProjects_005CSitreamai_005CSitreamai_005CLib_005CSystem_002ECore_002Edll/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=D_003A_005CProjects_005CSitreamai_005CSitreamai_005CLib_005CSystem_002EHalf_002Edll/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=D_003A_005CProjects_005CSitreamai_005CSitreamai_005CLib_005CSystem_002ENumerics_002EVectors_002Edll/@EntryIndexedValue">True</s:Boolean>
@@ -35,7 +37,7 @@
   &lt;Assembly Path="D:\Projects\Sitreamai\Sitreamai\Lib\MaichartConverter.dll" /&gt;&#xD;
   &lt;Assembly Path="D:\Projects\Sitreamai\Sitreamai\Lib\LB_Common.dll" /&gt;&#xD;
   &lt;Assembly Path="D:\Projects\Sitreamai\Sitreamai\Lib\Xv2CoreLib.dll" /&gt;&#xD;
-  &lt;Assembly Path="C:\Program Files\dotnet\packs\Microsoft.NETCore.App.Ref\8.0.3\ref\net8.0\System.Core.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\Projects\Sitreamai\Sitreamai\Lib\SimaiSharp.dll" /&gt;&#xD;
 &lt;/AssemblyExplorer&gt;</s:String>
 	<s:String x:Key="/Default/Environment/Hierarchy/Build/BuildTool/CustomBuildToolPath/@EntryValue">C:\Program Files\dotnet\sdk\8.0.304\MSBuild.dll</s:String>
 	<s:String x:Key="/Default/Environment/Hierarchy/Build/BuildTool/DotNetCliExePath/@EntryValue">C:\Program Files\dotnet\dotnet.exe</s:String>

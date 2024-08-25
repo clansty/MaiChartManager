@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Sitreamai;
 
-public class Converter
+public partial class Converter
 {
     private ILogger Logger { get; }
     public int MusicId { get; }
