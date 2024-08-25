@@ -61,5 +61,6 @@ public partial class Converter
     public static void CalcMusicPaddingTest()
     {
         Console.WriteLine(CalcMusicPaddingTestFile(@"E:\Desktop\恭喜发财 (2)\maidata.txt", 7)); // 应该大约等于 -2.128，需要裁掉 2.128 秒
+        Console.WriteLine(CalcMusicPaddingTestFile(@"E:\Desktop\潮風香る街 (2)\maidata.txt", 5)); // 2.08
     }
 }
