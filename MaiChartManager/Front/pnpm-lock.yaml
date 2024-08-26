@@ -50,6 +50,9 @@ importers:
       typescript:
         specifier: ^5.5.4
         version: 5.5.4
+      unity-webgl:
+        specifier: ^3.5.5
+        version: 3.5.5(vue@3.4.38(typescript@5.5.4))
       unocss:
         specifier: ^0.62.2
         version: 0.62.2(postcss@8.4.41)(rollup@4.20.0)(vite@5.4.1(@types/node@22.4.1)(sass@1.77.8))
@@ -1518,6 +1521,15 @@ packages:
   unicode-emoji-modifier-base@1.0.0:
     resolution: {integrity: sha512-yLSH4py7oFH3oG/9K+XWrz1pSi3dfUrWEnInbxMfArOfc1+33BlGPQtLsOYwvdMy11AwUBetYuaRxSPqgkq+8g==}
     engines: {node: '>=4'}
+
+  unity-webgl@3.5.5:
+    resolution: {integrity: sha512-UVg/1FkiuDvJUeDHDRrqqo5nSBOTgWz3MzVOaCTAcseiOvqIYj/rN8qBze1y2ov7YLItiZlxvHbHhoZcxce+dg==}
+    peerDependencies:
+      '@vue/composition-api': ^1.7.0
+      vue: ^2.5.0 || >=3.0.0
+    peerDependenciesMeta:
+      '@vue/composition-api':
+        optional: true
 
   unocss@0.62.2:
     resolution: {integrity: sha512-XLLOXyLrbLX7xIChdCPZAmfLR+1aqIHGN/y7QOn4t3g8C3Kk1tAH2aMMQHWhWFfNzskfNiPjKeVYhWQ8QV53Mg==}
@@ -3152,6 +3164,11 @@ snapshots:
   undici-types@6.19.8: {}
 
   unicode-emoji-modifier-base@1.0.0: {}
+
+  unity-webgl@3.5.5(vue@3.4.38(typescript@5.5.4)):
+    dependencies:
+      vue: 3.4.38(typescript@5.5.4)
+      vue-demi: 0.14.10(vue@3.4.38(typescript@5.5.4))
 
   unocss@0.62.2(postcss@8.4.41)(rollup@4.20.0)(vite@5.4.1(@types/node@22.4.1)(sass@1.77.8)):
     dependencies:

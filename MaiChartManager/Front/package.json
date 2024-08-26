@@ -23,6 +23,7 @@
     "swagger-typescript-api": "^13.0.21",
     "tsx": "^4.17.0",
     "typescript": "^5.5.4",
+    "unity-webgl": "^3.5.5",
     "unocss": "^0.62.2",
     "vite": "^5.4.1",
     "vue": "^3.4.38",

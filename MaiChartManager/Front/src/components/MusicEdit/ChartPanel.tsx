@@ -5,6 +5,7 @@ import api from "@/client/api";
 import { selectedADir, selectedMusicBrief } from "@/store/refs";
 import { LEVELS } from "@/consts";
 import ProblemsDisplay from "@/components/ProblemsDisplay";
+import PreviewChartButton from "@/components/MusicEdit/PreviewChartButton";
 
 const LEVELS_OPTIONS = LEVELS.map((level, index) => ({label: level, value: index}));
 
@@ -38,6 +39,9 @@ export default defineComponent({
 
     return () => <NForm showFeedback={false} labelPlacement="top" disabled={selectedADir.value === 'A000'}>
       <NFlex vertical>
+        <NFlex align="center" class="absolute right-0 top-0 mr-2 mt-2 z-2">
+          <PreviewChartButton songId={props.songId} level={props.chartIndex}/>
+        </NFlex>
         <NFormItem label="启用" labelPlacement="left" class="ml-2px">
           <NFlex align="center">
             <NSwitch v-model:value={props.chart.enable} disabled={!!props.chart.problems?.length}/>
