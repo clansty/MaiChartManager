@@ -37,14 +37,22 @@ internal static class LibraryAcceptRateTest
         total++;
         var content = File.ReadAllText(file);
 
+        try
+        {
+            content = SimaiConvert.Serialize(SimaiConvert.Deserialize(content));
+        }
+        catch
+        {
+        }
+
         // Test MaiLib
         try
         {
-            // var parser = new SimaiParser();
-            // var candidate = parser.ChartOfToken(TokensFromText(content));
+            var parser = new SimaiParser();
+            var candidate = parser.ChartOfToken(TokensFromText(content));
             // var converted = new Ma2(candidate) { ChartVersion = ChartEnum.ChartVersion.Ma2_104 };
             // converted.Compose();
-            // maiLib++;
+            maiLib++;
         }
         catch
         {
@@ -53,8 +61,8 @@ internal static class LibraryAcceptRateTest
         // Test SimaiSharp
         try
         {
-            SimaiConvert.Deserialize(content);
-            simaiSharp++;
+            // SimaiConvert.Deserialize(content);
+            // simaiSharp++;
         }
         catch
         {

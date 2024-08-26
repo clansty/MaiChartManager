@@ -33,20 +33,16 @@ public class MusicXmlWithABJacket(string filePath, string gamePath) : MusicXml(f
         return new MusicXmlWithABJacket(old.FilePath, old.GamePath);
     }
 
+    public bool isAcbAwbExist => StaticSettings.AcbAwb.ContainsKey($"music{NonDxId:000000}.acb") && StaticSettings.AcbAwb.ContainsKey($"music{NonDxId:000000}.awb");
 
     public List<string> Problems
     {
         get
         {
             var res = new List<string>();
-            if (!StaticSettings.AcbAwb.ContainsKey($"music{NonDxId:000000}.acb"))
+            if (!isAcbAwbExist)
             {
-                res.Add("音频 ACB 缺失");
-            }
-
-            if (!StaticSettings.AcbAwb.ContainsKey($"music{NonDxId:000000}.awb"))
-            {
-                res.Add("音频 AWB 缺失");
+                res.Add("音频 ACB / AWB 缺失");
             }
 
             if (StaticSettings.GenreList.All(it => it.Id != GenreId))

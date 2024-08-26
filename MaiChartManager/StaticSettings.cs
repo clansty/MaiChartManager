@@ -6,12 +6,14 @@ namespace MaiChartManager;
 
 public partial class StaticSettings
 {
+    public readonly string tempPath = Path.Combine(Path.GetTempPath(), "MaiChartManager");
     private readonly ILogger<StaticSettings> _logger;
     private string _assetDir;
 
     public StaticSettings(ILogger<StaticSettings> logger)
     {
         _logger = logger;
+        Directory.CreateDirectory(tempPath);
         if (!string.IsNullOrEmpty(GamePath))
         {
             AssetDir = "A500";

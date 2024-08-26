@@ -96,6 +96,7 @@ export interface MusicXmlWithABJacket {
   charts?: Chart[] | null;
   assetBundleJacket?: string | null;
   hasJacket?: boolean;
+  isAcbAwbExist?: boolean;
   problems?: string[] | null;
 }
 
@@ -743,6 +744,47 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       this.request<void, any>({
         path: `/MaiChartManagerServlet/GetJacketApi/${id}`,
         method: "GET",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Music
+     * @name GetMusicWav
+     * @request GET:/MaiChartManagerServlet/GetMusicWavApi/{id}
+     */
+    GetMusicWav: (id: number, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/MaiChartManagerServlet/GetMusicWavApi/${id}`,
+        method: "GET",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Music
+     * @name SetAudio
+     * @request PUT:/MaiChartManagerServlet/SetAudioApi/{id}
+     */
+    SetAudio: (
+      id: number,
+      data: {
+        /** @format float */
+        padding?: number;
+        /** @format binary */
+        file?: File;
+        /** @format binary */
+        awb?: File;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<void, any>({
+        path: `/MaiChartManagerServlet/SetAudioApi/${id}`,
+        method: "PUT",
+        body: data,
+        type: ContentType.FormData,
         ...params,
       }),
 

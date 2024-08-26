@@ -60,7 +60,17 @@ public partial class Converter
 
     public static void CalcMusicPaddingTest()
     {
-        Console.WriteLine(CalcMusicPaddingTestFile(@"E:\Desktop\恭喜发财 (2)\maidata.txt", 7)); // 应该大约等于 -2.128，需要裁掉 2.128 秒
-        Console.WriteLine(CalcMusicPaddingTestFile(@"E:\Desktop\潮風香る街 (2)\maidata.txt", 5)); // 2.08
+        var simaiText = File.ReadAllText(@"E:\Downloads\maidata.txt");
+        var simai = new SimaiFile(simaiText);
+
+        var parser = new SimaiParser();
+        var candidate = parser.ChartOfToken(new SimaiTokenizer().TokensFromText(simai.GetValue("inote_6")));
+        // Console.WriteLine(candidate.Compose(ChartEnum.ChartVersion.SimaiFes));
+
+        // var chart = SimaiConvert.Deserialize(simai.GetValue("inote_6"));
+        // Console.WriteLine(SimaiConvert.Serialize(chart));
+
+        // Console.WriteLine(CalcMusicPaddingTestFile(@"E:\Desktop\恭喜发财 (2)\maidata.txt", 7)); // 应该大约等于 -2.128，需要裁掉 2.128 秒
+        // Console.WriteLine(CalcMusicPaddingTestFile(@"E:\Desktop\潮風香る街 (2)\maidata.txt", 5)); // 2.08
     }
 }

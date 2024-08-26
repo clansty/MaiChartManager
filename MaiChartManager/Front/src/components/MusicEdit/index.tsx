@@ -9,6 +9,7 @@ import stdIcon from "@/assets/stdIcon.png";
 import ChartPanel from "./ChartPanel";
 import { DIFFICULTY, LEVEL_COLOR } from "@/consts";
 import ProblemsDisplay from "@/components/ProblemsDisplay";
+import AcbAwb from "@/components/MusicEdit/AcbAwb";
 
 const Component = defineComponent({
   setup() {
@@ -82,6 +83,7 @@ const Component = defineComponent({
           <NSelect options={addVersionOptions.value as any} v-model:value={info.value.addVersionId} status={addVersionList.value.some(it => it.id === info.value?.addVersionId) ? undefined : 'error'}
                    renderLabel={(option: SelectOption) => <GenreOption genre={addVersionList.value.find(it => it.id === option.value)!}/>}/>
         </NFormItem>
+        <AcbAwb song={info.value}/>
         <NTabs type="line" animated barWidth={0} v-model:value={selectedLevel.value} class="levelTabs"
                style={{'--n-tab-padding': 0, '--n-pane-padding-top': 0, '--n-tab-text-color-hover': ''}}>
           {new Array(5).fill(0).map((_, index) =>

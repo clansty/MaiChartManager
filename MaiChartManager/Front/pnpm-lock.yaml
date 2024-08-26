@@ -11,6 +11,9 @@ importers:
       '@iconify-json/material-symbols':
         specifier: ^1.1.88
         version: 1.1.88
+      '@iconify-json/ph':
+        specifier: ^1.1.14
+        version: 1.1.14
       '@types/color':
         specifier: ^3.0.6
         version: 3.0.6
@@ -516,6 +519,9 @@ packages:
 
   '@iconify-json/material-symbols@1.1.88':
     resolution: {integrity: sha512-1wDu/SDAtJighAvGW/bO9f5zLYUvFlcErPP59uw8zURPKVpQwdLmX6zrBTeHzMUnfcPgv5dCJElCn1astExbhg==}
+
+  '@iconify-json/ph@1.1.14':
+    resolution: {integrity: sha512-s1hZVaxIpl40qLEhjqPRMcZl4A3M4fZ+77Fi+VuOb/eKkIHIMutAoBHIR+0a3l7psUweZQGj9hSyL2P5CIj6qA==}
 
   '@iconify/types@2.0.0':
     resolution: {integrity: sha512-+wluvCrRhXrhyOmRDJ3q8mux9JkKy5SJ/v8ol2tu4FVjyYvtEzkc/3pK15ET6RKg4b4w4BmTk1+gsCUhf21Ykg==}
@@ -2019,6 +2025,10 @@ snapshots:
   '@exodus/schemasafe@1.3.0': {}
 
   '@iconify-json/material-symbols@1.1.88':
+    dependencies:
+      '@iconify/types': 2.0.0
+
+  '@iconify-json/ph@1.1.14':
     dependencies:
       '@iconify/types': 2.0.0
 

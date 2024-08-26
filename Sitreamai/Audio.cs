@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Reflection;
 using NAudio.Wave;
 using VGAudio;
@@ -9,10 +10,10 @@ namespace Sitreamai;
 
 public static class Audio
 {
-    public static void ConvertToMai(string srcPath, string savePath)
+    public static void ConvertToMai(string srcPath, string savePath, float padding = 0, Stream src = null)
     {
         var wrapper = new ACB_Wrapper(ACB_File.Load(ReadResourceFile("Sitreamai.Resources.template.acb"), null));
-        var trackBytes = LoadAndConvertFile(srcPath, FileType.Hca, false, 9170825592834449000);
+        var trackBytes = LoadAndConvertFile(srcPath, FileType.Hca, false, 9170825592834449000, padding, src);
 
         wrapper.Cues[0].AddTrackToCue(trackBytes, true, false, EncodeType.HCA);
         wrapper.AcbFile.Save(savePath);
@@ -32,69 +33,113 @@ public static class Audio
         }
     }
 
-    public static byte[] LoadAndConvertFile(string path, FileType convertToType, bool loop, ulong encrpytionKey = 0)
+    // 不要 byte[] 转 memory stream 倒来倒去，直接传入 stream
+    public static byte[] LoadAndConvertFile(string path, FileType convertToType, bool loop, ulong encrpytionKey = 0, float padding = 0, Stream src = null)
     {
+        using var read = src ?? File.OpenRead(path);
         switch (Path.GetExtension(path).ToLower())
         {
             case ".wav":
-                return ConvertFile(File.ReadAllBytes(path), FileType.Wave, convertToType, loop, encrpytionKey);
             case ".mp3":
             case ".ogg":
             case ".wma":
             case ".aac":
-                return ConvertFile(ConvertToWav(path), FileType.Wave, convertToType, loop, encrpytionKey);
+                return ConvertFile(ConvertToWav(read, padding), FileType.Wave, convertToType, loop, encrpytionKey);
             case ".hca":
-                return ConvertFile(File.ReadAllBytes(path), FileType.Hca, convertToType, loop, encrpytionKey);
+                return ConvertFile(read, FileType.Hca, convertToType, loop, encrpytionKey);
             case ".adx":
-                if (convertToType == FileType.Adx) return File.ReadAllBytes(path);
-                return ConvertFile(File.ReadAllBytes(path), FileType.Adx, convertToType, loop, encrpytionKey);
+                if (convertToType == FileType.Adx)
+                {
+                    var ms = new MemoryStream();
+                    read.CopyTo(ms);
+                    return ms.ToArray();
+                }
+
+                return ConvertFile(read, FileType.Adx, convertToType, loop, encrpytionKey);
             case ".at9":
-                return ConvertFile(File.ReadAllBytes(path), FileType.Atrac9, convertToType, loop, encrpytionKey);
+                return ConvertFile(read, FileType.Atrac9, convertToType, loop, encrpytionKey);
             case ".dsp":
-                return ConvertFile(File.ReadAllBytes(path), FileType.Dsp, convertToType, loop, encrpytionKey);
+                return ConvertFile(read, FileType.Dsp, convertToType, loop, encrpytionKey);
             case ".bcwav":
-                return ConvertFile(File.ReadAllBytes(path), FileType.Bcwav, convertToType, loop, encrpytionKey);
+                return ConvertFile(read, FileType.Bcwav, convertToType, loop, encrpytionKey);
         }
 
         throw new InvalidDataException($"Filetype of \"{path}\" is not supported.");
     }
 
-    public static byte[] ConvertToWav(string path)
+    public static Stream ConvertToWav(Stream src, float padding = 0)
     {
-        byte[] outBytes;
+        using var reader = new StreamMediaFoundationReader(src);
+        var sample = reader.ToSampleProvider();
 
-        using (var reader = new MediaFoundationReader(path))
+        switch (padding)
         {
-            using (var stream = new MemoryStream())
+            case > 0:
             {
-                WaveFileWriter.WriteWavFileToStream(stream, reader);
-                outBytes = stream.ToArray();
+                var sp = new SilenceProvider(reader.WaveFormat);
+                var silence = sp.ToSampleProvider().Take(TimeSpan.FromSeconds(padding));
+                sample = silence.FollowedBy(sample);
+                break;
             }
+            case < 0:
+                sample = sample.Skip(TimeSpan.FromSeconds(-padding));
+                break;
         }
 
-        return outBytes;
+        var stream = new MemoryStream();
+        WaveFileWriter.WriteWavFileToStream(stream, sample.ToWaveProvider16()); // 淦
+        stream.Position = 0; // 淦 x2
+        return stream;
     }
 
-    public static byte[] ConvertFile(byte[] bytes, FileType encodeType, FileType convertToType, bool loop,
+    public static byte[] ConvertFile(Stream s, FileType encodeType, FileType convertToType, bool loop,
         ulong encryptionKey = 0)
     {
         ConvertStatics.SetLoop(loop, 0, 0);
 
-        using (var ms = new MemoryStream(bytes))
+        var options = new Options
         {
-            var options = new Options();
-            options.KeyCode = encryptionKey;
-            options.Loop = loop;
+            KeyCode = encryptionKey,
+            Loop = loop
+        };
 
-            if (options.Loop)
-                options.LoopEnd = int.MaxValue;
+        if (options.Loop)
+            options.LoopEnd = int.MaxValue;
 
-            byte[] track = ConvertStream.ConvertFile(options, ms, encodeType, convertToType);
+        byte[] track = ConvertStream.ConvertFile(options, s, encodeType, convertToType);
 
-            //if (convertToType == FileType.Hca && loop)
-            //    track = HCA.EncodeLoop(track, loop);
+        //if (convertToType == FileType.Hca && loop)
+        //    track = HCA.EncodeLoop(track, loop);
 
-            return track;
+        return track;
+    }
+
+    private static FileType GetFileType(EncodeType encodeType)
+    {
+        switch (encodeType)
+        {
+            case EncodeType.HCA:
+            case EncodeType.HCA_ALT:
+                return FileType.Hca;
+            case EncodeType.ADX:
+                return FileType.Adx;
+            case EncodeType.ATRAC9:
+                return FileType.Atrac9;
+            case EncodeType.DSP:
+                return FileType.Dsp;
+            case EncodeType.BCWAV:
+                return FileType.Bcwav;
+            default:
+                return FileType.NotSet;
         }
+    }
+
+    public static byte[] AcbToWav(string acbPath)
+    {
+        var acb = ACB_File.Load(acbPath);
+        var wave = acb.GetWaveformsFromCue(acb.Cues[0])[0];
+        var entry = acb.GetAfs2Entry(wave.AwbId);
+        using MemoryStream stream = new MemoryStream(entry.bytes);
+        return ConvertStream.ConvertFile(new Options(), stream, GetFileType(wave.EncodeType), FileType.Wave);
     }
 }
