@@ -89,6 +89,7 @@ export interface ImportChartCheckResult {
   /** @format float */
   musicPadding?: number;
   isDx?: boolean;
+  title?: string | null;
 }
 
 export interface ImportChartMessage {

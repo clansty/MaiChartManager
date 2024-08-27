@@ -87,20 +87,21 @@ export default defineComponent({
         errors.value.push({level: MessageLevel.Warning, message: '未找到背景图片', name: dir.name});
       }
 
-      let musicPadding = 0;
+      let musicPadding = 0, name = dir.name;
       if (maidata) {
         const checkRet = (await api.ImportChartCheck({file: maidata})).data;
         reject = reject || !checkRet.accept;
         errors.value.push(...(checkRet.errors || []).map(it => ({...it, name: dir.name})));
         musicPadding = checkRet.musicPadding!;
+        // 为了本地的错误和远程的错误都显示本地的名称，这里在修改 name
+        name = checkRet.title!;
         if (checkRet.isDx) id += 1e4;
       }
 
       if (!reject) {
         meta.value.push({
-          id, maidata, bg, track, musicPadding,
+          id, maidata, bg, track, musicPadding, name,
           importStep: IMPORT_STEP.start,
-          name: dir.name,
         })
       }
       return !reject;

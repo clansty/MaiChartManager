@@ -22,7 +22,7 @@ public class ImportChartController(StaticSettings settings, ILogger<StaticSettin
 
     public record ImportChartMessage(string Message, MessageLevel Level);
 
-    public record ImportChartCheckResult(bool Accept, IEnumerable<ImportChartMessage> Errors, float MusicPadding, bool isDx);
+    public record ImportChartCheckResult(bool Accept, IEnumerable<ImportChartMessage> Errors, float MusicPadding, bool IsDx, string? Title);
 
     [HttpPost]
     public ImportChartCheckResult ImportChartCheck(IFormFile file)
@@ -31,6 +31,7 @@ public class ImportChartController(StaticSettings settings, ILogger<StaticSettin
         var errors = new List<ImportChartMessage>();
         var fatal = false;
 
+        var title = maiData.GetValueOrDefault("title");
         if (string.IsNullOrWhiteSpace(maiData.GetValueOrDefault("title")))
         {
             errors.Add(new ImportChartMessage("乐曲没有标题", MessageLevel.Fatal));
@@ -94,7 +95,7 @@ public class ImportChartController(StaticSettings settings, ILogger<StaticSettin
         {
             errors.Add(new ImportChartMessage("乐曲没有谱面", MessageLevel.Fatal));
             fatal = true;
-            return new ImportChartCheckResult(!fatal, errors, 0.0f, false);
+            return new ImportChartCheckResult(!fatal, errors, 0.0f, false, title);
         }
 
         var paddings = new List<float>();
@@ -132,7 +133,7 @@ public class ImportChartController(StaticSettings settings, ILogger<StaticSettin
             errors.Add(new ImportChartMessage($"将裁剪 {-padding:F3} 秒音频以保证第一押在第二小节", MessageLevel.Info));
         }
 
-        return new ImportChartCheckResult(!fatal, errors, padding, isDx);
+        return new ImportChartCheckResult(!fatal, errors, padding, isDx, title);
     }
 
     public record ImportChartResult(bool ShiftNoteEaten);
