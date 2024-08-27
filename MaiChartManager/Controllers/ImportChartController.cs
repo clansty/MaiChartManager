@@ -139,7 +139,7 @@ public class ImportChartController(StaticSettings settings, ILogger<StaticSettin
 
     [HttpPost]
     // 创建完 Music 后调用
-    public ImportChartResult ImportChart([FromForm] int id, IFormFile file, [FromForm] bool ignoreLevelNum)
+    public ImportChartResult ImportChart([FromForm] int id, IFormFile file, [FromForm] bool ignoreLevelNum, [FromForm] int addVersionId, [FromForm] int genreId)
     {
         var music = settings.MusicList.First(it => it.Id == id);
         var maiData = new Dictionary<string, string>(new SimaiFile(file.OpenReadStream()).ToKeyValuePairs());
@@ -258,6 +258,8 @@ public class ImportChartController(StaticSettings settings, ILogger<StaticSettin
 
         music.Name = maiData["title"];
         music.Artist = maiData.GetValueOrDefault("artist") ?? "";
+        music.AddVersionId = addVersionId;
+        music.GenreId = genreId;
         music.Save();
         return new ImportChartResult(shiftNoteEaten);
     }

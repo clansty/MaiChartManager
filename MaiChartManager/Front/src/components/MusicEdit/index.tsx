@@ -1,6 +1,6 @@
 import { computed, defineComponent, onMounted, PropType, ref, watch } from "vue";
 import { Chart, GenreXml, MusicXmlWithABJacket } from "@/client/apiGen";
-import { addVersionList, genreList, selectedADir, selectedMusicBrief, selectMusicId, updateAddVersionList, updateGenreList, updateMusicList } from "@/store/refs";
+import { addVersionList, addVersionOptions, genreList, genreOptions, selectedADir, selectedMusicBrief, selectMusicId, updateAddVersionList, updateGenreList, updateMusicList } from "@/store/refs";
 import api from "@/client/api";
 import { NButton, NFlex, NForm, NFormItem, NInput, NInputNumber, NSelect, NTabPane, NTabs, SelectOption, useDialog } from "naive-ui";
 import JacketBox from "./JacketBox";
@@ -10,6 +10,7 @@ import ChartPanel from "./ChartPanel";
 import { DIFFICULTY, LEVEL_COLOR } from "@/consts";
 import ProblemsDisplay from "@/components/ProblemsDisplay";
 import AcbAwb from "@/components/MusicEdit/AcbAwb";
+import GenreOption from "@/components/GenreOption";
 
 const Component = defineComponent({
   setup() {
@@ -36,9 +37,6 @@ const Component = defineComponent({
       watch(() => info.value?.genreId, sync('genreId', api.EditMusicGenre));
       watch(() => info.value?.addVersionId, sync('addVersionId', api.EditMusicAddVersion));
     });
-
-    const genreOptions = computed(() => genreList.value.map(genre => ({label: genre.genreName, value: genre.id})));
-    const addVersionOptions = computed(() => addVersionList.value.map(genre => ({label: genre.genreName, value: genre.id})));
 
     const sync = (key: keyof MusicXmlWithABJacket, method: Function) => async () => {
       if (!info.value) return;
@@ -124,18 +122,6 @@ const Tab = defineComponent({
       <span class="z-1">{DIFFICULTY[props.index]}</span>
     </div>
   }
-})
-
-const GenreOption = defineComponent({
-  props: {
-    genre: {type: Object as PropType<GenreXml>, required: true},
-  },
-  setup(props) {
-    return () => <NFlex align="center">
-      <div class="h-4 w-4 rounded-full" style={{backgroundColor: props.genre ? `rgb(${props.genre.colorR}, ${props.genre.colorG}, ${props.genre.colorB})` : 'white'}}/>
-      {props.genre ? props.genre.genreName : '???'}
-    </NFlex>;
-  },
 })
 
 export default defineComponent({

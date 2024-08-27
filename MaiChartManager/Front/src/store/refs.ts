@@ -10,6 +10,8 @@ export const musicList = ref<MusicBrief[]>([]);
 export const assetDirs = ref<string[]>([]);
 
 export const selectedMusicBrief = computed(() => musicList.value.find(m => m.id === selectMusicId.value));
+export const genreOptions = computed(() => genreList.value.map(genre => ({label: genre.genreName, value: genre.id})));
+export const addVersionOptions = computed(() => addVersionList.value.map(genre => ({label: genre.genreName, value: genre.id})));
 
 
 export const updateGenreList = async () => {

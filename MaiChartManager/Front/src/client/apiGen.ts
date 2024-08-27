@@ -703,6 +703,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         /** @format binary */
         file?: File;
         ignoreLevelNum?: boolean;
+        /** @format int32 */
+        addVersionId?: number;
+        /** @format int32 */
+        genreId?: number;
       },
       params: RequestParams = {},
     ) =>

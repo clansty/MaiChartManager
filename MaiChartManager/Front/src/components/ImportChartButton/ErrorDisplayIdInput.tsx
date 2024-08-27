@@ -1,14 +1,18 @@
 import { computed, defineComponent, PropType } from "vue";
-import { NAlert, NButton, NCheckbox, NFlex, NForm, NFormItem, NInputNumber, NModal, NScrollbar } from "naive-ui";
+import { NAlert, NButton, NCheckbox, NFlex, NForm, NFormItem, NInputNumber, NModal, NScrollbar, NSelect, SelectOption } from "naive-ui";
 import { ImportChartMessage, MessageLevel } from "@/client/apiGen";
 import { ImportChartMessageEx, ImportMeta } from "@/components/ImportChartButton/index";
 import noJacket from '@/assets/noJacket.webp';
+import { addVersionList, addVersionOptions, genreList, genreOptions } from "@/store/refs";
+import GenreOption from "@/components/GenreOption";
 
 export default defineComponent({
   props: {
     show: {type: Boolean, required: true},
     meta: {type: Array as PropType<ImportMeta[]>, required: true},
     ignoreLevel: Boolean,
+    addVersionId: Number,
+    genreId: Number,
     closeModal: {type: Function, required: true},
     proceed: {type: Function as PropType<() => any>, required: true},
     errors: {type: Array as PropType<ImportChartMessageEx[]>, required: true}
@@ -21,6 +25,14 @@ export default defineComponent({
     const ignoreLevel = computed({
       get: () => props.ignoreLevel,
       set: (val) => emit('update:ignoreLevel', val)
+    })
+    const genreId = computed({
+      get: () => props.genreId,
+      set: (val) => emit('update:genreId', val)
+    })
+    const addVersionId = computed({
+      get: () => props.addVersionId,
+      set: (val) => emit('update:addVersionId', val)
     })
 
     return () => <NModal
@@ -58,6 +70,14 @@ export default defineComponent({
               {props.meta.map((meta, i) => <MusicIdInput key={i} meta={meta}/>)}
             </NFlex>
           </NScrollbar>
+          <NFormItem label="流派" labelPlacement="left" labelWidth="5em" showFeedback={false}>
+            <NSelect options={genreOptions.value as any} v-model:value={genreId.value} status={genreList.value.some(it => it.id === genreId.value) ? undefined : 'error'}
+                     renderLabel={(option: SelectOption) => <GenreOption genre={genreList.value.find(it => it.id === option.value)!}/>}/>
+          </NFormItem>
+          <NFormItem label="版本分类" labelPlacement="left" labelWidth="5em" showFeedback={false}>
+            <NSelect options={addVersionOptions.value as any} v-model:value={addVersionId.value} status={addVersionList.value.some(it => it.id === addVersionId.value) ? undefined : 'error'}
+                     renderLabel={(option: SelectOption) => <GenreOption genre={addVersionList.value.find(it => it.id === option.value)!}/>}/>
+          </NFormItem>
           <NCheckbox v-model:checked={ignoreLevel.value}>
             忽略定数，不参与 B50 计算
           </NCheckbox>

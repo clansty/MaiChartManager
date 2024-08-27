@@ -7,6 +7,7 @@ import api from "@/client/api";
 import { musicList, selectMusicId, updateMusicList } from "@/store/refs";
 import ErrorDisplayIdInput from "@/components/ImportChartButton/ErrorDisplayIdInput";
 import ImportStepDisplay from "@/components/ImportChartButton/ImportStepDisplay";
+import { useStorage } from "@vueuse/core";
 
 enum STEP {
   none,
@@ -53,6 +54,8 @@ export default defineComponent({
   setup(props) {
     const step = ref(STEP.none);
     const ignoreLevel = ref(false);
+    const addVersionId = useStorage('importMusicAddVersionId', 0);
+    const genreId = useStorage('importMusicGenreId', 1);
     const dialog = useDialog();
     const errors = ref<ImportChartMessageEx[]>([]);
     const modalResolve = ref<(qwq?: any) => any>(() => {
@@ -111,7 +114,13 @@ export default defineComponent({
         if (createRet) throw new Error(createRet);
 
         music.importStep = IMPORT_STEP.chart;
-        const {shiftNoteEaten} = (await api.ImportChart({file: music.maidata, id: music.id, ignoreLevelNum: ignoreLevel.value})).data;
+        const {shiftNoteEaten} = (await api.ImportChart({
+          file: music.maidata,
+          id: music.id,
+          ignoreLevelNum: ignoreLevel.value,
+          genreId: genreId.value,
+          addVersionId: addVersionId.value,
+        })).data;
 
         if (shiftNoteEaten) {
           errors.value.push({
@@ -204,7 +213,8 @@ export default defineComponent({
       导入乐曲
       <SelectFileTypeTip show={step.value === STEP.selectFile} closeModal={closeModal}/>
       <CheckingModal title="正在检查..." show={step.value === STEP.checking} closeModal={closeModal}/>
-      <ErrorDisplayIdInput show={step.value === STEP.showWarning} closeModal={closeModal} proceed={modalResolve.value!} meta={meta.value} v-model:ignoreLevel={ignoreLevel.value} errors={errors.value}/>
+      <ErrorDisplayIdInput show={step.value === STEP.showWarning} closeModal={closeModal} proceed={modalResolve.value!} meta={meta.value}
+                           v-model:ignoreLevel={ignoreLevel.value} v-model:addVersionId={addVersionId.value} v-model:genreId={genreId.value} errors={errors.value}/>
       <ImportStepDisplay show={step.value === STEP.importing} closeModal={closeModal} current={currentProcessing.value}/>
       <ErrorDisplayIdInput show={step.value === STEP.showResultError} closeModal={closeModal} proceed={() => {
       }} meta={[]} ignoreLevel errors={errors.value}/>

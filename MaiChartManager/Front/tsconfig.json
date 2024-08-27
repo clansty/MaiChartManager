@@ -25,7 +25,8 @@
       ]
     },
     "types": [
-      "@modyfi/vite-plugin-yaml/modules"
+      "@modyfi/vite-plugin-yaml/modules",
+      "@types/wicg-file-system-access"
     ]
   },
   "include": [
