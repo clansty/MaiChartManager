@@ -34,9 +34,9 @@ partial class Browser
         webView21 = new Microsoft.Web.WebView2.WinForms.WebView2();
         ((ISupportInitialize)webView21).BeginInit();
         SuspendLayout();
-        // 
+        //
         // webView21
-        // 
+        //
         webView21.AllowExternalDrop = true;
         webView21.CreationProperties = null;
         webView21.DefaultBackgroundColor = System.Drawing.Color.White;
@@ -47,15 +47,15 @@ partial class Browser
         webView21.TabIndex = 0;
         webView21.ZoomFactor = 1D;
         webView21.CoreWebView2InitializationCompleted += webView21_CoreWebView2InitializationCompleted;
-        // 
+        //
         // Browser
-        // 
+        //
         AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
         AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
         ClientSize = new System.Drawing.Size(1782, 1153);
         Controls.Add(webView21);
         Name = "Browser";
-        Text = "Browser";
+        Text = "Main";
         ((ISupportInitialize)webView21).EndInit();
         ResumeLayout(false);
     }

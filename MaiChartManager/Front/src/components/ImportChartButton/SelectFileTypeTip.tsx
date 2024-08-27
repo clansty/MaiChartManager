@@ -34,6 +34,7 @@ export default defineComponent({
               </NFlex>
             </div>
           </div>
+          或者，一个包含一些这样的文件夹的文件夹
         </NFlex>
       </NDrawerContent>
     </NDrawer>;

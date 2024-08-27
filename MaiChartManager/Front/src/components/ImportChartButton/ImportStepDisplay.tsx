@@ -1,12 +1,12 @@
 import { computed, defineComponent, PropType } from "vue";
 import { NButton, NFlex, NInputNumber, NModal } from "naive-ui";
-import { IMPORT_STEP } from "@/components/ImportChartButton/index";
+import { IMPORT_STEP, ImportMeta } from "@/components/ImportChartButton/index";
 
 export default defineComponent({
   props: {
     show: {type: Boolean, required: true},
     closeModal: {type: Function, required: true},
-    current: {type: Number as PropType<IMPORT_STEP>, required: true},
+    current: {type: Object as PropType<ImportMeta>, required: true},
   },
   setup(props, {emit}) {
     const show = computed({
@@ -23,10 +23,12 @@ export default defineComponent({
       v-model:show={show.value}
     >
       <NFlex vertical class="text-4">
-        <Step step={IMPORT_STEP.create} current={props.current} name="创建乐曲"/>
-        <Step step={IMPORT_STEP.chart} current={props.current} name="转换谱面"/>
-        <Step step={IMPORT_STEP.music} current={props.current} name="转码音频"/>
-        <Step step={IMPORT_STEP.jacket} current={props.current} name="导入封面"/>
+        <span class="op-90">当前正在处理的项目：</span>
+        {props.current.name}
+        <Step step={IMPORT_STEP.create} current={props.current.importStep} name="创建乐曲"/>
+        <Step step={IMPORT_STEP.chart} current={props.current.importStep} name="转换谱面"/>
+        <Step step={IMPORT_STEP.music} current={props.current.importStep} name="转码音频"/>
+        <Step step={IMPORT_STEP.jacket} current={props.current.importStep} name="导入封面"/>
       </NFlex>
     </NModal>
   }
