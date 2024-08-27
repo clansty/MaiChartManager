@@ -31,6 +31,26 @@ export interface ChartAvailable {
   levelId?: number;
 }
 
+export interface CheatConfig {
+  ticketUnlock?: boolean;
+  mapUnlock?: boolean;
+  unlockUtage?: boolean;
+}
+
+export interface Config {
+  ux?: UXConfig;
+  cheat?: CheatConfig;
+  performance?: PerformanceConfig;
+  fix?: FixConfig;
+}
+
+export interface FixConfig {
+  skipVersionCheck?: boolean;
+  removeEncryption?: boolean;
+  forceAsServer?: boolean;
+  forceFreePlay?: boolean;
+}
+
 export interface GenreAddRequest {
   /** @format int32 */
   id?: number;
@@ -121,6 +141,29 @@ export interface MusicXmlWithABJacket {
   hasJacket?: boolean;
   isAcbAwbExist?: boolean;
   problems?: string[] | null;
+}
+
+export interface PerformanceConfig {
+  improveLoadSpeed?: boolean;
+}
+
+export interface UXConfig {
+  skipWarningScreen?: boolean;
+  singlePlayer?: boolean;
+  skipToMusicSelection?: boolean;
+  loadJacketPng?: boolean;
+  loadAssetBundleWithoutManifest?: boolean;
+  quickSkip?: boolean;
+  randomBgm?: boolean;
+  demoMaster?: boolean;
+  extendTimer?: boolean;
+  skipEventInfo?: boolean;
+  immediateSave?: boolean;
+  loadLocalBga?: boolean;
+  testProof?: boolean;
+  customVersionString?: string | null;
+  execOnIdle?: string | null;
+  execOnEntry?: string | null;
 }
 
 export interface VersionXml {
@@ -669,6 +712,95 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         body: data,
         type: ContentType.FormData,
         format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Mod
+     * @name IsMelonInstalled
+     * @request GET:/MaiChartManagerServlet/IsMelonInstalledApi
+     */
+    IsMelonInstalled: (params: RequestParams = {}) =>
+      this.request<boolean, any>({
+        path: `/MaiChartManagerServlet/IsMelonInstalledApi`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Mod
+     * @name IsAquaMaiInstalled
+     * @request GET:/MaiChartManagerServlet/IsAquaMaiInstalledApi
+     */
+    IsAquaMaiInstalled: (params: RequestParams = {}) =>
+      this.request<boolean, any>({
+        path: `/MaiChartManagerServlet/IsAquaMaiInstalledApi`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Mod
+     * @name GetAquaMaiConfig
+     * @request GET:/MaiChartManagerServlet/GetAquaMaiConfigApi
+     */
+    GetAquaMaiConfig: (params: RequestParams = {}) =>
+      this.request<Config, any>({
+        path: `/MaiChartManagerServlet/GetAquaMaiConfigApi`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Mod
+     * @name SetAquaMaiConfig
+     * @request PUT:/MaiChartManagerServlet/SetAquaMaiConfigApi
+     */
+    SetAquaMaiConfig: (data: Config, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/MaiChartManagerServlet/SetAquaMaiConfigApi`,
+        method: "PUT",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Mod
+     * @name InstallMelonLoader
+     * @request POST:/MaiChartManagerServlet/InstallMelonLoaderApi
+     */
+    InstallMelonLoader: (params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/MaiChartManagerServlet/InstallMelonLoaderApi`,
+        method: "POST",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Mod
+     * @name InstallAquaMai
+     * @request POST:/MaiChartManagerServlet/InstallAquaMaiApi
+     */
+    InstallAquaMai: (params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/MaiChartManagerServlet/InstallAquaMaiApi`,
+        method: "POST",
         ...params,
       }),
 

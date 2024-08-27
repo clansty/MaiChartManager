@@ -1,0 +1,52 @@
+sections:
+  cheat: “作弊”功能
+  ux: 用户体验改进
+  performance: 一些性能优化
+  fix: 修复一些潜在的问题
+
+cheat:
+  ticketUnlock: 解锁游戏里所有可能的跑图券
+  mapUnlock: 解锁游戏里所有的区域，包括非当前版本的（并不会帮你跑完）
+  unlockUtage: 不需要万分也可以进宴会场
+
+ux:
+  skipWarningScreen: 跳过日服启动时候的 WARNING 界面
+  singlePlayer: 单人模式
+  skipToMusicSelection: 登录完成后直接进入选歌界面
+  customVersionString: 把右上角的版本更改为自定义文本
+  loadJacketPng: 从 LocalAssets 目录加载封面，不开启的话看不到本程序设置的封面
+  loadLocalBga: 就算没有 dat 格式的 BGA 也歌曲的封面做背景，不开启的话游戏中会没有背景
+  quickSkip: |
+    长按 Service 键或者键盘上的 “7” 键可以跳过登录过程中的界面直接进入选歌界面或在选歌界面直接结束游戏
+    在游玩界面，按一下 “7” 或者 Service 键重开当前的歌，按 1P 的“选择”键立即结束当前乐曲
+  loadAssetBundleWithoutManifest: |
+    优化图片资源的加载，就算没有 AssetBundleImages.manifest 也可以正常加载 ab 格式的图片资源
+    导入了删除曲包之类的话，应该需要开启这个
+  skipEventInfo: 跳过登录 / 注册游戏时候可能的 “发现了新的区域哟” “乐曲增加” “有活动哟” 之类的提示
+  randomBgm: |
+    在 `LocalAssets\Mai2Cue` 目录下放置旧版游戏的 Mai2Cue.{acb,awb} 并重命名的话，可以在播放游戏 BGM 的时候随机播放这里面的旧版游戏 BGM
+    和 2P 模式有冲突，如果你没有开启 'SinglePlayer' 的话，请关闭这个
+  demoMaster: 在闲置时的演示画面上播放紫谱而不是绿谱
+  execOnIdle: 在游戏闲置时执行指定的命令脚本
+  execOnEntry: 在玩家登录时执行指定的命令脚本
+  extendTimer: |
+    关掉那些游戏中的倒计时
+    如果你没有开启 'SinglePlayer' 的话，不建议开这个，不过要开的话也不是不可以
+  immediateSave: 打完一首歌的时候立即向服务器保存成绩
+  testProof: 防止不小心按到 Test 键，Test 键需要长按 1 秒才能生效
+
+performance:
+  improveLoadSpeed: 在自检界面，每个屏幕结束的时候不会等两秒才进入下一个屏幕
+
+fix:
+  skipVersionCheck: 如果账号版本比当前游戏设定的版本高的话也允许登录
+  removeEncryption: |
+    连接私服时不会加密连接，同时移除不同版本的客户端可能会对 API 接口加的后缀
+    正常情况下，请保持这个选项开启
+  forceAsServer: 强制服务器模式，配置店内招募时关闭
+  forceFreePlay: 强制免费游玩
+
+shouldEnableOptions:
+  ux:
+    loadJacketPng: true
+    loadLocalBga: true

@@ -7,6 +7,7 @@ import MusicEdit from "@/components/MusicEdit";
 import MusicSelectedTopRightToolbar from "@/components/MusicSelectedTopRightToolbar";
 import CreateMusicButton from "@/components/CreateMusicButton";
 import ImportChartButton from "@/components/ImportChartButton";
+import ModManager from "@/components/ModManager";
 
 export default defineComponent({
   setup() {
@@ -25,6 +26,7 @@ export default defineComponent({
           {selectedADir.value !== 'A000' && <NFlex class="shrink-0">
             <GenreVersionManager type="genre"/>
             <GenreVersionManager type="version"/>
+            <ModManager/>
 
             <div class="grow-1"/>
 

@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using System.Xml;
 using MaiChartManager.Models;
 using Sitreamai.Models;
 
@@ -14,15 +15,14 @@ public partial class StaticSettings
     {
         _logger = logger;
         Directory.CreateDirectory(tempPath);
-        if (!string.IsNullOrEmpty(GamePath))
-        {
-            AssetDir = "A500";
-            ScanMusicList();
-            ScanGenre();
-            ScanVersionList();
-            ScanAssetBundles();
-            ScanSoundData();
-        }
+        if (string.IsNullOrEmpty(GamePath)) return;
+        AssetDir = "A500";
+        ScanMusicList();
+        ScanGenre();
+        ScanVersionList();
+        ScanAssetBundles();
+        ScanSoundData();
+        GetGameVersion();
     }
 
     [GeneratedRegex(@"^\w\d{3}$")]
@@ -45,9 +45,10 @@ public partial class StaticSettings
         }
     }
 
-    public List<MusicXmlWithABJacket> MusicList { get; set; } = new();
-    public static List<GenreXml> GenreList { get; set; } = new();
-    public static List<VersionXml> VersionList { get; set; } = new();
+    public int gameVersion;
+    public List<MusicXmlWithABJacket> MusicList { get; set; } = [];
+    public static List<GenreXml> GenreList { get; set; } = [];
+    public static List<VersionXml> VersionList { get; set; } = [];
     public static Dictionary<int, string> AssetBundleJacketMap { get; set; } = new();
     public static Dictionary<string, string> AcbAwb { get; set; } = new();
 
@@ -151,5 +152,12 @@ public partial class StaticSettings
         }
 
         _logger.LogInformation($"Scan SoundData, found {AcbAwb.Count} SoundData.");
+    }
+
+    private void GetGameVersion()
+    {
+        var xmlDoc = new XmlDocument();
+        xmlDoc.Load(Path.Combine(StreamingAssets, @"A000/DataConfig.xml"));
+        int.TryParse(xmlDoc.SelectSingleNode("/DataConfig/version/minor")?.InnerText, out gameVersion);
     }
 }
