@@ -23,8 +23,10 @@ export default defineComponent({
       v-model:show={show.value}
     >
       <NFlex vertical class="text-4">
-        <span class="op-90">当前正在处理的项目：</span>
-        {props.current.name}
+        <div>
+          <span class="op-90">当前正在处理的项目：</span>
+          {props.current.name}
+        </div>
         <Step step={IMPORT_STEP.create} current={props.current.importStep} name="创建乐曲"/>
         <Step step={IMPORT_STEP.chart} current={props.current.importStep} name="转换谱面"/>
         <Step step={IMPORT_STEP.music} current={props.current.importStep} name="转码音频"/>

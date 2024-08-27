@@ -2,7 +2,7 @@ import { defineComponent, onMounted } from 'vue';
 import { NFlex, NScrollbar } from "naive-ui";
 import MusicList from "@/components/MusicList";
 import GenreVersionManager from "@/components/GenreVersionManager";
-import { updateAddVersionList, updateAssetDirs, updateGenreList, updateSelectedAssetDir } from "@/store/refs";
+import { selectedADir, updateAddVersionList, updateAssetDirs, updateGenreList, updateSelectedAssetDir } from "@/store/refs";
 import MusicEdit from "@/components/MusicEdit";
 import MusicSelectedTopRightToolbar from "@/components/MusicSelectedTopRightToolbar";
 import CreateMusicButton from "@/components/CreateMusicButton";
@@ -22,7 +22,7 @@ export default defineComponent({
           <MusicList/>
         </div>
         <NFlex vertical class="p-xy h-100vh" size="large">
-          <NFlex class="shrink-0">
+          {selectedADir.value !== 'A000' && <NFlex class="shrink-0">
             <GenreVersionManager type="genre"/>
             <GenreVersionManager type="version"/>
 
@@ -31,7 +31,7 @@ export default defineComponent({
             <MusicSelectedTopRightToolbar/>
             <CreateMusicButton/>
             <ImportChartButton/>
-          </NFlex>
+          </NFlex>}
           <NScrollbar class="grow-1">
             <MusicEdit/>
           </NScrollbar>

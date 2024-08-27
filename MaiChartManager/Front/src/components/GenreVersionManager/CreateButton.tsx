@@ -66,7 +66,7 @@ export default defineComponent({
               <NFormItem label="资源目录">
                 <NSelect
                   v-model:value={assetDir.value}
-                  options={assetDirs.value.map(dir => ({label: dir, value: dir}))}
+                  options={assetDirs.value.filter(it => it !== 'A000').map(dir => ({label: dir, value: dir}))}
                 />
               </NFormItem>
             </NFlex>
