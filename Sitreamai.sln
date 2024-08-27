@@ -10,6 +10,8 @@ Project("{C7167F0D-BC9F-4E6E-AFE1-012C56B48DB5}") = "Packaging", "Packaging\Pack
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimaiSharp", "SimaiSharp\SimaiSharp\SimaiSharp.csproj", "{5633AACB-9089-497C-8596-2C27BEAD2201}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MaiLib", "MaiLib\MaiLib.csproj", "{077998A7-9AD8-4F41-B93B-B63EFD19A550}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -34,6 +36,10 @@ Global
 		{5633AACB-9089-497C-8596-2C27BEAD2201}.Debug|x64.Build.0 = Debug|Any CPU
 		{5633AACB-9089-497C-8596-2C27BEAD2201}.Release|x64.ActiveCfg = Release|Any CPU
 		{5633AACB-9089-497C-8596-2C27BEAD2201}.Release|x64.Build.0 = Release|Any CPU
+		{077998A7-9AD8-4F41-B93B-B63EFD19A550}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{077998A7-9AD8-4F41-B93B-B63EFD19A550}.Debug|x64.Build.0 = Debug|Any CPU
+		{077998A7-9AD8-4F41-B93B-B63EFD19A550}.Release|x64.ActiveCfg = Release|Any CPU
+		{077998A7-9AD8-4F41-B93B-B63EFD19A550}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -22,9 +22,6 @@
     <Reference Include="LB_Common">
       <HintPath>Lib\LB_Common.dll</HintPath>
     </Reference>
-    <Reference Include="MaichartConverter">
-      <HintPath>Lib\MaichartConverter.dll</HintPath>
-    </Reference>
     <Reference Include="System.Core">
       <HintPath>Lib\System.Core.dll</HintPath>
     </Reference>
@@ -51,6 +48,7 @@
     <None Remove="Lib\**" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MaiLib\MaiLib.csproj" />
     <ProjectReference Include="..\SimaiSharp\SimaiSharp\SimaiSharp.csproj" />
   </ItemGroup>
 </Project>
