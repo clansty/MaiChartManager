@@ -76,6 +76,10 @@ export interface ImportChartMessage {
   level?: MessageLevel;
 }
 
+export interface ImportChartResult {
+  shiftNoteEaten?: boolean;
+}
+
 export enum MessageLevel {
   Info = "Info",
   Warning = "Warning",
@@ -659,11 +663,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       },
       params: RequestParams = {},
     ) =>
-      this.request<void, any>({
+      this.request<ImportChartResult, any>({
         path: `/MaiChartManagerServlet/ImportChartApi`,
         method: "POST",
         body: data,
         type: ContentType.FormData,
+        format: "json",
         ...params,
       }),
 

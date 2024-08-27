@@ -135,12 +135,17 @@ public class ImportChartController(StaticSettings settings, ILogger<StaticSettin
         return new ImportChartCheckResult(!fatal, errors, padding, isDx);
     }
 
+    public record ImportChartResult(bool ShiftNoteEaten);
+
     [HttpPost]
     // 创建完 Music 后调用
-    public void ImportChart([FromForm] int id, IFormFile file, [FromForm] bool ignoreLevelNum)
+    public ImportChartResult ImportChart([FromForm] int id, IFormFile file, [FromForm] bool ignoreLevelNum)
     {
         var music = settings.MusicList.First(it => it.Id == id);
         var maiData = new Dictionary<string, string>(new SimaiFile(file.OpenReadStream()).ToKeyValuePairs());
+
+        // Debug
+        var shiftNoteEaten = false;
 
         var allCharts = new Dictionary<int, MaiChart>();
         for (var i = 2; i < 9; i++)
@@ -231,13 +236,22 @@ public class ImportChartController(StaticSettings settings, ILogger<StaticSettin
 
             targetChart.Designer = maiData.GetValueOrDefault($"des_{level}") ?? maiData.GetValueOrDefault("des") ?? "";
             var maiLibChart = simaiParser.ChartOfToken(simaiTokenizer.TokensFromText(SimaiConvert.Serialize(chart)));
+            var originalConverted = maiLibChart.Compose(ChartEnum.ChartVersion.Ma2_104);
             if (chartPadding != 0)
             {
                 maiLibChart.ShiftByOffset((int)(chartPadding / bar * maiLibChart.Definition));
             }
 
+            var shiftedConverted = maiLibChart.Compose(ChartEnum.ChartVersion.Ma2_104);
+
+            if (shiftedConverted.Split('\n').Length != originalConverted.Split('\n').Length)
+            {
+                shiftNoteEaten = true;
+                logger.LogWarning("BUG! shiftedConverted: {shiftedLen}, originalConverted: {originalLen}", shiftedConverted.Split('\n').Length, originalConverted.Split('\n').Length);
+            }
+
             targetChart.MaxNotes = maiLibChart.AllNoteNum;
-            System.IO.File.WriteAllText(Path.Combine(Path.GetDirectoryName(music.FilePath), targetChart.Path), maiLibChart.Compose(ChartEnum.ChartVersion.Ma2_104));
+            System.IO.File.WriteAllText(Path.Combine(Path.GetDirectoryName(music.FilePath), targetChart.Path), shiftedConverted);
 
             targetChart.Enable = true;
         }
@@ -245,5 +259,6 @@ public class ImportChartController(StaticSettings settings, ILogger<StaticSettin
         music.Name = maiData["title"];
         music.Artist = maiData.GetValueOrDefault("artist") ?? "";
         music.Save();
+        return new ImportChartResult(shiftNoteEaten);
     }
 }

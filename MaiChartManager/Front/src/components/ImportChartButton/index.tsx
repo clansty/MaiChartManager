@@ -1,5 +1,5 @@
 import { defineComponent, ref } from "vue";
-import { NButton, useDialog } from "naive-ui";
+import { NButton, useDialog, useNotification } from "naive-ui";
 import SelectFileTypeTip from "@/components/ImportChartButton/SelectFileTypeTip";
 import { ImportChartMessage, MessageLevel } from "@/client/apiGen";
 import CheckingModal from "@/components/ImportChartButton/CheckingModal";
@@ -45,6 +45,7 @@ export default defineComponent({
     const modalResolve = ref<(qwq?: any) => any>();
     const modalReject = ref<Function>();
     const id = ref(0);
+    const notification = useNotification();
 
     const closeModal = () => {
       step.value = STEP.none;
@@ -109,7 +110,14 @@ export default defineComponent({
         if (createRet) throw new Error(createRet);
 
         importStep.value = IMPORT_STEP.chart;
-        await api.ImportChart({file: maidata, id: id.value, ignoreLevelNum: ignoreLevel.value});
+        const {shiftNoteEaten} = (await api.ImportChart({file: maidata, id: id.value, ignoreLevelNum: ignoreLevel.value})).data;
+
+        if (shiftNoteEaten) {
+          notification.warning({
+            title: '看起来有音符被吃掉了！',
+            content: '不出意外的话是遇到了 Bug，如果你能提供谱面文件的话我们会很感谢！'
+          })
+        }
 
         importStep.value = IMPORT_STEP.music;
         await api.SetAudio(id.value, {file: track, padding: musicPadding});
