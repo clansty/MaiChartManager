@@ -7,7 +7,7 @@ export default defineComponent({
   setup(props) {
     return () => <div class="relative">
       <div class="i-ph-file"/>
-      <div class="absolute left-.05em bottom-.05em bg-white text-.3em z-1 lh-1em p-.1em">{props.type}</div>
+      <pre class="absolute left-.05em bottom-.05em bg-white text-.3em z-1 lh-1em p-.1em m-0">{props.type}</pre>
     </div>;
   }
 })

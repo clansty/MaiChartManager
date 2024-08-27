@@ -11,6 +11,9 @@ importers:
       '@iconify-json/material-symbols':
         specifier: ^1.1.88
         version: 1.1.88
+      '@iconify-json/mdi':
+        specifier: ^1.1.68
+        version: 1.1.68
       '@iconify-json/ph':
         specifier: ^1.1.14
         version: 1.1.14
@@ -20,6 +23,9 @@ importers:
       '@types/node':
         specifier: ^22.4.1
         version: 22.4.1
+      '@types/wicg-file-system-access':
+        specifier: ^2023.10.5
+        version: 2023.10.5
       '@unocss/preset-icons':
         specifier: ^0.62.2
         version: 0.62.2
@@ -523,6 +529,9 @@ packages:
   '@iconify-json/material-symbols@1.1.88':
     resolution: {integrity: sha512-1wDu/SDAtJighAvGW/bO9f5zLYUvFlcErPP59uw8zURPKVpQwdLmX6zrBTeHzMUnfcPgv5dCJElCn1astExbhg==}
 
+  '@iconify-json/mdi@1.1.68':
+    resolution: {integrity: sha512-7//TKCiXLU6kNWeOJRTBbisofVO7rF1sD1TZTL4/V9nqlmVNczQ5IOY0GgKOTsitkcTnX9GXgrgbjw3OI5B69w==}
+
   '@iconify-json/ph@1.1.14':
     resolution: {integrity: sha512-s1hZVaxIpl40qLEhjqPRMcZl4A3M4fZ+77Fi+VuOb/eKkIHIMutAoBHIR+0a3l7psUweZQGj9hSyL2P5CIj6qA==}
 
@@ -678,6 +687,9 @@ packages:
 
   '@types/web-bluetooth@0.0.20':
     resolution: {integrity: sha512-g9gZnnXVq7gM7v3tJCWV/qw7w+KeOlSHAhgF9RytFyifW6AF61hdT2ucrYhPq9hLs5JIryeupHV3qGk95dH9ow==}
+
+  '@types/wicg-file-system-access@2023.10.5':
+    resolution: {integrity: sha512-e9kZO9kCdLqT2h9Tw38oGv9UNzBBWaR1MzuAavxPcsV/7FJ3tWbU6RI3uB+yKIDPGLkGVbplS52ub0AcRLvrhA==}
 
   '@unocss/astro@0.62.2':
     resolution: {integrity: sha512-RUPGmbNEyfbBOuS22PC23Dy9gmNBQHpLCmpuj6ehr6UcKeRy3xOwlbJDnCv08Vfd3mp3n45Va24wTK/yM6I1YQ==}
@@ -2040,6 +2052,10 @@ snapshots:
     dependencies:
       '@iconify/types': 2.0.0
 
+  '@iconify-json/mdi@1.1.68':
+    dependencies:
+      '@iconify/types': 2.0.0
+
   '@iconify-json/ph@1.1.14':
     dependencies:
       '@iconify/types': 2.0.0
@@ -2164,6 +2180,8 @@ snapshots:
   '@types/swagger-schema-official@2.0.25': {}
 
   '@types/web-bluetooth@0.0.20': {}
+
+  '@types/wicg-file-system-access@2023.10.5': {}
 
   '@unocss/astro@0.62.2(rollup@4.20.0)(vite@5.4.1(@types/node@22.4.1)(sass@1.77.8))':
     dependencies:

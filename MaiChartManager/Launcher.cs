@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Text.Json.Serialization;
 using System.Windows.Forms;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
@@ -54,10 +55,13 @@ public partial class Launcher : Form
     {
         var builder = WebApplication.CreateBuilder();
 
-        builder.Services.AddSingleton<StaticSettings>();
-        builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen();
-        builder.Services.AddControllers();
+        builder.Services.AddSingleton<StaticSettings>()
+            .AddEndpointsApiExplorer()
+            .AddSwaggerGen()
+            .AddControllers()
+            .AddJsonOptions(options =>
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+
 
         app = builder.Build();
         app.Lifetime.ApplicationStarted.Register(() =>

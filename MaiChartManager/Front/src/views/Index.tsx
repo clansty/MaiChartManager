@@ -6,6 +6,7 @@ import { updateAddVersionList, updateAssetDirs, updateGenreList, updateSelectedA
 import MusicEdit from "@/components/MusicEdit";
 import MusicSelectedTopRightToolbar from "@/components/MusicSelectedTopRightToolbar";
 import CreateMusicButton from "@/components/CreateMusicButton";
+import ImportChartButton from "@/components/ImportChartButton";
 
 export default defineComponent({
   setup() {
@@ -16,7 +17,7 @@ export default defineComponent({
   },
   render() {
     return <NFlex justify="center">
-      <div class="grid cols-[40em_1fr] select-none w-[min(90rem,100%)]">
+      <div class="grid cols-[40em_1fr] w-[min(90rem,100%)]">
         <div class="p-xy h-100vh">
           <MusicList/>
         </div>
@@ -29,6 +30,7 @@ export default defineComponent({
 
             <MusicSelectedTopRightToolbar/>
             <CreateMusicButton/>
+            <ImportChartButton/>
           </NFlex>
           <NScrollbar class="grow-1">
             <MusicEdit/>

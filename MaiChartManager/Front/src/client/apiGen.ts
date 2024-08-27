@@ -63,6 +63,25 @@ export interface GenreXml {
   colorB?: number;
 }
 
+export interface ImportChartCheckResult {
+  accept?: boolean;
+  errors?: ImportChartMessage[] | null;
+  /** @format float */
+  musicPadding?: number;
+  isDx?: boolean;
+}
+
+export interface ImportChartMessage {
+  message?: string | null;
+  level?: MessageLevel;
+}
+
+export enum MessageLevel {
+  Info = "Info",
+  Warning = "Warning",
+  Fatal = "Fatal",
+}
+
 export interface MusicBrief {
   /** @format int32 */
   id?: number;
@@ -494,6 +513,53 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
+     * @tags ChartPreview
+     * @name 1
+     * @request GET:/MaiChartManagerServlet/ChartPreview/{id}/{level}/Maidata/1
+     */
+    1: (id: number, level: number, params: RequestParams = {}) =>
+      this.request<string, any>({
+        path: `/MaiChartManagerServlet/ChartPreview/${id}/${level}/Maidata/1`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags ChartPreview
+     * @name 12
+     * @request GET:/MaiChartManagerServlet/ChartPreview/{id}/{level}/Track/1
+     * @originalName 1
+     * @duplicate
+     */
+    12: (id: number, level: number, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/MaiChartManagerServlet/ChartPreview/${id}/${level}/Track/1`,
+        method: "GET",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags ChartPreview
+     * @name 13
+     * @request GET:/MaiChartManagerServlet/ChartPreview/{id}/{level}/ImageFull/1
+     * @originalName 1
+     * @duplicate
+     */
+    13: (id: number, level: number, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/MaiChartManagerServlet/ChartPreview/${id}/${level}/ImageFull/1`,
+        method: "GET",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
      * @tags Genre
      * @name GetAllGenres
      * @request GET:/MaiChartManagerServlet/GetAllGenresApi
@@ -550,6 +616,54 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       this.request<void, any>({
         path: `/MaiChartManagerServlet/DeleteGenreApi/${id}`,
         method: "DELETE",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags ImportChart
+     * @name ImportChartCheck
+     * @request POST:/MaiChartManagerServlet/ImportChartCheckApi
+     */
+    ImportChartCheck: (
+      data: {
+        /** @format binary */
+        file?: File;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<ImportChartCheckResult, any>({
+        path: `/MaiChartManagerServlet/ImportChartCheckApi`,
+        method: "POST",
+        body: data,
+        type: ContentType.FormData,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags ImportChart
+     * @name ImportChart
+     * @request POST:/MaiChartManagerServlet/ImportChartApi
+     */
+    ImportChart: (
+      data: {
+        /** @format int32 */
+        id?: number;
+        /** @format binary */
+        file?: File;
+        ignoreLevelNum?: boolean;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<void, any>({
+        path: `/MaiChartManagerServlet/ImportChartApi`,
+        method: "POST",
+        body: data,
+        type: ContentType.FormData,
         ...params,
       }),
 
@@ -699,12 +813,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name AddMusic
      * @request POST:/MaiChartManagerServlet/AddMusicApi/{id}
      */
-    AddMusic: (id: number, data: boolean, params: RequestParams = {}) =>
+    AddMusic: (id: number, params: RequestParams = {}) =>
       this.request<string, any>({
         path: `/MaiChartManagerServlet/AddMusicApi/${id}`,
         method: "POST",
-        body: data,
-        type: ContentType.Json,
         format: "json",
         ...params,
       }),

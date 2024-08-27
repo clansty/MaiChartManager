@@ -79,9 +79,6 @@
       <Reference Include="AssetStudioUtility">
         <HintPath>Libs\AssetStudioUtility.dll</HintPath>
       </Reference>
-      <Reference Include="MaichartConverter">
-        <HintPath>..\Sitreamai\Lib\MaichartConverter.dll</HintPath>
-      </Reference>
       <Reference Include="WinBlur">
         <HintPath>Libs\WinBlur.dll</HintPath>
       </Reference>

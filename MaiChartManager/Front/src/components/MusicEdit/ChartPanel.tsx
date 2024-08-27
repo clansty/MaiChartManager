@@ -39,7 +39,7 @@ export default defineComponent({
 
     return () => <NForm showFeedback={false} labelPlacement="top" disabled={selectedADir.value === 'A000'}>
       <NFlex vertical>
-        <NFlex align="center" class="absolute right-0 top-0 mr-2 mt-2 z-2">
+        <NFlex align="center" class="absolute right-0 top-0 m-xy mt-2 z-2">
           <PreviewChartButton songId={props.songId} level={props.chartIndex}/>
         </NFlex>
         <NFormItem label="启用" labelPlacement="left" class="ml-2px">

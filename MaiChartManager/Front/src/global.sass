@@ -1,5 +1,6 @@
 html
   --selected-bg: #EDF8F6
+  user-select: none
 
 *
   -webkit-user-drag: none
@@ -20,12 +21,15 @@ html
       display: none
 
 .n-dialog__content
-  --n-content-margin: 1.5rem 0 1rem 0
+  --n-content-margin: 20px 0 1rem 0
 
-.n-dialog__title
+.n-dialog__title, .n-alert__icon
   i.n-base-icon
     // 我觉得这个图标不居中
     transform: translateY(0.03em)
 
 svg
   vertical-align: unset
+
+pre
+  font-family: Consolas, Monaco, Andale Mono, Ubuntu Mono, Fira Code, Fira Mono, Menlo, Monospaced, monospace

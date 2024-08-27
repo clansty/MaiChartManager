@@ -27,7 +27,6 @@ export default defineComponent({
     const uploadFlow = async () => {
       tipShow.value = true
       try {
-        // @ts-ignore
         const [fileHandle] = await window.showOpenFilePicker({
           id: 'acbawb',
           startIn: 'downloads',
@@ -47,7 +46,6 @@ export default defineComponent({
         let res: HttpResponse<any>;
         if (file.name.endsWith('.acb')) {
           tipSelectAwbShow.value = true;
-          // @ts-ignore
           const [fileHandle] = await window.showOpenFilePicker({
             id: 'acbawb',
             startIn: 'downloads',

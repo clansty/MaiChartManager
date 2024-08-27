@@ -8,12 +8,10 @@ import api from "@/client/api";
 export default defineComponent({
   setup() {
     const show = ref(false);
-    const isDx = ref(false);
     const id = ref(0);
 
     const showDialog = () => {
       id.value = 0;
-      isDx.value = false;
       for (const existedMusic of musicList.value) {
         if (id.value < existedMusic.id! % 1e4) {
           id.value = existedMusic.id! % 1e4;
@@ -25,9 +23,9 @@ export default defineComponent({
 
     const save = async () => {
       show.value = false;
-      await api.AddMusic(id.value, isDx.value);
+      await api.AddMusic(id.value);
       await updateMusicList();
-      selectMusicId.value = id.value + (isDx.value ? 1e4 : 0);
+      selectMusicId.value = id.value;
     }
 
     return () => (
@@ -43,14 +41,14 @@ export default defineComponent({
           default: () => <NForm label-placement="left" labelWidth="5em" showFeedback={false}>
             <NFlex vertical size="large">
               <NFormItem label="ID">
-                <NInputNumber v-model:value={id.value} class="w-full" min={1}/>
+                <NInputNumber v-model:value={id.value} class="w-full" min={1} max={2e4-1}/>
               </NFormItem>
               <NFormItem label="谱面类型">
                 <NFlex>
-                  <NRadio checked={!isDx.value} onUpdateChecked={() => isDx.value = false}>
+                  <NRadio checked={id.value < 1e4} onUpdateChecked={() => id.value -= 1e4}>
                     <img src={stdIcon} class="h-1.5em mt--0.6"/>
                   </NRadio>
-                  <NRadio checked={isDx.value} onUpdateChecked={() => isDx.value = true}>
+                  <NRadio checked={id.value >= 1e4} onUpdateChecked={() => id.value += 1e4}>
                     <img src={dxIcon} class="h-1.5em mt--0.6"/>
                   </NRadio>
                 </NFlex>

@@ -1,3 +1,6 @@
 [submodule "SimaiSharp"]
 	path = SimaiSharp
 	url = git@github.com:clansty/SimaiSharp.git
+[submodule "MaiLib"]
+	path = MaiLib
+	url = git@github.com:clansty/MaiLib.git
