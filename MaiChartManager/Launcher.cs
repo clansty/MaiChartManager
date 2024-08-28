@@ -1,4 +1,6 @@
 ﻿using System.Diagnostics;
+using System.Resources;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Windows.Forms;
 using Microsoft.AspNetCore.Hosting.Server;
@@ -11,14 +13,16 @@ public partial class Launcher : Form
     public Launcher()
     {
         InitializeComponent();
+        checkBox1.Checked = StaticSettings.Config.Export;
+        textBox1.Text = StaticSettings.Config.GamePath;
 # if DEBUG
+        checkBox1.Checked = true;
+        StaticSettings.Config.Export = true;
         textBox1.Text = @"D:\Maimai HDD\sdga145";
         button2_Click(null, null);
         WindowState = FormWindowState.Minimized;
 # endif
     }
-
-    public WebApplication app;
 
     private void button1_Click(object sender, EventArgs e)
     {
@@ -31,19 +35,54 @@ public partial class Launcher : Form
     {
         if (button2.Text == "停止")
         {
-            app.StopAsync();
-            app.DisposeAsync();
             button2.Text = "启动";
             textBox1.Enabled = true;
             button1.Enabled = true;
+            checkBox1.Enabled = true;
+            label1.Text = "";
+            ServerManager.StopAsync();
             return;
         }
 
+        if (string.IsNullOrWhiteSpace(textBox1.Text)) return;
+        if (!Path.Exists(textBox1.Text))
+        {
+            MessageBox.Show("选择的路径不存在！");
+        }
+
+        StaticSettings.GamePath = textBox1.Text;
+        if (!Path.Exists(StaticSettings.StreamingAssets))
+        {
+            MessageBox.Show("选择的路径中看起来不包含游戏文件，请选择 Sinmai.exe 所在的文件夹");
+        }
+
+# if !DEBUG
+        StaticSettings.Config.GamePath = textBox1.Text;
+        File.WriteAllText(Path.Combine(StaticSettings.appData, "config.json"), JsonSerializer.Serialize(StaticSettings.Config));
+# endif
+
         textBox1.Enabled = false;
         button1.Enabled = false;
+        checkBox1.Enabled = false;
         button2.Text = "停止";
-        StaticSettings.GamePath = textBox1.Text;
-        Task.Run(StartApp);
+
+        ServerManager.StartApp(checkBox1.Checked, () =>
+        {
+            var server = ServerManager.app!.Services.GetRequiredService<IServer>();
+            var serverAddressesFeature = server.Features.Get<IServerAddressesFeature>();
+
+            if (serverAddressesFeature == null) return;
+
+            if (checkBox1.Checked)
+            {
+                label1.Text = string.Join("\n", serverAddressesFeature.Addresses);
+                return;
+            }
+
+            // 本地模式
+            Invoke(() => new Browser(serverAddressesFeature.Addresses.First()).Show());
+            Dispose();
+        });
     }
 
     private void button4_Click(object sender, EventArgs e)
@@ -51,36 +90,6 @@ public partial class Launcher : Form
         Application.Exit();
     }
 
-    private void StartApp()
-    {
-        var builder = WebApplication.CreateBuilder();
-
-        builder.Services.AddSingleton<StaticSettings>()
-            .AddEndpointsApiExplorer()
-            .AddSwaggerGen()
-            .AddControllers()
-            .AddJsonOptions(options =>
-                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
-
-
-        app = builder.Build();
-        app.Lifetime.ApplicationStarted.Register(() =>
-        {
-            var server = app.Services.GetRequiredService<IServer>();
-            var serverAddressesFeature = server.Features.Get<IServerAddressesFeature>();
-
-            if (serverAddressesFeature == null) return;
-
-            label1.Text = string.Join("\n", serverAddressesFeature.Addresses);
-
-            app.Services.GetService<StaticSettings>();
-        });
-        app.UseSwagger();
-        app.UseSwaggerUI();
-        app.UseFileServer();
-        app.MapControllers();
-        app.Run();
-    }
 
     private Browser? _browserWin;
 
@@ -95,5 +104,15 @@ public partial class Launcher : Form
         {
             _browserWin.Activate();
         }
+    }
+
+    private void Launcher_FormClosed(object sender, FormClosedEventArgs e)
+    {
+        Application.Exit();
+    }
+
+    private void checkBox1_CheckedChanged(object sender, EventArgs e)
+    {
+        StaticSettings.Config.Export = checkBox1.Checked;
     }
 }

@@ -19,4 +19,11 @@ public partial class Browser : Form
         webView21.CoreWebView2.Settings.AreDevToolsEnabled = false;
         webView21.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
     }
+
+    private void Browser_FormClosed(object sender, FormClosedEventArgs e)
+    {
+        webView21.Dispose();
+        if (!StaticSettings.Config.Export)
+            Application.Exit();
+    }
 }
