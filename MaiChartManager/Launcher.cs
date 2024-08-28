@@ -1,4 +1,6 @@
 ﻿using System.Diagnostics;
+using System.Net;
+using System.Net.Sockets;
 using System.Resources;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -31,6 +33,8 @@ public partial class Launcher : Form
         textBox1.Text = folderBrowserDialog1.SelectedPath;
     }
 
+    private string loopbackUrl;
+
     private void button2_Click(object sender, EventArgs e)
     {
         if (button2.Text == "停止")
@@ -58,7 +62,7 @@ public partial class Launcher : Form
 
 # if !DEBUG
         StaticSettings.Config.GamePath = textBox1.Text;
-        File.WriteAllText(Path.Combine(StaticSettings.appData, "config.json"), JsonSerializer.Serialize(StaticSettings.Config));
+        File.WriteAllText(Path.Combine(Application.LocalUserAppDataPath, "config.json"), JsonSerializer.Serialize(StaticSettings.Config));
 # endif
 
         textBox1.Enabled = false;
@@ -73,16 +77,17 @@ public partial class Launcher : Form
 
             if (serverAddressesFeature == null) return;
 
-            if (checkBox1.Checked)
-            {
-                label1.Text = string.Join("\n", serverAddressesFeature.Addresses);
-                return;
-            }
+            loopbackUrl = serverAddressesFeature.Addresses.First();
 
             // 本地模式
-            Invoke(() => new Browser(serverAddressesFeature.Addresses.First()).Show());
+            if (checkBox1.Checked) return;
+            Invoke(() => label1_LinkClicked(null, null));
             Dispose();
         });
+
+        if (!checkBox1.Checked) return;
+        var localIp = Dns.GetHostAddresses(Dns.GetHostName()).First(it => it.AddressFamily == AddressFamily.InterNetwork);
+        label1.Text = $@"https://{localIp}:5001";
     }
 
     private void button4_Click(object sender, EventArgs e)
@@ -97,7 +102,7 @@ public partial class Launcher : Form
     {
         if (_browserWin is null || _browserWin.IsDisposed)
         {
-            _browserWin = new Browser(label1.Text.Split('\n')[0]);
+            _browserWin = new Browser(loopbackUrl);
             _browserWin.Show();
         }
         else

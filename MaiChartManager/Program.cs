@@ -15,9 +15,8 @@ static class Program
         // see https://aka.ms/applicationconfiguration.
         ApplicationConfiguration.Initialize();
 
-        Directory.CreateDirectory(StaticSettings.appData);
-        if (File.Exists(Path.Combine(StaticSettings.appData, "config.json")))
-            StaticSettings.Config = JsonSerializer.Deserialize<Config>(File.ReadAllText(Path.Combine(StaticSettings.appData, "config.json")));
+        if (File.Exists(Path.Combine(Application.LocalUserAppDataPath, "config.json")))
+            StaticSettings.Config = JsonSerializer.Deserialize<Config>(File.ReadAllText(Path.Combine(Application.LocalUserAppDataPath, "config.json")));
 
         new Launcher().Show();
 

@@ -9,6 +9,7 @@
 	    <IsTransformWebConfigDisabled>true</IsTransformWebConfigDisabled>
 	    <StaticWebAssetsEnabled>True</StaticWebAssetsEnabled>
 	    <IsPackable>true</IsPackable>
+	    <OutputType>WinExe</OutputType>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -28,6 +29,7 @@
     <ItemGroup>
       <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.8" />
       <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2651.64" />
+      <PackageReference Include="Pluralsight.Crypto" Version="1.1.0" />
       <PackageReference Include="SixLabors.ImageSharp" Version="2.1.9" />
       <PackageReference Include="Standart.Hash.xxHash" Version="4.0.5" />
       <PackageReference Include="Swashbuckle.AspNetCore" Version="6.7.1" />

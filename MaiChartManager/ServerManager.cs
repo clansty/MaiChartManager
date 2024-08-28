@@ -2,6 +2,9 @@
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text.Json.Serialization;
+using System.Windows.Forms;
+using Microsoft.AspNetCore.Server.Kestrel.Https;
+using Pluralsight.Crypto;
 
 namespace MaiChartManager;
 
@@ -19,17 +22,43 @@ public static class ServerManager
 
     public static bool IsRunning => app != null;
 
-    private static string GetCert()
+    private static X509Certificate2 GetCert()
     {
-        var path = Path.Combine(StaticSettings.appData, "cert.pfx");
-        if (File.Exists(path)) return path;
+        var path = Path.Combine(Application.LocalUserAppDataPath, "cert.pfx");
+        if (File.Exists(path))
+        {
+            return new X509Certificate2(path);
+        }
 
-        var ecdsa = ECDsa.Create();
-        var req = new CertificateRequest("CN=MaiChartManager", ecdsa, HashAlgorithmName.SHA256);
-        var cert = req.CreateSelfSigned(DateTimeOffset.Now, DateTimeOffset.Now.AddYears(5));
+        // ASP.NET 是不是不支持 ecc
+        // var ecdsa = ECDsa.Create();
+        // var req = new CertificateRequest("CN=MaiChartManager", ecdsa, HashAlgorithmName.SHA256);
+        // req.CertificateExtensions.Add(new X509BasicConstraintsExtension(false, false, 0, false));
+        // req.CertificateExtensions.Add(new X509KeyUsageExtension(X509KeyUsageFlags.DigitalSignature | X509KeyUsageFlags.KeyEncipherment, false));
+        // req.CertificateExtensions.Add(new X509EnhancedKeyUsageExtension([new Oid("1.3.6.1.5.5.7.3.1")], true));
+        // req.CertificateExtensions.Add(new X509SubjectKeyIdentifierExtension(req.PublicKey, false));
+        // var builder = new SubjectAlternativeNameBuilder();
+        // builder.AddDnsName("MaiChartManager");
+        // req.CertificateExtensions.Add(builder.Build());
+        //
+        // var cert = req.CreateSelfSigned(DateTimeOffset.Now, DateTimeOffset.Now.AddYears(5));
+        using CryptContext ctx = new CryptContext();
+        ctx.Open();
+
+        X509Certificate2 cert = ctx.CreateSelfSignedCertificate(
+            new SelfSignedCertProperties
+            {
+                IsPrivateKeyExportable = true,
+                KeyBitLength = 4096,
+                Name = new X500DistinguishedName("cn=MaiChartManager"),
+                ValidFrom = DateTime.Today.AddDays(-1),
+                ValidTo = DateTime.Today.AddYears(5),
+            });
+
+        X509Certificate2UI.DisplayCertificate(cert);
 
         File.WriteAllBytes(path, cert.Export(X509ContentType.Pfx));
-        return path;
+        return cert;
     }
 
     public static void StartApp(bool export, Action? onStart = null)
@@ -46,10 +75,16 @@ public static class ServerManager
 # if !DEBUG
         builder.WebHost.ConfigureKestrel((context, serverOptions) =>
         {
-            serverOptions.Listen(IPAddress.Loopback, 0);
+            serverOptions.Listen(IPAddress.Any, 0);
             if (export)
             {
-                serverOptions.Listen(IPAddress.Any, 5001, listenOptions => { listenOptions.UseHttps(GetCert()); });
+                serverOptions.Listen(IPAddress.Any, 5001, listenOptions =>
+                {
+                    listenOptions.UseHttps(new HttpsConnectionAdapterOptions()
+                    {
+                        ServerCertificate = GetCert()
+                    });
+                });
             }
         });
 # endif

@@ -1,5 +1,4 @@
 ﻿using System.Text.RegularExpressions;
-using System.Windows.Forms;
 using System.Xml;
 using MaiChartManager.Models;
 using Sitreamai.Models;
@@ -9,7 +8,6 @@ namespace MaiChartManager;
 public partial class StaticSettings
 {
     public readonly string tempPath = Path.Combine(Path.GetTempPath(), "MaiChartManager");
-    public static readonly string appData = Path.Combine(Application.LocalUserAppDataPath, "MaiChartManager");
 
     public static Config Config { get; set; } = new();
 
