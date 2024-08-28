@@ -81,6 +81,13 @@ export default defineComponent({
         }
         updateTime.value = Date.now()
         props.song.isAcbAwbExist = true;
+      } catch (e: any) {
+        if (e.name === 'AbortError') return
+        console.log(e)
+        dialog.error({
+          title: '错误',
+          content: e.message,
+        })
       } finally {
         tipShow.value = false;
         tipSelectAwbShow.value = false;

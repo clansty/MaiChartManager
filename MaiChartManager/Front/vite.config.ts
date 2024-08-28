@@ -1,4 +1,5 @@
-import {defineConfig} from 'vite';
+import { sentryVitePlugin } from "@sentry/vite-plugin";
+import { defineConfig } from 'vite';
 import vueJsx from '@vitejs/plugin-vue-jsx';
 import UnoCSS from 'unocss/vite';
 import ViteYaml from '@modyfi/vite-plugin-yaml';
@@ -9,7 +10,10 @@ export default defineConfig({
     vueJsx(),
     UnoCSS(),
     ViteYaml(),
-  ],
+    sentryVitePlugin({
+      org: "maichartmanager",
+      project: "front"
+    })],
   resolve: {
     alias: {
       '@': '/src',
@@ -17,7 +21,8 @@ export default defineConfig({
   },
   build: {
     outDir: '../wwwroot',
-    emptyOutDir: true
+    emptyOutDir: true,
+    sourcemap: true
   },
   server: {
     proxy: {

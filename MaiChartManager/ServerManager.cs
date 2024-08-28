@@ -5,6 +5,7 @@ using System.Text.Json.Serialization;
 using System.Windows.Forms;
 using Microsoft.AspNetCore.Server.Kestrel.Https;
 using Pluralsight.Crypto;
+using Sentry.AspNetCore;
 
 namespace MaiChartManager;
 
@@ -42,10 +43,10 @@ public static class ServerManager
         // req.CertificateExtensions.Add(builder.Build());
         //
         // var cert = req.CreateSelfSigned(DateTimeOffset.Now, DateTimeOffset.Now.AddYears(5));
-        using CryptContext ctx = new CryptContext();
+        using var ctx = new CryptContext();
         ctx.Open();
 
-        X509Certificate2 cert = ctx.CreateSelfSignedCertificate(
+        var cert = ctx.CreateSelfSignedCertificate(
             new SelfSignedCertProperties
             {
                 IsPrivateKeyExportable = true,
@@ -65,6 +66,15 @@ public static class ServerManager
     {
         var builder = WebApplication.CreateBuilder();
 
+        builder.WebHost.UseSentry((SentryAspNetCoreOptions o) =>
+        {
+            // Tells which project in Sentry to send events to:
+            o.Dsn = "https://b9c3da740445a9de74e8a4204bded577@o4507852801638400.ingest.de.sentry.io/4507852868419664";
+            // Set TracesSampleRate to 1.0 to capture 100% of transactions for tracing.
+            // We recommend adjusting this value in production.
+            o.TracesSampleRate = 0.5;
+        });
+
         builder.Services.AddSingleton<StaticSettings>()
             .AddEndpointsApiExplorer()
             .AddSwaggerGen()
@@ -75,7 +85,7 @@ public static class ServerManager
 # if !DEBUG
         builder.WebHost.ConfigureKestrel((context, serverOptions) =>
         {
-            serverOptions.Listen(IPAddress.Any, 0);
+            serverOptions.Listen(IPAddress.Loopback, 0);
             if (export)
             {
                 serverOptions.Listen(IPAddress.Any, 5001, listenOptions =>

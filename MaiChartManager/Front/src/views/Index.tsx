@@ -1,5 +1,5 @@
 import { defineComponent, onMounted } from 'vue';
-import { NFlex, NScrollbar } from "naive-ui";
+import { NFlex, NScrollbar, useNotification } from "naive-ui";
 import MusicList from "@/components/MusicList";
 import GenreVersionManager from "@/components/GenreVersionManager";
 import { selectedADir, updateAddVersionList, updateAssetDirs, updateGenreList, updateSelectedAssetDir } from "@/store/refs";
@@ -15,6 +15,15 @@ export default defineComponent({
     onMounted(updateAddVersionList)
     onMounted(updateSelectedAssetDir)
     onMounted(updateAssetDirs)
+
+    const notification = useNotification();
+
+    onMounted(() => {
+      addEventListener("unhandledrejection", (event) => {
+        console.log(event)
+        notification.error({title: '未处理错误', content: event.reason?.error?.message || event.reason?.message});
+      });
+    })
   },
   render() {
     return <NFlex justify="center">

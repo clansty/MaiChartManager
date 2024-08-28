@@ -15,3 +15,6 @@ yarn-error.log
 result
 .direnv
 .history
+
+# Sentry Config File
+.env.sentry-build-plugin
