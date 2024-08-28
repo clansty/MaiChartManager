@@ -9,6 +9,12 @@
  * ---------------------------------------------------------------
  */
 
+export interface AppVersionResult {
+  version?: string | null;
+  /** @format int32 */
+  gameVersion?: number;
+}
+
 export interface Chart {
   path?: string | null;
   /** @format int32 */
@@ -459,6 +465,21 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       this.request<void, any>({
         path: `/MaiChartManagerServlet/DeleteVersionApi/${id}`,
         method: "DELETE",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags AppVersion
+     * @name GetAppVersion
+     * @request GET:/MaiChartManagerServlet/GetAppVersionApi
+     */
+    GetAppVersion: (params: RequestParams = {}) =>
+      this.request<AppVersionResult, any>({
+        path: `/MaiChartManagerServlet/GetAppVersionApi`,
+        method: "GET",
+        format: "json",
         ...params,
       }),
 

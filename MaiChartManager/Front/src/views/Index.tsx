@@ -8,6 +8,7 @@ import MusicSelectedTopRightToolbar from "@/components/MusicSelectedTopRightTool
 import CreateMusicButton from "@/components/CreateMusicButton";
 import ImportChartButton from "@/components/ImportChartButton";
 import ModManager from "@/components/ModManager";
+import VersionInfo from "@/components/VersionInfo";
 
 export default defineComponent({
   setup() {
@@ -21,7 +22,8 @@ export default defineComponent({
     onMounted(() => {
       addEventListener("unhandledrejection", (event) => {
         console.log(event)
-        notification.error({title: '未处理错误', content: event.reason?.error?.message || event.reason?.message});
+        if (import.meta.env.DEV)
+          notification.error({title: '未处理错误', content: event.reason?.error?.message || event.reason?.message});
       });
     })
   },
@@ -32,17 +34,22 @@ export default defineComponent({
           <MusicList/>
         </div>
         <NFlex vertical class="p-xy h-100vh" size="large">
-          {selectedADir.value !== 'A000' && <NFlex class="shrink-0">
-            <GenreVersionManager type="genre"/>
-            <GenreVersionManager type="version"/>
+          <NFlex class="shrink-0">
+            {selectedADir.value !== 'A000' && <>
+              <GenreVersionManager type="genre"/>
+              <GenreVersionManager type="version"/>
+            </>}
             <ModManager/>
 
             <div class="grow-1"/>
 
-            <MusicSelectedTopRightToolbar/>
-            <CreateMusicButton/>
-            <ImportChartButton/>
-          </NFlex>}
+            {selectedADir.value !== 'A000' && <>
+              <MusicSelectedTopRightToolbar/>
+              <CreateMusicButton/>
+              <ImportChartButton/>
+            </>}
+            <VersionInfo/>
+          </NFlex>
           <NScrollbar class="grow-1">
             <MusicEdit/>
           </NScrollbar>

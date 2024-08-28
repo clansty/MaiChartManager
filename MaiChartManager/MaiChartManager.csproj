@@ -47,6 +47,11 @@
       <Compile Update="Browser.cs">
         <SubType>Form</SubType>
       </Compile>
+      <Compile Update="Properties\Resources.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>Resources.resx</DependentUpon>
+      </Compile>
       <Compile Remove="Libs\**" />
     </ItemGroup>
 
@@ -106,6 +111,13 @@
     <ItemGroup>
       <Folder Include="AquaMai\140\" />
       <Folder Include="AquaMai\145\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Update="Properties\Resources.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
     </ItemGroup>
 
 </Project>

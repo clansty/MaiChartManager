@@ -15,6 +15,7 @@ public partial class Launcher : Form
     public Launcher()
     {
         InitializeComponent();
+        label3.Text = $@"v{Application.ProductVersion}";
         checkBox1.Checked = StaticSettings.Config.Export;
         textBox1.Text = StaticSettings.Config.GamePath;
 # if DEBUG

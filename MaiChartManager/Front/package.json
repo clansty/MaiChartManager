@@ -9,9 +9,12 @@
     "preview": "vite preview"
   },
   "devDependencies": {
+    "@fontsource/nerko-one": "^5.0.21",
+    "@iconify-json/ic": "^1.1.18",
     "@iconify-json/material-symbols": "^1.1.88",
     "@iconify-json/mdi": "^1.1.68",
     "@iconify-json/ph": "^1.1.14",
+    "@iconify-json/ri": "^1.1.22",
     "@modyfi/vite-plugin-yaml": "^1.1.0",
     "@sentry/vite-plugin": "^2.22.2",
     "@sentry/vue": "^8.27.0",

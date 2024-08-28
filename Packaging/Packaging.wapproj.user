@@ -5,5 +5,13 @@
     <AppxShowAllApps>False</AppxShowAllApps>
     <AppxBuildConfigurationSelection>x64</AppxBuildConfigurationSelection>
     <PackageOptionalProjectsInIdeBuilds>False</PackageOptionalProjectsInIdeBuilds>
+    <Source>D:\Projects\Sitreamai\Packaging\Images\1\SplashScreen.scale-200.png</Source>
+    <SmallTileSource>D:\Projects\Sitreamai\Packaging\Square310x310Logo.scale-400.png</SmallTileSource>
+    <MediumTileSource>D:\Projects\Sitreamai\Packaging\Square310x310Logo.scale-400.png</MediumTileSource>
+    <WideTileSource>D:\Projects\Sitreamai\Packaging\Images\1\SplashScreen.scale-200.png</WideTileSource>
+    <LargeTileSource>D:\Projects\Sitreamai\Packaging\Square310x310Logo.scale-400.png</LargeTileSource>
+    <AppIconSource>D:\Projects\Sitreamai\Packaging\Square310x310Logo.scale-400.png</AppIconSource>
+    <SplashScreenSource>D:\Projects\Sitreamai\Packaging\Images\1\SplashScreen.scale-200.png</SplashScreenSource>
+    <PackageLogoSource>D:\Projects\Sitreamai\Packaging\Square310x310Logo.scale-400.png</PackageLogoSource>
   </PropertyGroup>
 </Project>

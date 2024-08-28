@@ -42,8 +42,11 @@ partial class Launcher
         checkBox1 = new CheckBox();
         label2 = new Label();
         tableLayoutPanel3 = new TableLayoutPanel();
+        pictureBox1 = new PictureBox();
+        label3 = new Label();
         tableLayoutPanel2.SuspendLayout();
         tableLayoutPanel3.SuspendLayout();
+        ((ISupportInitialize)pictureBox1).BeginInit();
         SuspendLayout();
         // 
         // folderBrowserDialog1
@@ -58,15 +61,15 @@ partial class Launcher
         textBox1.Dock = DockStyle.Fill;
         textBox1.Location = new System.Drawing.Point(163, 303);
         textBox1.Name = "textBox1";
-        textBox1.Size = new System.Drawing.Size(630, 27);
+        textBox1.Size = new System.Drawing.Size(458, 27);
         textBox1.TabIndex = 0;
         // 
         // button1
         // 
         button1.Dock = DockStyle.Fill;
-        button1.Location = new System.Drawing.Point(799, 303);
+        button1.Location = new System.Drawing.Point(627, 303);
         button1.Name = "button1";
-        button1.Size = new System.Drawing.Size(195, 28);
+        button1.Size = new System.Drawing.Size(194, 28);
         button1.TabIndex = 1;
         button1.Text = "浏览游戏目录";
         button1.UseVisualStyleBackColor = true;
@@ -77,7 +80,7 @@ partial class Launcher
         button2.Dock = DockStyle.Fill;
         button2.Location = new System.Drawing.Point(3, 37);
         button2.Name = "button2";
-        button2.Size = new System.Drawing.Size(195, 81);
+        button2.Size = new System.Drawing.Size(194, 81);
         button2.TabIndex = 2;
         button2.Text = "启动";
         button2.UseVisualStyleBackColor = true;
@@ -88,7 +91,7 @@ partial class Launcher
         button4.Dock = DockStyle.Fill;
         button4.Location = new System.Drawing.Point(3, 3);
         button4.Name = "button4";
-        button4.Size = new System.Drawing.Size(195, 28);
+        button4.Size = new System.Drawing.Size(194, 28);
         button4.TabIndex = 4;
         button4.Text = "退出";
         button4.UseVisualStyleBackColor = true;
@@ -98,9 +101,9 @@ partial class Launcher
         // 
         label1.AutoSize = true;
         label1.Dock = DockStyle.Fill;
-        label1.Location = new System.Drawing.Point(481, 334);
+        label1.Location = new System.Drawing.Point(395, 334);
         label1.Name = "label1";
-        label1.Size = new System.Drawing.Size(312, 196);
+        label1.Size = new System.Drawing.Size(226, 160);
         label1.TabIndex = 5;
         label1.TextAlign = System.Drawing.ContentAlignment.TopCenter;
         label1.LinkClicked += label1_LinkClicked;
@@ -118,6 +121,8 @@ partial class Launcher
         tableLayoutPanel2.Controls.Add(textBox1, 1, 1);
         tableLayoutPanel2.Controls.Add(label2, 0, 1);
         tableLayoutPanel2.Controls.Add(tableLayoutPanel3, 3, 2);
+        tableLayoutPanel2.Controls.Add(pictureBox1, 0, 0);
+        tableLayoutPanel2.Controls.Add(label3, 0, 2);
         tableLayoutPanel2.Dock = DockStyle.Fill;
         tableLayoutPanel2.Location = new System.Drawing.Point(0, 0);
         tableLayoutPanel2.Margin = new Padding(8);
@@ -126,7 +131,7 @@ partial class Launcher
         tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Absolute, 300F));
         tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Absolute, 34F));
         tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-        tableLayoutPanel2.Size = new System.Drawing.Size(997, 530);
+        tableLayoutPanel2.Size = new System.Drawing.Size(824, 494);
         tableLayoutPanel2.TabIndex = 1;
         // 
         // checkBox1
@@ -158,21 +163,45 @@ partial class Launcher
         tableLayoutPanel3.Controls.Add(button2, 0, 1);
         tableLayoutPanel3.Controls.Add(button4, 0, 0);
         tableLayoutPanel3.Dock = DockStyle.Bottom;
-        tableLayoutPanel3.Location = new System.Drawing.Point(796, 409);
+        tableLayoutPanel3.Location = new System.Drawing.Point(624, 373);
         tableLayoutPanel3.Margin = new Padding(0);
         tableLayoutPanel3.Name = "tableLayoutPanel3";
         tableLayoutPanel3.RowCount = 2;
         tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Absolute, 34F));
         tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Absolute, 60F));
         tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-        tableLayoutPanel3.Size = new System.Drawing.Size(201, 121);
+        tableLayoutPanel3.Size = new System.Drawing.Size(200, 121);
         tableLayoutPanel3.TabIndex = 2;
+        // 
+        // pictureBox1
+        // 
+        pictureBox1.BackColor = System.Drawing.Color.White;
+        tableLayoutPanel2.SetColumnSpan(pictureBox1, 4);
+        pictureBox1.Dock = DockStyle.Fill;
+        pictureBox1.Image = Properties.Resources.Wide310x150Logo_scale_400;
+        pictureBox1.Location = new System.Drawing.Point(3, 3);
+        pictureBox1.Name = "pictureBox1";
+        pictureBox1.Size = new System.Drawing.Size(818, 294);
+        pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
+        pictureBox1.TabIndex = 6;
+        pictureBox1.TabStop = false;
+        // 
+        // label3
+        // 
+        label3.AutoSize = true;
+        label3.Dock = DockStyle.Fill;
+        label3.Location = new System.Drawing.Point(3, 334);
+        label3.Name = "label3";
+        label3.Size = new System.Drawing.Size(154, 160);
+        label3.TabIndex = 7;
+        label3.Text = "label3";
+        label3.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
         // 
         // Launcher
         // 
         AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
         AutoScaleMode = AutoScaleMode.Font;
-        ClientSize = new System.Drawing.Size(997, 530);
+        ClientSize = new System.Drawing.Size(824, 494);
         Controls.Add(tableLayoutPanel2);
         FormBorderStyle = FormBorderStyle.FixedSingle;
         MaximizeBox = false;
@@ -183,6 +212,7 @@ partial class Launcher
         tableLayoutPanel2.ResumeLayout(false);
         tableLayoutPanel2.PerformLayout();
         tableLayoutPanel3.ResumeLayout(false);
+        ((ISupportInitialize)pictureBox1).EndInit();
         ResumeLayout(false);
     }
 
@@ -198,4 +228,6 @@ partial class Launcher
     private Label label2;
     private CheckBox checkBox1;
     private TableLayoutPanel tableLayoutPanel3;
+    private PictureBox pictureBox1;
+    private Label label3;
 }

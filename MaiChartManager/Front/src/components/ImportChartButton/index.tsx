@@ -175,6 +175,9 @@ export default defineComponent({
           }
         }
 
+        if (!meta.value.length && !errors.value.length)
+          throw new Error('没有找到可以导入的乐曲');
+
         step.value = STEP.showWarning;
 
         await new Promise((resolve, reject) => {
