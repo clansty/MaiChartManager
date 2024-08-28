@@ -33,7 +33,7 @@ export default defineComponent({
         <div class="p-xy h-100vh">
           <MusicList/>
         </div>
-        <NFlex vertical class="p-xy h-100vh" size="large">
+        <NFlex vertical class="p-xy h-100vh" size="large" style={{background: 'linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.1) 16px, rgba(255, 255, 255, 0.1) calc(100% - 16px), transparent 100%)'}}>
           <NFlex class="shrink-0">
             {selectedADir.value !== 'A000' && <>
               <GenreVersionManager type="genre"/>

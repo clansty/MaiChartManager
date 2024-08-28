@@ -31,6 +31,7 @@ partial class Browser
     /// </summary>
     private void InitializeComponent()
     {
+        ComponentResourceManager resources = new ComponentResourceManager(typeof(Browser));
         webView21 = new Microsoft.Web.WebView2.WinForms.WebView2();
         ((ISupportInitialize)webView21).BeginInit();
         SuspendLayout();
@@ -54,8 +55,9 @@ partial class Browser
         AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
         ClientSize = new System.Drawing.Size(1782, 1253);
         Controls.Add(webView21);
+        Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
         Name = "Browser";
-        Text = "Main";
+        Text = "MaiChartManager";
         FormClosed += Browser_FormClosed;
         ((ISupportInitialize)webView21).EndInit();
         ResumeLayout(false);

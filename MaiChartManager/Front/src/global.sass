@@ -1,6 +1,7 @@
 html
-  --selected-bg: #EDF8F6
+  --selected-bg: rgba(221, 243, 238, 0.6)
   user-select: none
+  background: linear-gradient(180deg, transparent 0%, rgba(255, 255, 255, 0.4) 16px)
 
 *
   -webkit-user-drag: none
@@ -37,3 +38,26 @@ pre
 .n-qr-code
   padding: 0 !important
   margin: 12px
+
+.n-list
+  --n-color: transparent !important
+  --n-color-modal: transparent !important
+
+.n-base-select-menu, .n-input, .n-base-selection
+  --n-color: rgba(255, 255, 255, 0.8) !important
+  backdrop-filter: blur(10px)
+
+  .n-base-select-option--pending::before
+    background: color-mix(in srgb, gray, transparent 85%) !important
+
+.n-modal
+  --n-color-modal: rgba(255, 255, 255, 0.8) !important
+  // BUG：这里设置背景模糊之后 icon 会在 hover 的时候偏移
+  //backdrop-filter: blur(10px)
+
+.n-modal-mask
+  background: rgba(255, 255, 255, 0.8)
+  backdrop-filter: blur(5px)
+
+  &.fade-in-transition-leave-to, &.fade-in-transition-enter-from
+    backdrop-filter: blur(0) !important

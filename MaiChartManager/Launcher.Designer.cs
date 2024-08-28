@@ -32,6 +32,7 @@ partial class Launcher
     /// </summary>
     private void InitializeComponent()
     {
+        ComponentResourceManager resources = new ComponentResourceManager(typeof(Launcher));
         folderBrowserDialog1 = new FolderBrowserDialog();
         textBox1 = new TextBox();
         button1 = new Button();
@@ -71,7 +72,7 @@ partial class Launcher
         button1.Name = "button1";
         button1.Size = new System.Drawing.Size(194, 28);
         button1.TabIndex = 1;
-        button1.Text = "浏览游戏目录";
+        button1.Text = "选择游戏目录";
         button1.UseVisualStyleBackColor = true;
         button1.Click += button1_Click;
         // 
@@ -204,6 +205,7 @@ partial class Launcher
         ClientSize = new System.Drawing.Size(824, 494);
         Controls.Add(tableLayoutPanel2);
         FormBorderStyle = FormBorderStyle.FixedSingle;
+        Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
         MaximizeBox = false;
         Name = "Launcher";
         SizeGripStyle = SizeGripStyle.Hide;
