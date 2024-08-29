@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Net.Sockets;
+using System.Text.Json;
 using System.Windows.Forms;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
@@ -17,7 +18,7 @@ public partial class Launcher : Form
 # if DEBUG
         checkBox1.Checked = true;
         StaticSettings.Config.Export = true;
-        textBox1.Text = @"D:\Maimai HDD\sdga145";
+        textBox1.Text = @"E:\Desktop\wsb\sdga145";
         button2_Click(null, null);
         WindowState = FormWindowState.Minimized;
 # endif

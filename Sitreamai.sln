@@ -6,11 +6,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sitreamai", "Sitreamai\Sitr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MaiChartManager", "MaiChartManager\MaiChartManager.csproj", "{16CDF3F3-C0E1-4D32-BFC9-07C8057B8F68}"
 EndProject
-Project("{C7167F0D-BC9F-4E6E-AFE1-012C56B48DB5}") = "Packaging", "Packaging\Packaging.wapproj", "{17BD5D4F-4411-416B-8222-950E9D046554}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimaiSharp", "SimaiSharp\SimaiSharp\SimaiSharp.csproj", "{5633AACB-9089-497C-8596-2C27BEAD2201}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimaiSharp", "SimaiSharp\SimaiSharp\SimaiSharp.csproj", "{5633AACB-9089-497C-8596-2C27BEAD2201}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MaiLib", "MaiLib\MaiLib.csproj", "{077998A7-9AD8-4F41-B93B-B63EFD19A550}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MaiLib", "MaiLib\MaiLib.csproj", "{077998A7-9AD8-4F41-B93B-B63EFD19A550}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,12 +24,6 @@ Global
 		{16CDF3F3-C0E1-4D32-BFC9-07C8057B8F68}.Debug|x64.Build.0 = Debug|x64
 		{16CDF3F3-C0E1-4D32-BFC9-07C8057B8F68}.Release|x64.ActiveCfg = Release|x64
 		{16CDF3F3-C0E1-4D32-BFC9-07C8057B8F68}.Release|x64.Build.0 = Release|x64
-		{17BD5D4F-4411-416B-8222-950E9D046554}.Debug|x64.ActiveCfg = Debug|x64
-		{17BD5D4F-4411-416B-8222-950E9D046554}.Debug|x64.Build.0 = Debug|x64
-		{17BD5D4F-4411-416B-8222-950E9D046554}.Debug|x64.Deploy.0 = Debug|x64
-		{17BD5D4F-4411-416B-8222-950E9D046554}.Release|x64.ActiveCfg = Release|x64
-		{17BD5D4F-4411-416B-8222-950E9D046554}.Release|x64.Build.0 = Release|x64
-		{17BD5D4F-4411-416B-8222-950E9D046554}.Release|x64.Deploy.0 = Release|x64
 		{5633AACB-9089-497C-8596-2C27BEAD2201}.Debug|x64.ActiveCfg = Debug|Any CPU
 		{5633AACB-9089-497C-8596-2C27BEAD2201}.Debug|x64.Build.0 = Debug|Any CPU
 		{5633AACB-9089-497C-8596-2C27BEAD2201}.Release|x64.ActiveCfg = Release|Any CPU

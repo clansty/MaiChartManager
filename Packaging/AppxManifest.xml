@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+  xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+  xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
+  xmlns:win32dependencies="http://schemas.microsoft.com/appx/manifest/externaldependencies"
+  xmlns:build="http://schemas.microsoft.com/developer/appx/2015/build"
+  xmlns:uap4="http://schemas.microsoft.com/appx/manifest/uap/windows10/4"
+  IgnorableNamespaces="win32dependencies"
+>
+  <Identity Name="22369479C5405.MaiChartManager" Publisher="CN=86A51452-7790-46C3-9A4B-1207C2C97940" Version="1.0.0.0"
+    ProcessorArchitecture="x64" />
+  <Properties>
+    <DisplayName>MaiChartManager</DisplayName>
+    <PublisherDisplayName>凌莞</PublisherDisplayName>
+    <Logo>Images\StoreLogo.png</Logo>
+  </Properties>
+  <Dependencies>
+    <TargetDeviceFamily Name="MSIXCore.Desktop" MinVersion="6.1.7601.0"
+      MaxVersionTested="10.0.10240.0" />
+    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.17763.0"
+      MaxVersionTested="10.0.22621.0" />
+    <win32dependencies:ExternalDependency Name="Microsoft.WebView2"
+      Publisher="CN=Microsoft Windows, O=Microsoft Corporation, L=Redmond, S=Washington, C=US"
+      MinVersion="1.1.1.1" Optional="false"/>
+  </Dependencies>
+  <Resources>
+    <Resource Language="zh-cn" />
+  </Resources>
+  <Applications>
+    <Application Id="App" Executable="MaiChartManager\MaiChartManager.exe"
+      EntryPoint="Windows.FullTrustApplication">
+      <uap:VisualElements DisplayName="MaiChartManager" Description="MaiChartManager"
+        BackgroundColor="transparent" Square150x150Logo="Images\Square150x150Logo.png"
+        Square44x44Logo="Images\Square44x44Logo.png">
+        <uap:DefaultTile Wide310x150Logo="Images\Wide310x150Logo.png" ShortName="MaiChartManager"
+          Square310x310Logo="Images\LargeTile.png" Square71x71Logo="Images\SmallTile.png"></uap:DefaultTile>
+        <uap:SplashScreen Image="Images\SplashScreen.png" />
+      </uap:VisualElements>
+    </Application>
+  </Applications>
+  <Capabilities>
+    <rescap:Capability Name="runFullTrust" />
+  </Capabilities>
+</Package>
