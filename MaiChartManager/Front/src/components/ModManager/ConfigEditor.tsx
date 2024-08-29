@@ -89,13 +89,12 @@ export default defineComponent({
           </NButton>
         </NFlex>
         {config.value && <NScrollbar class="max-h-60vh p-2">
-          {Object.entries(config.value).map(([key, section]) => <>
+          {Object.entries(config.value).map(([key, section]) => !!section && <>
             <NDivider titlePlacement="left">{comments.sections[key]}</NDivider>
             {Object.keys(section).map((k) => <NFormItem label={capitalCase(k)} labelPlacement="left" labelWidth="10em">
               <NFlex vertical class="w-full ws-pre-line">
                 <NFlex class="h-34px" align="center">
-                  {typeof section[k] === 'boolean' && <NSwitch v-model:value={section[k]}/>}
-                  {typeof section[k] === 'string' && <NInput v-model:value={section[k]} placeholder=""/>}
+                  {typeof section[k] === 'boolean' ? <NSwitch v-model:value={section[k]}/> : <NInput v-model:value={section[k]} placeholder=""/>}
                   {comments.shouldEnableOptions[key]?.[k] && !section[k] && <ProblemsDisplay problems={['需要开启此选项']}/>}
                 </NFlex>
                 {comments[key]?.[k]}
