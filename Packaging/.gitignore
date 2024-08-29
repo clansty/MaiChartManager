@@ -1,1 +1,3 @@
 *.pri
+*.appx
+Pack/MaiChartManager/*
