@@ -729,6 +729,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         addVersionId?: number;
         /** @format int32 */
         genreId?: number;
+        /** @format int32 */
+        version?: number;
       },
       params: RequestParams = {},
     ) =>

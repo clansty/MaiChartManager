@@ -6,7 +6,8 @@
     "dev": "vite",
     "dev:expose": "vite --host",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "genClient": "tsx genClient"
   },
   "devDependencies": {
     "@fontsource/nerko-one": "^5.0.21",

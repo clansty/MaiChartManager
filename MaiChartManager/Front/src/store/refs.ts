@@ -1,5 +1,5 @@
 import { computed, ref } from "vue";
-import { GenreXml, MusicBrief, VersionXml } from "@/client/apiGen";
+import { AppVersionResult, GenreXml, MusicBrief, VersionXml } from "@/client/apiGen";
 import api from "@/client/api";
 
 export const selectMusicId = ref(0)
@@ -8,11 +8,9 @@ export const addVersionList = ref<VersionXml[]>([]);
 export const selectedADir = ref<string>('');
 export const musicList = ref<MusicBrief[]>([]);
 export const assetDirs = ref<string[]>([]);
+export const version = ref<AppVersionResult>();
 
 export const selectedMusicBrief = computed(() => musicList.value.find(m => m.id === selectMusicId.value));
-export const genreOptions = computed(() => genreList.value.map(genre => ({label: genre.genreName, value: genre.id})));
-export const addVersionOptions = computed(() => addVersionList.value.map(genre => ({label: genre.genreName, value: genre.id})));
-
 
 export const updateGenreList = async () => {
   const response = await api.GetAllGenres();
@@ -34,4 +32,8 @@ export const updateMusicList = async () => {
 
 export const updateAssetDirs = async () => {
   assetDirs.value = (await api.GetAssetsDirs()).data;
+}
+
+export const updateVersion = async () => {
+  version.value = (await api.GetAppVersion()).data;
 }

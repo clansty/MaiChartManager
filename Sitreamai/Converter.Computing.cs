@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using MaiLib;
 using SimaiSharp;
 using SimaiSharp.Structures;

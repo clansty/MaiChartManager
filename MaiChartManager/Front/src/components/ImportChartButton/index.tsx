@@ -56,6 +56,8 @@ export default defineComponent({
     const ignoreLevel = ref(false);
     const addVersionId = useStorage('importMusicAddVersionId', 0);
     const genreId = useStorage('importMusicGenreId', 1);
+    // 大家都喜欢写 22001，甚至不理解这个选项是干什么的
+    const version = useStorage('importMusicVersion', 22001);
     const dialog = useDialog();
     const errors = ref<ImportChartMessageEx[]>([]);
     const modalResolve = ref<(qwq?: any) => any>(() => {
@@ -121,6 +123,7 @@ export default defineComponent({
           ignoreLevelNum: ignoreLevel.value,
           genreId: genreId.value,
           addVersionId: addVersionId.value,
+          version: version.value,
         })).data;
 
         if (shiftNoteEaten) {
@@ -217,8 +220,9 @@ export default defineComponent({
       导入乐曲
       <SelectFileTypeTip show={step.value === STEP.selectFile} closeModal={closeModal}/>
       <CheckingModal title="正在检查..." show={step.value === STEP.checking} closeModal={closeModal}/>
-      <ErrorDisplayIdInput show={step.value === STEP.showWarning} closeModal={closeModal} proceed={modalResolve.value!} meta={meta.value}
-                           v-model:ignoreLevel={ignoreLevel.value} v-model:addVersionId={addVersionId.value} v-model:genreId={genreId.value} errors={errors.value}/>
+      <ErrorDisplayIdInput show={step.value === STEP.showWarning} closeModal={closeModal} proceed={modalResolve.value!} meta={meta.value} errors={errors.value}
+        // 这个组件的 props 数量是不是有点多了
+                           v-model:ignoreLevel={ignoreLevel.value} v-model:addVersionId={addVersionId.value} v-model:genreId={genreId.value} v-model:version={version.value}/>
       <ImportStepDisplay show={step.value === STEP.importing} closeModal={closeModal} current={currentProcessing.value}/>
       <ErrorDisplayIdInput show={step.value === STEP.showResultError} closeModal={closeModal} proceed={() => {
       }} meta={[]} ignoreLevel errors={errors.value}/>

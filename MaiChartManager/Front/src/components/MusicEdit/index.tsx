@@ -1,6 +1,6 @@
 import { computed, defineComponent, onMounted, PropType, ref, watch } from "vue";
 import { Chart, GenreXml, MusicXmlWithABJacket } from "@/client/apiGen";
-import { addVersionList, addVersionOptions, genreList, genreOptions, selectedADir, selectedMusicBrief, selectMusicId, updateAddVersionList, updateGenreList, updateMusicList } from "@/store/refs";
+import { addVersionList, genreList, selectedADir, selectedMusicBrief, selectMusicId, updateAddVersionList, updateGenreList, updateMusicList } from "@/store/refs";
 import api from "@/client/api";
 import { NButton, NFlex, NForm, NFormItem, NInput, NInputNumber, NSelect, NTabPane, NTabs, SelectOption, useDialog } from "naive-ui";
 import JacketBox from "./JacketBox";
@@ -10,7 +10,8 @@ import ChartPanel from "./ChartPanel";
 import { DIFFICULTY, LEVEL_COLOR } from "@/consts";
 import ProblemsDisplay from "@/components/ProblemsDisplay";
 import AcbAwb from "@/components/MusicEdit/AcbAwb";
-import GenreOption from "@/components/GenreOption";
+import GenreInput from "@/components/GenreInput";
+import VersionInput from "@/components/VersionInput";
 
 const Component = defineComponent({
   setup() {
@@ -71,15 +72,13 @@ const Component = defineComponent({
           <NInputNumber showButton={false} class="w-full" v-model:value={info.value.bpm} min={0}/>
         </NFormItem>
         <NFormItem label="版本">
-          <NInputNumber showButton={false} class="w-full" v-model:value={info.value.version} min={0}/>
+          <VersionInput v-model:value={info.value.version}/>
         </NFormItem>
         <NFormItem label="流派">
-          <NSelect options={genreOptions.value as any} v-model:value={info.value.genreId} status={genreList.value.some(it => it.id === info.value?.genreId) ? undefined : 'error'}
-                   renderLabel={(option: SelectOption) => <GenreOption genre={genreList.value.find(it => it.id === option.value)!}/>}/>
+          <GenreInput options={genreList.value} v-model:value={info.value.genreId}/>
         </NFormItem>
         <NFormItem label="版本分类">
-          <NSelect options={addVersionOptions.value as any} v-model:value={info.value.addVersionId} status={addVersionList.value.some(it => it.id === info.value?.addVersionId) ? undefined : 'error'}
-                   renderLabel={(option: SelectOption) => <GenreOption genre={addVersionList.value.find(it => it.id === option.value)!}/>}/>
+          <GenreInput options={addVersionList.value} v-model:value={info.value.addVersionId}/>
         </NFormItem>
         <AcbAwb song={info.value}/>
         <NTabs type="line" animated barWidth={0} v-model:value={selectedLevel.value} class="levelTabs"

@@ -1,9 +1,6 @@
-﻿using System.Net;
-using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
+﻿using System.Security.Cryptography.X509Certificates;
 using System.Text.Json.Serialization;
 using System.Windows.Forms;
-using Microsoft.AspNetCore.Server.Kestrel.Https;
 using Pluralsight.Crypto;
 using Sentry.AspNetCore;
 

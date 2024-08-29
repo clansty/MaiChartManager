@@ -2,7 +2,7 @@ import { defineComponent, onMounted } from 'vue';
 import { NFlex, NScrollbar, useNotification } from "naive-ui";
 import MusicList from "@/components/MusicList";
 import GenreVersionManager from "@/components/GenreVersionManager";
-import { selectedADir, updateAddVersionList, updateAssetDirs, updateGenreList, updateSelectedAssetDir } from "@/store/refs";
+import { selectedADir, updateAddVersionList, updateAssetDirs, updateGenreList, updateSelectedAssetDir, updateVersion } from "@/store/refs";
 import MusicEdit from "@/components/MusicEdit";
 import MusicSelectedTopRightToolbar from "@/components/MusicSelectedTopRightToolbar";
 import CreateMusicButton from "@/components/CreateMusicButton";
@@ -16,6 +16,7 @@ export default defineComponent({
     onMounted(updateAddVersionList)
     onMounted(updateSelectedAssetDir)
     onMounted(updateAssetDirs)
+    onMounted(updateVersion)
 
     const notification = useNotification();
 

@@ -6,9 +6,8 @@
         <ImplicitUsings>enable</ImplicitUsings>
 	    <InvariantGlobalization>false</InvariantGlobalization>
 	    <Platforms>x64</Platforms>
-	    <IsTransformWebConfigDisabled>true</IsTransformWebConfigDisabled>
+	    <IsTransformWebConfigDisabled>True</IsTransformWebConfigDisabled>
 	    <StaticWebAssetsEnabled>True</StaticWebAssetsEnabled>
-	    <IsPackable>true</IsPackable>
 	    <OutputType>WinExe</OutputType>
     </PropertyGroup>
 

@@ -3,15 +3,11 @@ import { AppVersionResult } from "@/client/apiGen";
 import api from "@/client/api";
 import { NButton, NFlex, NModal, NPopover, NQrCode, NTime } from "naive-ui";
 import '@fontsource/nerko-one'
+import { version } from "@/store/refs";
 
 export default defineComponent({
   setup(props) {
-    const version = ref<AppVersionResult>();
     const show = ref(false);
-
-    onMounted(async () => {
-      version.value = (await api.GetAppVersion()).data;
-    })
     const displayVersion = computed(() => version.value?.version?.split('+')[0]);
 
     return () => version.value && <NButton quaternary round onClick={() => show.value = true}>
