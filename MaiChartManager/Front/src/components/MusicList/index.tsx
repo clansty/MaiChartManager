@@ -1,12 +1,13 @@
 import { defineComponent, onMounted } from "vue";
 import api from "@/client/api";
 import { MusicBrief } from "@/client/apiGen";
-import { NFlex, NSelect, NVirtualList } from "naive-ui";
+import { NFlex, NSelect, NVirtualList, useDialog } from "naive-ui";
 import MusicEntry from "@/components/MusicList/MusicEntry";
 import { assetDirs, musicList, selectedADir, selectMusicId, updateMusicList } from "@/store/refs";
 
 export default defineComponent({
   setup() {
+    const dialog = useDialog();
     const refresh = async () => {
       await updateMusicList();
     }
@@ -16,6 +17,21 @@ export default defineComponent({
     });
 
     const setAssetsDir = async (dir: string) => {
+      if (musicList.value.some(it => it.modified)) {
+        const decide = await new Promise<boolean>((resolve) => {
+          dialog.warning({
+            title: '提示',
+            content: '当前有未保存的修改，切换的话，修改将丢失。继续吗？',
+            positiveText: '继续',
+            negativeText: '取消',
+            onPositiveClick: () => resolve(true),
+            onClose: () => resolve(false)
+          });
+        })
+        if (!decide) {
+          return;
+        }
+      }
       await api.SetAssetsDir(dir);
       selectedADir.value = dir;
       selectMusicId.value = 0;
@@ -27,7 +43,7 @@ export default defineComponent({
         <NSelect
           value={selectedADir.value}
           options={assetDirs.value.map(dir => ({label: dir, value: dir}))}
-          onUpdate:value={setAssetsDir}
+          onUpdateValue={setAssetsDir}
         />
         <NVirtualList class="flex-1" itemSize={20 / 4 * 16} items={musicList.value}>
           {{
