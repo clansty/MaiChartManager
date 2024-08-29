@@ -50,12 +50,10 @@ public static class ServerManager
             {
                 IsPrivateKeyExportable = true,
                 KeyBitLength = 4096,
-                Name = new X500DistinguishedName("cn=MaiChartManager"),
+                Name = new X500DistinguishedName("CN=MaiChartManager"),
                 ValidFrom = DateTime.Today.AddDays(-1),
                 ValidTo = DateTime.Today.AddYears(5),
             });
-
-        X509Certificate2UI.DisplayCertificate(cert);
 
         File.WriteAllBytes(path, cert.Export(X509ContentType.Pfx));
         return cert;
