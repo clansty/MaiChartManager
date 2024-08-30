@@ -50,12 +50,14 @@ public partial class Launcher : Form
         if (!Path.Exists(textBox1.Text))
         {
             MessageBox.Show("选择的路径不存在！");
+            return;
         }
 
         StaticSettings.GamePath = textBox1.Text;
         if (!Path.Exists(StaticSettings.StreamingAssets))
         {
             MessageBox.Show("选择的路径中看起来不包含游戏文件，请选择 Sinmai.exe 所在的文件夹");
+            return;
         }
 
 # if !DEBUG
