@@ -150,7 +150,7 @@ export default defineComponent({
     }
 
     const startProcess = async () => {
-      let id = 0;
+      let id = 4999;
       for (const existedMusic of musicList.value) {
         if (id < existedMusic.id! % 1e4) {
           id = existedMusic.id! % 1e4;

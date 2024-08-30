@@ -11,7 +11,7 @@ export default defineComponent({
     const id = ref(0);
 
     const showDialog = () => {
-      id.value = 0;
+      id.value = 4999;
       for (const existedMusic of musicList.value) {
         if (id.value < existedMusic.id! % 1e4) {
           id.value = existedMusic.id! % 1e4;
