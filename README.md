@@ -1,8 +1,8 @@
 # MaiChartManager
 
-[<img align="right" src="https://user-images.githubusercontent.com/18461360/167066042-8f25b9de-379f-4ea1-bfa3-002d50cf5da6.svg" height="70"/>](https://apps.microsoft.com/store/detail/9P1JDKQ60G4G)
-
 某八个键音游谱面管理工具
+
+[<img src="https://user-images.githubusercontent.com/18461360/167066042-8f25b9de-379f-4ea1-bfa3-002d50cf5da6.svg" height="70"/>](https://apps.microsoft.com/store/detail/9P1JDKQ60G4G)
 
 ![image](https://github.com/user-attachments/assets/33dfa8b0-4a40-449b-8fbf-d1f901495402)
 
