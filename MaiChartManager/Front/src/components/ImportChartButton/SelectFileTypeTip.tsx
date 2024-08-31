@@ -14,11 +14,11 @@ export default defineComponent({
       set: (val) => props.closeModal()
     })
 
-    return () => <NDrawer v-model:show={show.value} width={500} placement="right">
+    return () => <NDrawer v-model:show={show.value} height={350} placement="bottom">
       <NDrawerContent title="可以选择的文件类型">
         <NFlex vertical size="large">
-          包含以下文件的文件夹
-          <div class="grid cols-[2fr_1fr] justify-items-center h-50 gap-5">
+          包含以下文件的文件夹，或者，一个包含一些这样的文件夹的文件夹
+          <div class="grid cols-[2fr_1fr] justify-items-center h-50 gap-5 w-50%">
             <NFlex vertical align="center" class="w-full" size="small">
               <FileContentIcon type="maidata"/>
               maidata.txt
@@ -34,7 +34,6 @@ export default defineComponent({
               </NFlex>
             </div>
           </div>
-          或者，一个包含一些这样的文件夹的文件夹
         </NFlex>
       </NDrawerContent>
     </NDrawer>;

@@ -101,9 +101,9 @@ export default defineComponent({
       {selectedADir.value !== 'A000' && <NButton secondary class={`${!props.song.isAcbAwbExist && "w-full"}`} onClick={uploadFlow} loading={load.value}>{props.song.isAcbAwbExist ? '替换' : '设置'}音频</NButton>}
 
       {/* 打开文件对话框一般在左上角，所以在右边显示一个 Drawer */}
-      <NDrawer v-model:show={tipShow.value} width={500} placement="right">
+      <NDrawer v-model:show={tipShow.value} height={200} placement="bottom">
         <NDrawerContent title="可以选择的文件类型">
-          <div class="grid cols-2 justify-items-center text-8em gap-10">
+          <div class="grid cols-4 justify-items-center text-8em gap-10">
             <FileTypeIcon type="WAV"/>
             <FileTypeIcon type="MP3"/>
             <FileTypeIcon type="OGG"/>
