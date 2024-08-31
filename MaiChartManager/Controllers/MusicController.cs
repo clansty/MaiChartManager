@@ -144,6 +144,11 @@ public class MusicController(StaticSettings settings, ILogger<StaticSettings> lo
             return File(System.IO.File.OpenRead(music.JacketPath), "image/png");
         }
 
+        if (System.IO.File.Exists(music.PseudoAssetBundleJacket))
+        {
+            return File(System.IO.File.OpenRead(music.PseudoAssetBundleJacket), "image/png");
+        }
+
         if (music.AssetBundleJacket is null) return NotFound();
 
         var manager = new AssetsManager();

@@ -53,6 +53,7 @@ public partial class StaticSettings
     public static List<GenreXml> GenreList { get; set; } = [];
     public static List<VersionXml> VersionList { get; set; } = [];
     public static Dictionary<int, string> AssetBundleJacketMap { get; set; } = new();
+    public static Dictionary<int, string> PseudoAssetBundleJacketMap { get; set; } = new();
     public static Dictionary<string, string> AcbAwb { get; set; } = new();
 
     public void ScanMusicList()
@@ -128,14 +129,18 @@ public partial class StaticSettings
     public void ScanAssetBundles()
     {
         AssetBundleJacketMap.Clear();
+        PseudoAssetBundleJacketMap.Clear();
         foreach (var a in AssetsDirs)
         {
             if (!Directory.Exists(Path.Combine(StreamingAssets, a, @"AssetBundleImages\jacket"))) continue;
-            foreach (var jacketFile in Directory.EnumerateFiles(Path.Combine(StreamingAssets, a, @"AssetBundleImages\jacket"), "*.ab"))
+            foreach (var jacketFile in Directory.EnumerateFiles(Path.Combine(StreamingAssets, a, @"AssetBundleImages\jacket")))
             {
                 var idStr = Path.GetFileName(jacketFile).Substring("ui_jacket_".Length, 6);
                 if (!int.TryParse(idStr, out var id)) continue;
-                AssetBundleJacketMap[id] = jacketFile;
+                if (Path.GetExtension(jacketFile) == ".ab")
+                    AssetBundleJacketMap[id] = jacketFile;
+                else if (((string[]) [".png", ".jpg", ".jpeg"]).Contains(Path.GetExtension(jacketFile)))
+                    PseudoAssetBundleJacketMap[id] = jacketFile;
             }
         }
 
