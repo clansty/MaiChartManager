@@ -141,6 +141,8 @@ export interface MusicXmlWithABJacket {
   /** @format int32 */
   addVersionId?: number;
   artist?: string | null;
+  utageKanji?: string | null;
+  comment?: string | null;
   /** @format int32 */
   version?: number;
   /** @format int32 */
@@ -148,6 +150,7 @@ export interface MusicXmlWithABJacket {
   disable?: boolean;
   charts?: Chart[] | null;
   assetBundleJacket?: string | null;
+  pseudoAssetBundleJacket?: string | null;
   hasJacket?: boolean;
   isAcbAwbExist?: boolean;
   problems?: string[] | null;
@@ -880,6 +883,38 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     EditMusicArtist: (id: number, data: string, params: RequestParams = {}) =>
       this.request<void, any>({
         path: `/MaiChartManagerServlet/EditMusicArtistApi/${id}`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Music
+     * @name EditMusicUtageKanji
+     * @request POST:/MaiChartManagerServlet/EditMusicUtageKanjiApi/{id}
+     */
+    EditMusicUtageKanji: (id: number, data: string, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/MaiChartManagerServlet/EditMusicUtageKanjiApi/${id}`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Music
+     * @name EditMusicComment
+     * @request POST:/MaiChartManagerServlet/EditMusicCommentApi/{id}
+     */
+    EditMusicComment: (id: number, data: string, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/MaiChartManagerServlet/EditMusicCommentApi/${id}`,
         method: "POST",
         body: data,
         type: ContentType.Json,

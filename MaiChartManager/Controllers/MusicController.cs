@@ -38,6 +38,27 @@ public class MusicController(StaticSettings settings, ILogger<StaticSettings> lo
     }
 
     [HttpPost]
+    public void EditMusicUtageKanji(int id, [FromBody] string value)
+    {
+        var music = settings.MusicList.Find(it => it.Id == id);
+        if (music != null)
+        {
+            music.UtageKanji = value;
+        }
+    }
+
+    [HttpPost]
+    // Utage 备注
+    public void EditMusicComment(int id, [FromBody] string value)
+    {
+        var music = settings.MusicList.Find(it => it.Id == id);
+        if (music != null)
+        {
+            music.Comment = value;
+        }
+    }
+
+    [HttpPost]
     public void EditMusicBpm(int id, [FromBody] int value)
     {
         var music = settings.MusicList.Find(it => it.Id == id);

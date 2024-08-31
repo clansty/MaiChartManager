@@ -37,6 +37,8 @@ const Component = defineComponent({
       watch(() => info.value?.version, sync('version', api.EditMusicVersion));
       watch(() => info.value?.genreId, sync('genreId', api.EditMusicGenre));
       watch(() => info.value?.addVersionId, sync('addVersionId', api.EditMusicAddVersion));
+      watch(() => info.value?.utageKanji, sync('utageKanji', api.EditMusicUtageKanji));
+      watch(() => info.value?.comment, sync('comment', api.EditMusicComment));
     });
 
     const sync = (key: keyof MusicXmlWithABJacket, method: Function) => async () => {
@@ -80,6 +82,15 @@ const Component = defineComponent({
         <NFormItem label="版本分类">
           <GenreInput options={addVersionList.value} v-model:value={info.value.addVersionId}/>
         </NFormItem>
+        {info.value.genreId === 107 && // 宴会场
+          <>
+            <NFormItem label="宴谱种类">
+              <NInput v-model:value={info.value.utageKanji}/>
+            </NFormItem>
+            <NFormItem label="宴谱备注">
+              <NInput v-model:value={info.value.comment}/>
+            </NFormItem>
+          </>}
         <AcbAwb song={info.value}/>
         <NTabs type="line" animated barWidth={0} v-model:value={selectedLevel.value} class="levelTabs"
                style={{'--n-tab-padding': 0, '--n-pane-padding-top': 0, '--n-tab-text-color-hover': ''}}>

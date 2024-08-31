@@ -244,12 +244,54 @@ public class MusicXml
 
     public string Artist
     {
-        get => xmlDoc.SelectSingleNode("/MusicData/artistName/str").InnerText;
+        get => xmlDoc.SelectSingleNode("/MusicData/artistName/str")?.InnerText;
         set
         {
             Modified = true;
             xmlDoc.SelectSingleNode("/MusicData/artistName/str").InnerText = value;
             xmlDoc.SelectSingleNode("/MusicData/artistName/id").InnerText = "999";
+        }
+    }
+
+    private const string utageKanjiNode = "utageKanjiName";
+
+    public string UtageKanji
+    {
+        get => xmlDoc.SelectSingleNode(utageKanjiNode)?.InnerText;
+        set
+        {
+            Modified = true;
+            var node = xmlDoc.SelectSingleNode(utageKanjiNode);
+            if (node is null)
+            {
+                node = xmlDoc.CreateNode(XmlNodeType.Element, utageKanjiNode, null);
+                node.InnerText = value;
+                xmlDoc.DocumentElement.AppendChild(node);
+                return;
+            }
+
+            xmlDoc.SelectSingleNode(utageKanjiNode).InnerText = value;
+        }
+    }
+
+    private const string commentNode = "comment";
+
+    public string Comment
+    {
+        get => xmlDoc.SelectSingleNode(commentNode)?.InnerText;
+        set
+        {
+            Modified = true;
+            var node = xmlDoc.SelectSingleNode(commentNode);
+            if (node is null)
+            {
+                node = xmlDoc.CreateNode(XmlNodeType.Element, commentNode, null);
+                node.InnerText = value;
+                xmlDoc.DocumentElement.AppendChild(node);
+                return;
+            }
+
+            xmlDoc.SelectSingleNode(commentNode).InnerText = value;
         }
     }
 
