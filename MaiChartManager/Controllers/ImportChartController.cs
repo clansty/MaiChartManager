@@ -244,7 +244,7 @@ public class ImportChartController(StaticSettings settings, ILogger<StaticSettin
             {
                 try
                 {
-                    maiLibChart.ShiftByOffset((int)(chartPadding / bar * maiLibChart.Definition));
+                    maiLibChart.ShiftByOffset((int)Math.Round(chartPadding / bar * maiLibChart.Definition));
                 }
                 catch (Exception e)
                 {
