@@ -2,7 +2,7 @@ import { computed, defineComponent, onMounted, PropType, ref, watch } from "vue"
 import { Chart, GenreXml, MusicXmlWithABJacket } from "@/client/apiGen";
 import { addVersionList, genreList, selectedADir, selectedMusicBrief, selectMusicId, updateAddVersionList, updateGenreList, updateMusicList } from "@/store/refs";
 import api from "@/client/api";
-import { NButton, NFlex, NForm, NFormItem, NInput, NInputNumber, NSelect, NTabPane, NTabs, SelectOption, useDialog } from "naive-ui";
+import { NButton, NFlex, NForm, NFormItem, NInput, NInputNumber, NSelect, NTabPane, NTabs, SelectOption, useDialog, useMessage } from "naive-ui";
 import JacketBox from "./JacketBox";
 import dxIcon from "@/assets/dxIcon.png";
 import stdIcon from "@/assets/stdIcon.png";
@@ -12,23 +12,31 @@ import ProblemsDisplay from "@/components/ProblemsDisplay";
 import AcbAwb from "@/components/MusicEdit/AcbAwb";
 import GenreInput from "@/components/GenreInput";
 import VersionInput from "@/components/VersionInput";
+import { captureException } from "@sentry/vue"
 
 const Component = defineComponent({
   setup() {
     const info = ref<MusicXmlWithABJacket | null>();
     const selectedLevel = ref(0);
+    const message = useMessage();
 
     onMounted(async () => {
       if (!selectMusicId.value) {
         info.value = null;
         return;
       }
-      const response = await api.GetMusicDetail(selectMusicId.value);
-      info.value = response.data;
 
-      const firstEnabledChart = info.value!.charts!.findIndex(chart => chart.enable);
-      if (firstEnabledChart >= 0) {
-        selectedLevel.value = firstEnabledChart;
+      try {
+        const response = await api.GetMusicDetail(selectMusicId.value);
+        info.value = response.data;
+
+        const firstEnabledChart = info.value?.charts?.findIndex(chart => chart.enable);
+        if (firstEnabledChart && firstEnabledChart >= 0) {
+          selectedLevel.value = firstEnabledChart;
+        }
+      } catch (e: any) {
+        message.error('加载歌曲信息失败');
+        captureException(e.error || e);
       }
 
       watch(() => info.value?.name, sync('name', api.EditMusicName));

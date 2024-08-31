@@ -66,7 +66,7 @@ public static class ServerManager
         builder.WebHost.UseSentry((SentryAspNetCoreOptions o) =>
         {
             // Tells which project in Sentry to send events to:
-            o.Dsn = "https://b9c3da740445a9de74e8a4204bded577@o4507852801638400.ingest.de.sentry.io/4507852868419664";
+            o.Dsn = "https://be7a9ae3a9a88f4660737b25894b3c20@sentry.c5y.moe/3";
             // Set TracesSampleRate to 1.0 to capture 100% of transactions for tracing.
             // We recommend adjusting this value in production.
             o.TracesSampleRate = 0.5;

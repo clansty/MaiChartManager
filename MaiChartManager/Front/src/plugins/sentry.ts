@@ -5,7 +5,8 @@ export default {
   install(app: App) {
     Sentry.init({
       app,
-      dsn: "https://74f5d24e699e0d069f69bad153c87059@o4507852801638400.ingest.de.sentry.io/4507852805374032",
+      dsn: "https://4d3f40f67b2fd6f7df16b7f5a8320088@sentry.c5y.moe/2",
+      environment: import.meta.env.DEV ? "development" : "production",
       integrations: [
         Sentry.browserTracingIntegration(),
         Sentry.replayIntegration(),

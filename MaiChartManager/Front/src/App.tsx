@@ -1,5 +1,5 @@
 import { defineComponent } from 'vue';
-import { dateZhCN, NConfigProvider, NDialogProvider, NNotificationProvider, zhCN } from 'naive-ui';
+import { dateZhCN, NConfigProvider, NDialogProvider, NMessageProvider, NNotificationProvider, zhCN } from 'naive-ui';
 import { RouterView } from 'vue-router';
 
 export default defineComponent({
@@ -8,7 +8,9 @@ export default defineComponent({
       <NConfigProvider locale={zhCN} dateLocale={dateZhCN}>
         <NNotificationProvider>
           <NDialogProvider>
-            <RouterView/>
+            <NMessageProvider>
+              <RouterView/>
+            </NMessageProvider>
           </NDialogProvider>
         </NNotificationProvider>
       </NConfigProvider>
