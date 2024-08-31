@@ -22,7 +22,7 @@ public class ImportChartController(StaticSettings settings, ILogger<StaticSettin
 
     public record ImportChartMessage(string Message, MessageLevel Level);
 
-    public record ImportChartCheckResult(bool Accept, IEnumerable<ImportChartMessage> Errors, float MusicPadding, bool IsDx, string? Title);
+    public record ImportChartCheckResult(bool Accept, IEnumerable<ImportChartMessage> Errors, float MusicPadding, bool IsDx, string? Title, float first);
 
     [HttpPost]
     public ImportChartCheckResult ImportChartCheck(IFormFile file)
@@ -95,7 +95,7 @@ public class ImportChartController(StaticSettings settings, ILogger<StaticSettin
         {
             errors.Add(new ImportChartMessage("乐曲没有谱面", MessageLevel.Fatal));
             fatal = true;
-            return new ImportChartCheckResult(!fatal, errors, 0.0f, false, title);
+            return new ImportChartCheckResult(!fatal, errors, 0, false, title, 0);
         }
 
         var paddings = new List<float>();
@@ -124,29 +124,20 @@ public class ImportChartController(StaticSettings settings, ILogger<StaticSettin
         }
 
         var padding = paddings.Max();
-        if (padding > 0)
-        {
-            errors.Add(new ImportChartMessage($"将在音频前面加上 {padding:F3} 秒空白以保证第一押在第二小节", MessageLevel.Info));
-        }
-        else if (padding < 0)
-        {
-            errors.Add(new ImportChartMessage($"将裁剪 {-padding:F3} 秒音频以保证第一押在第二小节", MessageLevel.Info));
-        }
 
-        return new ImportChartCheckResult(!fatal, errors, padding, isDx, title);
+        return new ImportChartCheckResult(!fatal, errors, padding, isDx, title, first);
     }
 
-    public record ImportChartResult(bool ShiftNoteEaten);
+    public record ImportChartResult(IEnumerable<ImportChartMessage> Errors, bool Fatal);
 
     [HttpPost]
     // 创建完 Music 后调用
-    public ImportChartResult ImportChart([FromForm] int id, IFormFile file, [FromForm] bool ignoreLevelNum, [FromForm] int addVersionId, [FromForm] int genreId, [FromForm] int version)
+    public ImportChartResult ImportChart([FromForm] int id, IFormFile file, [FromForm] bool ignoreLevelNum, [FromForm] int addVersionId, [FromForm] int genreId, [FromForm] int version,
+        [FromForm] bool debug = false, [FromForm] bool noShiftChart = false)
     {
+        var errors = new List<ImportChartMessage>();
         var music = settings.MusicList.First(it => it.Id == id);
         var maiData = new Dictionary<string, string>(new SimaiFile(file.OpenReadStream()).ToKeyValuePairs());
-
-        // Debug
-        var shiftNoteEaten = false;
 
         var allCharts = new Dictionary<int, MaiChart>();
         for (var i = 2; i < 9; i++)
@@ -164,11 +155,15 @@ public class ImportChartController(StaticSettings settings, ILogger<StaticSettin
 
         float.TryParse(maiData.GetValueOrDefault("first"), out var first);
 
-        var paddings = allCharts.Values.Select(chart => Converter.CalcMusicPadding(chart, first)).ToList();
-        // 音频前面被增加了多少
-        var audioPadding = paddings.Max();
-        // 见下方注释
-        var chartPadding = audioPadding + first; // = bar - firstTiming
+        float chartPadding = 0;
+        if (!noShiftChart)
+        {
+            var paddings = allCharts.Values.Select(chart => Converter.CalcMusicPadding(chart, first)).ToList();
+            // 音频前面被增加了多少
+            var audioPadding = paddings.Max();
+            // 见下方注释
+            chartPadding = audioPadding + first; // = bar - firstTiming
+        }
 
         foreach (var (level, chart) in allCharts)
         {
@@ -197,6 +192,7 @@ public class ImportChartController(StaticSettings settings, ILogger<StaticSettin
 
             var targetLevel = level - 2;
 
+            // 处理非标准难度
             if (level is > 6 or < 1)
             {
                 // 分给 3 4 0
@@ -238,16 +234,34 @@ public class ImportChartController(StaticSettings settings, ILogger<StaticSettin
             targetChart.Designer = maiData.GetValueOrDefault($"des_{level}") ?? maiData.GetValueOrDefault("des") ?? "";
             var maiLibChart = simaiParser.ChartOfToken(simaiTokenizer.TokensFromText(SimaiConvert.Serialize(chart)));
             var originalConverted = maiLibChart.Compose(ChartEnum.ChartVersion.Ma2_104);
+
+            if (debug)
+            {
+                System.IO.File.WriteAllText(Path.Combine(Path.GetDirectoryName(music.FilePath), targetChart.Path + ".debug"), originalConverted);
+            }
+
             if (chartPadding != 0)
             {
-                maiLibChart.ShiftByOffset((int)(chartPadding / bar * maiLibChart.Definition));
+                try
+                {
+                    maiLibChart.ShiftByOffset((int)(chartPadding / bar * maiLibChart.Definition));
+                }
+                catch (Exception e)
+                {
+                    SentrySdk.CaptureEvent(new SentryEvent(e)
+                    {
+                        Message = "谱面偏移 ShiftByOffset 遇到问题"
+                    });
+                    errors.Add(new ImportChartMessage("平移谱面时遇到问题，可以试试在导入的高级选项中开启避免平移谱面", MessageLevel.Fatal));
+                    return new ImportChartResult(errors, true);
+                }
             }
 
             var shiftedConverted = maiLibChart.Compose(ChartEnum.ChartVersion.Ma2_104);
 
             if (shiftedConverted.Split('\n').Length != originalConverted.Split('\n').Length)
             {
-                shiftNoteEaten = true;
+                errors.Add(new ImportChartMessage("看起来有音符被吃掉了！不出意外的话是遇到了 Bug，如果你能提供谱面文件的话我们会很感谢！", MessageLevel.Warning));
                 logger.LogWarning("BUG! shiftedConverted: {shiftedLen}, originalConverted: {originalLen}", shiftedConverted.Split('\n').Length, originalConverted.Split('\n').Length);
             }
 
@@ -263,6 +277,6 @@ public class ImportChartController(StaticSettings settings, ILogger<StaticSettin
         music.GenreId = genreId;
         music.Version = version;
         music.Save();
-        return new ImportChartResult(shiftNoteEaten);
+        return new ImportChartResult(errors, false);
     }
 }

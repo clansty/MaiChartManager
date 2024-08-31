@@ -35,9 +35,11 @@ export type ImportMeta = {
   bg?: File,
   name: string,
   musicPadding: number,
+  first: number,
 }
 
-export type ImportChartMessageEx = ImportChartMessage & { name: string }
+export type FirstPaddingMessage = { first: number, padding: number }
+export type ImportChartMessageEx = (ImportChartMessage | FirstPaddingMessage) & { name: string }
 
 const tryGetFile = async (dir: FileSystemDirectoryHandle, file: string) => {
   try {
@@ -54,6 +56,7 @@ export default defineComponent({
   setup(props) {
     const step = ref(STEP.none);
     const ignoreLevel = ref(false);
+    const noShiftChart = ref(false);
     const addVersionId = useStorage('importMusicAddVersionId', 0);
     const genreId = useStorage('importMusicGenreId', 1);
     // 大家都喜欢写 22001，甚至不理解这个选项是干什么的
@@ -89,12 +92,14 @@ export default defineComponent({
         errors.value.push({level: MessageLevel.Warning, message: '未找到背景图片', name: dir.name});
       }
 
-      let musicPadding = 0, name = dir.name;
+      let musicPadding = 0, first = 0, name = dir.name;
       if (maidata) {
         const checkRet = (await api.ImportChartCheck({file: maidata})).data;
         reject = reject || !checkRet.accept;
         errors.value.push(...(checkRet.errors || []).map(it => ({...it, name: dir.name})));
         musicPadding = checkRet.musicPadding!;
+        first = checkRet.first!;
+        errors.value.push({first, padding: musicPadding, name: dir.name});
         // 为了本地的错误和远程的错误都显示本地的名称，这里在修改 name
         name = checkRet.title!;
         if (checkRet.isDx) id += 1e4;
@@ -102,7 +107,7 @@ export default defineComponent({
 
       if (!reject) {
         meta.value.push({
-          id, maidata, bg, track, musicPadding, name,
+          id, maidata, bg, track, musicPadding, name, first,
           importStep: IMPORT_STEP.start,
         })
       }
@@ -117,23 +122,28 @@ export default defineComponent({
         if (createRet) throw new Error(createRet);
 
         music.importStep = IMPORT_STEP.chart;
-        const {shiftNoteEaten} = (await api.ImportChart({
+        const res = (await api.ImportChart({
           file: music.maidata,
           id: music.id,
           ignoreLevelNum: ignoreLevel.value,
           genreId: genreId.value,
           addVersionId: addVersionId.value,
           version: version.value,
+          noShiftChart: noShiftChart.value,
+          debug: import.meta.env.DEV,
         })).data;
 
-        if (shiftNoteEaten) {
-          errors.value.push({
-            level: MessageLevel.Warning, message: '看起来有音符被吃掉了！不出意外的话是遇到了 Bug，如果你能提供谱面文件的话我们会很感谢！', name: music.name
-          });
+        errors.value.push(...res.errors!.map(it => ({...it, name: music.name})));
+        if (res.fatal) {
+          try {
+            await api.DeleteMusic(music.id);
+          } catch {
+          }
+          return;
         }
 
         music.importStep = IMPORT_STEP.music;
-        await api.SetAudio(music.id, {file: music.track, padding: music.musicPadding});
+        await api.SetAudio(music.id, {file: music.track, padding: noShiftChart.value ? -music.first : music.musicPadding});
 
         music.importStep = IMPORT_STEP.jacket;
         if (music.bg) await api.SetMusicJacket(music.id, {file: music.bg});
@@ -141,7 +151,7 @@ export default defineComponent({
         music.importStep = IMPORT_STEP.finish;
       } catch (e: any) {
         console.log(music, e)
-        errors.value.push({level: MessageLevel.Fatal, message: e.message || e.toString(), name: music.name});
+        errors.value.push({level: MessageLevel.Fatal, message: e.error?.message || e.message || e.toString(), name: music.name});
         try {
           await api.DeleteMusic(music.id);
         } catch {
@@ -222,7 +232,7 @@ export default defineComponent({
       <CheckingModal title="正在检查..." show={step.value === STEP.checking} closeModal={closeModal}/>
       <ErrorDisplayIdInput show={step.value === STEP.showWarning} closeModal={closeModal} proceed={modalResolve.value!} meta={meta.value} errors={errors.value}
         // 这个组件的 props 数量是不是有点多了
-                           v-model:ignoreLevel={ignoreLevel.value} v-model:addVersionId={addVersionId.value} v-model:genreId={genreId.value} v-model:version={version.value}/>
+                           v-model:ignoreLevel={ignoreLevel.value} v-model:addVersionId={addVersionId.value} v-model:genreId={genreId.value} v-model:version={version.value} v-model:noShiftChart={noShiftChart.value}/>
       <ImportStepDisplay show={step.value === STEP.importing} closeModal={closeModal} current={currentProcessing.value}/>
       <ErrorDisplayIdInput show={step.value === STEP.showResultError} closeModal={closeModal} proceed={() => {
       }} meta={[]} ignoreLevel errors={errors.value}/>

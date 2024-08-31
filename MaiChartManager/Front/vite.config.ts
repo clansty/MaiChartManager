@@ -5,14 +5,15 @@ import UnoCSS from 'unocss/vite';
 import ViteYaml from '@modyfi/vite-plugin-yaml';
 
 // https://vitejs.dev/config/
-export default defineConfig({
+export default defineConfig(({command}) => ({
   plugins: [
     vueJsx(),
     UnoCSS(),
     ViteYaml(),
     sentryVitePlugin({
       org: "maichartmanager",
-      project: "front"
+      project: "front",
+      disable: command === 'serve',
     })],
   resolve: {
     alias: {
@@ -29,4 +30,4 @@ export default defineConfig({
       '/MaiChartManagerServlet': 'http://localhost:5181'
     }
   }
-});
+}));

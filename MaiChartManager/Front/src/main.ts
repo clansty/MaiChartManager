@@ -7,8 +7,11 @@ import './global.sass';
 import posthog from "@/plugins/posthog";
 import sentry from "@/plugins/sentry";
 
-createApp(App)
-  .use(posthog)
-  .use(sentry)
-  .use(router)
+let app = createApp(App)
+
+if (import.meta.env.PROD) {
+  app = app.use(posthog).use(sentry)
+}
+
+app.use(router)
   .mount('#app');

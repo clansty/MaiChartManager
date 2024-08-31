@@ -18,7 +18,7 @@ public partial class Launcher : Form
 # if DEBUG
         checkBox1.Checked = true;
         StaticSettings.Config.Export = true;
-        textBox1.Text = @"E:\Desktop\wsb\sdga145";
+        textBox1.Text = @"D:\Maimai HDD\sdga145";
         button2_Click(null, null);
         WindowState = FormWindowState.Minimized;
 # endif
@@ -102,7 +102,7 @@ public partial class Launcher : Form
     {
         if (_browserWin is null || _browserWin.IsDisposed)
         {
-            _browserWin = new Browser(loopbackUrl);
+            _browserWin = new Browser($"{loopbackUrl}?ts={DateTime.Now.Ticks}");
             _browserWin.Show();
         }
         else

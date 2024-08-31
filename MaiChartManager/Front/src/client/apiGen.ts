@@ -96,6 +96,8 @@ export interface ImportChartCheckResult {
   musicPadding?: number;
   isDx?: boolean;
   title?: string | null;
+  /** @format float */
+  first?: number;
 }
 
 export interface ImportChartMessage {
@@ -104,7 +106,8 @@ export interface ImportChartMessage {
 }
 
 export interface ImportChartResult {
-  shiftNoteEaten?: boolean;
+  errors?: ImportChartMessage[] | null;
+  fatal?: boolean;
 }
 
 export enum MessageLevel {
@@ -731,6 +734,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         genreId?: number;
         /** @format int32 */
         version?: number;
+        /** @default false */
+        debug?: boolean;
+        /** @default false */
+        noShiftChart?: boolean;
       },
       params: RequestParams = {},
     ) =>

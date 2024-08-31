@@ -1,5 +1,5 @@
 import { computed, defineComponent, PropType } from "vue";
-import { NAlert, NButton, NCheckbox, NFlex, NForm, NFormItem, NInputNumber, NModal, NScrollbar, NSelect, SelectOption } from "naive-ui";
+import { NAlert, NButton, NCheckbox, NCollapse, NCollapseItem, NFlex, NForm, NFormItem, NInputNumber, NModal, NScrollbar, NSelect, SelectOption } from "naive-ui";
 import { ImportChartMessage, MessageLevel } from "@/client/apiGen";
 import { ImportChartMessageEx, ImportMeta } from "@/components/ImportChartButton/index";
 import noJacket from '@/assets/noJacket.webp';
@@ -12,6 +12,7 @@ export default defineComponent({
     show: {type: Boolean, required: true},
     meta: {type: Array as PropType<ImportMeta[]>, required: true},
     ignoreLevel: Boolean,
+    noShiftChart: Boolean,
     addVersionId: Number,
     genreId: Number,
     version: Number,
@@ -40,6 +41,10 @@ export default defineComponent({
       get: () => props.version,
       set: (val) => emit('update:version', val)
     })
+    const noShiftChart = computed({
+      get: () => props.noShiftChart,
+      set: (val) => emit('update:noShiftChart', val)
+    })
 
     return () => <NModal
       preset="card"
@@ -52,6 +57,21 @@ export default defineComponent({
           <NFlex vertical>
             {
               props.errors.map((error, i) => {
+                if ('first' in error) {
+                  if (error.padding > 0 && !noShiftChart.value) {
+                    return <NAlert key={i} type="info" title={error.name}>将在音频前面加上 {error.padding.toFixed(3)} 秒空白以保证第一押在第二小节</NAlert>
+                  }
+                  if (error.padding < 0 && !noShiftChart.value) {
+                    return <NAlert key={i} type="info" title={error.name}>将裁剪 {(-error.padding).toFixed(3)} 秒音频以保证第一押在第二小节</NAlert>
+                  }
+                  if (error.first > 0 && noShiftChart.value) {
+                    return <NAlert key={i} type="info" title={error.name}>将裁剪 {error.first.toFixed(3)} 秒音频以对应 &first 的值</NAlert>
+                  }
+                  if (error.first < 0 && noShiftChart.value) {
+                    return <NAlert key={i} type="info" title={error.name}>将在音频前面加上 {(-error.first).toFixed(3)} 秒空白以对应 &first 的值</NAlert>
+                  }
+                  return <></>
+                }
                 let type: "default" | "info" | "success" | "warning" | "error" = "default";
                 switch (error.level) {
                   case MessageLevel.Info:
@@ -88,6 +108,13 @@ export default defineComponent({
           <NCheckbox v-model:checked={ignoreLevel.value}>
             忽略定数，不参与 B50 计算
           </NCheckbox>
+          <NCollapse>
+            <NCollapseItem title="高级选项">
+              <NCheckbox v-model:checked={noShiftChart.value}>
+                避免平移谱面 如果正常的转换失败了可以试试，但是可能会导致第一个音符出现的时机比较奇怪
+              </NCheckbox>
+            </NCollapseItem>
+          </NCollapse>
         </>}
       </NFlex>,
       footer: () => <NFlex justify="end">
