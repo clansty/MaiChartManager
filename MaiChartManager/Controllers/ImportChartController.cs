@@ -135,6 +135,7 @@ public class ImportChartController(StaticSettings settings, ILogger<StaticSettin
     public ImportChartResult ImportChart([FromForm] int id, IFormFile file, [FromForm] bool ignoreLevelNum, [FromForm] int addVersionId, [FromForm] int genreId, [FromForm] int version,
         [FromForm] bool debug = false, [FromForm] bool noShiftChart = false)
     {
+        var isUtage = id > 100000;
         var errors = new List<ImportChartMessage>();
         var music = settings.MusicList.First(it => it.Id == id);
         var maiData = new Dictionary<string, string>(new SimaiFile(file.OpenReadStream()).ToKeyValuePairs());
@@ -167,6 +168,9 @@ public class ImportChartController(StaticSettings settings, ILogger<StaticSettin
 
         foreach (var (level, chart) in allCharts)
         {
+            // 宴会场只导入第一个谱面
+            if (isUtage && music.Charts[0].Enable) break;
+
             // var levelPadding = Converter.CalcMusicPadding(chart, first);
             var bpm = chart.TimingChanges[0].tempo;
             music.Bpm = (int)Math.Floor(bpm);
@@ -189,6 +193,8 @@ public class ImportChartController(StaticSettings settings, ILogger<StaticSettin
             // |       |___| first skip 掉的部分
             // |       | 原先音频的开头
             // | 加了 padding 的音频开头
+
+            # region 设定 targetLevel
 
             var targetLevel = level - 2;
 
@@ -213,6 +219,10 @@ public class ImportChartController(StaticSettings settings, ILogger<StaticSettin
                     continue;
                 }
             }
+
+            if (isUtage) targetLevel = 0;
+
+            # endregion
 
             var targetChart = music.Charts[targetLevel];
             targetChart.Path = $"{id:000000}_0{targetLevel}.ma2";

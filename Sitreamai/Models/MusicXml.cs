@@ -27,14 +27,11 @@ public class MusicXml
         }
     }
 
-    public static MusicXml CreateNew(int id, string gamePath, string assetDir, bool isDx)
+    public static MusicXml CreateNew(int dxId, string gamePath, string assetDir)
     {
-        if (id > 10000)
-        {
-            throw new ArgumentException("id must be less than 10000");
-        }
-
-        var dxId = isDx ? id + 10000 : id;
+        var id = dxId % 10000;
+        // var isDx = dxId % 100000 >= 10000;
+        // var isUtage = dxId >= 100000;
         var data = $"""
                     <?xml version="1.0" encoding="utf-8"?>
                     <MusicData xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">

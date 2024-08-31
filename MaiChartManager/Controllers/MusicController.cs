@@ -124,9 +124,7 @@ public class MusicController(StaticSettings settings, ILogger<StaticSettings> lo
             return "当前资源目录里已经存在这个 ID 了";
         }
 
-        var isDx = id >= 10000;
-
-        var music = MusicXmlWithABJacket.CreateNew(id % 10000, StaticSettings.GamePath, settings.AssetDir, isDx);
+        var music = MusicXmlWithABJacket.CreateNew(id, StaticSettings.GamePath, settings.AssetDir);
         settings.MusicList.Add(music);
 
         return "";

@@ -1,4 +1,4 @@
-import { computed, defineComponent, PropType } from "vue";
+import { computed, defineComponent, effect, PropType, watch } from "vue";
 import { NAlert, NButton, NCheckbox, NCollapse, NCollapseItem, NFlex, NForm, NFormItem, NInputNumber, NModal, NScrollbar, NSelect, SelectOption } from "naive-ui";
 import { ImportChartMessage, MessageLevel } from "@/client/apiGen";
 import { ImportChartMessageEx, ImportMeta } from "@/components/ImportChartButton/index";
@@ -6,6 +6,7 @@ import noJacket from '@/assets/noJacket.webp';
 import { addVersionList, genreList } from "@/store/refs";
 import GenreInput from "@/components/GenreInput";
 import VersionInput from "@/components/VersionInput";
+import { UTAGE_GENRE } from "@/consts";
 
 export default defineComponent({
   props: {
@@ -46,6 +47,12 @@ export default defineComponent({
       set: (val) => emit('update:noShiftChart', val)
     })
 
+    watch([() => genreId.value, () => show.value], ([val]) => {
+      for (const meta of props.meta) {
+        meta.id = meta.id % 1e5 + (val === UTAGE_GENRE ? 1e5 : 0);
+      }
+    })
+
     return () => <NModal
       preset="card"
       class="w-[min(50vw,50em)]"
@@ -53,7 +60,7 @@ export default defineComponent({
       v-model:show={show.value}
     >{{
       default: () => <NFlex vertical size="large">
-        <NScrollbar class="max-h-35vh">
+        <NScrollbar class="max-h-30vh">
           <NFlex vertical>
             {
               props.errors.map((error, i) => {
@@ -91,7 +98,7 @@ export default defineComponent({
         </NScrollbar>
         {!!props.meta.length && <>
           为新导入的歌曲指定 ID
-          <NScrollbar class="max-h-30vh">
+          <NScrollbar class="max-h-25vh">
             <NFlex vertical size="large">
               {props.meta.map((meta, i) => <MusicIdInput key={i} meta={meta}/>)}
             </NFlex>
@@ -130,7 +137,11 @@ const MusicIdInput = defineComponent({
     meta: {type: Object as PropType<ImportMeta>, required: true},
   },
   setup(props) {
-    const dxBase = computed(() => props.meta.id >= 1e4 ? 1e4 : 0);
+    const dxBase = computed(() => {
+      const dx = props.meta.id % 1e5 >= 1e4 ? 1e4 : 0
+      const utage = props.meta.id >= 1e5 ? 1e5 : 0
+      return dx + utage;
+    });
     const img = computed(() => props.meta.bg ? URL.createObjectURL(props.meta.bg) : noJacket);
 
     return () => <NFlex align="center" size="large">

@@ -28,9 +28,9 @@ public class MusicXmlWithABJacket(string filePath, string gamePath) : MusicXml(f
         return new MusicBrief(Id, NonDxId, Name, HasJacket, Modified, chartsAvailable, Problems);
     }
 
-    public new static MusicXmlWithABJacket CreateNew(int id, string gamePath, string assetDir, bool isDx)
+    public new static MusicXmlWithABJacket CreateNew(int id, string gamePath, string assetDir)
     {
-        var old = MusicXml.CreateNew(id, gamePath, assetDir, isDx);
+        var old = MusicXml.CreateNew(id, gamePath, assetDir);
         return new MusicXmlWithABJacket(old.FilePath, old.GamePath);
     }
 
@@ -59,6 +59,16 @@ public class MusicXmlWithABJacket(string filePath, string gamePath) : MusicXml(f
             if (Charts.All(it => !it.Enable))
             {
                 res.Add("没有启用的谱面");
+            }
+
+            if (GenreId == 107 && !Charts[0].Enable)
+            {
+                res.Add("宴会场必须启用绿谱");
+            }
+
+            if (GenreId == 107 && Id < 100000)
+            {
+                res.Add("宴会场歌曲的 ID 小于 100000");
             }
 
             return res;

@@ -7,7 +7,7 @@ import JacketBox from "./JacketBox";
 import dxIcon from "@/assets/dxIcon.png";
 import stdIcon from "@/assets/stdIcon.png";
 import ChartPanel from "./ChartPanel";
-import { DIFFICULTY, LEVEL_COLOR } from "@/consts";
+import { DIFFICULTY, LEVEL_COLOR, UTAGE_GENRE } from "@/consts";
 import ProblemsDisplay from "@/components/ProblemsDisplay";
 import AcbAwb from "@/components/MusicEdit/AcbAwb";
 import GenreInput from "@/components/GenreInput";
@@ -82,7 +82,7 @@ const Component = defineComponent({
         <NFormItem label="版本分类">
           <GenreInput options={addVersionList.value} v-model:value={info.value.addVersionId}/>
         </NFormItem>
-        {info.value.genreId === 107 && // 宴会场
+        {info.value.genreId === UTAGE_GENRE && // 宴会场
           <>
             <NFormItem label="宴谱种类">
               <NInput v-model:value={info.value.utageKanji}/>
