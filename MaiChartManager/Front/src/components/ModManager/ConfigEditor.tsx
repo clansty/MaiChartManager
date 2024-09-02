@@ -1,6 +1,6 @@
-import { computed, defineComponent, onMounted, ref, watch } from "vue";
+import { computed, defineComponent, onMounted, PropType, ref, watch } from "vue";
 import { NButton, NDivider, NFlex, NFormItem, NInput, NModal, NScrollbar, NSwitch, useDialog } from "naive-ui";
-import { Config } from "@/client/apiGen";
+import { Config, GameModInfo } from "@/client/apiGen";
 import comments from './modComments.yaml';
 import api from "@/client/api";
 import { capitalCase } from "change-case";
@@ -9,21 +9,13 @@ import ProblemsDisplay from "@/components/ProblemsDisplay";
 export default defineComponent({
   props: {
     show: Boolean,
-    isMelonLoaderInstalled: Boolean,
-    isAquaMaiInstalled: Boolean,
+    info: {type: Object as PropType<GameModInfo>, required: true},
+    refresh: {type: Function, required: true},
   },
   setup(props, {emit}) {
     const show = computed({
       get: () => props.show,
       set: (val) => emit('update:show', val)
-    })
-    const isMelonLoaderInstalled = computed({
-      get: () => props.isMelonLoaderInstalled,
-      set: (val) => emit('update:isMelonLoaderInstalled', val)
-    })
-    const isAquaMaiInstalled = computed({
-      get: () => props.isAquaMaiInstalled,
-      set: (val) => emit('update:isAquaMaiInstalled', val)
     })
 
     const config = ref<Config>()
@@ -40,7 +32,7 @@ export default defineComponent({
       try {
         installingMelonLoader.value = true
         await api.InstallMelonLoader()
-        isMelonLoaderInstalled.value = true
+        await props.refresh()
       } catch (e: any) {
         dialog.error({title: '安装失败', content: e.toString()})
       } finally {
@@ -54,7 +46,7 @@ export default defineComponent({
         // 但是你根本看不到这个加载图标，因为太快了
         installingAquaMai.value = true
         await api.InstallAquaMai()
-        isAquaMaiInstalled.value = true
+        await props.refresh()
         showAquaMaiInstallDone.value = true
         setTimeout(() => showAquaMaiInstallDone.value = false, 3000);
       } catch (e: any) {
@@ -79,14 +71,21 @@ export default defineComponent({
       <NFlex vertical>
         <NFlex align="center">
           MelonLoader:
-          {isMelonLoaderInstalled.value ? <span class="c-green-6">已安装</span> : <span class="c-red-6">未安装</span>}
-          {!isMelonLoaderInstalled.value && <NButton secondary loading={installingMelonLoader.value} onClick={installMelonLoader}>安装</NButton>}
+          {props.info.melonLoaderInstalled ? <span class="c-green-6">已安装</span> : <span class="c-red-6">未安装</span>}
+          {!props.info.melonLoaderInstalled && <NButton secondary loading={installingMelonLoader.value} onClick={installMelonLoader}>安装</NButton>}
           <div class="w-8"/>
           AquaMai:
-          {isAquaMaiInstalled.value ? <span class="c-green-6">已安装</span> : <span class="c-red-6">未安装</span>}
-          <NButton secondary loading={installingAquaMai.value} onClick={installAquaMai} type={showAquaMaiInstallDone.value ? 'success' : 'default'}>
-            {showAquaMaiInstallDone.value ? <span class="i-material-symbols-done"/> : isAquaMaiInstalled.value ? '重新安装 / 更新' : '安装'}
+          {props.info.aquaMaiInstalled ?
+            props.info.aquaMaiVersion === props.info.bundledAquaMaiVersion ? <span class="c-green-6">已安装</span> : <span class="c-orange">可更新</span> :
+            <span class="c-red-6">未安装</span>}
+          <NButton secondary loading={installingAquaMai.value} onClick={installAquaMai}
+                   type={showAquaMaiInstallDone.value ? 'success' : 'default'}>
+            {showAquaMaiInstallDone.value ? <span class="i-material-symbols-done"/> : props.info.aquaMaiInstalled ? '重新安装 / 更新' : '安装'}
           </NButton>
+          已安装:
+          <span>{props.info.aquaMaiVersion}</span>
+          可安装:
+          <span class={props.info.aquaMaiVersion === props.info.bundledAquaMaiVersion ? "" : "c-orange"}>{props.info.bundledAquaMaiVersion}</span>
         </NFlex>
         {config.value && <NScrollbar class="max-h-60vh p-2">
           {Object.entries(config.value).map(([key, section]) => !!section && <>

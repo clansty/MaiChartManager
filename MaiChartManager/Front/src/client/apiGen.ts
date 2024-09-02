@@ -57,6 +57,13 @@ export interface FixConfig {
   forceFreePlay?: boolean;
 }
 
+export interface GameModInfo {
+  melonLoaderInstalled?: boolean;
+  aquaMaiInstalled?: boolean;
+  aquaMaiVersion?: string | null;
+  bundledAquaMaiVersion?: string | null;
+}
+
 export interface GenreAddRequest {
   /** @format int32 */
   id?: number;
@@ -778,6 +785,21 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     IsAquaMaiInstalled: (params: RequestParams = {}) =>
       this.request<boolean, any>({
         path: `/MaiChartManagerServlet/IsAquaMaiInstalledApi`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Mod
+     * @name GetGameModInfo
+     * @request GET:/MaiChartManagerServlet/GetGameModInfoApi
+     */
+    GetGameModInfo: (params: RequestParams = {}) =>
+      this.request<GameModInfo, any>({
+        path: `/MaiChartManagerServlet/GetGameModInfoApi`,
         method: "GET",
         format: "json",
         ...params,

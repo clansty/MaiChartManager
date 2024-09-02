@@ -3,22 +3,21 @@ import { NButton } from "naive-ui";
 import { useStorage } from "@vueuse/core";
 import ModNotInstalledWarning from "@/components/ModManager/ModNotInstalledWarning";
 import api from "@/client/api";
-import ModManager from "@/components/ModManager/index";
 import ConfigEditor from "@/components/ModManager/ConfigEditor";
+import { GameModInfo } from "@/client/apiGen";
 
 export default defineComponent({
   setup(props) {
-    const isMelonLoaderInstalled = ref(false);
-    const isAquaMaiInstalled = ref(false);
+    const info = ref<GameModInfo>();
     const isWarningConfirmed = useStorage('isWarningConfirmed', false);
+    const disableBadge = useStorage('disableBadge', false);
     const showWarning = ref(false);
     const showConfigurator = ref(false);
 
     onMounted(async () => {
-      isMelonLoaderInstalled.value = (await api.IsMelonInstalled()).data;
-      isAquaMaiInstalled.value = (await api.IsAquaMaiInstalled()).data;
+      info.value = (await api.GetGameModInfo()).data;
       if (isWarningConfirmed.value) return;
-      showWarning.value = !isMelonLoaderInstalled.value || !isAquaMaiInstalled.value;
+      showWarning.value = !info.value.aquaMaiInstalled || !info.value.melonLoaderInstalled;
     })
 
     return () => <NButton secondary onClick={() => showConfigurator.value = true}>
@@ -27,7 +26,7 @@ export default defineComponent({
         showWarning.value = false
         isWarningConfirmed.value = dismiss
       }}/>
-      <ConfigEditor v-model:show={showConfigurator.value} v-model:isMelonLoaderInstalled={isMelonLoaderInstalled.value} v-model:isAquaMaiInstalled={isAquaMaiInstalled.value}/>
+      {info.value && <ConfigEditor v-model:show={showConfigurator.value} info={info.value} refresh={async () => info.value = (await api.GetGameModInfo()).data}/>}
     </NButton>;
   }
 })
