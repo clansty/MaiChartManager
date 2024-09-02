@@ -62,7 +62,7 @@ public partial class Launcher : Form
 
 # if !DEBUG
         StaticSettings.Config.GamePath = textBox1.Text;
-        File.WriteAllText(Path.Combine(Application.LocalUserAppDataPath, "config.json"), JsonSerializer.Serialize(StaticSettings.Config));
+        File.WriteAllText(Path.Combine(StaticSettings.appData, "config.json"), JsonSerializer.Serialize(StaticSettings.Config));
 # endif
 
         textBox1.Enabled = false;

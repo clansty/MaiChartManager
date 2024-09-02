@@ -24,7 +24,7 @@ public static class ServerManager
 
     private static X509Certificate2 GetCert()
     {
-        var path = Path.Combine(Application.LocalUserAppDataPath, "cert.pfx");
+        var path = Path.Combine(StaticSettings.appData, "cert.pfx");
         if (File.Exists(path))
         {
             return new X509Certificate2(path);

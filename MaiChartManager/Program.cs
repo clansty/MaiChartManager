@@ -20,15 +20,13 @@ static class Program
                 o.TracesSampleRate = 0.5;
             }
         );
-        // Configure WinForms to throw exceptions so Sentry can capture them.
-        Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);
 
-        // To customize application configuration such as set high DPI settings or default font,
-        // see https://aka.ms/applicationconfiguration.
+        Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);
         ApplicationConfiguration.Initialize();
 
-        if (File.Exists(Path.Combine(Application.LocalUserAppDataPath, "config.json")))
-            StaticSettings.Config = JsonSerializer.Deserialize<Config>(File.ReadAllText(Path.Combine(Application.LocalUserAppDataPath, "config.json")));
+        Directory.CreateDirectory(StaticSettings.appData);
+        if (File.Exists(Path.Combine(StaticSettings.appData, "config.json")))
+            StaticSettings.Config = JsonSerializer.Deserialize<Config>(File.ReadAllText(Path.Combine(StaticSettings.appData, "config.json")));
 
         new Launcher().Show();
 

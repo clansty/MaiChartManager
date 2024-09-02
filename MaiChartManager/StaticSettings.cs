@@ -8,6 +8,7 @@ namespace MaiChartManager;
 public partial class StaticSettings
 {
     public readonly string tempPath = Path.Combine(Path.GetTempPath(), "MaiChartManager");
+    public static readonly string appData = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "MaiChartManager");
 
     public static Config Config { get; set; } = new();
 
