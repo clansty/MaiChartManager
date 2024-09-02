@@ -1,5 +1,5 @@
-import { defineComponent, onMounted, ref } from "vue";
-import { NButton } from "naive-ui";
+import { computed, defineComponent, onMounted, ref } from "vue";
+import { NBadge, NButton } from "naive-ui";
 import { useStorage } from "@vueuse/core";
 import ModNotInstalledWarning from "@/components/ModManager/ModNotInstalledWarning";
 import api from "@/client/api";
@@ -20,13 +20,24 @@ export default defineComponent({
       showWarning.value = !info.value.aquaMaiInstalled || !info.value.melonLoaderInstalled;
     })
 
-    return () => <NButton secondary onClick={() => showConfigurator.value = true}>
-      Mod 管理
+    const badgeType = computed(() => {
+      if (!info.value) return
+      if (!info.value.aquaMaiInstalled || !info.value.melonLoaderInstalled) return 'error'
+      if (info.value.aquaMaiVersion !== info.value.bundledAquaMaiVersion) return 'warning'
+    })
+
+    return () => <>
+      <NBadge dot show={!!badgeType.value && !disableBadge.value} type={badgeType.value as any}>
+        <NButton secondary onClick={() => showConfigurator.value = true}>
+          Mod 管理
+        </NButton>
+      </NBadge>
       <ModNotInstalledWarning show={showWarning.value} closeModal={(dismiss: boolean) => {
         showWarning.value = false
         isWarningConfirmed.value = dismiss
       }}/>
-      {info.value && <ConfigEditor v-model:show={showConfigurator.value} info={info.value} refresh={async () => info.value = (await api.GetGameModInfo()).data}/>}
-    </NButton>;
+      {info.value && <ConfigEditor v-model:show={showConfigurator.value} v-model:disableBadge={disableBadge.value} info={info.value} badgeType={badgeType.value}
+                                   refresh={async () => info.value = (await api.GetGameModInfo()).data}/>}
+    </>;
   }
 })

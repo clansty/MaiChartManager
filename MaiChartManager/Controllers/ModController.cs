@@ -1,5 +1,4 @@
 ﻿using System.IO.Compression;
-using System.Windows.Forms;
 using Microsoft.AspNetCore.Mvc;
 using Tomlet;
 
@@ -21,6 +20,24 @@ public class ModController(StaticSettings settings, ILogger<StaticSettings> logg
     public bool IsAquaMaiInstalled()
     {
         return System.IO.File.Exists(Path.Combine(StaticSettings.GamePath, @"Mods\AquaMai.dll"));
+    }
+
+    public record GameModInfo(bool MelonLoaderInstalled, bool AquaMaiInstalled, string AquaMaiVersion, string BundledAquaMaiVersion);
+
+    [HttpGet]
+    public GameModInfo GetGameModInfo()
+    {
+        var aquaMaiInstalled = IsAquaMaiInstalled();
+        var aquaMaiVersion = "N/A";
+        if (aquaMaiInstalled)
+        {
+            aquaMaiVersion = System.Diagnostics.FileVersionInfo.GetVersionInfo(Path.Combine(StaticSettings.GamePath, @"Mods\AquaMai.dll")).ProductVersion;
+        }
+
+        var bundledAquaMaiVersion = AppDomain.CurrentDomain.GetAssemblies()
+            .FirstOrDefault(a => a.GetName().Name == "AquaMai")?.GetName().Version?.ToString(3) ?? "N/A";
+
+        return new GameModInfo(IsMelonInstalled(), aquaMaiInstalled, aquaMaiVersion, bundledAquaMaiVersion);
     }
 
     [HttpGet]

@@ -8,6 +8,7 @@ cheat:
   ticketUnlock: 解锁游戏里所有可能的跑图券
   mapUnlock: 解锁游戏里所有的区域，包括非当前版本的（并不会帮你跑完）
   unlockUtage: 不需要万分也可以进宴会场
+  debugFeature: 恢复 SDGA 的自动播放（Home）和暂停（Enter）按键
 
 ux:
   skipWarningScreen: 跳过日服启动时候的 WARNING 界面

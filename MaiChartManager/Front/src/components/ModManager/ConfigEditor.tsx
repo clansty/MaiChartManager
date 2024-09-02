@@ -1,5 +1,5 @@
 import { computed, defineComponent, onMounted, PropType, ref, watch } from "vue";
-import { NButton, NDivider, NFlex, NFormItem, NInput, NModal, NScrollbar, NSwitch, useDialog } from "naive-ui";
+import { NButton, NCheckbox, NDivider, NFlex, NFormItem, NInput, NModal, NScrollbar, NSwitch, useDialog } from "naive-ui";
 import { Config, GameModInfo } from "@/client/apiGen";
 import comments from './modComments.yaml';
 import api from "@/client/api";
@@ -9,13 +9,19 @@ import ProblemsDisplay from "@/components/ProblemsDisplay";
 export default defineComponent({
   props: {
     show: Boolean,
+    disableBadge: Boolean,
     info: {type: Object as PropType<GameModInfo>, required: true},
     refresh: {type: Function, required: true},
+    badgeType: String,
   },
   setup(props, {emit}) {
     const show = computed({
       get: () => props.show,
       set: (val) => emit('update:show', val)
+    })
+    const disableBadge = computed({
+      get: () => props.disableBadge,
+      set: (val) => emit('update:disableBadge', val)
     })
 
     const config = ref<Config>()
@@ -87,6 +93,7 @@ export default defineComponent({
           可安装:
           <span class={props.info.aquaMaiVersion === props.info.bundledAquaMaiVersion ? "" : "c-orange"}>{props.info.bundledAquaMaiVersion}</span>
         </NFlex>
+        {props.badgeType && <NCheckbox v-model:checked={disableBadge.value}>隐藏按钮上的角标</NCheckbox>}
         {config.value && <NScrollbar class="max-h-60vh p-2">
           {Object.entries(config.value).map(([key, section]) => !!section && <>
             <NDivider titlePlacement="left">{comments.sections[key]}</NDivider>
