@@ -35,6 +35,9 @@ ux:
     如果你没有开启 'SinglePlayer' 的话，不建议开这个，不过要开的话也不是不可以
   immediateSave: 打完一首歌的时候立即向服务器保存成绩
   testProof: 防止不小心按到 Test 键，Test 键需要长按 1 秒才能生效
+  customPlaceName: |
+    自定义拍照的店铺名称
+    同时在 SDGA 中会启用店铺名称在照片中的显示（但是不会在游戏里有设置）
 
 performance:
   improveLoadSpeed: 在自检界面，每个屏幕结束的时候不会等两秒才进入下一个屏幕
