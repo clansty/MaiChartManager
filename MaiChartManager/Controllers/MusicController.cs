@@ -194,7 +194,7 @@ public class MusicController(StaticSettings settings, ILogger<StaticSettings> lo
             hash = (await xxHash64.ComputeHashAsync(readStream)).ToString();
         }
 
-        var cachePath = Path.Combine(settings.tempPath, hash + ".wav");
+        var cachePath = Path.Combine(StaticSettings.tempPath, hash + ".wav");
 
         if (System.IO.File.Exists(cachePath))
             // 这里 enableRangeProcessing 不开的话，对着两首歌打交会卡死，硬控十五秒

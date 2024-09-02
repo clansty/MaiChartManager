@@ -11,9 +11,10 @@ export default defineConfig(({command}) => ({
     UnoCSS(),
     ViteYaml(),
     sentryVitePlugin({
-      org: "maichartmanager",
-      project: "front",
+      org: "sentry",
+      project: "maichartmanager-front",
       disable: command === 'serve',
+      url: "https://sentry.c5y.moe",
     })],
   resolve: {
     alias: {

@@ -7,7 +7,7 @@ namespace MaiChartManager;
 
 public partial class StaticSettings
 {
-    public readonly string tempPath = Path.Combine(Path.GetTempPath(), "MaiChartManager");
+    public static readonly string tempPath = Path.Combine(Path.GetTempPath(), "MaiChartManager");
     public static readonly string appData = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "MaiChartManager");
 
     public static Config Config { get; set; } = new();
@@ -18,8 +18,11 @@ public partial class StaticSettings
     public StaticSettings(ILogger<StaticSettings> logger)
     {
         _logger = logger;
-        Directory.CreateDirectory(tempPath);
-        if (string.IsNullOrEmpty(GamePath)) return;
+        if (string.IsNullOrEmpty(GamePath))
+        {
+            throw new ArgumentException("未指定游戏目录");
+        }
+
         AssetDir = "A500";
         ScanMusicList();
         ScanGenre();
@@ -165,8 +168,20 @@ public partial class StaticSettings
 
     private void GetGameVersion()
     {
-        var xmlDoc = new XmlDocument();
-        xmlDoc.Load(Path.Combine(StreamingAssets, @"A000/DataConfig.xml"));
-        int.TryParse(xmlDoc.SelectSingleNode("/DataConfig/version/minor")?.InnerText, out gameVersion);
+        try
+        {
+            var xmlDoc = new XmlDocument();
+            xmlDoc.Load(Path.Combine(StreamingAssets, @"A000/DataConfig.xml"));
+            if (!int.TryParse(xmlDoc.SelectSingleNode("/DataConfig/version/minor")?.InnerText, out gameVersion))
+            {
+                MessageBox.Show("无法获取游戏版本号，解析数据失败", "提示", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Get game version failed.");
+            SentrySdk.CaptureEvent(new SentryEvent(e) { Message = @"无法获取游戏版本号，可能是因为 A000\DataConfig.xml 找不到或者有错误" });
+            MessageBox.Show(@"无法获取游戏版本号，可能是因为 A000\DataConfig.xml 找不到或者有错误", "提示", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        }
     }
 }

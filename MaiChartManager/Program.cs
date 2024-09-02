@@ -25,6 +25,7 @@ static class Program
         ApplicationConfiguration.Initialize();
 
         Directory.CreateDirectory(StaticSettings.appData);
+        Directory.CreateDirectory(StaticSettings.tempPath);
         if (File.Exists(Path.Combine(StaticSettings.appData, "config.json")))
             StaticSettings.Config = JsonSerializer.Deserialize<Config>(File.ReadAllText(Path.Combine(StaticSettings.appData, "config.json")));
 
