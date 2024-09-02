@@ -179,8 +179,8 @@ public partial class StaticSettings
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Get game version failed.");
-            SentrySdk.CaptureEvent(new SentryEvent(e) { Message = @"无法获取游戏版本号，可能是因为 A000\DataConfig.xml 找不到或者有错误" });
+            _logger.LogError(e, @"无法获取游戏版本号，可能是因为 A000\DataConfig.xml 找不到或者有错误");
+            SentrySdk.CaptureException(e);
             MessageBox.Show(@"无法获取游戏版本号，可能是因为 A000\DataConfig.xml 找不到或者有错误", "提示", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
     }

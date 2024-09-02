@@ -1,4 +1,9 @@
+cd %~dp0
 del .\*.appx
+
+pushd ..\MaiChartManager\Front
+call pnpm build
+popd
 
 pushd ..
 msbuild /p:Configuration=Release /p:DeployOnBuild=true /p:PublishProfile=FolderProfile
