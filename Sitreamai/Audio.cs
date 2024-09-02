@@ -37,7 +37,7 @@ public static class Audio
     public static byte[] LoadAndConvertFile(string path, FileType convertToType, bool loop, ulong encrpytionKey = 0, float padding = 0, Stream src = null)
     {
         using var read = src ?? File.OpenRead(path);
-        switch (Path.GetExtension(path).ToLower())
+        switch (Path.GetExtension(path).ToLowerInvariant())
         {
             case ".wav":
             case ".mp3":

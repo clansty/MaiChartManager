@@ -138,9 +138,9 @@ public partial class StaticSettings
             {
                 var idStr = Path.GetFileName(jacketFile).Substring("ui_jacket_".Length, 6);
                 if (!int.TryParse(idStr, out var id)) continue;
-                if (Path.GetExtension(jacketFile) == ".ab")
+                if (Path.GetExtension(jacketFile).ToLowerInvariant() == ".ab")
                     AssetBundleJacketMap[id] = jacketFile;
-                else if (((string[]) [".png", ".jpg", ".jpeg"]).Contains(Path.GetExtension(jacketFile)))
+                else if (((string[]) [".png", ".jpg", ".jpeg"]).Contains(Path.GetExtension(jacketFile).ToLowerInvariant()))
                     PseudoAssetBundleJacketMap[id] = jacketFile;
             }
         }

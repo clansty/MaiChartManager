@@ -135,7 +135,7 @@ public class MusicController(StaticSettings settings, ILogger<StaticSettings> lo
     {
         var nonDxId = id % 10000;
         Directory.CreateDirectory(Path.Combine(StaticSettings.GamePath, "LocalAssets"));
-        var ext = Path.GetExtension(file.FileName);
+        var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
         if (!MusicXml.jacketExtensions.Contains(ext[1..]))
         {
             return "不支持的图片格式";
@@ -217,7 +217,7 @@ public class MusicController(StaticSettings settings, ILogger<StaticSettings> lo
         var targetAwbPath = Path.Combine(StaticSettings.StreamingAssets, settings.AssetDir, $@"SoundData\music{id:000000}.awb");
         Directory.CreateDirectory(Path.GetDirectoryName(targetAcbPath));
 
-        if (Path.GetExtension(file.FileName) == ".acb")
+        if (Path.GetExtension(file.FileName).ToLowerInvariant() == ".acb")
         {
             if (awb is null) throw new Exception("acb 文件必须搭配 awb 文件");
             using var write = System.IO.File.Open(targetAcbPath, FileMode.Create);
