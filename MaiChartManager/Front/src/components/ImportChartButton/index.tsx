@@ -169,6 +169,7 @@ export default defineComponent({
       id++;
       errors.value = [];
       ignoreLevel.value = false;
+      noShiftChart.value = false;
       step.value = STEP.selectFile;
       meta.value = [];
       currentProcessing.value = dummyMeta;

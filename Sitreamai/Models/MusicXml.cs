@@ -196,7 +196,9 @@ public class MusicXml
         return new MusicXml(Path.Combine(path, "Music.xml"), gamePath);
     }
 
-    public int Id => int.Parse(xmlDoc.SelectSingleNode("/MusicData/name/id")?.InnerText);
+    private XmlNode RootNode => xmlDoc.SelectSingleNode("/MusicData");
+
+    public int Id => int.Parse(RootNode.SelectSingleNode("name/id")?.InnerText);
 
     public int NonDxId => Id % 10000;
 
@@ -206,47 +208,47 @@ public class MusicXml
 
     public string Name
     {
-        get => xmlDoc.SelectSingleNode("/MusicData/name/str")?.InnerText;
+        get => RootNode.SelectSingleNode("name/str")?.InnerText;
         set
         {
             Modified = true;
-            xmlDoc.SelectSingleNode("/MusicData/name/str").InnerText = value;
-            xmlDoc.SelectSingleNode("/MusicData/movieName/str").InnerText = value;
-            xmlDoc.SelectSingleNode("/MusicData/cueName/str").InnerText = value;
-            xmlDoc.SelectSingleNode("/MusicData/sortName").InnerText = value;
+            RootNode.SelectSingleNode("name/str").InnerText = value;
+            RootNode.SelectSingleNode("movieName/str").InnerText = value;
+            RootNode.SelectSingleNode("cueName/str").InnerText = value;
+            RootNode.SelectSingleNode("sortName").InnerText = value;
         }
     }
 
     public int GenreId
     {
-        get => int.Parse(xmlDoc.SelectSingleNode("/MusicData/genreName/id").InnerText);
+        get => int.Parse(RootNode.SelectSingleNode("genreName/id").InnerText);
         set
         {
             Modified = true;
-            xmlDoc.SelectSingleNode("/MusicData/genreName/id").InnerText = value.ToString();
-            xmlDoc.SelectSingleNode("/MusicData/genreName/str").InnerText = "";
+            RootNode.SelectSingleNode("genreName/id").InnerText = value.ToString();
+            RootNode.SelectSingleNode("genreName/str").InnerText = "";
         }
     }
 
     public int AddVersionId
     {
-        get => int.Parse(xmlDoc.SelectSingleNode("/MusicData/AddVersion/id").InnerText);
+        get => int.Parse(RootNode.SelectSingleNode("AddVersion/id").InnerText);
         set
         {
             Modified = true;
-            xmlDoc.SelectSingleNode("/MusicData/AddVersion/id").InnerText = value.ToString();
-            xmlDoc.SelectSingleNode("/MusicData/AddVersion/str").InnerText = "";
+            RootNode.SelectSingleNode("AddVersion/id").InnerText = value.ToString();
+            RootNode.SelectSingleNode("AddVersion/str").InnerText = "";
         }
     }
 
     public string Artist
     {
-        get => xmlDoc.SelectSingleNode("/MusicData/artistName/str")?.InnerText;
+        get => RootNode.SelectSingleNode("artistName/str")?.InnerText;
         set
         {
             Modified = true;
-            xmlDoc.SelectSingleNode("/MusicData/artistName/str").InnerText = value;
-            xmlDoc.SelectSingleNode("/MusicData/artistName/id").InnerText = "999";
+            RootNode.SelectSingleNode("artistName/str").InnerText = value;
+            RootNode.SelectSingleNode("artistName/id").InnerText = "999";
         }
     }
 
@@ -254,20 +256,20 @@ public class MusicXml
 
     public string UtageKanji
     {
-        get => xmlDoc.SelectSingleNode(utageKanjiNode)?.InnerText;
+        get => RootNode.SelectSingleNode(utageKanjiNode)?.InnerText;
         set
         {
             Modified = true;
-            var node = xmlDoc.SelectSingleNode(utageKanjiNode);
+            var node = RootNode.SelectSingleNode(utageKanjiNode);
             if (node is null)
             {
                 node = xmlDoc.CreateNode(XmlNodeType.Element, utageKanjiNode, null);
                 node.InnerText = value;
-                xmlDoc.DocumentElement.AppendChild(node);
+                RootNode.AppendChild(node);
                 return;
             }
 
-            xmlDoc.SelectSingleNode(utageKanjiNode).InnerText = value;
+            RootNode.SelectSingleNode(utageKanjiNode).InnerText = value;
         }
     }
 
@@ -275,50 +277,50 @@ public class MusicXml
 
     public string Comment
     {
-        get => xmlDoc.SelectSingleNode(commentNode)?.InnerText;
+        get => RootNode.SelectSingleNode(commentNode)?.InnerText;
         set
         {
             Modified = true;
-            var node = xmlDoc.SelectSingleNode(commentNode);
+            var node = RootNode.SelectSingleNode(commentNode);
             if (node is null)
             {
                 node = xmlDoc.CreateNode(XmlNodeType.Element, commentNode, null);
                 node.InnerText = value;
-                xmlDoc.DocumentElement.AppendChild(node);
+                RootNode.AppendChild(node);
                 return;
             }
 
-            xmlDoc.SelectSingleNode(commentNode).InnerText = value;
+            RootNode.SelectSingleNode(commentNode).InnerText = value;
         }
     }
 
     public int Version
     {
-        get => int.Parse(xmlDoc.SelectSingleNode("/MusicData/version").InnerText);
+        get => int.Parse(RootNode.SelectSingleNode("version").InnerText);
         set
         {
             Modified = true;
-            xmlDoc.SelectSingleNode("/MusicData/version").InnerText = value.ToString();
+            RootNode.SelectSingleNode("version").InnerText = value.ToString();
         }
     }
 
     public int Bpm
     {
-        get => int.Parse(xmlDoc.SelectSingleNode("/MusicData/bpm").InnerText);
+        get => int.Parse(RootNode.SelectSingleNode("bpm").InnerText);
         set
         {
             Modified = true;
-            xmlDoc.SelectSingleNode("/MusicData/bpm").InnerText = value.ToString();
+            RootNode.SelectSingleNode("bpm").InnerText = value.ToString();
         }
     }
 
     public bool Disable
     {
-        get => bool.Parse(xmlDoc.SelectSingleNode("/MusicData/disable").InnerText);
+        get => bool.Parse(RootNode.SelectSingleNode("disable").InnerText);
         set
         {
             Modified = true;
-            xmlDoc.SelectSingleNode("/MusicData/version").InnerText = value ? "true" : "false";
+            RootNode.SelectSingleNode("version").InnerText = value ? "true" : "false";
         }
     }
 
