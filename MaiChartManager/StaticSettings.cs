@@ -18,18 +18,29 @@ public partial class StaticSettings
     public StaticSettings(ILogger<StaticSettings> logger)
     {
         _logger = logger;
-        if (string.IsNullOrEmpty(GamePath))
-        {
-            throw new ArgumentException("未指定游戏目录");
-        }
 
-        AssetDir = "A500";
-        ScanMusicList();
-        ScanGenre();
-        ScanVersionList();
-        ScanAssetBundles();
-        ScanSoundData();
-        GetGameVersion();
+        try
+        {
+            if (string.IsNullOrEmpty(GamePath))
+            {
+                throw new ArgumentException("未指定游戏目录");
+            }
+
+            AssetDir = "A500";
+            GetGameVersion();
+            ScanMusicList();
+            ScanGenre();
+            ScanVersionList();
+            ScanAssetBundles();
+            ScanSoundData();
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "初始化数据目录时出错");
+            SentrySdk.CaptureException(e);
+            MessageBox.Show(e.Message, "初始化数据目录时出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            Application.Exit();
+        }
     }
 
     [GeneratedRegex(@"^\w\d{3}$")]
@@ -76,7 +87,7 @@ public partial class StaticSettings
             MusicList.Add(musicXml);
         }
 
-        _logger.LogInformation($"Scan music list, found {MusicList.Count} music.");
+        _logger.LogInformation("Scan music list, found {0} music.", MusicList.Count);
     }
 
     public void ScanGenre()
@@ -102,7 +113,7 @@ public partial class StaticSettings
             }
         }
 
-        _logger.LogInformation($"Scan genre list, found {GenreList.Count} genre.");
+        _logger.LogInformation("Scan genre list, found {0} genre.", GenreList.Count);
     }
 
     public void ScanVersionList()
