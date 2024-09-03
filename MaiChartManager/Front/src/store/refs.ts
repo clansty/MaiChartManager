@@ -1,6 +1,21 @@
 import { computed, ref } from "vue";
 import { AppVersionResult, GenreXml, MusicBrief, VersionXml } from "@/client/apiGen";
 import api from "@/client/api";
+import { captureException } from "@sentry/vue";
+
+export const error = ref();
+export const errorId = ref<string>();
+export const errorContext = ref<string>();
+
+export const globalCapture = (err: any, context: string) => {
+  error.value = err;
+  errorContext.value = context;
+  errorId.value = captureException(err.error || err, {
+    tags: {
+      context
+    }
+  })
+}
 
 export const selectMusicId = ref(0)
 export const genreList = ref<GenreXml[]>([]);

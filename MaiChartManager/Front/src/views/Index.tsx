@@ -2,30 +2,41 @@ import { defineComponent, onMounted } from 'vue';
 import { NFlex, NScrollbar, useNotification } from "naive-ui";
 import MusicList from "@/components/MusicList";
 import GenreVersionManager from "@/components/GenreVersionManager";
-import { selectedADir, updateAddVersionList, updateAssetDirs, updateGenreList, updateSelectedAssetDir, updateVersion } from "@/store/refs";
+import { globalCapture, selectedADir, updateAddVersionList, updateAssetDirs, updateGenreList, updateSelectedAssetDir, updateVersion } from "@/store/refs";
 import MusicEdit from "@/components/MusicEdit";
 import MusicSelectedTopRightToolbar from "@/components/MusicSelectedTopRightToolbar";
 import CreateMusicButton from "@/components/CreateMusicButton";
 import ImportChartButton from "@/components/ImportChartButton";
 import ModManager from "@/components/ModManager";
 import VersionInfo from "@/components/VersionInfo";
+import { captureException } from "@sentry/vue";
 
 export default defineComponent({
   setup() {
-    onMounted(updateGenreList)
-    onMounted(updateAddVersionList)
-    onMounted(updateSelectedAssetDir)
-    onMounted(updateAssetDirs)
-    onMounted(updateVersion)
-
     const notification = useNotification();
 
-    onMounted(() => {
+    onMounted(async () => {
       addEventListener("unhandledrejection", (event) => {
         console.log(event)
+        captureException(event.reason?.error || event.reason, {
+          tags: {
+            context: 'unhandledrejection'
+          }
+        })
         if (import.meta.env.DEV)
           notification.error({title: '未处理错误', content: event.reason?.error?.message || event.reason?.message});
       });
+      try {
+        await Promise.all([
+          updateGenreList(),
+          updateAddVersionList(),
+          updateSelectedAssetDir(),
+          updateAssetDirs(),
+          updateVersion()
+        ])
+      } catch (err) {
+        globalCapture(err, "初始化失败")
+      }
     })
   },
   render() {

@@ -5,6 +5,7 @@ import comments from './modComments.yaml';
 import api from "@/client/api";
 import { capitalCase } from "change-case";
 import ProblemsDisplay from "@/components/ProblemsDisplay";
+import { globalCapture } from "@/store/refs";
 
 export default defineComponent({
   props: {
@@ -40,7 +41,7 @@ export default defineComponent({
         await api.InstallMelonLoader()
         await props.refresh()
       } catch (e: any) {
-        dialog.error({title: '安装失败', content: e.toString()})
+        globalCapture(e, "安装 MelonLoader 失败")
       } finally {
         installingMelonLoader.value = false
       }
@@ -56,7 +57,7 @@ export default defineComponent({
         showAquaMaiInstallDone.value = true
         setTimeout(() => showAquaMaiInstallDone.value = false, 3000);
       } catch (e: any) {
-        dialog.error({title: '安装失败', content: e.toString()})
+        globalCapture(e, "安装 AquaMai 失败")
       } finally {
         installingAquaMai.value = false
       }

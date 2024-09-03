@@ -4,10 +4,11 @@ import SelectFileTypeTip from "@/components/ImportChartButton/SelectFileTypeTip"
 import { ImportChartMessage, MessageLevel } from "@/client/apiGen";
 import CheckingModal from "@/components/ImportChartButton/CheckingModal";
 import api from "@/client/api";
-import { musicList, selectMusicId, updateMusicList } from "@/store/refs";
+import { globalCapture, musicList, selectMusicId, updateMusicList } from "@/store/refs";
 import ErrorDisplayIdInput from "@/components/ImportChartButton/ErrorDisplayIdInput";
 import ImportStepDisplay from "@/components/ImportChartButton/ImportStepDisplay";
 import { useStorage } from "@vueuse/core";
+import { captureException } from "@sentry/vue";
 
 enum STEP {
   none,
@@ -151,6 +152,12 @@ export default defineComponent({
         music.importStep = IMPORT_STEP.finish;
       } catch (e: any) {
         console.log(music, e)
+        captureException(e.error || e, {
+          tags: {
+            context: '导入乐曲出错',
+            step: music.importStep,
+          }
+        })
         errors.value.push({level: MessageLevel.Fatal, message: e.error?.message || e.message || e.toString(), name: music.name});
         try {
           await api.DeleteMusic(music.id);
@@ -217,10 +224,7 @@ export default defineComponent({
       } catch (e: any) {
         if (e.name === 'AbortError') return
         console.log(e)
-        dialog.error({
-          title: '错误',
-          content: e.message,
-        })
+        globalCapture(e, "导入乐曲出错（全局）")
       } finally {
         if (step.value !== STEP.showResultError)
           step.value = STEP.none

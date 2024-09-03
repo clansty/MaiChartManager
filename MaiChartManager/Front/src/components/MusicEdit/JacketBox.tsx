@@ -2,7 +2,7 @@ import { computed, defineComponent, PropType, ref } from "vue";
 import noJacket from "@/assets/noJacket.webp";
 import api from "@/client/api";
 import { useDialog } from "naive-ui";
-import { selectedMusicBrief } from "@/store/refs";
+import { globalCapture, selectedMusicBrief } from "@/store/refs";
 import { MusicXmlWithABJacket } from "@/client/apiGen";
 
 export default defineComponent({
@@ -52,10 +52,7 @@ export default defineComponent({
       } catch (e: any) {
         if (e.name === 'AbortError') return
         console.log(e)
-        dialog.error({
-          title: '错误',
-          content: e.message,
-        })
+        globalCapture(e, "替换图片失败")
       }
     }
 

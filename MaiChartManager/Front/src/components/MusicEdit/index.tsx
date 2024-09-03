@@ -1,6 +1,6 @@
 import { computed, defineComponent, onMounted, PropType, ref, watch } from "vue";
 import { Chart, GenreXml, MusicXmlWithABJacket } from "@/client/apiGen";
-import { addVersionList, genreList, selectedADir, selectedMusicBrief, selectMusicId, updateAddVersionList, updateGenreList, updateMusicList } from "@/store/refs";
+import { addVersionList, genreList, globalCapture, selectedADir, selectedMusicBrief, selectMusicId, updateAddVersionList, updateGenreList, updateMusicList } from "@/store/refs";
 import api from "@/client/api";
 import { NButton, NFlex, NForm, NFormItem, NInput, NInputNumber, NSelect, NTabPane, NTabs, SelectOption, useDialog, useMessage } from "naive-ui";
 import JacketBox from "./JacketBox";
@@ -35,8 +35,7 @@ const Component = defineComponent({
           selectedLevel.value = firstEnabledChart;
         }
       } catch (e: any) {
-        message.error('加载歌曲信息失败');
-        captureException(e.error || e);
+        globalCapture(e, "获取乐曲详情失败")
       }
 
       watch(() => info.value?.name, sync('name', api.EditMusicName));

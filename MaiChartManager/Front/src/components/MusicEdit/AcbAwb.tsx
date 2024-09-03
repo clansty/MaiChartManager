@@ -2,7 +2,7 @@ import { computed, defineComponent, PropType, ref } from "vue";
 import { HttpResponse, MusicXmlWithABJacket } from "@/client/apiGen";
 import { NButton, NDrawer, NDrawerContent, NFlex, NForm, NFormItem, NInputNumber, NModal, NRadio, useDialog } from "naive-ui";
 import noJacket from "@/assets/noJacket.webp";
-import { selectedADir } from "@/store/refs";
+import { globalCapture, selectedADir } from "@/store/refs";
 import FileTypeIcon from "@/components/FileTypeIcon";
 import stdIcon from "@/assets/stdIcon.png";
 import dxIcon from "@/assets/dxIcon.png";
@@ -84,10 +84,7 @@ export default defineComponent({
       } catch (e: any) {
         if (e.name === 'AbortError') return
         console.log(e)
-        dialog.error({
-          title: '错误',
-          content: e.message,
-        })
+        globalCapture(e, "导入音频出错")
       } finally {
         tipShow.value = false;
         tipSelectAwbShow.value = false;
