@@ -1,7 +1,8 @@
 ﻿using System.Net;
 using System.Net.Sockets;
 using System.Text.Json;
-using System.Windows.Forms;
+using Windows.ApplicationModel;
+using Windows.ApplicationModel.Activation;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 
@@ -15,13 +16,66 @@ public partial class Launcher : Form
         label3.Text = $@"v{Application.ProductVersion}";
         checkBox1.Checked = StaticSettings.Config.Export;
         textBox1.Text = StaticSettings.Config.GamePath;
+        CheckStartupStatus();
 # if DEBUG
         checkBox1.Checked = true;
         StaticSettings.Config.Export = true;
         textBox1.Text = @"D:\Maimai HDD\sdga145";
-        button2_Click(null, null);
+        StartClicked(null, null);
+        notifyIcon1.Visible = true;
         WindowState = FormWindowState.Minimized;
 # endif
+        if (!isFromStartup())
+        {
+            Visible = true;
+            return;
+        }
+
+        // 开机自启
+        Visible = false;
+        notifyIcon1.Visible = true;
+        checkBox1.Checked = true;
+        StaticSettings.Config.Export = true;
+        StartClicked(null, null);
+    }
+
+    private bool isFromStartup()
+    {
+        try
+        {
+            var aeArgs = AppInstance.GetActivatedEventArgs();
+            return aeArgs?.Kind == ActivationKind.StartupTask;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            SentrySdk.CaptureException(e);
+        }
+
+        return false;
+    }
+
+    private async Task CheckStartupStatus()
+    {
+        var startupTask = await StartupTask.GetAsync("MaiChartManagerStartupId");
+        switch (startupTask.State)
+        {
+            case StartupTaskState.Disabled:
+                checkBox_startup.Checked = false;
+                break;
+            case StartupTaskState.Enabled:
+                checkBox_startup.Checked = true;
+                break;
+            case StartupTaskState.DisabledByUser:
+            case StartupTaskState.DisabledByPolicy:
+                checkBox_startup.Enabled = false;
+                checkBox_startup.Checked = false;
+                break;
+            case StartupTaskState.EnabledByPolicy: // ??
+                checkBox_startup.Enabled = false;
+                checkBox_startup.Checked = true;
+                break;
+        }
     }
 
     private void button1_Click(object sender, EventArgs e)
@@ -33,7 +87,7 @@ public partial class Launcher : Form
 
     private string loopbackUrl;
 
-    private void button2_Click(object sender, EventArgs e)
+    private void StartClicked(object sender, EventArgs e)
     {
         if (button2.Text == "停止")
         {
@@ -58,6 +112,12 @@ public partial class Launcher : Form
         {
             MessageBox.Show("选择的路径中看起来不包含游戏文件，请选择 Sinmai.exe 所在的文件夹");
             return;
+        }
+
+        if (!checkBox1.Checked && checkBox_startup.Checked)
+        {
+            checkBox_startup.Checked = false;
+            checkBox_startup_Click(null, null);
         }
 
 # if !DEBUG
@@ -119,5 +179,27 @@ public partial class Launcher : Form
     private void checkBox1_CheckedChanged(object sender, EventArgs e)
     {
         StaticSettings.Config.Export = checkBox1.Checked;
+        checkBox_startup.Visible = checkBox1.Checked;
+    }
+
+    private async void checkBox_startup_Click(object sender, EventArgs e)
+    {
+        await File.WriteAllTextAsync(Path.Combine(StaticSettings.appData, "config.json"), JsonSerializer.Serialize(StaticSettings.Config));
+        var startupTask = await StartupTask.GetAsync("MaiChartManagerStartupId");
+        if (checkBox_startup.Checked)
+        {
+            await startupTask.RequestEnableAsync();
+        }
+        else
+        {
+            startupTask.Disable();
+        }
+    }
+
+    private void notifyIcon1_Click(object sender, EventArgs e)
+    {
+        Visible = true;
+        WindowState = FormWindowState.Normal;
+        notifyIcon1.Visible = false;
     }
 }

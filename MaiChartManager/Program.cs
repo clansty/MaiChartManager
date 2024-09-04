@@ -19,6 +19,9 @@ static class Program
                     // Set TracesSampleRate to 1.0 to capture 100% of transactions for tracing.
                     // We recommend adjusting this value in production.
                     o.TracesSampleRate = 0.5;
+# if DEBUG
+                    o.Environment = "development";
+# endif
                 }
             );
 
@@ -30,7 +33,7 @@ static class Program
             if (File.Exists(Path.Combine(StaticSettings.appData, "config.json")))
                 StaticSettings.Config = JsonSerializer.Deserialize<Config>(File.ReadAllText(Path.Combine(StaticSettings.appData, "config.json")));
 
-            new Launcher().Show();
+            new Launcher();
 
             Application.Run();
         }
@@ -38,6 +41,7 @@ static class Program
         {
             SentrySdk.CaptureException(e);
             MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            throw;
         }
     }
 }

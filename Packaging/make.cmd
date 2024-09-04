@@ -17,6 +17,5 @@ makepri.exe createconfig /cf priconfig.xml /dq zh-CN
 makepri.exe new /pr . /cf .\priconfig.xml
 del .\priconfig.xml
 makeappx pack /d . /p ../Store64.appx
-del .\*.pri
 
 pause

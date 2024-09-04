@@ -99,10 +99,6 @@ public static class ServerManager
         app = builder.Build();
         app.Lifetime.ApplicationStarted.Register(() => { app.Services.GetService<StaticSettings>(); });
 
-# if DEBUG
-        app.Lifetime.ApplicationStopped.Register(Application.Exit);
-# endif
-
         if (onStart != null)
             app.Lifetime.ApplicationStarted.Register(onStart);
 

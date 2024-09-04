@@ -5,6 +5,7 @@
   xmlns:win32dependencies="http://schemas.microsoft.com/appx/manifest/externaldependencies"
   xmlns:build="http://schemas.microsoft.com/developer/appx/2015/build"
   xmlns:uap4="http://schemas.microsoft.com/appx/manifest/uap/windows10/4"
+  xmlns:desktop="http://schemas.microsoft.com/appx/manifest/desktop/windows10"
   IgnorableNamespaces="win32dependencies"
 >
   <Identity Name="22369479C5405.MaiChartManager" Publisher="CN=86A51452-7790-46C3-9A4B-1207C2C97940" Version="1.0.2.0"
@@ -34,6 +35,11 @@
           Square310x310Logo="Images\LargeTile.png" Square71x71Logo="Images\SmallTile.png"></uap:DefaultTile>
         <uap:SplashScreen Image="Images\SplashScreen.png" />
       </uap:VisualElements>
+      <Extensions>
+        <desktop:Extension Category="windows.startupTask" Executable="MaiChartManager\MaiChartManager.exe" EntryPoint="Windows.FullTrustApplication">
+            <desktop:StartupTask TaskId="MaiChartManagerStartupId" Enabled="false" DisplayName="MaiChartManager" />
+        </desktop:Extension>
+      </Extensions>
     </Application>
   </Applications>
   <Capabilities>
