@@ -221,7 +221,7 @@ public class MusicXml
 
     public int GenreId
     {
-        get => int.Parse(RootNode.SelectSingleNode("genreName/id").InnerText);
+        get => int.Parse(RootNode.SelectSingleNode("genreName/id")?.InnerText ?? "0");
         set
         {
             Modified = true;
@@ -232,7 +232,7 @@ public class MusicXml
 
     public int AddVersionId
     {
-        get => int.Parse(RootNode.SelectSingleNode("AddVersion/id").InnerText);
+        get => int.Parse(RootNode.SelectSingleNode("AddVersion/id")?.InnerText ?? "0");
         set
         {
             Modified = true;
@@ -296,7 +296,7 @@ public class MusicXml
 
     public int Version
     {
-        get => int.Parse(RootNode.SelectSingleNode("version").InnerText);
+        get => int.Parse(RootNode.SelectSingleNode("version")?.InnerText ?? "0");
         set
         {
             Modified = true;
@@ -306,7 +306,7 @@ public class MusicXml
 
     public int Bpm
     {
-        get => int.Parse(RootNode.SelectSingleNode("bpm").InnerText);
+        get => int.Parse(RootNode.SelectSingleNode("bpm")?.InnerText ?? "0");
         set
         {
             Modified = true;
@@ -316,7 +316,7 @@ public class MusicXml
 
     public bool Disable
     {
-        get => bool.Parse(RootNode.SelectSingleNode("disable").InnerText);
+        get => bool.Parse(RootNode.SelectSingleNode("disable")?.InnerText ?? "false");
         set
         {
             Modified = true;
@@ -328,7 +328,7 @@ public class MusicXml
     {
         public string Path
         {
-            get => node.SelectSingleNode("file/path").InnerText;
+            get => node.SelectSingleNode("file/path")?.InnerText;
             set
             {
                 parent.Modified = true;
@@ -338,7 +338,7 @@ public class MusicXml
 
         public int Level
         {
-            get => int.Parse(node.SelectSingleNode("level").InnerText);
+            get => int.Parse(node.SelectSingleNode("level")?.InnerText ?? "0");
             set
             {
                 parent.Modified = true;
@@ -348,7 +348,7 @@ public class MusicXml
 
         public int LevelDecimal
         {
-            get => int.Parse(node.SelectSingleNode("levelDecimal").InnerText);
+            get => int.Parse(node.SelectSingleNode("levelDecimal")?.InnerText ?? "0");
             set
             {
                 parent.Modified = true;
@@ -358,7 +358,7 @@ public class MusicXml
 
         public int LevelId
         {
-            get => int.Parse(node.SelectSingleNode("musicLevelID").InnerText);
+            get => int.Parse(node.SelectSingleNode("musicLevelID")?.InnerText ?? "0");
             set
             {
                 parent.Modified = true;
@@ -368,7 +368,7 @@ public class MusicXml
 
         public int MaxNotes
         {
-            get => int.Parse(node.SelectSingleNode("maxNotes").InnerText);
+            get => int.Parse(node.SelectSingleNode("maxNotes")?.InnerText ?? "0");
             set
             {
                 parent.Modified = true;
@@ -378,7 +378,7 @@ public class MusicXml
 
         public bool Enable
         {
-            get => bool.Parse(node.SelectSingleNode("isEnable").InnerText);
+            get => bool.Parse(node.SelectSingleNode("isEnable")?.InnerText ?? "false");
             set
             {
                 parent.Modified = true;
@@ -388,7 +388,7 @@ public class MusicXml
 
         public string Designer
         {
-            get => node.SelectSingleNode("notesDesigner/str").InnerText;
+            get => node.SelectSingleNode("notesDesigner/str")?.InnerText;
             set
             {
                 parent.Modified = true;
