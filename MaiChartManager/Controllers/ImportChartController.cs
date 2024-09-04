@@ -1,4 +1,5 @@
-﻿using MaiLib;
+﻿using System.Text.RegularExpressions;
+using MaiLib;
 using Microsoft.AspNetCore.Mvc;
 using SimaiSharp;
 using SimaiSharp.Structures;
@@ -8,7 +9,7 @@ namespace MaiChartManager.Controllers;
 
 [ApiController]
 [Route("MaiChartManagerServlet/[action]Api")]
-public class ImportChartController(StaticSettings settings, ILogger<StaticSettings> logger) : ControllerBase
+public partial class ImportChartController(StaticSettings settings, ILogger<StaticSettings> logger) : ControllerBase
 {
     public enum MessageLevel
     {
@@ -130,6 +131,11 @@ public class ImportChartController(StaticSettings settings, ILogger<StaticSettin
 
     public record ImportChartResult(IEnumerable<ImportChartMessage> Errors, bool Fatal);
 
+    private record AllChartsEntry(string chartText, MaiChart simaiSharpChart);
+
+    [GeneratedRegex(@"\|\|.*$", RegexOptions.Multiline)]
+    private static partial Regex SimaiCommentRegex();
+
     [HttpPost]
     // 创建完 Music 后调用
     public ImportChartResult ImportChart([FromForm] int id, IFormFile file, [FromForm] bool ignoreLevelNum, [FromForm] int addVersionId, [FromForm] int genreId, [FromForm] int version,
@@ -140,18 +146,18 @@ public class ImportChartController(StaticSettings settings, ILogger<StaticSettin
         var music = settings.MusicList.First(it => it.Id == id);
         var maiData = new Dictionary<string, string>(new SimaiFile(file.OpenReadStream()).ToKeyValuePairs());
 
-        var allCharts = new Dictionary<int, MaiChart>();
+        var allCharts = new Dictionary<int, AllChartsEntry>();
         for (var i = 2; i < 9; i++)
         {
             if (!string.IsNullOrWhiteSpace(maiData.GetValueOrDefault($"inote_{i}")))
             {
-                allCharts.Add(i, SimaiConvert.Deserialize(maiData[$"inote_{i}"]));
+                allCharts.Add(i, new AllChartsEntry(maiData[$"inote_{i}"], SimaiConvert.Deserialize(maiData[$"inote_{i}"])));
             }
         }
 
         if (!string.IsNullOrWhiteSpace(maiData.GetValueOrDefault("inote_0")))
         {
-            allCharts.Add(0, SimaiConvert.Deserialize(maiData["inote_0"]));
+            allCharts.Add(0, new AllChartsEntry(maiData["inote_0"], SimaiConvert.Deserialize(maiData["inote_0"])));
         }
 
         float.TryParse(maiData.GetValueOrDefault("first"), out var first);
@@ -159,7 +165,7 @@ public class ImportChartController(StaticSettings settings, ILogger<StaticSettin
         float chartPadding = 0;
         if (!noShiftChart)
         {
-            var paddings = allCharts.Values.Select(chart => Converter.CalcMusicPadding(chart, first)).ToList();
+            var paddings = allCharts.Values.Select(chart => Converter.CalcMusicPadding(chart.simaiSharpChart, first)).ToList();
             // 音频前面被增加了多少
             var audioPadding = paddings.Max();
             // 见下方注释
@@ -172,7 +178,7 @@ public class ImportChartController(StaticSettings settings, ILogger<StaticSettin
             if (isUtage && music.Charts[0].Enable) break;
 
             // var levelPadding = Converter.CalcMusicPadding(chart, first);
-            var bpm = chart.TimingChanges[0].tempo;
+            var bpm = chart.simaiSharpChart.TimingChanges[0].tempo;
             music.Bpm = (int)Math.Floor(bpm);
             // 一个小节多少秒
             var bar = 60 / bpm * 4;
@@ -242,12 +248,54 @@ public class ImportChartController(StaticSettings settings, ILogger<StaticSettin
             }
 
             targetChart.Designer = maiData.GetValueOrDefault($"des_{level}") ?? maiData.GetValueOrDefault("des") ?? "";
-            var maiLibChart = simaiParser.ChartOfToken(simaiTokenizer.TokensFromText(SimaiConvert.Serialize(chart)));
+            Chart maiLibChart = null;
+            try
+            {
+                maiLibChart = simaiParser.ChartOfToken(simaiTokenizer.TokensFromText(chart.chartText));
+            }
+            catch (Exception e)
+            {
+                logger.LogWarning(e, "无法直接解析谱面");
+            }
+
+            if (maiLibChart is null)
+            {
+                try
+                {
+                    var normalizedText = chart.chartText
+                        // 不飞的星星
+                        .Replace("-?", "?-");
+                    // 移除注释
+                    normalizedText = SimaiCommentRegex().Replace(normalizedText, "");
+                    var tokens = simaiTokenizer.TokensFromText(normalizedText);
+                    for (var i = 0; i < tokens.Length; i++)
+                    {
+                        if (tokens[i].Contains("]b"))
+                        {
+                            tokens[i] = tokens[i].Replace("]b", "]").Replace("[", "b[");
+                        }
+                    }
+
+                    maiLibChart = simaiParser.ChartOfToken(tokens);
+                }
+                catch (Exception e)
+                {
+                    logger.LogWarning(e, "无法在手动修正错误后解析谱面");
+                }
+            }
+
+            if (maiLibChart is null)
+            {
+                maiLibChart = simaiParser.ChartOfToken(simaiTokenizer.TokensFromText(SimaiConvert.Serialize(chart.simaiSharpChart)));
+                errors.Add(new ImportChartMessage("就算修正了一些已知错误，MaiLib 还是无法解析谱面，我们尝试通过 AstroDX 的 SimaiSharp 解析。" +
+                                                  "如果转换结果发现有什么问题的话，可以试试在 AstroDX 中有没有同样的问题并告诉我们（不试也没关系）", MessageLevel.Warning));
+            }
+
             var originalConverted = maiLibChart.Compose(ChartEnum.ChartVersion.Ma2_104);
 
             if (debug)
             {
-                System.IO.File.WriteAllText(Path.Combine(Path.GetDirectoryName(music.FilePath), targetChart.Path + ".afterSimaiSharp.txt"), SimaiConvert.Serialize(chart));
+                System.IO.File.WriteAllText(Path.Combine(Path.GetDirectoryName(music.FilePath), targetChart.Path + ".afterSimaiSharp.txt"), SimaiConvert.Serialize(chart.simaiSharpChart));
                 System.IO.File.WriteAllText(Path.Combine(Path.GetDirectoryName(music.FilePath), targetChart.Path + ".preShift.ma2"), originalConverted);
                 System.IO.File.WriteAllText(Path.Combine(Path.GetDirectoryName(music.FilePath), targetChart.Path + ".preShift.txt"), maiLibChart.Compose(ChartEnum.ChartVersion.SimaiFes));
             }
