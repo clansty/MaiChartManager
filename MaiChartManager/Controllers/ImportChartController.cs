@@ -247,7 +247,9 @@ public class ImportChartController(StaticSettings settings, ILogger<StaticSettin
 
             if (debug)
             {
-                System.IO.File.WriteAllText(Path.Combine(Path.GetDirectoryName(music.FilePath), targetChart.Path + ".debug"), originalConverted);
+                System.IO.File.WriteAllText(Path.Combine(Path.GetDirectoryName(music.FilePath), targetChart.Path + ".afterSimaiSharp.txt"), SimaiConvert.Serialize(chart));
+                System.IO.File.WriteAllText(Path.Combine(Path.GetDirectoryName(music.FilePath), targetChart.Path + ".preShift.ma2"), originalConverted);
+                System.IO.File.WriteAllText(Path.Combine(Path.GetDirectoryName(music.FilePath), targetChart.Path + ".preShift.txt"), maiLibChart.Compose(ChartEnum.ChartVersion.SimaiFes));
             }
 
             if (chartPadding != 0)
@@ -277,6 +279,10 @@ public class ImportChartController(StaticSettings settings, ILogger<StaticSettin
 
             targetChart.MaxNotes = maiLibChart.AllNoteNum;
             System.IO.File.WriteAllText(Path.Combine(Path.GetDirectoryName(music.FilePath), targetChart.Path), shiftedConverted);
+            if (debug)
+            {
+                System.IO.File.WriteAllText(Path.Combine(Path.GetDirectoryName(music.FilePath), targetChart.Path + ".afterShift.txt"), maiLibChart.Compose(ChartEnum.ChartVersion.SimaiFes));
+            }
 
             targetChart.Enable = true;
         }
