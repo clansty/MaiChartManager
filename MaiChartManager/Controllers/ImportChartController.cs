@@ -28,7 +28,13 @@ public partial class ImportChartController(StaticSettings settings, ILogger<Stat
     [HttpPost]
     public ImportChartCheckResult ImportChartCheck(IFormFile file)
     {
-        var maiData = new Dictionary<string, string>(new SimaiFile(file.OpenReadStream()).ToKeyValuePairs());
+        var kvps = new SimaiFile(file.OpenReadStream()).ToKeyValuePairs();
+        var maiData = new Dictionary<string, string>();
+        foreach (var (key, value) in kvps)
+        {
+            maiData[key] = value;
+        }
+
         var errors = new List<ImportChartMessage>();
         var fatal = false;
 
@@ -144,7 +150,12 @@ public partial class ImportChartController(StaticSettings settings, ILogger<Stat
         var isUtage = id > 100000;
         var errors = new List<ImportChartMessage>();
         var music = settings.MusicList.First(it => it.Id == id);
-        var maiData = new Dictionary<string, string>(new SimaiFile(file.OpenReadStream()).ToKeyValuePairs());
+        var kvps = new SimaiFile(file.OpenReadStream()).ToKeyValuePairs();
+        var maiData = new Dictionary<string, string>();
+        foreach (var (key, value) in kvps)
+        {
+            maiData[key] = value;
+        }
 
         var allCharts = new Dictionary<int, AllChartsEntry>();
         for (var i = 2; i < 9; i++)
