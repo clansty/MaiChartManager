@@ -15,12 +15,6 @@ public class MusicListController(StaticSettings settings, ILogger<StaticSettings
     }
 
     [HttpGet]
-    public IEnumerable<string> GetAssetsDirs()
-    {
-        return StaticSettings.AssetsDirs;
-    }
-
-    [HttpGet]
     public string GetSelectedAssetsDir()
     {
         return Path.GetFileName(settings.AssetDir);

@@ -1,5 +1,5 @@
 import { computed, ref } from "vue";
-import { AppVersionResult, GenreXml, MusicBrief, VersionXml } from "@/client/apiGen";
+import { AppVersionResult, GenreXml, GetAssetsDirsResult, MusicBrief, VersionXml } from "@/client/apiGen";
 import api from "@/client/api";
 import { captureException } from "@sentry/vue";
 
@@ -22,7 +22,7 @@ export const genreList = ref<GenreXml[]>([]);
 export const addVersionList = ref<VersionXml[]>([]);
 export const selectedADir = ref<string>('');
 export const musicList = ref<MusicBrief[]>([]);
-export const assetDirs = ref<string[]>([]);
+export const assetDirs = ref<GetAssetsDirsResult[]>([]);
 export const version = ref<AppVersionResult>();
 
 export const selectedMusicBrief = computed(() => musicList.value.find(m => m.id === selectMusicId.value));

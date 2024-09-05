@@ -42,7 +42,7 @@ export default defineComponent({
       <NFlex vertical class="h-full" size="large">
         <NSelect
           value={selectedADir.value}
-          options={assetDirs.value.map(dir => ({label: dir, value: dir}))}
+          options={assetDirs.value.map(dir => ({label: dir.dirName!, value: dir.dirName!}))}
           onUpdateValue={setAssetsDir}
         />
         <NVirtualList class="flex-1" itemSize={20 / 4 * 16} items={musicList.value}>

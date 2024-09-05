@@ -41,6 +41,7 @@ export interface CheatConfig {
   ticketUnlock?: boolean;
   mapUnlock?: boolean;
   unlockUtage?: boolean;
+  debugFeature?: boolean;
 }
 
 export interface Config {
@@ -94,6 +95,16 @@ export interface GenreXml {
   colorG?: number;
   /** @format int32 */
   colorB?: number;
+}
+
+export interface GetAssetDirTxtValueRequest {
+  dirName?: string | null;
+  fileName?: string | null;
+}
+
+export interface GetAssetsDirsResult {
+  dirName?: string | null;
+  subFiles?: string[] | null;
 }
 
 export interface ImportChartCheckResult {
@@ -167,6 +178,12 @@ export interface PerformanceConfig {
   improveLoadSpeed?: boolean;
 }
 
+export interface PutAssetDirTxtValueRequest {
+  dirName?: string | null;
+  fileName?: string | null;
+  content?: string | null;
+}
+
 export interface UXConfig {
   skipWarningScreen?: boolean;
   singlePlayer?: boolean;
@@ -182,6 +199,7 @@ export interface UXConfig {
   loadLocalBga?: boolean;
   testProof?: boolean;
   customVersionString?: string | null;
+  customPlaceName?: string | null;
   execOnIdle?: string | null;
   execOnEntry?: string | null;
 }
@@ -493,6 +511,102 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         path: `/MaiChartManagerServlet/GetAppVersionApi`,
         method: "GET",
         format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags AssetDir
+     * @name CreateAssetDir
+     * @request POST:/MaiChartManagerServlet/CreateAssetDirApi
+     */
+    CreateAssetDir: (data: string, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/MaiChartManagerServlet/CreateAssetDirApi`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags AssetDir
+     * @name DeleteAssetDir
+     * @request DELETE:/MaiChartManagerServlet/DeleteAssetDirApi
+     */
+    DeleteAssetDir: (data: string, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/MaiChartManagerServlet/DeleteAssetDirApi`,
+        method: "DELETE",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags AssetDir
+     * @name GetAssetsDirs
+     * @request GET:/MaiChartManagerServlet/GetAssetsDirsApi
+     */
+    GetAssetsDirs: (params: RequestParams = {}) =>
+      this.request<GetAssetsDirsResult[], any>({
+        path: `/MaiChartManagerServlet/GetAssetsDirsApi`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags AssetDir
+     * @name GetAssetDirTxtValue
+     * @request POST:/MaiChartManagerServlet/GetAssetDirTxtValueApi
+     */
+    GetAssetDirTxtValue: (data: GetAssetDirTxtValueRequest, params: RequestParams = {}) =>
+      this.request<string, any>({
+        path: `/MaiChartManagerServlet/GetAssetDirTxtValueApi`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags AssetDir
+     * @name DeleteAssetDirTxt
+     * @request DELETE:/MaiChartManagerServlet/DeleteAssetDirTxtApi
+     */
+    DeleteAssetDirTxt: (data: GetAssetDirTxtValueRequest, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/MaiChartManagerServlet/DeleteAssetDirTxtApi`,
+        method: "DELETE",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags AssetDir
+     * @name PutAssetDirTxtValue
+     * @request PUT:/MaiChartManagerServlet/PutAssetDirTxtValueApi
+     */
+    PutAssetDirTxtValue: (data: PutAssetDirTxtValueRequest, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/MaiChartManagerServlet/PutAssetDirTxtValueApi`,
+        method: "PUT",
+        body: data,
+        type: ContentType.Json,
         ...params,
       }),
 
@@ -1142,21 +1256,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         method: "POST",
         body: data,
         type: ContentType.Json,
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags MusicList
-     * @name GetAssetsDirs
-     * @request GET:/MaiChartManagerServlet/GetAssetsDirsApi
-     */
-    GetAssetsDirs: (params: RequestParams = {}) =>
-      this.request<string[], any>({
-        path: `/MaiChartManagerServlet/GetAssetsDirsApi`,
-        method: "GET",
-        format: "json",
         ...params,
       }),
 

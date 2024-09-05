@@ -10,6 +10,7 @@ import ImportChartButton from "@/components/ImportChartButton";
 import ModManager from "@/components/ModManager";
 import VersionInfo from "@/components/VersionInfo";
 import { captureException } from "@sentry/vue";
+import AssetDirsManager from "@/components/AssetDirsManager";
 
 export default defineComponent({
   setup() {
@@ -47,6 +48,7 @@ export default defineComponent({
         </div>
         <NFlex vertical class="p-xy h-100vh" size="large" style={{background: 'linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.1) 16px, rgba(255, 255, 255, 0.1) calc(100% - 16px), transparent 100%)'}}>
           <NFlex class="shrink-0">
+            <AssetDirsManager/>
             {selectedADir.value !== 'A000' && <>
               <GenreVersionManager type="genre"/>
               <GenreVersionManager type="version"/>
