@@ -76,12 +76,8 @@ public class ModController(StaticSettings settings, ILogger<StaticSettings> logg
         {
             if (entry.Name == "NOTICE.txt")
                 continue;
-            if (entry.FullName.EndsWith('/'))
-            {
-                Directory.CreateDirectory(Path.Combine(StaticSettings.GamePath, entry.FullName));
-                continue;
-            }
 
+            Directory.CreateDirectory(Path.GetDirectoryName(Path.Combine(StaticSettings.GamePath, entry.FullName)));
             entry.ExtractToFile(Path.Combine(StaticSettings.GamePath, entry.FullName), true);
         }
     }
