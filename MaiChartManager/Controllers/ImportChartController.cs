@@ -28,111 +28,121 @@ public partial class ImportChartController(StaticSettings settings, ILogger<Stat
     [HttpPost]
     public ImportChartCheckResult ImportChartCheck(IFormFile file)
     {
-        var kvps = new SimaiFile(file.OpenReadStream()).ToKeyValuePairs();
-        var maiData = new Dictionary<string, string>();
-        foreach (var (key, value) in kvps)
-        {
-            maiData[key] = value;
-        }
-
         var errors = new List<ImportChartMessage>();
         var fatal = false;
 
-        var title = maiData.GetValueOrDefault("title");
-        if (string.IsNullOrWhiteSpace(maiData.GetValueOrDefault("title")))
+        try
         {
-            errors.Add(new ImportChartMessage("乐曲没有标题", MessageLevel.Fatal));
-            fatal = true;
-        }
-
-        var levels = new bool[5];
-        var allChartText = new Dictionary<int, string>();
-
-        for (var i = 0; i < 5; i++)
-        {
-            // maidata 里 2 是绿谱，6 是白谱
-            if (!string.IsNullOrWhiteSpace(maiData.GetValueOrDefault($"inote_{i + 2}")))
+            var kvps = new SimaiFile(file.OpenReadStream()).ToKeyValuePairs();
+            var maiData = new Dictionary<string, string>();
+            foreach (var (key, value) in kvps)
             {
-                levels[i] = true;
-                allChartText.Add(i + 2, maiData.GetValueOrDefault($"inote_{i + 2}"));
+                maiData[key] = value;
             }
-        }
 
-        if (levels.Any(it => it))
-        {
-            string[] levelNames = ["绿", "黄", "红", "紫", "白"];
-            var message = "将导入以下难度：";
+            var title = maiData.GetValueOrDefault("title");
+            if (string.IsNullOrWhiteSpace(maiData.GetValueOrDefault("title")))
+            {
+                errors.Add(new ImportChartMessage("乐曲没有标题", MessageLevel.Fatal));
+                fatal = true;
+            }
+
+            var levels = new bool[5];
+            var allChartText = new Dictionary<int, string>();
+
             for (var i = 0; i < 5; i++)
             {
-                if (levels[i])
+                // maidata 里 2 是绿谱，6 是白谱
+                if (!string.IsNullOrWhiteSpace(maiData.GetValueOrDefault($"inote_{i + 2}")))
                 {
-                    message += levelNames[i] + " ";
+                    levels[i] = true;
+                    allChartText.Add(i + 2, maiData.GetValueOrDefault($"inote_{i + 2}"));
                 }
             }
 
-            errors.Add(new ImportChartMessage(message, MessageLevel.Info));
-        }
+            if (levels.Any(it => it))
+            {
+                string[] levelNames = ["绿", "黄", "红", "紫", "白"];
+                var message = "将导入以下难度：";
+                for (var i = 0; i < 5; i++)
+                {
+                    if (levels[i])
+                    {
+                        message += levelNames[i] + " ";
+                    }
+                }
 
-        foreach (var i in (int[]) [7, 8, 0])
-        {
-            if (string.IsNullOrWhiteSpace(maiData.GetValueOrDefault($"inote_{i}"))) continue;
-            allChartText.Add(i, maiData.GetValueOrDefault($"inote_{i}"));
-            if (!levels[3])
-            {
-                levels[3] = true;
-                errors.Add(new ImportChartMessage($"有一个难度为 {i} 的谱面，将导入为紫谱", MessageLevel.Warning));
+                errors.Add(new ImportChartMessage(message, MessageLevel.Info));
             }
-            else if (!levels[4])
-            {
-                levels[4] = true;
-                errors.Add(new ImportChartMessage($"有一个难度为 {i} 的谱面，将导入为白谱", MessageLevel.Warning));
-            }
-            else if (!levels[0])
-            {
-                levels[0] = true;
-                errors.Add(new ImportChartMessage($"有一个难度为 {i} 的谱面，将导入为绿谱", MessageLevel.Warning));
-            }
-            else
-            {
-                errors.Add(new ImportChartMessage($"有一个难度为 {i} 的谱面将被忽略", MessageLevel.Warning));
-            }
-        }
 
-        if (!levels.Any(it => it))
-        {
-            errors.Add(new ImportChartMessage("乐曲没有谱面", MessageLevel.Fatal));
-            fatal = true;
-            return new ImportChartCheckResult(!fatal, errors, 0, false, title, 0);
-        }
-
-        var paddings = new List<float>();
-        float.TryParse(maiData.GetValueOrDefault("first"), out var first);
-        var isDx = false;
-
-        foreach (var kvp in allChartText)
-        {
-            var chartText = kvp.Value;
-            try
+            foreach (var i in (int[]) [7, 8, 0])
             {
-                var chart = SimaiConvert.Deserialize(chartText);
-                paddings.Add(Converter.CalcMusicPadding(chart, first));
-
-                // 防止谱面不标准 MaiLib 解析不了
-                chartText = SimaiConvert.Serialize(chart);
-                var candidate = simaiParser.ChartOfToken(simaiTokenizer.TokensFromText(chartText));
-                isDx = isDx || candidate.IsDxChart;
+                if (string.IsNullOrWhiteSpace(maiData.GetValueOrDefault($"inote_{i}"))) continue;
+                allChartText.Add(i, maiData.GetValueOrDefault($"inote_{i}"));
+                if (!levels[3])
+                {
+                    levels[3] = true;
+                    errors.Add(new ImportChartMessage($"有一个难度为 {i} 的谱面，将导入为紫谱", MessageLevel.Warning));
+                }
+                else if (!levels[4])
+                {
+                    levels[4] = true;
+                    errors.Add(new ImportChartMessage($"有一个难度为 {i} 的谱面，将导入为白谱", MessageLevel.Warning));
+                }
+                else if (!levels[0])
+                {
+                    levels[0] = true;
+                    errors.Add(new ImportChartMessage($"有一个难度为 {i} 的谱面，将导入为绿谱", MessageLevel.Warning));
+                }
+                else
+                {
+                    errors.Add(new ImportChartMessage($"有一个难度为 {i} 的谱面将被忽略", MessageLevel.Warning));
+                }
             }
-            catch (Exception e)
+
+            if (!levels.Any(it => it))
             {
-                logger.LogError(e, "解析谱面失败");
-                errors.Add(new ImportChartMessage($"谱面难度 {kvp.Key} 解析失败", MessageLevel.Fatal));
+                errors.Add(new ImportChartMessage("乐曲没有谱面", MessageLevel.Fatal));
                 fatal = true;
+                return new ImportChartCheckResult(!fatal, errors, 0, false, title, 0);
             }
+
+            var paddings = new List<float>();
+            float.TryParse(maiData.GetValueOrDefault("first"), out var first);
+            var isDx = false;
+
+            foreach (var kvp in allChartText)
+            {
+                var chartText = kvp.Value;
+                try
+                {
+                    var chart = SimaiConvert.Deserialize(chartText);
+                    paddings.Add(Converter.CalcMusicPadding(chart, first));
+
+                    // 防止谱面不标准 MaiLib 解析不了
+                    chartText = SimaiConvert.Serialize(chart);
+                    var candidate = simaiParser.ChartOfToken(simaiTokenizer.TokensFromText(chartText));
+                    isDx = isDx || candidate.IsDxChart;
+                }
+                catch (Exception e)
+                {
+                    logger.LogError(e, "解析谱面失败");
+                    errors.Add(new ImportChartMessage($"谱面难度 {kvp.Key} 解析失败", MessageLevel.Fatal));
+                    fatal = true;
+                }
+            }
+
+            var padding = paddings.Max();
+
+            return new ImportChartCheckResult(!fatal, errors, padding, isDx, title, first);
         }
-
-        var padding = paddings.Max();
-
-        return new ImportChartCheckResult(!fatal, errors, padding, isDx, title, first);
+        catch (Exception e)
+        {
+            logger.LogError(e, "解析谱面失败（大）");
+            errors.Add(new ImportChartMessage("谱面解析失败（大）", MessageLevel.Fatal));
+            fatal = true;
+            return new ImportChartCheckResult(!fatal, errors, 0, false, "", 0);
+        }
     }
 
     public record ImportChartResult(IEnumerable<ImportChartMessage> Errors, bool Fatal);
