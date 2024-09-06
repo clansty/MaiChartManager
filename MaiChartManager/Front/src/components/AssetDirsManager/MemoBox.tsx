@@ -69,7 +69,7 @@ export default defineComponent({
           {props.name === 'add' && <NFormItem label="名称" labelPlacement="left" showFeedback={false}>
             <NInput v-model:value={name.value}/>
           </NFormItem>}
-          <NInput type="textarea" v-model:value={content.value} class="h-60vh" disabled={load.value}/>
+          <NInput type="textarea" v-model:value={content.value} class="h-60vh" disabled={load.value} resizable={false}/>
         </NFlex>,
       footer: () =>
         <NFlex justify="space-between">

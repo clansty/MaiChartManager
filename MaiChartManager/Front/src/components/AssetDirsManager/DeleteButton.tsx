@@ -31,8 +31,9 @@ export default defineComponent({
         await api.SetAssetsDir(dir);
         selectedADir.value = dir;
         selectMusicId.value = 0;
+        await updateMusicList();
       }
-      updateAssetDirs();
+      await updateAssetDirs();
     }
 
 
