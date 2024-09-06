@@ -307,9 +307,18 @@ public partial class ImportChartController(StaticSettings settings, ILogger<Stat
 
             if (maiLibChart is null)
             {
-                maiLibChart = simaiParser.ChartOfToken(simaiTokenizer.TokensFromText(SimaiConvert.Serialize(chart.simaiSharpChart)));
-                errors.Add(new ImportChartMessage("就算修正了一些已知错误，MaiLib 还是无法解析谱面，我们尝试通过 AstroDX 的 SimaiSharp 解析。" +
-                                                  "如果转换结果发现有什么问题的话，可以试试在 AstroDX 中有没有同样的问题并告诉我们（不试也没关系）", MessageLevel.Warning));
+                try
+                {
+                    maiLibChart = simaiParser.ChartOfToken(simaiTokenizer.TokensFromText(SimaiConvert.Serialize(chart.simaiSharpChart)));
+                    errors.Add(new ImportChartMessage($"就算修正了一些已知错误，MaiLib 还是无法解析谱面难度 {level}，我们尝试通过 AstroDX 的 SimaiSharp 解析。" +
+                                                      "如果转换结果发现有什么问题的话，可以试试在 AstroDX 中有没有同样的问题并告诉我们（不试也没关系）", MessageLevel.Warning));
+                }
+                catch (Exception e)
+                {
+                    SentrySdk.CaptureException(e);
+                    errors.Add(new ImportChartMessage($"试了各种办法都无法解析谱面难度 {level}，请检查谱面是否有问题", MessageLevel.Fatal));
+                    return new ImportChartResult(errors, true);
+                }
             }
 
             var originalConverted = maiLibChart.Compose(ChartEnum.ChartVersion.Ma2_104);
