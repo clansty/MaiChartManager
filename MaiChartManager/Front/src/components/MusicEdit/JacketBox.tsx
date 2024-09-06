@@ -16,7 +16,6 @@ export default defineComponent({
       `/MaiChartManagerServlet/GetJacketApi/${props.info.id}?${updateTime.value}` : noJacket)
 
     const upload = async () => {
-      // @ts-ignore
       try {
         const [fileHandle] = await window.showOpenFilePicker({
           id: 'jacket',

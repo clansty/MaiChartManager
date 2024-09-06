@@ -4,6 +4,7 @@ import { NButton, NFlex, useDialog } from "naive-ui";
 import api from "@/client/api";
 import { updateAddVersionList, updateGenreList } from "@/store/refs";
 import Color from "color";
+import SetImageButton from "@/components/GenreVersionManager/SetImageButton";
 
 export default defineComponent({
   props: {
@@ -83,7 +84,7 @@ export default defineComponent({
     })
 
     return () => (
-      <div class="grid cols-[10em_2em_1.3fr_1fr_7em] items-center gap-5 m-x">
+      <div class="grid cols-[10em_2em_8em_1.3fr_1fr_7em] items-center gap-5 m-x">
         <NFlex class="c-gray-6" size="small">
           {props.genre.id}
           <span class="op-60">@</span>
@@ -92,6 +93,7 @@ export default defineComponent({
         <div class="h-6 w-6 rounded-full relative of-clip" style={{backgroundColor: color.value}}>
           <input type="color" v-model={color.value} disabled={!props.editing} class={`op-0 ${props.editing ? 'cursor-pointer' : 'cursor-default'}`}/>
         </div>
+        <SetImageButton genre={props.genre} type={props.type}/>
         <input v-model={props.genre.genreName} disabled={!props.editing}
                class={`b b-gray-3 bg-white b-solid rounded-sm lh-normal text-align-center box-content ${props.editing ? 'cursor-text' : 'cursor-default'}`}/>
         {

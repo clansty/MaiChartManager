@@ -89,6 +89,7 @@ export interface GenreXml {
   filePath?: string | null;
   genreName?: string | null;
   genreNameTwoLine?: string | null;
+  fileName?: string | null;
   /** @format int32 */
   colorR?: number;
   /** @format int32 */
@@ -211,6 +212,7 @@ export interface VersionXml {
   filePath?: string | null;
   genreName?: string | null;
   genreNameTwoLine?: string | null;
+  fileName?: string | null;
   /** @format int32 */
   colorR?: number;
   /** @format int32 */
@@ -482,6 +484,30 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         body: data,
         type: ContentType.Json,
         format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags AddVersion
+     * @name SetVersionTitleImage
+     * @request PUT:/MaiChartManagerServlet/SetVersionTitleImageApi
+     */
+    SetVersionTitleImage: (
+      data: {
+        /** @format int32 */
+        id?: number;
+        /** @format binary */
+        image?: File;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<void, any>({
+        path: `/MaiChartManagerServlet/SetVersionTitleImageApi`,
+        method: "PUT",
+        body: data,
+        type: ContentType.FormData,
         ...params,
       }),
 
@@ -805,6 +831,30 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags Genre
+     * @name SetGenreTitleImage
+     * @request PUT:/MaiChartManagerServlet/SetGenreTitleImageApi
+     */
+    SetGenreTitleImage: (
+      data: {
+        /** @format int32 */
+        id?: number;
+        /** @format binary */
+        image?: File;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<void, any>({
+        path: `/MaiChartManagerServlet/SetGenreTitleImageApi`,
+        method: "PUT",
+        body: data,
+        type: ContentType.FormData,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Genre
      * @name DeleteGenre
      * @request DELETE:/MaiChartManagerServlet/DeleteGenreApi/{id}
      */
@@ -871,6 +921,20 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         body: data,
         type: ContentType.FormData,
         format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags LocalAssets
+     * @name GetLocalAsset
+     * @request GET:/MaiChartManagerServlet/GetLocalAssetApi/{fileName}
+     */
+    GetLocalAsset: (fileName: string, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/MaiChartManagerServlet/GetLocalAssetApi/${fileName}`,
+        method: "GET",
         ...params,
       }),
 

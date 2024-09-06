@@ -1,9 +1,8 @@
-﻿using System.IO;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 using System.Xml;
 using Microsoft.VisualBasic.FileIO;
 
-namespace Sitreamai.Models;
+namespace MaiChartManager.Models;
 
 public class GenreXml
 {
@@ -64,6 +63,12 @@ public class GenreXml
     {
         get => xmlDoc.SelectSingleNode("/MusicGenreData/genreNameTwoLine")?.InnerText;
         set => xmlDoc.SelectSingleNode("/MusicGenreData/genreNameTwoLine").InnerText = value;
+    }
+
+    public string FileName
+    {
+        get => xmlDoc.SelectSingleNode("/MusicGenreData/FileName")?.InnerText;
+        set => xmlDoc.SelectSingleNode("/MusicGenreData/FileName").InnerText = value;
     }
 
     public int ColorR

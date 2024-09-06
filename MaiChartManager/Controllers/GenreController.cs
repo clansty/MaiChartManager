@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Sitreamai.Models;
+﻿using MaiChartManager.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace MaiChartManager.Controllers;
 
@@ -58,6 +58,23 @@ public class GenreController(StaticSettings settings, ILogger<StaticSettings> lo
         var genre = GenreXml.CreateNew(req.id, req.assetDir, StaticSettings.GamePath);
         StaticSettings.GenreList.Add(genre);
         return "";
+    }
+
+    [HttpPut]
+    public void SetGenreTitleImage([FromForm] int id, IFormFile image)
+    {
+        var genre = StaticSettings.GenreList.FirstOrDefault(x => x.Id == id);
+        if (genre == null)
+        {
+            throw new Exception("Genre not found");
+        }
+
+        genre.FileName = $"UI_CMN_TabTitle_{id}";
+        genre.Save();
+        Directory.CreateDirectory(Path.Combine(StaticSettings.GamePath, "LocalAssets"));
+        var path = Path.Combine(genre.GamePath, "LocalAssets", genre.FileName + Path.GetExtension(image.FileName));
+        using var stream = new FileStream(path, FileMode.Create);
+        image.CopyTo(stream);
     }
 
     [HttpDelete]

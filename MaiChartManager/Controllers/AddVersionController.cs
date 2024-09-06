@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Sitreamai.Models;
+﻿using MaiChartManager.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace MaiChartManager.Controllers;
 
@@ -54,6 +54,23 @@ public class AddVersionController(StaticSettings settings, ILogger<StaticSetting
         var genre = VersionXml.CreateNew(req.id, req.assetDir, StaticSettings.GamePath);
         StaticSettings.VersionList.Add(genre);
         return "";
+    }
+
+    [HttpPut]
+    public void SetVersionTitleImage([FromForm] int id, IFormFile image)
+    {
+        var genre = StaticSettings.VersionList.FirstOrDefault(x => x.Id == id);
+        if (genre == null)
+        {
+            throw new Exception("Version not found");
+        }
+
+        genre.FileName = $"UI_CMN_TabTitle_MaimaiTitle_Ver{id}";
+        genre.Save();
+        Directory.CreateDirectory(Path.Combine(StaticSettings.GamePath, "LocalAssets"));
+        var path = Path.Combine(genre.GamePath, "LocalAssets", genre.FileName + Path.GetExtension(image.FileName));
+        using var stream = new FileStream(path, FileMode.Create);
+        image.CopyTo(stream);
     }
 
     [HttpDelete]
