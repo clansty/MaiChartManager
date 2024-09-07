@@ -189,6 +189,7 @@ export interface UXConfig {
   skipWarningScreen?: boolean;
   singlePlayer?: boolean;
   skipToMusicSelection?: boolean;
+  loadAssetsPng?: boolean;
   loadJacketPng?: boolean;
   loadAssetBundleWithoutManifest?: boolean;
   quickSkip?: boolean;
@@ -199,6 +200,8 @@ export interface UXConfig {
   immediateSave?: boolean;
   loadLocalBga?: boolean;
   testProof?: boolean;
+  hideSelfMadeCharts?: boolean;
+  selectionDetail?: boolean;
   customVersionString?: string | null;
   customPlaceName?: string | null;
   execOnIdle?: string | null;
@@ -633,6 +636,20 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         method: "PUT",
         body: data,
         type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags AssetDir
+     * @name RequestLocalImportDir
+     * @request POST:/MaiChartManagerServlet/RequestLocalImportDirApi
+     */
+    RequestLocalImportDir: (params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/MaiChartManagerServlet/RequestLocalImportDirApi`,
+        method: "POST",
         ...params,
       }),
 

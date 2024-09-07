@@ -155,19 +155,16 @@ public partial class Launcher : Form
         Application.Exit();
     }
 
-
-    private Browser? _browserWin;
-
     private void label1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
     {
-        if (_browserWin is null || _browserWin.IsDisposed)
+        if (Program.BrowserWin is null || Program.BrowserWin.IsDisposed)
         {
-            _browserWin = new Browser($"{loopbackUrl}?ts={DateTime.Now.Ticks}");
-            _browserWin.Show();
+            Program.BrowserWin = new Browser($"{loopbackUrl}?ts={DateTime.Now.Ticks}");
+            Program.BrowserWin.Show();
         }
         else
         {
-            _browserWin.Activate();
+            Program.BrowserWin.Activate();
         }
     }
 

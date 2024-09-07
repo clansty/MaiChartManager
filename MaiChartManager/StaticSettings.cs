@@ -43,8 +43,8 @@ public partial class StaticSettings
         }
     }
 
-    [GeneratedRegex(@"^\w\d{3}$")]
-    private static partial Regex ADirRegex();
+    [GeneratedRegex(@"^A(\d{3})$")]
+    public static partial Regex ADirRegex();
 
     public static string GamePath { get; set; }
     public static string StreamingAssets => Path.Combine(GamePath, "Sinmai_Data", "StreamingAssets");

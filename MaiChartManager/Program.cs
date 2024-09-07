@@ -4,6 +4,8 @@ namespace MaiChartManager;
 
 static class Program
 {
+    public static Browser? BrowserWin { get; set; }
+
     /// <summary>
     ///  The main entry point for the application.
     /// </summary>

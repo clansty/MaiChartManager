@@ -5,7 +5,7 @@ namespace MaiChartManager.Controllers;
 
 [ApiController]
 [Route("MaiChartManagerServlet/[action]Api")]
-public class AssetDirController
+public class AssetDirController(StaticSettings settings, ILogger<AssetDirController> logger)
 {
     [HttpPost]
     public void CreateAssetDir([FromBody] string dir)
@@ -47,5 +47,61 @@ public class AssetDirController
     public void PutAssetDirTxtValue([FromBody] PutAssetDirTxtValueRequest req)
     {
         File.WriteAllText(Path.Combine(StaticSettings.StreamingAssets, req.DirName, req.FileName), req.Content);
+    }
+
+    [HttpPost]
+    public void RequestLocalImportDir()
+    {
+        if (Program.BrowserWin is null) return;
+        var dialog = new FolderBrowserDialog
+        {
+            Description = "请选择资源目录（OPT）的文件夹"
+        };
+        if (Program.BrowserWin.Invoke(() => dialog.ShowDialog(Program.BrowserWin)) != DialogResult.OK) return;
+        var src = dialog.SelectedPath;
+        logger.LogInformation("LocalImportDir: {src}", src);
+        if (src is null) return;
+        var destName = Path.GetFileName(src);
+        if (!StaticSettings.ADirRegex().IsMatch(destName))
+        {
+            var maybeRealDir = Directory.EnumerateDirectories(src).FirstOrDefault(it => StaticSettings.ADirRegex().IsMatch(Path.GetFileName(it)));
+            if (maybeRealDir is not null)
+            {
+                src = maybeRealDir;
+                destName = Path.GetFileName(src);
+            }
+        }
+
+        if (!StaticSettings.ADirRegex().IsMatch(destName) || StaticSettings.AssetsDirs.Contains(destName))
+        {
+            var id = 0;
+            // 找到下一个未被使用的名称
+            foreach (var dir in StaticSettings.AssetsDirs)
+            {
+                var strId = StaticSettings.ADirRegex().Match(dir).Groups[1].Value;
+                var num = int.Parse(strId);
+                if (num > id) id = num;
+            }
+
+            id++;
+            if (id > 999)
+            {
+                id = 999;
+                while (StaticSettings.AssetsDirs.Contains($"A{id:000}"))
+                {
+                    id--;
+                }
+            }
+
+            destName = $"A{id:000}";
+        }
+
+        var dest = Path.Combine(StaticSettings.StreamingAssets, destName);
+        logger.LogInformation("Src: {src} Dest: {dest}", src, dest);
+        FileSystem.CopyDirectory(src, dest, UIOption.AllDialogs);
+        settings.ScanGenre();
+        settings.ScanVersionList();
+        settings.ScanAssetBundles();
+        settings.ScanSoundData();
     }
 }
