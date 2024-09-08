@@ -43,7 +43,7 @@ export default defineComponent({
   },
   render() {
     return <NFlex justify="center">
-      <div class="grid cols-[40em_1fr] w-[min(90rem,100%)]">
+      <div class="grid cols-[40em_1fr] w-[min(100rem,100%)]">
         <div class="p-xy h-100vh">
           <MusicList/>
         </div>

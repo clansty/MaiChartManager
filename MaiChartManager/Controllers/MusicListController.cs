@@ -34,5 +34,6 @@ public class MusicListController(StaticSettings settings, ILogger<StaticSettings
         settings.ScanVersionList();
         settings.ScanAssetBundles();
         settings.ScanSoundData();
+        settings.ScanMovieData();
     }
 }

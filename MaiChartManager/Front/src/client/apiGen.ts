@@ -1327,6 +1327,20 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
+     * @tags Music
+     * @name RequestCopyTo
+     * @request POST:/MaiChartManagerServlet/RequestCopyToApi/{id}
+     */
+    RequestCopyTo: (id: number, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/MaiChartManagerServlet/RequestCopyToApi/${id}`,
+        method: "POST",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
      * @tags MusicList
      * @name SetAssetsDir
      * @request POST:/MaiChartManagerServlet/SetAssetsDirApi

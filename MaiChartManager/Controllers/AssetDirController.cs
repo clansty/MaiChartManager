@@ -55,7 +55,8 @@ public class AssetDirController(StaticSettings settings, ILogger<AssetDirControl
         if (Program.BrowserWin is null) return;
         var dialog = new FolderBrowserDialog
         {
-            Description = "请选择资源目录（OPT）的文件夹"
+            Description = "请选择资源目录（OPT）的文件夹",
+            ShowNewFolderButton = false
         };
         if (Program.BrowserWin.Invoke(() => dialog.ShowDialog(Program.BrowserWin)) != DialogResult.OK) return;
         var src = dialog.SelectedPath;
@@ -103,5 +104,6 @@ public class AssetDirController(StaticSettings settings, ILogger<AssetDirControl
         settings.ScanVersionList();
         settings.ScanAssetBundles();
         settings.ScanSoundData();
+        settings.ScanMovieData();
     }
 }

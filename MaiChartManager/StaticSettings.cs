@@ -33,6 +33,7 @@ public partial class StaticSettings
             ScanVersionList();
             ScanAssetBundles();
             ScanSoundData();
+            ScanMovieData();
         }
         catch (Exception e)
         {
@@ -69,6 +70,7 @@ public partial class StaticSettings
     public static List<VersionXml> VersionList { get; set; } = [];
     public static Dictionary<int, string> AssetBundleJacketMap { get; set; } = new();
     public static Dictionary<int, string> PseudoAssetBundleJacketMap { get; set; } = new();
+    public static Dictionary<int, string> MovieDataMap { get; set; } = new();
     public static Dictionary<string, string> AcbAwb { get; set; } = new();
 
     public void ScanMusicList()
@@ -167,7 +169,7 @@ public partial class StaticSettings
         AcbAwb.Clear();
         foreach (var a in AssetsDirs)
         {
-            if (!Directory.Exists(Path.Combine(StreamingAssets, a, @"SoundData"))) continue;
+            if (!Directory.Exists(Path.Combine(StreamingAssets, a, "SoundData"))) continue;
             foreach (var sound in Directory.EnumerateFiles(Path.Combine(StreamingAssets, a, @"SoundData")))
             {
                 AcbAwb[Path.GetFileName(sound).ToLower()] = sound;
@@ -175,6 +177,22 @@ public partial class StaticSettings
         }
 
         _logger.LogInformation($"Scan SoundData, found {AcbAwb.Count} SoundData.");
+    }
+
+    public void ScanMovieData()
+    {
+        MovieDataMap.Clear();
+        foreach (var a in AssetsDirs)
+        {
+            if (!Directory.Exists(Path.Combine(StreamingAssets, a, "MovieData"))) continue;
+            foreach (var dat in Directory.EnumerateFiles(Path.Combine(StreamingAssets, a, @"MovieData"), "*.dat"))
+            {
+                if (!int.TryParse(Path.GetFileNameWithoutExtension(dat), out var id)) continue;
+                MovieDataMap[id] = dat;
+            }
+        }
+
+        _logger.LogInformation($"Scan MovieData, found {MovieDataMap.Count} MovieData.");
     }
 
     private void GetGameVersion()
