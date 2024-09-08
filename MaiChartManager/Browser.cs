@@ -9,6 +9,7 @@ public partial class Browser : Form
     public Browser(string url)
     {
         InitializeComponent();
+        Text += $" ({StaticSettings.GamePath})";
         webView21.Source = new Uri(url);
         webView21.DefaultBackgroundColor = Color.Transparent;
         UI.SetBlurStyle(this, blurType: UI.BlurType.Mica, UI.Mode.LightMode);
