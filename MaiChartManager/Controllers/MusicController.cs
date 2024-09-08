@@ -252,7 +252,7 @@ public class MusicController(StaticSettings settings, ILogger<MusicController> l
 
         // copy music
         Directory.CreateDirectory(Path.Combine(dest, "music"));
-        FileSystem.CopyDirectory(Path.GetDirectoryName(music.FilePath), Path.Combine(dest, $@"music\{music.Id:000000}"), UIOption.OnlyErrorDialogs);
+        FileSystem.CopyDirectory(Path.GetDirectoryName(music.FilePath), Path.Combine(dest, $@"music\music{music.Id:000000}"), UIOption.OnlyErrorDialogs);
 
         // copy jacket
         Directory.CreateDirectory(Path.Combine(dest, @"AssetBundleImages\jacket"));
