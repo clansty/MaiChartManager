@@ -1,6 +1,6 @@
 import { computed, defineComponent, PropType } from "vue";
 import { NButton, NFlex, NInputGroup, NInputGroupLabel, NInputNumber, NPopover } from "naive-ui";
-import { version } from "@/store/refs";
+import { selectedADir, version } from "@/store/refs";
 
 // 这是 version 不是 addVersion，是大家都喜欢写 22001 的那个 version
 export default defineComponent({
@@ -19,8 +19,10 @@ export default defineComponent({
       {!!version.value?.gameVersion && <>
         {/* 只有成功识别了游戏版本才显示 */}
         {/* 按钮边框层级有问题 */}
-        <NButton class={value.value < b15val.value ? "z-1" : ""} type={value.value < b15val.value ? 'success' : 'default'} ghost onClick={() => value.value = 20000}>计入 B35</NButton>
-        <NButton class={value.value >= b15val.value ? "z-1" : ""} type={value.value >= b15val.value ? 'success' : 'default'} ghost onClick={() => value.value = 20000 + version.value!.gameVersion! * 100}>计入 B15</NButton>
+        <NButton class={value.value < b15val.value ? "z-1" : ""} type={value.value < b15val.value ? 'success' : 'default'} ghost
+                 disabled={selectedADir.value === 'A000'} onClick={() => value.value = 20000}>计入 B35</NButton>
+        <NButton class={value.value >= b15val.value ? "z-1" : ""} type={value.value >= b15val.value ? 'success' : 'default'} ghost
+                 disabled={selectedADir.value === 'A000'} onClick={() => value.value = 20000 + version.value!.gameVersion! * 100}>计入 B15</NButton>
       </>}
       <NPopover trigger="hover">
         {{
