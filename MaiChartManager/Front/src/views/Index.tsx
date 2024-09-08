@@ -11,6 +11,7 @@ import ModManager from "@/components/ModManager";
 import VersionInfo from "@/components/VersionInfo";
 import { captureException } from "@sentry/vue";
 import AssetDirsManager from "@/components/AssetDirsManager";
+import RefreshAllButton from "@/components/RefreshAllButton";
 
 export default defineComponent({
   setup() {
@@ -54,6 +55,7 @@ export default defineComponent({
               <GenreVersionManager type="version"/>
             </>}
             <ModManager/>
+            <RefreshAllButton/>
 
             <div class="grow-1"/>
 

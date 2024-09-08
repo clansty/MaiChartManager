@@ -25,4 +25,14 @@ public class MusicListController(StaticSettings settings, ILogger<StaticSettings
     {
         return settings.MusicList.Select(it => it.GetBrief());
     }
+
+    [HttpPost]
+    public void ReloadAll()
+    {
+        settings.ScanMusicList();
+        settings.ScanGenre();
+        settings.ScanVersionList();
+        settings.ScanAssetBundles();
+        settings.ScanSoundData();
+    }
 }
