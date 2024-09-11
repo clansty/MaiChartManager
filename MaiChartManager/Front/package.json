@@ -28,6 +28,7 @@
     "@vitejs/plugin-vue-jsx": "^4.0.1",
     "@vueuse/core": "^11.0.1",
     "@zip.js/zip.js": "^2.7.52",
+    "axios": "^1.7.7",
     "change-case": "^5.4.4",
     "color": "^4.2.3",
     "naive-ui": "^2.39.0",

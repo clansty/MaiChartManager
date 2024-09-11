@@ -6,7 +6,7 @@ namespace MaiChartManager.Controllers;
 
 [ApiController]
 [Route("MaiChartManagerServlet/[action]Api")]
-public class ModController(StaticSettings settings, ILogger<StaticSettings> logger) : ControllerBase
+public class ModController(StaticSettings settings, ILogger<ModController> logger) : ControllerBase
 {
     [HttpGet]
     public bool IsMelonInstalled()

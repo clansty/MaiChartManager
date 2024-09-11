@@ -25,6 +25,7 @@ export default defineComponent({
     ])
 
     const copy = async () => {
+      wait.value = true;
       if (location.hostname !== '127.0.0.1') {
         // 浏览器模式，使用 zip.js 获取并解压
         let folderHandle: FileSystemDirectoryHandle;
@@ -34,6 +35,7 @@ export default defineComponent({
             mode: 'readwrite'
           });
         } catch (e) {
+          wait.value = false;
           console.log(e)
           return;
         }
@@ -54,11 +56,13 @@ export default defineComponent({
         } catch (e) {
           globalCapture(e, "下载歌曲失败")
         }
+        finally {
+          wait.value = false;
+        }
         return;
       }
       try {
         // 本地 webview 打开，使用本地模式
-        wait.value = true;
         await api.RequestCopyTo(selectMusicId.value);
       } finally {
         wait.value = false;

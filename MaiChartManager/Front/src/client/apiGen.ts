@@ -208,6 +208,10 @@ export interface UXConfig {
   execOnEntry?: string | null;
 }
 
+export interface UploadAssetDirResult {
+  dirName?: string | null;
+}
+
 export interface VersionXml {
   assetDir?: string | null;
   /** @format int32 */
@@ -650,6 +654,21 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       this.request<void, any>({
         path: `/MaiChartManagerServlet/RequestLocalImportDirApi`,
         method: "POST",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags AssetDir
+     * @name UploadAssetDir
+     * @request POST:/MaiChartManagerServlet/UploadAssetDirApi/{destName}
+     */
+    UploadAssetDir: (destName: string, params: RequestParams = {}) =>
+      this.request<UploadAssetDirResult, any>({
+        path: `/MaiChartManagerServlet/UploadAssetDirApi/${destName}`,
+        method: "POST",
+        format: "json",
         ...params,
       }),
 

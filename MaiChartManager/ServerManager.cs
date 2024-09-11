@@ -64,13 +64,17 @@ public static class ServerManager
         var builder = WebApplication.CreateBuilder();
 
         builder.WebHost.UseSentry((SentryAspNetCoreOptions o) =>
-        {
-            // Tells which project in Sentry to send events to:
-            o.Dsn = "https://be7a9ae3a9a88f4660737b25894b3c20@sentry.c5y.moe/3";
-            // Set TracesSampleRate to 1.0 to capture 100% of transactions for tracing.
-            // We recommend adjusting this value in production.
-            o.TracesSampleRate = 0.5;
-        });
+            {
+                // Tells which project in Sentry to send events to:
+                o.Dsn = "https://be7a9ae3a9a88f4660737b25894b3c20@sentry.c5y.moe/3";
+                // Set TracesSampleRate to 1.0 to capture 100% of transactions for tracing.
+                // We recommend adjusting this value in production.
+                o.TracesSampleRate = 0.5;
+            })
+            .ConfigureKestrel(serverOptions =>
+            {
+                serverOptions.Limits.MaxRequestBodySize = null; // 允许无限制的请求体大小
+            });
 
         builder.Services.AddSingleton<StaticSettings>()
             .AddEndpointsApiExplorer()

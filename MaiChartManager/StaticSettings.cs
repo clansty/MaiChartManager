@@ -1,7 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 using System.Xml;
 using MaiChartManager.Models;
-using Sitreamai.Models;
 
 namespace MaiChartManager;
 
@@ -212,5 +211,29 @@ public partial class StaticSettings
             SentrySdk.CaptureException(e);
             MessageBox.Show(@"无法获取游戏版本号，可能是因为 A000\DataConfig.xml 找不到或者有错误", "提示", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
+    }
+
+    public string GetFreeAssetDir()
+    {
+        var id = 0;
+        // 找到下一个未被使用的名称
+        foreach (var dir in AssetsDirs)
+        {
+            var strId = ADirRegex().Match(dir).Groups[1].Value;
+            var num = int.Parse(strId);
+            if (num > id) id = num;
+        }
+
+        id++;
+        if (id > 999)
+        {
+            id = 999;
+            while (AssetsDirs.Contains($"A{id:000}"))
+            {
+                id--;
+            }
+        }
+
+        return $"A{id:000}";
     }
 }

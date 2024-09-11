@@ -1,11 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.IO.Compression;
+using MaiChartManager.Attributes;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Net.Http.Headers;
 using Microsoft.VisualBasic.FileIO;
 
 namespace MaiChartManager.Controllers;
 
 [ApiController]
 [Route("MaiChartManagerServlet/[action]Api")]
-public class AssetDirController(StaticSettings settings, ILogger<AssetDirController> logger)
+public class AssetDirController(StaticSettings settings, ILogger<AssetDirController> logger) : ControllerBase
 {
     [HttpPost]
     public void CreateAssetDir([FromBody] string dir)
@@ -32,7 +36,7 @@ public class AssetDirController(StaticSettings settings, ILogger<AssetDirControl
     [HttpPost]
     public string GetAssetDirTxtValue([FromBody] GetAssetDirTxtValueRequest req)
     {
-        return File.ReadAllText(Path.Combine(StaticSettings.StreamingAssets, req.DirName, req.FileName));
+        return System.IO.File.ReadAllText(Path.Combine(StaticSettings.StreamingAssets, req.DirName, req.FileName));
     }
 
     [HttpDelete]
@@ -46,7 +50,7 @@ public class AssetDirController(StaticSettings settings, ILogger<AssetDirControl
     [HttpPut]
     public void PutAssetDirTxtValue([FromBody] PutAssetDirTxtValueRequest req)
     {
-        File.WriteAllText(Path.Combine(StaticSettings.StreamingAssets, req.DirName, req.FileName), req.Content);
+        System.IO.File.WriteAllText(Path.Combine(StaticSettings.StreamingAssets, req.DirName, req.FileName), req.Content);
     }
 
     [HttpPost]
@@ -75,26 +79,7 @@ public class AssetDirController(StaticSettings settings, ILogger<AssetDirControl
 
         if (!StaticSettings.ADirRegex().IsMatch(destName) || StaticSettings.AssetsDirs.Contains(destName))
         {
-            var id = 0;
-            // 找到下一个未被使用的名称
-            foreach (var dir in StaticSettings.AssetsDirs)
-            {
-                var strId = StaticSettings.ADirRegex().Match(dir).Groups[1].Value;
-                var num = int.Parse(strId);
-                if (num > id) id = num;
-            }
-
-            id++;
-            if (id > 999)
-            {
-                id = 999;
-                while (StaticSettings.AssetsDirs.Contains($"A{id:000}"))
-                {
-                    id--;
-                }
-            }
-
-            destName = $"A{id:000}";
+            destName = settings.GetFreeAssetDir();
         }
 
         var dest = Path.Combine(StaticSettings.StreamingAssets, destName);
@@ -105,5 +90,59 @@ public class AssetDirController(StaticSettings settings, ILogger<AssetDirControl
         settings.ScanAssetBundles();
         settings.ScanSoundData();
         settings.ScanMovieData();
+    }
+
+    public record UploadAssetDirResult(string DirName);
+
+    [HttpPost]
+    // https://code-maze.com/aspnetcore-upload-large-files/
+    [DisableRequestSizeLimit]
+    [DisableFormValueModelBinding]
+    [Route("{destName}")]
+    // 看起来就算用 IAsyncEnumerable 获取文件，还是会等所以文件都上传完了再调用这个方法
+    // 而且不知道为什么上传到一半会 Network Error
+    public async Task<UploadAssetDirResult> UploadAssetDir(string? destName)
+    {
+        logger.LogInformation("UploadAssetDir");
+
+        if (destName is null || !StaticSettings.ADirRegex().IsMatch(destName) || StaticSettings.AssetsDirs.Contains(destName))
+        {
+            destName = settings.GetFreeAssetDir();
+        }
+
+        var dest = Path.Combine(StaticSettings.StreamingAssets, destName);
+
+        // https://stackoverflow.com/questions/36437282/dealing-with-large-file-uploads-on-asp-net-core-1-0
+        var boundary = HeaderUtilities.RemoveQuotes(MediaTypeHeaderValue.Parse(Request.ContentType).Boundary).Value;
+        var reader = new MultipartReader(boundary!, Request.Body);
+        var section = await reader.ReadNextSectionAsync();
+
+        while (section != null)
+        {
+            if (ContentDispositionHeaderValue.TryParse(section.ContentDisposition, out var contentDisposition))
+            {
+                if (contentDisposition.DispositionType.Equals("form-data") && !string.IsNullOrEmpty(contentDisposition.FileName.Value))
+                {
+                    var fileName = contentDisposition.FileName.Value;
+                    await using var stream = section.Body;
+                    // 处理文件流
+                    logger.LogInformation("UploadAssetDir: {destName} {file}", destName, fileName);
+                    var filePath = Path.Combine(dest, fileName.TrimStart('/', '\\'));
+                    Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+                    await using var fileStream = new FileStream(filePath, FileMode.Create);
+                    await stream.CopyToAsync(fileStream);
+                }
+            }
+
+            section = await reader.ReadNextSectionAsync();
+        }
+
+        settings.ScanGenre();
+        settings.ScanVersionList();
+        settings.ScanAssetBundles();
+        settings.ScanSoundData();
+        settings.ScanMovieData();
+
+        return new UploadAssetDirResult(destName);
     }
 }
