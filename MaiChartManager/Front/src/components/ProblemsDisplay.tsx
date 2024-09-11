@@ -11,7 +11,7 @@ export default defineComponent({
         // 它又不居中
         trigger: () => <div class="text-#f0a020 i-material-symbols-warning-outline-rounded text-2em translate-y-.3"/>,
         default: () => <NFlex vertical>
-          {props.problems!.map(p => <div>{p}</div>)}
+          {props.problems!.map((p, index) => <div key={index}>{p}</div>)}
         </NFlex>
       }}
     </NPopover>;

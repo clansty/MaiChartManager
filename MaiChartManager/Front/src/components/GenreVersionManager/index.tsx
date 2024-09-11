@@ -42,7 +42,8 @@ export default defineComponent({
             preset="card"
             class="w-[min(70vw,80em)]"
             title={`${text.value}管理`}
-            v-model:show={show.value}
+            show={show.value !== EDIT_TYPE.None}
+            onUpdateShow={() => show.value = EDIT_TYPE.None}
           >
             <NFlex vertical>
               <NFlex align="center">
@@ -51,7 +52,7 @@ export default defineComponent({
               </NFlex>
               <NScrollbar class="h-80vh">
                 <NList>
-                  {list.value.map(it => <NListItem>
+                  {list.value.map(it => <NListItem key={it.id}>
                     <GenreDisplay genre={it} type={show.value} class={`${editingId.value >= 0 && editingId.value !== it.id && 'op-30'}`} disabled={editingId.value >= 0 && editingId.value !== it.id}
                                   style={{transition: 'opacity 0.3s'}}
                                   editing={editingId.value === it.id} setEdit={isEdit => editingId.value = isEdit ? it.id! : -1}/>

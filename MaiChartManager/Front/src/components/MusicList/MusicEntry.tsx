@@ -28,7 +28,7 @@ export default defineComponent({
           <NFlex class="pt-1 text-sm" size="small">
             {
               (props.music.chartsAvailable || []).map(chart =>
-                <div class="c-white rounded-full px-2" style={{backgroundColor: LEVEL_COLOR[chart.index!]}}>{LEVELS[chart.levelId!]}</div>)
+                <div key={chart.index} class="c-white rounded-full px-2" style={{backgroundColor: LEVEL_COLOR[chart.index!]}}>{LEVELS[chart.levelId!]}</div>)
             }
           </NFlex>
         </div>

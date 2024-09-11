@@ -97,8 +97,8 @@ export default defineComponent({
         {props.badgeType && <NCheckbox v-model:checked={disableBadge.value}>隐藏按钮上的角标</NCheckbox>}
         {config.value && <NScrollbar class="max-h-60vh p-2">
           {Object.entries(config.value).map(([key, section]) => !!section && <>
-            <NDivider titlePlacement="left">{comments.sections[key]}</NDivider>
-            {Object.keys(section).map((k) => <NFormItem label={capitalCase(k)} labelPlacement="left" labelWidth="10em">
+            <NDivider titlePlacement="left" key={key}>{comments.sections[key]}</NDivider>
+            {Object.keys(section).map((k) => <NFormItem key={k} label={capitalCase(k)} labelPlacement="left" labelWidth="10em">
               <NFlex vertical class="w-full ws-pre-line">
                 <NFlex class="h-34px" align="center">
                   {typeof section[k] === 'boolean' ? <NSwitch v-model:value={section[k]}/> : <NInput v-model:value={section[k]} placeholder=""/>}

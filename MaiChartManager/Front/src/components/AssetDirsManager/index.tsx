@@ -26,7 +26,7 @@ export default defineComponent({
           </NFlex>
           <NScrollbar class="h-80vh">
             <NList>
-              {assetDirs.value.map(it => <NListItem>
+              {assetDirs.value.map(it => <NListItem key={it.dirName!}>
                 <AssetDirDisplay dir={it}/>
               </NListItem>)}
             </NList>
