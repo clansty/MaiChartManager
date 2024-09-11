@@ -5,13 +5,12 @@ import GenreVersionManager from "@/components/GenreVersionManager";
 import { globalCapture, selectedADir, updateAddVersionList, updateAssetDirs, updateGenreList, updateSelectedAssetDir, updateVersion } from "@/store/refs";
 import MusicEdit from "@/components/MusicEdit";
 import MusicSelectedTopRightToolbar from "@/components/MusicSelectedTopRightToolbar";
-import CreateMusicButton from "@/components/CreateMusicButton";
-import ImportChartButton from "@/components/ImportChartButton";
 import ModManager from "@/components/ModManager";
 import VersionInfo from "@/components/VersionInfo";
 import { captureException } from "@sentry/vue";
 import AssetDirsManager from "@/components/AssetDirsManager";
 import RefreshAllButton from "@/components/RefreshAllButton";
+import ImportCreateChartButton from "@/components/ImportCreateChartButton";
 
 export default defineComponent({
   setup() {
@@ -61,8 +60,7 @@ export default defineComponent({
 
             {selectedADir.value !== 'A000' && <>
               <MusicSelectedTopRightToolbar/>
-              <CreateMusicButton/>
-              <ImportChartButton/>
+              <ImportCreateChartButton/>
             </>}
             <VersionInfo/>
           </NFlex>

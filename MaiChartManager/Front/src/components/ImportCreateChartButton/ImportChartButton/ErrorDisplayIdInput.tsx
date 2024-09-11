@@ -1,7 +1,7 @@
 import { computed, defineComponent, effect, PropType, watch } from "vue";
 import { NAlert, NButton, NCheckbox, NCollapse, NCollapseItem, NFlex, NForm, NFormItem, NInputNumber, NModal, NScrollbar, NSelect, SelectOption } from "naive-ui";
 import { ImportChartMessage, MessageLevel } from "@/client/apiGen";
-import { ImportChartMessageEx, ImportMeta } from "@/components/ImportChartButton/index";
+import { ImportChartMessageEx, ImportMeta } from "./index";
 import noJacket from '@/assets/noJacket.webp';
 import { addVersionList, genreList } from "@/store/refs";
 import GenreInput from "@/components/GenreInput";

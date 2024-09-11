@@ -1,12 +1,12 @@
 import { defineComponent, ref } from "vue";
 import { NButton, useDialog, useNotification } from "naive-ui";
-import SelectFileTypeTip from "@/components/ImportChartButton/SelectFileTypeTip";
+import SelectFileTypeTip from "./SelectFileTypeTip";
 import { ImportChartMessage, MessageLevel } from "@/client/apiGen";
-import CheckingModal from "@/components/ImportChartButton/CheckingModal";
+import CheckingModal from "./CheckingModal";
 import api from "@/client/api";
 import { globalCapture, musicList, selectMusicId, updateMusicList } from "@/store/refs";
-import ErrorDisplayIdInput from "@/components/ImportChartButton/ErrorDisplayIdInput";
-import ImportStepDisplay from "@/components/ImportChartButton/ImportStepDisplay";
+import ErrorDisplayIdInput from "./ErrorDisplayIdInput";
+import ImportStepDisplay from "./ImportStepDisplay";
 import { useStorage } from "@vueuse/core";
 import { captureException } from "@sentry/vue";
 

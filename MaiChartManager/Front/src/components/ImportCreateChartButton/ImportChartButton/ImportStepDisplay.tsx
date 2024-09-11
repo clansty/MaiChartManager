@@ -1,6 +1,6 @@
 import { computed, defineComponent, PropType } from "vue";
 import { NButton, NFlex, NInputNumber, NModal } from "naive-ui";
-import { IMPORT_STEP, ImportMeta } from "@/components/ImportChartButton/index";
+import { IMPORT_STEP, ImportMeta } from "./index";
 
 export default defineComponent({
   props: {
