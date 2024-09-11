@@ -1,7 +1,7 @@
-import { defineComponent, ref } from "vue";
+import { computed, defineComponent, ref } from "vue";
 import api from "@/client/api";
-import { globalCapture, selectMusicId, updateMusicList } from "@/store/refs";
-import { NButton, useDialog, useMessage } from "naive-ui";
+import { globalCapture, selectedMusicBrief, selectMusicId, updateMusicList } from "@/store/refs";
+import { NButton, NButtonGroup, NDropdown, useDialog, useMessage } from "naive-ui";
 import { ZipReader } from "@zip.js/zip.js";
 
 const getSubDirFile = async (folderHandle: FileSystemDirectoryHandle, fileName: string) => {
@@ -19,6 +19,10 @@ export default defineComponent({
     const wait = ref(false);
     const dialog = useDialog();
     const message = useMessage();
+
+    const options = computed(() => [
+      {label: () => <a href={`/MaiChartManagerServlet/ExportOptApi/${selectMusicId.value}`} download={`${selectMusicId.value} - ${selectedMusicBrief.value?.name}.zip`}>导出 Zip</a>},
+    ])
 
     const copy = async () => {
       if (location.hostname !== '127.0.0.1') {
@@ -61,8 +65,17 @@ export default defineComponent({
       }
     }
 
-    return () => <NButton secondary onClick={copy} loading={wait.value}>
-      复制到...
-    </NButton>;
+    return () =>
+      <NButtonGroup>
+        <NButton secondary onClick={copy} loading={wait.value}>
+          复制到...
+        </NButton>
+        <NDropdown options={options.value} trigger="click" placement="bottom-end">
+          <NButton secondary class="px-.5 b-l b-l-solid b-l-[rgba(255,255,255,0.5)]">
+            <span class="i-mdi-arrow-down-drop text-6 translate-y-.25"/>
+          </NButton>
+        </NDropdown>
+      </NButtonGroup>
+      ;
   }
 });
