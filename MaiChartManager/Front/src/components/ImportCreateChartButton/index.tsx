@@ -23,8 +23,8 @@ export default defineComponent({
     return () => <NButtonGroup>
       <ImportChartButton/>
       <NDropdown options={options} trigger="click" onSelect={handleSelect} placement="bottom-end">
-        <NButton secondary class="px-2 b-l b-l-solid b-l-[rgba(255,255,255,0.5)]">
-          <span class="i-mdi-triangle-down text-2.75"/>
+        <NButton secondary class="px-.5 b-l b-l-solid b-l-[rgba(255,255,255,0.5)]">
+          <span class="i-mdi-arrow-down-drop text-6 translate-y-.25"/>
         </NButton>
       </NDropdown>
       <CreateMusicModal show={current.value === OPTION.CreateMusic} closeModal={() => current.value = OPTION.None}/>

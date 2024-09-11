@@ -4,7 +4,8 @@ import { NButton, NFlex, useDialog } from "naive-ui";
 import api from "@/client/api";
 import { updateAddVersionList, updateGenreList } from "@/store/refs";
 import Color from "color";
-import SetImageButton from "@/components/GenreVersionManager/SetImageButton";
+import SetImageButton from "./SetImageButton";
+import { EDIT_TYPE } from "./index";
 
 export default defineComponent({
   props: {
@@ -12,7 +13,7 @@ export default defineComponent({
     editing: Boolean,
     disabled: Boolean,
     setEdit: {type: Function as PropType<(edit: boolean) => void>, required: true},
-    type: String as PropType<"genre" | "version">,
+    type: Number as PropType<EDIT_TYPE>,
   },
   setup(props) {
     const _color = ref('');
@@ -28,7 +29,7 @@ export default defineComponent({
       if (_color.value) {
         newColor = Color(_color.value).rgb().array();
       }
-      await (props.type === 'genre' ? api.EditGenre : api.EditVersion)(props.genre.id!, {
+      await (props.type === EDIT_TYPE.Genre ? api.EditGenre : api.EditVersion)(props.genre.id!, {
         name: props.genre.genreName,
         nameTwoLine: props.genre.genreNameTwoLine,
         r: newColor[0],
@@ -43,7 +44,7 @@ export default defineComponent({
     const del = async () => {
       deleteLoad.value = true;
       let res: HttpResponse<any>;
-      if (props.type === 'genre') {
+      if (props.type === EDIT_TYPE.Genre) {
         res = await api.DeleteGenre(props.genre.id!);
       } else {
         res = await api.DeleteVersion(props.genre.id!);

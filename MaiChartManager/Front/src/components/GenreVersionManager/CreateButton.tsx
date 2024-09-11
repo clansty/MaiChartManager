@@ -2,16 +2,17 @@ import { NButton, NFlex, NForm, NFormItem, NInputNumber, NModal, NSelect, useDia
 import { computed, defineComponent, PropType, ref } from "vue";
 import { addVersionList, assetDirs, genreList, selectedADir, updateAddVersionList, updateGenreList } from "@/store/refs";
 import api from "@/client/api";
+import { EDIT_TYPE } from "./index";
 
 export default defineComponent({
   props: {
     setEditId: {type: Function as PropType<(id: number) => any>, required: true},
-    type: String as PropType<"genre" | "version">,
+    type: Number as PropType<EDIT_TYPE>,
   },
   setup(props) {
     const show = ref(false);
-    const text = computed(() => props.type === 'genre' ? '流派' : '版本');
-    const list = props.type === 'genre' ? genreList : addVersionList;
+    const text = computed(() => props.type === EDIT_TYPE.Genre ? '流派' : '版本');
+    const list = props.type === EDIT_TYPE.Genre ? genreList : addVersionList;
     const dialog = useDialog();
 
     const assetDir = ref('')
@@ -29,7 +30,7 @@ export default defineComponent({
 
     const save = async () => {
       show.value = false
-      const res = await (props.type === 'genre' ? api.AddGenre : api.AddVersion)({
+      const res = await (props.type === EDIT_TYPE.Genre ? api.AddGenre : api.AddVersion)({
         assetDir: assetDir.value,
         id: id.value,
       });

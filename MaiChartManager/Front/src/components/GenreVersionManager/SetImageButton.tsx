@@ -4,11 +4,12 @@ import { NButton } from "naive-ui";
 import api from "@/client/api";
 import SelectFileTypeTip from "@/components/GenreVersionManager/SelectFileTypeTip";
 import { globalCapture, selectedMusicBrief, updateAddVersionList, updateGenreList } from "@/store/refs";
+import { EDIT_TYPE } from "./index";
 
 export default defineComponent({
   props: {
     genre: {type: Object as PropType<GenreXml>, required: true},
-    type: String as PropType<"genre" | "version">,
+    type: Number as PropType<EDIT_TYPE>,
   },
   setup(props) {
     const imageUrl = ref('');
@@ -45,7 +46,7 @@ export default defineComponent({
         if (!fileHandle) return;
         const file = await fileHandle.getFile();
 
-        await (props.type === 'genre' ? api.SetGenreTitleImage : api.SetVersionTitleImage)({id: props.genre.id!, image: file});
+        await (props.type === EDIT_TYPE.Genre ? api.SetGenreTitleImage : api.SetVersionTitleImage)({id: props.genre.id!, image: file});
         await updateGenreList();
         await updateAddVersionList();
         await refresh();
@@ -53,8 +54,7 @@ export default defineComponent({
         if (e.name === 'AbortError') return
         console.log(e)
         globalCapture(e, "设置分类图片失败")
-      }
-      finally {
+      } finally {
         showTip.value = false;
       }
     }

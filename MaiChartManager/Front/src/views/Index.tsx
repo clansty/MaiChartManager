@@ -50,8 +50,7 @@ export default defineComponent({
           <NFlex class="shrink-0">
             <AssetDirsManager/>
             {selectedADir.value !== 'A000' && <>
-              <GenreVersionManager type="genre"/>
-              <GenreVersionManager type="version"/>
+              <GenreVersionManager/>
             </>}
             <ModManager/>
             <RefreshAllButton/>
