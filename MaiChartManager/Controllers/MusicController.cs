@@ -1,4 +1,5 @@
-﻿using AssetStudio;
+﻿using System.IO.Compression;
+using AssetStudio;
 using MaiChartManager.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualBasic.FileIO;
@@ -290,6 +291,57 @@ public class MusicController(StaticSettings settings, ILogger<MusicController> l
         {
             Directory.CreateDirectory(Path.Combine(dest, "MovieData"));
             FileSystem.CopyFile(movie, Path.Combine(dest, $@"MovieData\{music.NonDxId:000000}.dat"), UIOption.OnlyErrorDialogs);
+        }
+    }
+
+    [HttpGet]
+    public void ExportOpt(int id)
+    {
+        var music = settings.MusicList.Find(it => it.Id == id);
+        if (music is null) return;
+
+        var zipStream = HttpContext.Response.BodyWriter.AsStream();
+        using var zipArchive = new ZipArchive(zipStream, ZipArchiveMode.Create, leaveOpen: true);
+
+        // copy music
+        foreach (var file in Directory.EnumerateFiles(Path.GetDirectoryName(music.FilePath)))
+        {
+            zipArchive.CreateEntryFromFile(file, $"music/music{music.Id:000000}/{Path.GetFileName(file)}");
+        }
+
+        // copy jacket
+        if (music.JacketPath is not null)
+        {
+            zipArchive.CreateEntryFromFile(music.JacketPath, $"AssetBundleImages/jacket/ui_jacket_{music.NonDxId:000000}{Path.GetExtension(music.JacketPath)}");
+        }
+        else if (music.AssetBundleJacket is not null)
+        {
+            zipArchive.CreateEntryFromFile(music.AssetBundleJacket, $"AssetBundleImages/jacket/{Path.GetFileName(music.AssetBundleJacket)}");
+            if (System.IO.File.Exists(music.AssetBundleJacket + ".manifest"))
+            {
+                zipArchive.CreateEntryFromFile(music.AssetBundleJacket + ".manifest", $"AssetBundleImages/jacket/{Path.GetFileName(music.AssetBundleJacket)}.manifest");
+            }
+        }
+        else if (music.PseudoAssetBundleJacket is not null)
+        {
+            zipArchive.CreateEntryFromFile(music.PseudoAssetBundleJacket, $"AssetBundleImages/jacket/{Path.GetFileName(music.PseudoAssetBundleJacket)}");
+        }
+
+        // copy acbawb
+        if (StaticSettings.AcbAwb.TryGetValue($"music{music.NonDxId:000000}.acb", out var acb))
+        {
+            zipArchive.CreateEntryFromFile(acb, $"SoundData/music{music.NonDxId:000000}.acb");
+        }
+
+        if (StaticSettings.AcbAwb.TryGetValue($"music{music.NonDxId:000000}.awb", out var awb))
+        {
+            zipArchive.CreateEntryFromFile(awb, $"SoundData/music{music.NonDxId:000000}.awb");
+        }
+
+        // copy movie data
+        if (StaticSettings.MovieDataMap.TryGetValue(music.NonDxId, out var movie))
+        {
+            zipArchive.CreateEntryFromFile(movie, $"MovieData/{music.NonDxId:000000}.dat");
         }
     }
 }

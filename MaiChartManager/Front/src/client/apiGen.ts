@@ -1341,6 +1341,20 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
+     * @tags Music
+     * @name ExportOpt
+     * @request GET:/MaiChartManagerServlet/ExportOptApi/{id}
+     */
+    ExportOpt: (id: number, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/MaiChartManagerServlet/ExportOptApi/${id}`,
+        method: "GET",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
      * @tags MusicList
      * @name SetAssetsDir
      * @request POST:/MaiChartManagerServlet/SetAssetsDirApi
