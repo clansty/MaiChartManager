@@ -82,16 +82,18 @@ public class ModController(StaticSettings settings, ILogger<ModController> logge
         }
     }
 
-    [HttpPost]
-    public void InstallAquaMai()
+    public enum GameEdition
     {
-        var version = "145";
-        if (settings.gameVersion < 45)
-        {
-            version = "140";
-        }
+        SDGA,
+        SDEZ
+    }
 
-        var src = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "AquaMai", version, "AquaMai.dll");
+    public record InstallAquaMaiRequest(GameEdition Version);
+
+    [HttpPost]
+    public void InstallAquaMai(InstallAquaMaiRequest request)
+    {
+        var src = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "AquaMai", request.Version.ToString(), "AquaMai.dll");
         var dest = Path.Combine(StaticSettings.GamePath, @"Mods\AquaMai.dll");
         Directory.CreateDirectory(Path.GetDirectoryName(dest));
         System.IO.File.Copy(src, dest, true);

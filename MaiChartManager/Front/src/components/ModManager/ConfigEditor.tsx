@@ -1,6 +1,6 @@
 import { computed, defineComponent, onMounted, PropType, ref, watch } from "vue";
 import { NButton, NCheckbox, NDivider, NFlex, NFormItem, NInput, NModal, NScrollbar, NSwitch, useDialog } from "naive-ui";
-import { Config, GameModInfo } from "@/client/apiGen";
+import { Config, GameEdition, GameModInfo } from "@/client/apiGen";
 import comments from './modComments.yaml';
 import api from "@/client/api";
 import { capitalCase } from "change-case";
@@ -30,6 +30,7 @@ export default defineComponent({
     const installingMelonLoader = ref(false)
     const installingAquaMai = ref(false)
     const showAquaMaiInstallDone = ref(false)
+    const showVersionSelect = ref(false);
 
     onMounted(async () => {
       config.value = (await api.GetAquaMaiConfig()).data;
@@ -47,12 +48,17 @@ export default defineComponent({
       }
     }
 
-    const installAquaMai = async () => {
+    const installAquaMai = async (version?: GameEdition) => {
+      showVersionSelect.value = false
       if (showAquaMaiInstallDone.value) return
+      if (!version) {
+        showVersionSelect.value = true
+        return
+      }
       try {
         // 但是你根本看不到这个加载图标，因为太快了
         installingAquaMai.value = true
-        await api.InstallAquaMai()
+        await api.InstallAquaMai({version})
         await props.refresh()
         showAquaMaiInstallDone.value = true
         setTimeout(() => showAquaMaiInstallDone.value = false, 3000);
@@ -85,7 +91,7 @@ export default defineComponent({
           {props.info.aquaMaiInstalled ?
             props.info.aquaMaiVersion === props.info.bundledAquaMaiVersion ? <span class="c-green-6">已安装</span> : <span class="c-orange">可更新</span> :
             <span class="c-red-6">未安装</span>}
-          <NButton secondary loading={installingAquaMai.value} onClick={installAquaMai}
+          <NButton secondary loading={installingAquaMai.value} onClick={() => installAquaMai()}
                    type={showAquaMaiInstallDone.value ? 'success' : 'default'}>
             {showAquaMaiInstallDone.value ? <span class="i-material-symbols-done"/> : props.info.aquaMaiInstalled ? '重新安装 / 更新' : '安装'}
           </NButton>
@@ -110,6 +116,17 @@ export default defineComponent({
           </>)}
         </NScrollbar>}
       </NFlex>
+      <NModal
+        preset="card"
+        class="w-[min(50vw,50em)]"
+        title="请选择你的游戏类型"
+        v-model:show={showVersionSelect.value}
+      >
+        <NFlex vertical>
+          <NButton secondary onClick={() => installAquaMai(GameEdition.SDGA)}>SDGA</NButton>
+          <NButton secondary onClick={() => installAquaMai(GameEdition.SDEZ)}>SDEZ</NButton>
+        </NFlex>
+      </NModal>
     </NModal>;
   }
 })

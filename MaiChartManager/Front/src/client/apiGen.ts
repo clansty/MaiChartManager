@@ -53,6 +53,7 @@ export interface Config {
   cheat?: CheatConfig;
   performance?: PerformanceConfig;
   fix?: FixConfig;
+  utils?: UtilsConfig;
 }
 
 export interface FixConfig {
@@ -60,6 +61,13 @@ export interface FixConfig {
   removeEncryption?: boolean;
   forceAsServer?: boolean;
   forceFreePlay?: boolean;
+  /** @format int32 */
+  extendNotesPool?: number;
+}
+
+export enum GameEdition {
+  SDGA = "SDGA",
+  SDEZ = "SDEZ",
 }
 
 export interface GameModInfo {
@@ -131,6 +139,10 @@ export interface ImportChartMessage {
 export interface ImportChartResult {
   errors?: ImportChartMessage[] | null;
   fatal?: boolean;
+}
+
+export interface InstallAquaMaiRequest {
+  version?: GameEdition;
 }
 
 export enum MessageLevel {
@@ -227,6 +239,10 @@ export interface UXConfig {
 
 export interface UploadAssetDirResult {
   dirName?: string | null;
+}
+
+export interface UtilsConfig {
+  logUserId?: boolean;
 }
 
 export interface VersionXml {
@@ -1118,10 +1134,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name InstallAquaMai
      * @request POST:/MaiChartManagerServlet/InstallAquaMaiApi
      */
-    InstallAquaMai: (params: RequestParams = {}) =>
+    InstallAquaMai: (data: InstallAquaMaiRequest, params: RequestParams = {}) =>
       this.request<void, any>({
         path: `/MaiChartManagerServlet/InstallAquaMaiApi`,
         method: "POST",
+        body: data,
+        type: ContentType.Json,
         ...params,
       }),
 

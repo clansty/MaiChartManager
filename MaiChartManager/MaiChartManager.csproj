@@ -89,6 +89,12 @@
       <None Update="AquaMai\MelonLoader.x64.zip">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
+      <None Update="AquaMai\SDEZ\AquaMai.dll">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="AquaMai\SDGA\AquaMai.dll">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
     <ItemGroup>
@@ -98,7 +104,7 @@
 
     <ItemGroup>
       <Reference Include="AquaMai">
-        <HintPath>AquaMai\145\AquaMai.dll</HintPath>
+        <HintPath>AquaMai\SDGA\AquaMai.dll</HintPath>
       </Reference>
       <Reference Include="AssetStudio">
         <HintPath>Libs\AssetStudio.dll</HintPath>
@@ -112,11 +118,6 @@
       <Reference Include="WinBlur">
         <HintPath>Libs\WinBlur.dll</HintPath>
       </Reference>
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="AquaMai\140\" />
-      <Folder Include="AquaMai\145\" />
     </ItemGroup>
 
     <ItemGroup>
