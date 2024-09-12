@@ -1,5 +1,5 @@
 import { computed, defineComponent, onMounted, PropType, ref, watch } from "vue";
-import { NButton, NCheckbox, NDivider, NFlex, NFormItem, NInput, NModal, NScrollbar, NSwitch, useDialog } from "naive-ui";
+import { NButton, NCheckbox, NDivider, NFlex, NFormItem, NInput, NInputNumber, NModal, NScrollbar, NSwitch, useDialog } from "naive-ui";
 import { Config, GameEdition, GameModInfo } from "@/client/apiGen";
 import comments from './modComments.yaml';
 import api from "@/client/api";
@@ -107,7 +107,9 @@ export default defineComponent({
             {Object.keys(section).map((k) => <NFormItem key={k} label={capitalCase(k)} labelPlacement="left" labelWidth="10em">
               <NFlex vertical class="w-full ws-pre-line">
                 <NFlex class="h-34px" align="center">
-                  {typeof section[k] === 'boolean' ? <NSwitch v-model:value={section[k]}/> : <NInput v-model:value={section[k]} placeholder=""/>}
+                  {typeof section[k] === 'boolean' && <NSwitch v-model:value={section[k]}/>}
+                  {typeof section[k] === 'string' && <NInput v-model:value={section[k]} placeholder=""/>}
+                  {typeof section[k] === 'number' && <NInputNumber v-model:value={section[k]} placeholder=""/>}
                   {comments.shouldEnableOptions[key]?.[k] && !section[k] && <ProblemsDisplay problems={['需要开启此选项']}/>}
                 </NFlex>
                 {comments[key]?.[k]}

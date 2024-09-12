@@ -3,6 +3,7 @@ sections:
   ux: 用户体验改进
   performance: 一些性能优化
   fix: 修复一些潜在的问题
+  utils: 工具
 
 cheat:
   ticketUnlock: 解锁游戏里所有可能的跑图券
@@ -54,6 +55,12 @@ fix:
     正常情况下，请保持这个选项开启
   forceAsServer: 强制服务器模式，配置店内招募时关闭
   forceFreePlay: 强制免费游玩
+  extendNotesPool:  |
+    增加更多待命的音符贴图，防止奇怪的自制谱用完音符贴图池
+    如果遇到奇怪的谱面显示不正常或者闪退的话可以从 64 以上开始调整
+
+utils:
+  logUserId: 在玩家登录时调试输出用户 ID
 
 shouldEnableOptions:
   ux:
