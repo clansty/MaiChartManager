@@ -4,6 +4,7 @@ import { MusicBrief } from "@/client/apiGen";
 import { NFlex, NSelect, NVirtualList, useDialog } from "naive-ui";
 import MusicEntry from "@/components/MusicList/MusicEntry";
 import { assetDirs, musicList, selectedADir, selectMusicId, updateMusicList } from "@/store/refs";
+import RefreshAllButton from "@/components/RefreshAllButton";
 
 export default defineComponent({
   setup() {
@@ -40,11 +41,15 @@ export default defineComponent({
 
     return () => (
       <NFlex vertical class="h-full" size="large">
-        <NSelect
-          value={selectedADir.value}
-          options={assetDirs.value.map(dir => ({label: dir.dirName!, value: dir.dirName!}))}
-          onUpdateValue={setAssetsDir}
-        />
+        <NFlex>
+          <NSelect
+            class="grow w-0"
+            value={selectedADir.value}
+            options={assetDirs.value.map(dir => ({label: dir.dirName!, value: dir.dirName!}))}
+            onUpdateValue={setAssetsDir}
+          />
+          <RefreshAllButton/>
+        </NFlex>
         <NVirtualList class="flex-1" itemSize={20 / 4 * 16} items={musicList.value}>
           {{
             default({item}: { item: MusicBrief }) {

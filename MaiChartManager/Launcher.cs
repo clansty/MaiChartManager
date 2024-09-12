@@ -28,6 +28,7 @@ public partial class Launcher : Form
         if (!isFromStartup())
         {
             Visible = true;
+            IapManager.BindToForm(this);
             return;
         }
 

@@ -11,6 +11,7 @@
   },
   "devDependencies": {
     "@fontsource/nerko-one": "^5.0.21",
+    "@iconify-json/fluent": "^1.2.1",
     "@iconify-json/ic": "^1.1.18",
     "@iconify-json/material-symbols": "^1.1.88",
     "@iconify-json/mdi": "^1.1.68",
@@ -41,6 +42,7 @@
     "unity-webgl": "^3.5.5",
     "unocss": "^0.62.2",
     "vite": "^5.4.1",
+    "vite-svg-loader": "^5.1.0",
     "vue": "^3.4.38",
     "vue-contenteditable": "^4.1.0",
     "vue-router": "^4.4.3"

@@ -3,6 +3,7 @@ import { defineConfig } from 'vite';
 import vueJsx from '@vitejs/plugin-vue-jsx';
 import UnoCSS from 'unocss/vite';
 import ViteYaml from '@modyfi/vite-plugin-yaml';
+import svgLoader from 'vite-svg-loader'
 
 // https://vitejs.dev/config/
 export default defineConfig(({command}) => ({
@@ -10,6 +11,7 @@ export default defineConfig(({command}) => ({
     vueJsx(),
     UnoCSS(),
     ViteYaml(),
+    svgLoader(),
     sentryVitePlugin({
       org: "sentry",
       project: "maichartmanager-front",

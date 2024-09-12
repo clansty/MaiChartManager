@@ -9,6 +9,10 @@
  * ---------------------------------------------------------------
  */
 
+export interface AppLicenseDto {
+  isPurchased?: boolean;
+}
+
 export interface AppVersionResult {
   version?: string | null;
   /** @format int32 */
@@ -183,6 +187,19 @@ export interface PutAssetDirTxtValueRequest {
   dirName?: string | null;
   fileName?: string | null;
   content?: string | null;
+}
+
+export interface RequestPurchaseResult {
+  errorMessage?: string | null;
+  status?: StorePurchaseStatus;
+}
+
+export enum StorePurchaseStatus {
+  Succeeded = "Succeeded",
+  AlreadyPurchased = "AlreadyPurchased",
+  NotPurchased = "NotPurchased",
+  NetworkError = "NetworkError",
+  ServerError = "ServerError",
 }
 
 export interface UXConfig {
@@ -529,6 +546,36 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       this.request<void, any>({
         path: `/MaiChartManagerServlet/DeleteVersionApi/${id}`,
         method: "DELETE",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags AppLicense
+     * @name GetAppLicenseStatus
+     * @request GET:/MaiChartManagerServlet/GetAppLicenseStatusApi
+     */
+    GetAppLicenseStatus: (params: RequestParams = {}) =>
+      this.request<AppLicenseDto, any>({
+        path: `/MaiChartManagerServlet/GetAppLicenseStatusApi`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags AppLicense
+     * @name RequestPurchase
+     * @request POST:/MaiChartManagerServlet/RequestPurchaseApi
+     */
+    RequestPurchase: (params: RequestParams = {}) =>
+      this.request<RequestPurchaseResult, any>({
+        path: `/MaiChartManagerServlet/RequestPurchaseApi`,
+        method: "POST",
+        format: "json",
         ...params,
       }),
 

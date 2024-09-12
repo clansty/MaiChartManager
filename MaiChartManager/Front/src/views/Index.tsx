@@ -53,7 +53,6 @@ export default defineComponent({
               <GenreVersionManager/>
             </>}
             <ModManager/>
-            <RefreshAllButton/>
 
             <div class="grow-1"/>
 
