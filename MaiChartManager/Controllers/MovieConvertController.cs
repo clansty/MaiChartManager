@@ -49,6 +49,23 @@ public class MovieConvertController(StaticSettings settings, ILogger<MovieConver
         Error
     }
 
+    private static IConversion Concatenate(params IMediaInfo[] mediaInfos)
+    {
+        var conversion = FFmpeg.Conversions.New();
+        foreach (var inputVideo in mediaInfos)
+        {
+            conversion.AddParameter("-i " + inputVideo.Path.Escape() + " ");
+        }
+
+        conversion.AddParameter("-filter_complex \"");
+        var videoStream = mediaInfos.Select((Func<IMediaInfo, IVideoStream>)(x => x.VideoStreams.OrderByDescending<IVideoStream, int>(z => z.Width).First())).OrderByDescending((Func<IVideoStream, int>)(x => x.Width)).First();
+        for (var index = 0; index < mediaInfos.Length; ++index)
+            conversion.AddParameter($"[{index}:v] ");
+        conversion.AddParameter($"concat=n={mediaInfos.Length}:v=1 [v]\" -map \"[v]\"");
+        conversion.AddParameter("-aspect " + videoStream.Ratio);
+        return conversion;
+    }
+
     [HttpPut]
     [DisableRequestSizeLimit]
     public async Task SetMovie(int id, [FromForm] float padding, IFormFile file)
@@ -57,7 +74,7 @@ public class MovieConvertController(StaticSettings settings, ILogger<MovieConver
         var tmpDir = Directory.CreateTempSubdirectory();
         logger.LogInformation("Temp dir: {tmpDir}", tmpDir.FullName);
         // Convert vp9
-        string outVideoPath;
+        var outVideoPath = Path.Combine(tmpDir.FullName, "out.ivf");
         try
         {
             var srcFilePath = Path.Combine(tmpDir.FullName, Path.GetFileName(file.FileName));
@@ -67,9 +84,7 @@ public class MovieConvertController(StaticSettings settings, ILogger<MovieConver
 
             var srcMedia = await FFmpeg.GetMediaInfo(srcFilePath);
             var conversion = FFmpeg.Conversions.New()
-                .AddParameter("-hwaccel dxva2", ParameterPosition.PreInput)
-                .UseMultiThread(true)
-                .AddParameter("-cpu-used 5");
+                .AddStream(srcMedia.VideoStreams.First().SetCodec(Vp9Encoding));
             if (padding < 0)
             {
                 conversion.SetSeek(TimeSpan.FromSeconds(-padding));
@@ -80,19 +95,21 @@ public class MovieConvertController(StaticSettings settings, ILogger<MovieConver
                 var blank = FFmpeg.Conversions.New()
                     .SetOutputTime(TimeSpan.FromSeconds(padding))
                     .SetInputFormat(Format.lavfi)
-                    .AddParameter("-i color=c=black:s=720x720:r=1")
+                    .AddParameter($"-i color=c=black:s={srcMedia.VideoStreams.First().Width}x{srcMedia.VideoStreams.First().Height}:r=1")
                     .UseMultiThread(true)
                     .SetOutput(blankPath);
                 logger.LogInformation("About to run FFMpeg with params: {params}", blank.Build());
                 await blank.Start();
                 var blankVideoInfo = await FFmpeg.GetMediaInfo(blankPath);
-                conversion.AddStream(blankVideoInfo.VideoStreams.First().SetCodec(Vp9Encoding));
+                conversion = Concatenate(blankVideoInfo, srcMedia);
+                conversion.AddParameter($"-c:v {Vp9Encoding}");
             }
 
-            outVideoPath = Path.Combine(tmpDir.FullName, "out.ivf");
             conversion
-                .AddStream(srcMedia.VideoStreams.First().SetCodec(Vp9Encoding))
-                .SetOutput(outVideoPath);
+                .SetOutput(outVideoPath)
+                .AddParameter("-hwaccel dxva2", ParameterPosition.PreInput)
+                .UseMultiThread(true)
+                .AddParameter("-cpu-used 5");
             logger.LogInformation("About to run FFMpeg with params: {params}", conversion.Build());
             conversion.OnProgress += async (sender, args) =>
             {
