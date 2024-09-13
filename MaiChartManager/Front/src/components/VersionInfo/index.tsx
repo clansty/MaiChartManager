@@ -1,21 +1,15 @@
-import { computed, defineComponent, onMounted, ref } from "vue";
-import { AppLicenseDto, AppVersionResult } from "@/client/apiGen";
-import api from "@/client/api";
-import { NButton, NFlex, NModal, NPopover, NQrCode, NTime } from "naive-ui";
+import { computed, defineComponent, ref } from "vue";
+import { NButton, NFlex, NModal, NPopover, NQrCode } from "naive-ui";
 import '@fontsource/nerko-one'
 import { version } from "@/store/refs";
 import StorePurchaseButton from "@/components/VersionInfo/StorePurchaseButton";
 import AfdianIcon from "@/icons/afdian.svg";
+import { HardwareAccelerationStatus, LicenseStatus } from "@/client/apiGen";
 
 export default defineComponent({
   setup(props) {
     const show = ref(false);
     const displayVersion = computed(() => version.value?.version?.split('+')[0]);
-    const licenseInfo = ref<AppLicenseDto>();
-
-    onMounted(async () => {
-      licenseInfo.value = (await api.GetAppLicenseStatus()).data;
-    })
 
     return () => version.value && <NButton quaternary round onClick={() => show.value = true}>
       v{displayVersion.value}
@@ -44,10 +38,16 @@ export default defineComponent({
           <div>
             游戏版本: 1.{version.value.gameVersion}
           </div>
-          {licenseInfo.value && licenseInfo.value.isPurchased && <NFlex align="center">
+          {version.value.hardwareAcceleration === HardwareAccelerationStatus.Enabled && <div>
+            硬件加速作用中
+          </div>}
+          {version.value.hardwareAcceleration === HardwareAccelerationStatus.Disabled && <div>
+            硬件加速不可用（开启英特尔核显可加速视频转码）
+          </div>}
+          {version.value.license === LicenseStatus.Active && <div>
             感谢你的支持！
-          </NFlex>}
-          {licenseInfo.value && !licenseInfo.value.isPurchased && <NFlex align="center">
+          </div>}
+          {version.value.license === LicenseStatus.Inactive && <NFlex align="center">
             赞助以帮助开发并获取更多功能（目前是期货）
             <StorePurchaseButton/>
             <NButton secondary onClick={() => window.open("https://afdian.com/item/90b4d1fe70e211efab3052540025c377")}>

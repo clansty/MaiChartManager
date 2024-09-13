@@ -9,14 +9,12 @@
  * ---------------------------------------------------------------
  */
 
-export interface AppLicenseDto {
-  isPurchased?: boolean;
-}
-
 export interface AppVersionResult {
   version?: string | null;
   /** @format int32 */
   gameVersion?: number;
+  license?: LicenseStatus;
+  hardwareAcceleration?: HardwareAccelerationStatus;
 }
 
 export interface Chart {
@@ -120,6 +118,12 @@ export interface GetAssetsDirsResult {
   subFiles?: string[] | null;
 }
 
+export enum HardwareAccelerationStatus {
+  Pending = "Pending",
+  Enabled = "Enabled",
+  Disabled = "Disabled",
+}
+
 export interface ImportChartCheckResult {
   accept?: boolean;
   errors?: ImportChartMessage[] | null;
@@ -143,6 +147,12 @@ export interface ImportChartResult {
 
 export interface InstallAquaMaiRequest {
   version?: GameEdition;
+}
+
+export enum LicenseStatus {
+  Pending = "Pending",
+  Active = "Active",
+  Inactive = "Inactive",
 }
 
 export enum MessageLevel {
@@ -562,21 +572,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       this.request<void, any>({
         path: `/MaiChartManagerServlet/DeleteVersionApi/${id}`,
         method: "DELETE",
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags AppLicense
-     * @name GetAppLicenseStatus
-     * @request GET:/MaiChartManagerServlet/GetAppLicenseStatusApi
-     */
-    GetAppLicenseStatus: (params: RequestParams = {}) =>
-      this.request<AppLicenseDto, any>({
-        path: `/MaiChartManagerServlet/GetAppLicenseStatusApi`,
-        method: "GET",
-        format: "json",
         ...params,
       }),
 
@@ -1146,6 +1141,31 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
+     * @tags MovieConvert
+     * @name SetMovie
+     * @request PUT:/MaiChartManagerServlet/SetMovieApi/{id}
+     */
+    SetMovie: (
+      id: number,
+      data: {
+        /** @format float */
+        padding?: number;
+        /** @format binary */
+        file?: File;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<void, any>({
+        path: `/MaiChartManagerServlet/SetMovieApi/${id}`,
+        method: "PUT",
+        body: data,
+        type: ContentType.FormData,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
      * @tags Music
      * @name GetMusicDetail
      * @request GET:/MaiChartManagerServlet/GetMusicDetailApi/{id}
@@ -1402,31 +1422,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     ) =>
       this.request<void, any>({
         path: `/MaiChartManagerServlet/SetAudioApi/${id}`,
-        method: "PUT",
-        body: data,
-        type: ContentType.FormData,
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags Music
-     * @name SetMovie
-     * @request PUT:/MaiChartManagerServlet/SetMovieApi/{id}
-     */
-    SetMovie: (
-      id: number,
-      data: {
-        /** @format float */
-        padding?: number;
-        /** @format binary */
-        file?: File;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<void, any>({
-        path: `/MaiChartManagerServlet/SetMovieApi/${id}`,
         method: "PUT",
         body: data,
         type: ContentType.FormData,

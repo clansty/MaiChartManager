@@ -8,13 +8,41 @@ public static class IapManager
 
     private static StoreContext StoreContext { get; } = StoreContext.GetDefault();
 
-    private static StoreAppLicense? _license;
-
     private static Form _form;
+
+    public enum LicenseStatus
+    {
+        Pending,
+        Active,
+        Inactive
+    }
+
+    public static LicenseStatus License { get; private set; } = LicenseStatus.Pending;
 
     public static async Task Init()
     {
-        _license = await StoreContext.GetAppLicenseAsync();
+        var license = await StoreContext.GetAppLicenseAsync();
+        if (license is null)
+        {
+            License = LicenseStatus.Inactive;
+            return;
+        }
+
+        var item = license.AddOnLicenses.FirstOrDefault(x => x.Value.SkuStoreId.StartsWith(storeId));
+        if (item.Value is null)
+        {
+            License = LicenseStatus.Inactive;
+            return;
+        }
+
+        if (item.Value.IsActive)
+        {
+            License = LicenseStatus.Active;
+        }
+        else
+        {
+            License = LicenseStatus.Inactive;
+        }
     }
 
     public static void BindToForm(Form form)
@@ -39,24 +67,5 @@ public static class IapManager
         }
 
         return res;
-    }
-
-    public static bool IsPurchased
-    {
-        get
-        {
-            if (_license is null)
-            {
-                return false;
-            }
-
-            var item = _license.AddOnLicenses.FirstOrDefault(x => x.Value.SkuStoreId.StartsWith(storeId));
-            if (item.Value is null)
-            {
-                return false;
-            }
-
-            return item.Value.IsActive;
-        }
     }
 }

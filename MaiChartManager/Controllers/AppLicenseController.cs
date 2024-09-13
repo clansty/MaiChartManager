@@ -7,14 +7,6 @@ namespace MaiChartManager.Controllers;
 [Route("MaiChartManagerServlet/[action]Api")]
 public class AppLicenseController
 {
-    public record AppLicenseDto(bool isPurchased);
-
-    [HttpGet]
-    public AppLicenseDto GetAppLicenseStatus()
-    {
-        return new AppLicenseDto(IapManager.IsPurchased);
-    }
-
     public record RequestPurchaseResult(string? ErrorMessage, StorePurchaseStatus Status);
 
     [HttpPost]

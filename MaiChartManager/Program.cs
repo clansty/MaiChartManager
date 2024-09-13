@@ -1,4 +1,5 @@
 using System.Text.Json;
+using MaiChartManager.Controllers;
 using Xabe.FFmpeg;
 
 namespace MaiChartManager;
@@ -32,6 +33,7 @@ static class Program
             ApplicationConfiguration.Initialize();
             FFmpeg.SetExecutablesPath(Path.Combine(StaticSettings.exeDir, "FFMpeg"));
             IapManager.Init();
+            MovieConvertController.CheckHardwareAcceleration();
 
             Directory.CreateDirectory(StaticSettings.appData);
             Directory.CreateDirectory(StaticSettings.tempPath);
