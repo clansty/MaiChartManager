@@ -1,10 +1,11 @@
 import { computed, defineComponent, PropType } from "vue";
-import { NButton, NFlex, NInputNumber, NModal } from "naive-ui";
+import { NButton, NFlex, NInputNumber, NModal, NProgress } from "naive-ui";
 import { IMPORT_STEP, ImportMeta } from "./index";
 
 export default defineComponent({
   props: {
     show: {type: Boolean, required: true},
+    movieProgress: {type: Number, required: true},
     closeModal: {type: Function, required: true},
     current: {type: Object as PropType<ImportMeta>, required: true},
   },
@@ -30,6 +31,13 @@ export default defineComponent({
         <Step step={IMPORT_STEP.create} current={props.current.importStep} name="创建乐曲"/>
         <Step step={IMPORT_STEP.chart} current={props.current.importStep} name="转换谱面"/>
         <Step step={IMPORT_STEP.music} current={props.current.importStep} name="转码音频"/>
+        {props.current.movie && <Step step={IMPORT_STEP.movie} current={props.current.importStep} name="转码视频"/>}
+        {props.current.movie && !!props.movieProgress && <NProgress
+          type="line"
+          percentage={props.movieProgress}
+          indicator-placement="inside"
+          processing
+        />}
         <Step step={IMPORT_STEP.jacket} current={props.current.importStep} name="导入封面"/>
       </NFlex>
     </NModal>

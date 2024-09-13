@@ -9,6 +9,7 @@ import ErrorDisplayIdInput from "./ErrorDisplayIdInput";
 import ImportStepDisplay from "./ImportStepDisplay";
 import { useStorage } from "@vueuse/core";
 import { captureException } from "@sentry/vue";
+import { fetchEventSource } from "@microsoft/fetch-event-source";
 
 enum STEP {
   none,
@@ -24,6 +25,7 @@ export enum IMPORT_STEP {
   create,
   chart,
   music,
+  movie,
   jacket,
   finish
 }
@@ -34,6 +36,7 @@ export type ImportMeta = {
   maidata?: File,
   track?: File,
   bg?: File,
+  movie?: File,
   name: string,
   musicPadding: number,
   first: number,
@@ -69,6 +72,7 @@ export default defineComponent({
     const modalReject = ref<Function>();
     const meta = ref<ImportMeta[]>([]);
     const currentProcessing = ref<ImportMeta>(dummyMeta);
+    const currentMovieProgress = ref(0);
 
     const closeModal = () => {
       step.value = STEP.none;
@@ -88,10 +92,11 @@ export default defineComponent({
         reject = true;
         errors.value.push({level: MessageLevel.Fatal, message: '未找到音频文件', name: dir.name});
       }
-      const bg = await tryGetFile(dir, 'bg.jpg') || await tryGetFile(dir, 'bg.png');
+      const bg = await tryGetFile(dir, 'bg.jpg') || await tryGetFile(dir, 'bg.png') || await tryGetFile(dir, 'bg.jpeg');
       if (!bg) {
         errors.value.push({level: MessageLevel.Warning, message: '未找到背景图片', name: dir.name});
       }
+      const movie = await tryGetFile(dir, 'pv.mp4') || await tryGetFile(dir, 'mv.mp4') || await tryGetFile(dir, 'bg.mp4');
 
       let musicPadding = 0, first = 0, name = dir.name;
       if (maidata) {
@@ -108,12 +113,37 @@ export default defineComponent({
 
       if (!reject) {
         meta.value.push({
-          id, maidata, bg, track, musicPadding, name, first,
+          id, maidata, bg, track, musicPadding, name, first, movie,
           importStep: IMPORT_STEP.start,
         })
       }
       return !reject;
     }
+
+    const uploadMovie = (id: number, movie: File, offset: number) => new Promise<void>((resolve, reject) => {
+      currentMovieProgress.value = 0;
+      const body = new FormData();
+      body.append('file', movie);
+      body.append('offset', offset.toString());
+      fetchEventSource(`/MaiChartManagerServlet/SetMovieApi/${id}`, {
+        method: 'PUT',
+        body,
+        onerror: reject,
+        onmessage: (e) => {
+          switch (e.event) {
+            case 'Progress':
+              currentMovieProgress.value = parseInt(e.data);
+              break;
+            case 'Success':
+              resolve();
+              break;
+            case 'Error':
+              reject(e.data);
+              break;
+          }
+        }
+      });
+    })
 
     const processMusic = async (music: ImportMeta) => {
       try {
@@ -144,7 +174,18 @@ export default defineComponent({
         }
 
         music.importStep = IMPORT_STEP.music;
-        await api.SetAudio(music.id, {file: music.track, padding: noShiftChart.value ? -music.first : music.musicPadding});
+        const padding = noShiftChart.value ? -music.first : music.musicPadding;
+        await api.SetAudio(music.id, {file: music.track, padding});
+
+        if (music.movie) {
+          music.importStep = IMPORT_STEP.movie;
+          try{
+            await uploadMovie(music.id, music.movie, padding);
+          }
+          catch (e: any) {
+            errors.value.push({level: MessageLevel.Warning, message: `视频转换失败: ${e.message || e.toString()}`, name: music.name});
+          }
+        }
 
         music.importStep = IMPORT_STEP.jacket;
         if (music.bg) await api.SetMusicJacket(music.id, {file: music.bg});
@@ -238,7 +279,7 @@ export default defineComponent({
       <ErrorDisplayIdInput show={step.value === STEP.showWarning} closeModal={closeModal} proceed={modalResolve.value!} meta={meta.value} errors={errors.value}
         // 这个组件的 props 数量是不是有点多了
                            v-model:ignoreLevel={ignoreLevel.value} v-model:addVersionId={addVersionId.value} v-model:genreId={genreId.value} v-model:version={version.value} v-model:noShiftChart={noShiftChart.value}/>
-      <ImportStepDisplay show={step.value === STEP.importing} closeModal={closeModal} current={currentProcessing.value}/>
+      <ImportStepDisplay show={step.value === STEP.importing} closeModal={closeModal} current={currentProcessing.value} movieProgress={currentMovieProgress.value}/>
       <ErrorDisplayIdInput show={step.value === STEP.showResultError} closeModal={closeModal} proceed={() => {
       }} meta={[]} ignoreLevel errors={errors.value}/>
     </NButton>;

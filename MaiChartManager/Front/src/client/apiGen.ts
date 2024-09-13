@@ -1412,6 +1412,31 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags Music
+     * @name SetMovie
+     * @request PUT:/MaiChartManagerServlet/SetMovieApi/{id}
+     */
+    SetMovie: (
+      id: number,
+      data: {
+        /** @format float */
+        padding?: number;
+        /** @format binary */
+        file?: File;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<void, any>({
+        path: `/MaiChartManagerServlet/SetMovieApi/${id}`,
+        method: "PUT",
+        body: data,
+        type: ContentType.FormData,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Music
      * @name RequestCopyTo
      * @request POST:/MaiChartManagerServlet/RequestCopyToApi/{id}
      */

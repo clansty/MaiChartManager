@@ -17,6 +17,7 @@
     "@iconify-json/mdi": "^1.1.68",
     "@iconify-json/ph": "^1.1.14",
     "@iconify-json/ri": "^1.1.22",
+    "@microsoft/fetch-event-source": "^2.0.1",
     "@modyfi/vite-plugin-yaml": "^1.1.0",
     "@sentry/vite-plugin": "^2.22.2",
     "@sentry/vue": "^8.27.0",
