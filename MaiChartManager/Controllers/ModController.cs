@@ -72,7 +72,7 @@ public class ModController(StaticSettings settings, ILogger<ModController> logge
             return;
         }
 
-        var zipFile = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), @"AquaMai\MelonLoader.x64.zip");
+        var zipFile = Path.Combine(StaticSettings.exeDir, @"AquaMai\MelonLoader.x64.zip");
         var zip = ZipFile.OpenRead(zipFile);
         foreach (var entry in zip.Entries)
         {
@@ -95,7 +95,7 @@ public class ModController(StaticSettings settings, ILogger<ModController> logge
     [HttpPost]
     public void InstallAquaMai(InstallAquaMaiRequest request)
     {
-        var src = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "AquaMai", request.Version.ToString(), "AquaMai.dll");
+        var src = Path.Combine(StaticSettings.exeDir, "AquaMai", request.Version.ToString(), "AquaMai.dll");
         var dest = Path.Combine(StaticSettings.GamePath, @"Mods\AquaMai.dll");
         Directory.CreateDirectory(Path.GetDirectoryName(dest));
         System.IO.File.Copy(src, dest, true);

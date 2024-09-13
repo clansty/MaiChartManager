@@ -8,6 +8,7 @@ public partial class StaticSettings
 {
     public static readonly string tempPath = Path.Combine(Path.GetTempPath(), "MaiChartManager");
     public static readonly string appData = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "MaiChartManager");
+    public static readonly string exeDir = Path.GetDirectoryName(Application.ExecutablePath);
 
     public static Config Config { get; set; } = new();
 

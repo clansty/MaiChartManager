@@ -1,4 +1,5 @@
 using System.Text.Json;
+using Xabe.FFmpeg;
 
 namespace MaiChartManager;
 
@@ -29,6 +30,7 @@ static class Program
 
             Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);
             ApplicationConfiguration.Initialize();
+            FFmpeg.SetExecutablesPath(Path.Combine(StaticSettings.exeDir, "FFMpeg"));
             IapManager.Init();
 
             Directory.CreateDirectory(StaticSettings.appData);
