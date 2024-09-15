@@ -1,6 +1,6 @@
 import { defineComponent, ref } from "vue";
 import { NButton } from "naive-ui";
-import { globalCapture, updateAddVersionList, updateAssetDirs, updateGenreList, updateSelectedAssetDir, updateVersion } from "@/store/refs";
+import { globalCapture, updateAddVersionList, updateAssetDirs, updateGenreList, updateMusicList, updateSelectedAssetDir, updateVersion } from "@/store/refs";
 import api from "@/client/api";
 
 export default defineComponent({
@@ -16,7 +16,8 @@ export default defineComponent({
           updateAddVersionList(),
           updateSelectedAssetDir(),
           updateAssetDirs(),
-          updateVersion()
+          updateVersion(),
+          updateMusicList(),
         ]);
       } catch (err) {
         globalCapture(err, "刷新失败")

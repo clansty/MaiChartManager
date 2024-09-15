@@ -17,7 +17,7 @@ export default defineComponent({
       `/MaiChartManagerServlet/GetJacketApi/${props.music.id}?${(props.music as any).updateTime}` : noJacket)
 
     return () => (
-      <div class={`flex gap-5 h-20 w-full p-2 m-y-1 hover:bg-zinc-3 hover:bg-op-40 rd-md relative ${props.selected && 'bg-[var(--selected-bg)]'}`} onClick={props.onClick} title={props.music.name!}>
+      <div class={`flex gap-5 h-20 w-full p-2 m-y-1 hover:bg-op-40 rd-md relative ${props.selected ? 'bg-[var(--selected-bg)]' : 'hover:bg-zinc-3'}`} onClick={props.onClick} title={props.music.name!}>
         <img src={jacketUrl.value} class="h-16 w-16 object-fill shrink-0"/>
         <div class="flex flex-col grow-1 w-0">
           <NFlex class="text-xs c-gray-5" align="center" size="small">

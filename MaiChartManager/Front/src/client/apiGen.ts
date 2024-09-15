@@ -17,6 +17,17 @@ export interface AppVersionResult {
   hardwareAcceleration?: HardwareAccelerationStatus;
 }
 
+export interface BatchSetPropsRequest {
+  ids?: number[] | null;
+  /** @format int32 */
+  addVersionId?: number;
+  /** @format int32 */
+  genreId?: number;
+  removeLevels?: boolean;
+  /** @format int32 */
+  version?: number;
+}
+
 export interface Chart {
   path?: string | null;
   /** @format int32 */
@@ -1478,6 +1489,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       this.request<void, any>({
         path: `/MaiChartManagerServlet/ExportOptApi/${id}`,
         method: "GET",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags MusicBatch
+     * @name BatchSetProps
+     * @request POST:/MaiChartManagerServlet/BatchSetPropsApi
+     */
+    BatchSetProps: (data: BatchSetPropsRequest, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/MaiChartManagerServlet/BatchSetPropsApi`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
         ...params,
       }),
 

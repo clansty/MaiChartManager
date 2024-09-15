@@ -5,6 +5,7 @@ import { NFlex, NSelect, NVirtualList, useDialog } from "naive-ui";
 import MusicEntry from "@/components/MusicList/MusicEntry";
 import { assetDirs, musicList, selectedADir, selectMusicId, updateMusicList } from "@/store/refs";
 import RefreshAllButton from "@/components/RefreshAllButton";
+import BatchActionButton from "@/components/MusicList/BatchActionButton";
 
 export default defineComponent({
   setup() {
@@ -49,6 +50,7 @@ export default defineComponent({
             onUpdateValue={setAssetsDir}
           />
           <RefreshAllButton/>
+          {selectedADir.value !== 'A000' && <BatchActionButton/>}
         </NFlex>
         <NVirtualList class="flex-1" itemSize={20 / 4 * 16} items={musicList.value}>
           {{
