@@ -21,7 +21,7 @@ export default defineComponent({
       closable={false}
       maskClosable={false}
       closeOnEsc={false}
-      v-model:show={show.value}
+      show={show.value}
     >
       <NFlex vertical class="text-4">
         <div>

@@ -63,7 +63,7 @@ export default defineComponent({
         showAquaMaiInstallDone.value = true
         setTimeout(() => showAquaMaiInstallDone.value = false, 3000);
       } catch (e: any) {
-        globalCapture(e, "安装 AquaMai 失败")
+        globalCapture(e, "安装 AquaMai 失败，文件可能被占用了？")
       } finally {
         installingAquaMai.value = false
       }

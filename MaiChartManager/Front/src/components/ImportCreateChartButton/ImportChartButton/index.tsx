@@ -132,7 +132,15 @@ export default defineComponent({
       fetchEventSource(`/MaiChartManagerServlet/SetMovieApi/${id}`, {
         method: 'PUT',
         body,
-        onerror: reject,
+        onerror() {
+          reject();
+          throw new Error("disable retry onerror");
+        },
+        onclose() {
+          reject();
+          throw new Error("disable retry onclose");
+        },
+        openWhenHidden: true,
         onmessage: (e) => {
           switch (e.event) {
             case 'Progress':

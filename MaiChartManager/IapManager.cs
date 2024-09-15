@@ -21,6 +21,10 @@ public static class IapManager
 
     public static async Task Init()
     {
+# if DEBUG
+        License = LicenseStatus.Active;
+        return;
+# endif
         var license = await StoreContext.GetAppLicenseAsync();
         if (license is null)
         {

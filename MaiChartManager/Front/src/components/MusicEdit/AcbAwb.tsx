@@ -8,6 +8,7 @@ import stdIcon from "@/assets/stdIcon.png";
 import dxIcon from "@/assets/dxIcon.png";
 import api from "@/client/api";
 import AudioPreviewEditorButton from "@/components/MusicEdit/AudioPreviewEditorButton";
+import SetMovieButton from "@/components/MusicEdit/SetMovieButton";
 
 export default defineComponent({
   props: {
@@ -98,6 +99,7 @@ export default defineComponent({
       {props.song.isAcbAwbExist && <audio controls src={url.value} class="w-0 grow"/>}
       {selectedADir.value !== 'A000' && <NButton secondary class={`${!props.song.isAcbAwbExist && "w-full"}`} onClick={uploadFlow} loading={load.value}>{props.song.isAcbAwbExist ? '替换' : '设置'}音频</NButton>}
       {selectedADir.value !== 'A000' && props.song.isAcbAwbExist && <AudioPreviewEditorButton/>}
+      {selectedADir.value !== 'A000' && props.song.isAcbAwbExist && <SetMovieButton song={props.song}/>}
 
       {/* 打开文件对话框一般在左上角，所以在下边显示一个 Drawer */}
       <NDrawer v-model:show={tipShow.value} height={200} placement="bottom">
@@ -116,7 +118,7 @@ export default defineComponent({
       <NModal
         preset="card"
         class="w-[min(30vw,25em)]"
-        title="设置偏移"
+        title="设置偏移（秒）"
         v-model:show={setOffsetShow.value}
       >{{
         default: () => <NFlex vertical size="large">

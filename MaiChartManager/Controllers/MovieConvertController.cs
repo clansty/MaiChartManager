@@ -68,8 +68,18 @@ public class MovieConvertController(StaticSettings settings, ILogger<MovieConver
 
     [HttpPut]
     [DisableRequestSizeLimit]
-    public async Task SetMovie(int id, [FromForm] float padding, IFormFile file)
+    public async Task SetMovie(int id, [FromForm] double padding, IFormFile file)
     {
+        if (Path.GetExtension(file.FileName).Equals(".dat", StringComparison.InvariantCultureIgnoreCase))
+        {
+            var targetPath = Path.Combine(StaticSettings.StreamingAssets, settings.AssetDir, $@"MovieData\{id:000000}.dat");
+            Directory.CreateDirectory(Path.GetDirectoryName(targetPath));
+            await using var stream = System.IO.File.Open(targetPath, FileMode.Create);
+            await file.CopyToAsync(stream);
+            StaticSettings.MovieDataMap[id] = targetPath;
+            return;
+        }
+
         if (IapManager.License != IapManager.LicenseStatus.Active) return;
         Response.Headers.Append("Content-Type", "text/event-stream");
         var tmpDir = Directory.CreateTempSubdirectory();
@@ -155,7 +165,7 @@ public class MovieConvertController(StaticSettings settings, ILogger<MovieConver
             FileSystem.CopyFile(outputFile, targetPath, true);
 
             StaticSettings.MovieDataMap[id] = targetPath;
-            await Response.WriteAsync($"event: {SetMovieEventType.Success}\n\n");
+            await Response.WriteAsync($"event: {SetMovieEventType.Success}\ndata: {SetMovieEventType.Success}\n\n");
             await Response.Body.FlushAsync();
         }
         catch (Exception e)
