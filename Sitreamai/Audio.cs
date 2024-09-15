@@ -10,12 +10,24 @@ namespace Sitreamai;
 
 public static class Audio
 {
-    public static void ConvertToMai(string srcPath, string savePath, float padding = 0, Stream src = null)
+    public static void ConvertToMai(string srcPath, string savePath, float padding = 0, Stream src = null, string previewFilename = null, Stream preview = null)
     {
         var wrapper = new ACB_Wrapper(ACB_File.Load(ReadResourceFile("Sitreamai.Resources.template.acb"), null));
         var trackBytes = LoadAndConvertFile(srcPath, FileType.Hca, false, 9170825592834449000, padding, src);
 
         wrapper.Cues[0].AddTrackToCue(trackBytes, true, false, EncodeType.HCA);
+        // 之前由于并没有把 acb 里的控制数据删干净导致自动有预览，而要是手动往预览 cue 里面放了东西，就会导致预览的时候播放两个音频
+        // 现在模板里面已经把预览 cue 删干净了，所以这里我们可以自己控制预览，加入音频就可以了
+        if (previewFilename is null)
+        {
+            wrapper.Cues[1].AddTrackToCue(trackBytes, true, false, EncodeType.HCA);
+        }
+        else
+        {
+            var previewTrackBytes = LoadAndConvertFile(previewFilename, FileType.Hca, true, 9170825592834449000, 0, preview);
+            wrapper.Cues[1].AddTrackToCue(previewTrackBytes, true, false, EncodeType.HCA);
+        }
+
         wrapper.AcbFile.Save(savePath);
     }
 

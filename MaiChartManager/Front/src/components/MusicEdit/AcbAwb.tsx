@@ -7,6 +7,7 @@ import FileTypeIcon from "@/components/FileTypeIcon";
 import stdIcon from "@/assets/stdIcon.png";
 import dxIcon from "@/assets/dxIcon.png";
 import api from "@/client/api";
+import AudioPreviewEditorButton from "@/components/MusicEdit/AudioPreviewEditorButton";
 
 export default defineComponent({
   props: {
@@ -96,8 +97,9 @@ export default defineComponent({
     return () => <NFlex align="center">
       {props.song.isAcbAwbExist && <audio controls src={url.value} class="w-0 grow"/>}
       {selectedADir.value !== 'A000' && <NButton secondary class={`${!props.song.isAcbAwbExist && "w-full"}`} onClick={uploadFlow} loading={load.value}>{props.song.isAcbAwbExist ? '替换' : '设置'}音频</NButton>}
+      {selectedADir.value !== 'A000' && props.song.isAcbAwbExist && <AudioPreviewEditorButton/>}
 
-      {/* 打开文件对话框一般在左上角，所以在右边显示一个 Drawer */}
+      {/* 打开文件对话框一般在左上角，所以在下边显示一个 Drawer */}
       <NDrawer v-model:show={tipShow.value} height={200} placement="bottom">
         <NDrawerContent title="可以选择的文件类型">
           <div class="grid cols-4 justify-items-center text-8em gap-10">

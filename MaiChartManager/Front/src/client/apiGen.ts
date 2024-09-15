@@ -216,6 +216,13 @@ export interface RequestPurchaseResult {
   status?: StorePurchaseStatus;
 }
 
+export interface SetAudioPreviewRequest {
+  /** @format double */
+  startTime?: number;
+  /** @format double */
+  endTime?: number;
+}
+
 export enum StorePurchaseStatus {
   Succeeded = "Succeeded",
   AlreadyPurchased = "AlreadyPurchased",
@@ -876,6 +883,65 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
+     * @tags CueConvert
+     * @name GetMusicWav
+     * @request GET:/MaiChartManagerServlet/GetMusicWavApi/{id}
+     */
+    GetMusicWav: (id: number, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/MaiChartManagerServlet/GetMusicWavApi/${id}`,
+        method: "GET",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags CueConvert
+     * @name SetAudio
+     * @request PUT:/MaiChartManagerServlet/SetAudioApi/{id}
+     */
+    SetAudio: (
+      id: number,
+      data: {
+        /** @format float */
+        padding?: number;
+        /** @format binary */
+        file?: File;
+        /** @format binary */
+        awb?: File;
+        /** @format binary */
+        preview?: File;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<void, any>({
+        path: `/MaiChartManagerServlet/SetAudioApi/${id}`,
+        method: "PUT",
+        body: data,
+        type: ContentType.FormData,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags CueConvert
+     * @name SetAudioPreview
+     * @request POST:/MaiChartManagerServlet/SetAudioPreviewApi/{id}
+     */
+    SetAudioPreview: (id: number, data: SetAudioPreviewRequest, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/MaiChartManagerServlet/SetAudioPreviewApi/${id}`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
      * @tags Genre
      * @name GetAllGenres
      * @request GET:/MaiChartManagerServlet/GetAllGenresApi
@@ -1384,47 +1450,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       this.request<void, any>({
         path: `/MaiChartManagerServlet/GetJacketApi/${id}`,
         method: "GET",
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags Music
-     * @name GetMusicWav
-     * @request GET:/MaiChartManagerServlet/GetMusicWavApi/{id}
-     */
-    GetMusicWav: (id: number, params: RequestParams = {}) =>
-      this.request<void, any>({
-        path: `/MaiChartManagerServlet/GetMusicWavApi/${id}`,
-        method: "GET",
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags Music
-     * @name SetAudio
-     * @request PUT:/MaiChartManagerServlet/SetAudioApi/{id}
-     */
-    SetAudio: (
-      id: number,
-      data: {
-        /** @format float */
-        padding?: number;
-        /** @format binary */
-        file?: File;
-        /** @format binary */
-        awb?: File;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<void, any>({
-        path: `/MaiChartManagerServlet/SetAudioApi/${id}`,
-        method: "PUT",
-        body: data,
-        type: ContentType.FormData,
         ...params,
       }),
 

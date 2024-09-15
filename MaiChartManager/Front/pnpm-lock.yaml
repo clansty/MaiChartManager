@@ -119,6 +119,9 @@ importers:
       vue-router:
         specifier: ^4.4.3
         version: 4.4.3(vue@3.4.38(typescript@5.5.4))
+      wavesurfer.js:
+        specifier: ^7.8.6
+        version: 7.8.6
 
 packages:
 
@@ -1970,6 +1973,9 @@ packages:
     resolution: {integrity: sha512-Wnj/N8WbPRSxSt+9ji1jtDHPzda5h2OH/0sFBhvdxDRuyCZbjGg3/cKMaKqEoe+dErTexG2R+i6Q8S/Toq1MYg==}
     peerDependencies:
       vue: ^3.0.11
+
+  wavesurfer.js@7.8.6:
+    resolution: {integrity: sha512-EDexkMwkkQBTWruhfWQRkTtvRggtKFTPuJX/oZ5wbIZEfyww9EBeLr2mtkxzA1S8TlWPx6adY5WyjOlNYNyHSg==}
 
   web-vitals@4.2.3:
     resolution: {integrity: sha512-/CFAm1mNxSmOj6i0Co+iGFJ58OS4NRGVP+AWS/l509uIK5a1bSoIVaHz/ZumpHTfHSZBpgrJ+wjfpAOrTHok5Q==}
@@ -3939,6 +3945,8 @@ snapshots:
       vdirs: 0.1.8(vue@3.4.38(typescript@5.5.4))
       vooks: 0.2.12(vue@3.4.38(typescript@5.5.4))
       vue: 3.4.38(typescript@5.5.4)
+
+  wavesurfer.js@7.8.6: {}
 
   web-vitals@4.2.3: {}
 
