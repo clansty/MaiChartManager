@@ -1,6 +1,5 @@
 import { defineComponent, PropType, ref } from "vue";
 import { NButton, NCheckbox, NFlex, NForm, NFormItem, NSelect } from "naive-ui";
-import VersionInput from "@/components/VersionInput";
 import GenreInput from "@/components/GenreInput";
 import { addVersionList, genreList, globalCapture, selectMusicId, updateMusicList, version } from "@/store/refs";
 import api from "@/client/api";

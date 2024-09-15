@@ -1,10 +1,10 @@
 import { defineComponent, ref } from "vue";
 import { NButton, useDialog, useNotification } from "naive-ui";
 import SelectFileTypeTip from "./SelectFileTypeTip";
-import { ImportChartMessage, MessageLevel } from "@/client/apiGen";
+import { ImportChartMessage, LicenseStatus, MessageLevel } from "@/client/apiGen";
 import CheckingModal from "./CheckingModal";
 import api from "@/client/api";
-import { globalCapture, musicList, selectMusicId, updateMusicList } from "@/store/refs";
+import { globalCapture, musicList, selectMusicId, updateMusicList, version as appVersion } from "@/store/refs";
 import ErrorDisplayIdInput from "./ErrorDisplayIdInput";
 import ImportStepDisplay from "./ImportStepDisplay";
 import { useStorage } from "@vueuse/core";
@@ -43,7 +43,7 @@ export type ImportMeta = {
 }
 
 export type FirstPaddingMessage = { first: number, padding: number }
-export type ImportChartMessageEx = (ImportChartMessage | FirstPaddingMessage) & { name: string }
+export type ImportChartMessageEx = (ImportChartMessage | FirstPaddingMessage) & { name: string, isPaid?: boolean }
 
 const tryGetFile = async (dir: FileSystemDirectoryHandle, file: string) => {
   try {
@@ -96,7 +96,11 @@ export default defineComponent({
       if (!bg) {
         errors.value.push({level: MessageLevel.Warning, message: '未找到背景图片', name: dir.name});
       }
-      const movie = await tryGetFile(dir, 'pv.mp4') || await tryGetFile(dir, 'mv.mp4') || await tryGetFile(dir, 'bg.mp4');
+      let movie = await tryGetFile(dir, 'pv.mp4') || await tryGetFile(dir, 'mv.mp4') || await tryGetFile(dir, 'bg.mp4');
+      if (movie && appVersion.value?.license !== LicenseStatus.Active) {
+        movie = undefined;
+        errors.value.push({level: MessageLevel.Warning, message: '转换 PV 目前是赞助版功能，点击获取', name: dir.name, isPaid: true});
+      }
 
       let musicPadding = 0, first = 0, name = dir.name;
       if (maidata) {
@@ -179,10 +183,9 @@ export default defineComponent({
 
         if (music.movie) {
           music.importStep = IMPORT_STEP.movie;
-          try{
+          try {
             await uploadMovie(music.id, music.movie, padding);
-          }
-          catch (e: any) {
+          } catch (e: any) {
             errors.value.push({level: MessageLevel.Warning, message: `视频转换失败: ${e.message || e.toString()}`, name: music.name});
           }
         }

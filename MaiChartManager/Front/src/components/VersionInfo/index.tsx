@@ -1,8 +1,8 @@
 import { computed, defineComponent, ref } from "vue";
-import { NButton, NFlex, NModal, NPopover, NQrCode } from "naive-ui";
+import { NA, NButton, NFlex, NModal, NPopover, NQrCode } from "naive-ui";
 import '@fontsource/nerko-one'
 import { version } from "@/store/refs";
-import StorePurchaseButton from "@/components/VersionInfo/StorePurchaseButton";
+import StorePurchaseButton from "@/components/StorePurchaseButton";
 import AfdianIcon from "@/icons/afdian.svg";
 import { HardwareAccelerationStatus, LicenseStatus } from "@/client/apiGen";
 
@@ -46,9 +46,14 @@ export default defineComponent({
           </div>}
           {version.value.license === LicenseStatus.Active && <div>
             感谢你的支持！
+            <NA
+              // @ts-ignore
+              href="https://afdian.com/a/Clansty"
+              target="_blank"
+            >如果还想继续赞助请点击</NA>
           </div>}
           {version.value.license === LicenseStatus.Inactive && <NFlex align="center">
-            赞助以帮助开发并获取更多功能（目前是期货）
+            赞助以帮助开发并获取更多功能
             <StorePurchaseButton/>
             <NButton secondary onClick={() => window.open("https://afdian.com/item/90b4d1fe70e211efab3052540025c377")}>
               <span class="text-lg c-#946ce6 mr-2 translate-y-.25">

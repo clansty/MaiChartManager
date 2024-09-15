@@ -74,6 +74,7 @@ public class CueConvertController(StaticSettings settings, ILogger<MusicControll
     [HttpPost]
     public async Task SetAudioPreview(int id, [FromBody] SetAudioPreviewRequest request)
     {
+        if (IapManager.License != IapManager.LicenseStatus.Active) return;
         id %= 10000;
         var cachePath = await GetCachedWavPath(id);
         var targetAcbPath = StaticSettings.AcbAwb[$"music{id:000000}.acb"];

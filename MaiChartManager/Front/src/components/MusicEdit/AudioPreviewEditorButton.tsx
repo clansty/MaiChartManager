@@ -1,12 +1,21 @@
 import { NButton, NFlex, NFormItem, NInput, NModal } from "naive-ui";
 import { defineComponent, ref } from "vue";
 import AudioPreviewEditor from "@/components/MusicEdit/AudioPreviewEditor";
+import { showNeedPurchaseDialog, version } from "@/store/refs";
 
 export default defineComponent({
   setup(props) {
     const show = ref(false)
 
-    return () => <NButton secondary onClick={() => show.value = true}>
+    const handleClick = () => {
+      if (version.value?.license !== 'Active') {
+        showNeedPurchaseDialog.value = true
+        return
+      }
+      show.value = true
+    }
+
+    return () => <NButton secondary onClick={handleClick}>
       编辑预览
 
       <NModal

@@ -17,6 +17,8 @@ export const globalCapture = (err: any, context: string) => {
   })
 }
 
+export const showNeedPurchaseDialog = ref(false);
+
 export const selectMusicId = ref(0)
 export const genreList = ref<GenreXml[]>([]);
 export const addVersionList = ref<VersionXml[]>([]);

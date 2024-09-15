@@ -70,6 +70,7 @@ public class MovieConvertController(StaticSettings settings, ILogger<MovieConver
     [DisableRequestSizeLimit]
     public async Task SetMovie(int id, [FromForm] float padding, IFormFile file)
     {
+        if (IapManager.License != IapManager.LicenseStatus.Active) return;
         Response.Headers.Append("Content-Type", "text/event-stream");
         var tmpDir = Directory.CreateTempSubdirectory();
         logger.LogInformation("Temp dir: {tmpDir}", tmpDir.FullName);

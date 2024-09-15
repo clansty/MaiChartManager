@@ -3,7 +3,7 @@ import { NAlert, NButton, NCheckbox, NCollapse, NCollapseItem, NFlex, NForm, NFo
 import { ImportChartMessage, MessageLevel } from "@/client/apiGen";
 import { ImportChartMessageEx, ImportMeta } from "./index";
 import noJacket from '@/assets/noJacket.webp';
-import { addVersionList, genreList } from "@/store/refs";
+import { addVersionList, genreList, showNeedPurchaseDialog } from "@/store/refs";
 import GenreInput from "@/components/GenreInput";
 import VersionInput from "@/components/VersionInput";
 import { UTAGE_GENRE } from "@/consts";
@@ -91,7 +91,10 @@ export default defineComponent({
                     type = 'error';
                     break;
                 }
-                return <NAlert key={i} type={type} title={error.name}>{error.message}</NAlert>
+                return <NAlert key={i} type={type} title={error.name} class={`${error.isPaid && 'cursor-pointer'}`}
+                  // @ts-ignore
+                               onClick={() => error.isPaid && (showNeedPurchaseDialog.value = true)}
+                >{error.message}</NAlert>
               })
             }
           </NFlex>
