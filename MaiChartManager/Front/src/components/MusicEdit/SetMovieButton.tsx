@@ -1,5 +1,5 @@
 import { defineComponent, PropType, ref } from "vue";
-import { NButton, NDrawer, NDrawerContent, NFlex, NInputNumber, NModal, NProgress, useDialog } from "naive-ui";
+import { NButton, NDrawer, NDrawerContent, NFlex, NInputNumber, NModal, NProgress, useDialog, useMessage } from "naive-ui";
 import FileTypeIcon from "@/components/FileTypeIcon";
 import { LicenseStatus, MusicXmlWithABJacket } from "@/client/apiGen";
 import api from "@/client/api";
@@ -25,6 +25,7 @@ export default defineComponent({
     const dialog = useDialog();
     const step = ref(STEP.None)
     const progress = ref(0)
+    const message = useMessage();
 
     const uploadMovie = (id: number, movie: File, offset: number) => new Promise<void>((resolve, reject) => {
       progress.value = 0;
@@ -95,6 +96,7 @@ export default defineComponent({
           step.value = STEP.Progress
           await uploadMovie(props.song.id!, file, offset.value);
           console.log("upload movie success")
+          message.success("保存成功")
         }
       } catch (e: any) {
         if (e.name === 'AbortError') return
