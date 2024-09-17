@@ -72,7 +72,11 @@ export default defineComponent({
 
     watch(() => show.value, async (val) => {
       if (!val && config.value) {
-        await api.SetAquaMaiConfig(config.value)
+        try {
+          await api.SetAquaMaiConfig(config.value)
+        } catch (e) {
+          globalCapture(e, "保存 AquaMai 配置失败")
+        }
       }
     })
 
@@ -113,7 +117,7 @@ export default defineComponent({
                   <NFlex class="h-34px" align="center">
                     {typeof section[k] === 'boolean' && <NSwitch v-model:value={section[k]}/>}
                     {typeof section[k] === 'string' && <NInput v-model:value={section[k]} placeholder=""/>}
-                    {typeof section[k] === 'number' && <NInputNumber v-model:value={section[k]} placeholder=""/>}
+                    {typeof section[k] === 'number' && <NInputNumber v-model:value={section[k]} placeholder="" step={comments.steps[k] || 1}/>}
                     {comments.shouldEnableOptions[key]?.[k] && !section[k] && <ProblemsDisplay problems={['需要开启此选项']}/>}
                   </NFlex>
                   {comments[key]?.[k]}

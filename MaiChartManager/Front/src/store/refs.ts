@@ -8,6 +8,7 @@ export const errorId = ref<string>();
 export const errorContext = ref<string>();
 
 export const globalCapture = (err: any, context: string) => {
+  console.log(err)
   error.value = err;
   errorContext.value = context;
   errorId.value = captureException(err.error || err, {

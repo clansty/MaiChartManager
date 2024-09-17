@@ -62,8 +62,15 @@ fix:
 
 utils:
   logUserId: 在玩家登录时调试输出用户 ID
+  judgeAdjustA: 全局增加 A 判，单位和游戏里一样
+  judgeAdjustB: 全局增加 B 判，单位和游戏里一样
+  touchDelay: 给触摸屏增加额外延迟，单位为毫秒，一秒 = 1000 毫秒。必须是整数
 
 shouldEnableOptions:
   ux:
     loadAssetsPng: true
     loadLocalBga: true
+
+steps:
+  judgeAdjustA: 0.1
+  judgeAdjustB: 0.1
