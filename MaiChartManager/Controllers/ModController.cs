@@ -44,17 +44,9 @@ public class ModController(StaticSettings settings, ILogger<ModController> logge
     public AquaMai.Config GetAquaMaiConfig()
     {
         var path = Path.Combine(StaticSettings.GamePath, "AquaMai.toml");
-        var res = System.IO.File.Exists(path)
+        return System.IO.File.Exists(path)
             ? TomletMain.To<AquaMai.Config>(System.IO.File.ReadAllText(path))
             : new AquaMai.Config();
-
-        res.Cheat ??= new AquaMai.Config.CheatConfig();
-        res.Fix ??= new AquaMai.Config.FixConfig();
-        res.Performance ??= new AquaMai.Config.PerformanceConfig();
-        res.UX ??= new AquaMai.Config.UXConfig();
-        res.Utils ??= new AquaMai.Config.UtilsConfig();
-
-        return res;
     }
 
     [HttpPut]

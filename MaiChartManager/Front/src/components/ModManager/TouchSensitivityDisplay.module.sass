@@ -1,0 +1,16 @@
+.region
+  cursor: pointer
+
+  :nth-child(1)
+    fill: #a3c4ff
+    fill-opacity: .4
+    transition: fill-opacity .2s
+
+  &:hover
+    :nth-child(1)
+      fill-opacity: .7
+
+  &.selected
+    :nth-child(1)
+      fill-opacity: 1
+      cursor: default

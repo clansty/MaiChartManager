@@ -4,6 +4,7 @@ sections:
   performance: 一些性能优化
   fix: 修复一些潜在的问题
   utils: 工具
+  touchSensitivity: 触摸灵敏度
 
 cheat:
   ticketUnlock: 解锁游戏里所有可能的跑图券

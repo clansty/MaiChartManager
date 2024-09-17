@@ -63,6 +63,7 @@ export interface Config {
   performance?: PerformanceConfig;
   fix?: FixConfig;
   utils?: UtilsConfig;
+  touchSensitivity?: TouchSensitivityConfig;
 }
 
 export interface FixConfig {
@@ -70,6 +71,7 @@ export interface FixConfig {
   removeEncryption?: boolean;
   forceAsServer?: boolean;
   forceFreePlay?: boolean;
+  forcePaidPlay?: boolean;
   /** @format int32 */
   extendNotesPool?: number;
 }
@@ -242,6 +244,78 @@ export enum StorePurchaseStatus {
   ServerError = "ServerError",
 }
 
+export interface TouchSensitivityConfig {
+  enable?: boolean;
+  /** @format int32 */
+  a1?: number;
+  /** @format int32 */
+  a2?: number;
+  /** @format int32 */
+  a3?: number;
+  /** @format int32 */
+  a4?: number;
+  /** @format int32 */
+  a5?: number;
+  /** @format int32 */
+  a6?: number;
+  /** @format int32 */
+  a7?: number;
+  /** @format int32 */
+  a8?: number;
+  /** @format int32 */
+  b1?: number;
+  /** @format int32 */
+  b2?: number;
+  /** @format int32 */
+  b3?: number;
+  /** @format int32 */
+  b4?: number;
+  /** @format int32 */
+  b5?: number;
+  /** @format int32 */
+  b6?: number;
+  /** @format int32 */
+  b7?: number;
+  /** @format int32 */
+  b8?: number;
+  /** @format int32 */
+  c1?: number;
+  /** @format int32 */
+  c2?: number;
+  /** @format int32 */
+  d1?: number;
+  /** @format int32 */
+  d2?: number;
+  /** @format int32 */
+  d3?: number;
+  /** @format int32 */
+  d4?: number;
+  /** @format int32 */
+  d5?: number;
+  /** @format int32 */
+  d6?: number;
+  /** @format int32 */
+  d7?: number;
+  /** @format int32 */
+  d8?: number;
+  /** @format int32 */
+  e1?: number;
+  /** @format int32 */
+  e2?: number;
+  /** @format int32 */
+  e3?: number;
+  /** @format int32 */
+  e4?: number;
+  /** @format int32 */
+  e5?: number;
+  /** @format int32 */
+  e6?: number;
+  /** @format int32 */
+  e7?: number;
+  /** @format int32 */
+  e8?: number;
+}
+
 export interface UXConfig {
   skipWarningScreen?: boolean;
   singlePlayer?: boolean;
@@ -271,6 +345,12 @@ export interface UploadAssetDirResult {
 
 export interface UtilsConfig {
   logUserId?: boolean;
+  /** @format float */
+  judgeAdjustA?: number;
+  /** @format float */
+  judgeAdjustB?: number;
+  /** @format int32 */
+  touchDelay?: number;
 }
 
 export interface VersionXml {
@@ -1225,7 +1305,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     SetMovie: (
       id: number,
       data: {
-        /** @format float */
+        /** @format double */
         padding?: number;
         /** @format binary */
         file?: File;

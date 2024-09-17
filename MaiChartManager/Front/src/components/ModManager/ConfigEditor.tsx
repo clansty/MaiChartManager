@@ -6,6 +6,7 @@ import api from "@/client/api";
 import { capitalCase } from "change-case";
 import ProblemsDisplay from "@/components/ProblemsDisplay";
 import { globalCapture } from "@/store/refs";
+import TouchSensitivityConfigurator from "@/components/ModManager/TouchSensitivityConfigurator";
 
 export default defineComponent({
   props: {
@@ -77,7 +78,7 @@ export default defineComponent({
 
     return () => <NModal
       preset="card"
-      class="w-[min(65vw,70em)]"
+      class="w-[min(90vw,70em)]"
       title="Mod 管理"
       v-model:show={show.value}
     >
@@ -104,17 +105,21 @@ export default defineComponent({
         {config.value && <NScrollbar class="max-h-60vh p-2">
           {Object.entries(config.value).map(([key, section]) => !!section && <>
             <NDivider titlePlacement="left" key={key}>{comments.sections[key]}</NDivider>
-            {Object.keys(section).map((k) => <NFormItem key={k} label={capitalCase(k)} labelPlacement="left" labelWidth="10em">
-              <NFlex vertical class="w-full ws-pre-line">
-                <NFlex class="h-34px" align="center">
-                  {typeof section[k] === 'boolean' && <NSwitch v-model:value={section[k]}/>}
-                  {typeof section[k] === 'string' && <NInput v-model:value={section[k]} placeholder=""/>}
-                  {typeof section[k] === 'number' && <NInputNumber v-model:value={section[k]} placeholder=""/>}
-                  {comments.shouldEnableOptions[key]?.[k] && !section[k] && <ProblemsDisplay problems={['需要开启此选项']}/>}
+            {key === 'touchSensitivity' ?
+              <TouchSensitivityConfigurator config={section}/>
+              :
+              Object.keys(section).map((k) => <NFormItem key={k} label={capitalCase(k)} labelPlacement="left" labelWidth="10em">
+                <NFlex vertical class="w-full ws-pre-line">
+                  <NFlex class="h-34px" align="center">
+                    {typeof section[k] === 'boolean' && <NSwitch v-model:value={section[k]}/>}
+                    {typeof section[k] === 'string' && <NInput v-model:value={section[k]} placeholder=""/>}
+                    {typeof section[k] === 'number' && <NInputNumber v-model:value={section[k]} placeholder=""/>}
+                    {comments.shouldEnableOptions[key]?.[k] && !section[k] && <ProblemsDisplay problems={['需要开启此选项']}/>}
+                  </NFlex>
+                  {comments[key]?.[k]}
                 </NFlex>
-                {comments[key]?.[k]}
-              </NFlex>
-            </NFormItem>)}
+              </NFormItem>)
+            }
           </>)}
         </NScrollbar>}
       </NFlex>
