@@ -102,6 +102,7 @@ public partial class StaticSettings
             foreach (var genreDir in Directory.EnumerateDirectories(Path.Combine(StreamingAssets, a, "musicGenre"), "musicgenre*"))
             {
                 if (!File.Exists(Path.Combine(genreDir, "MusicGenre.xml"))) continue;
+                if (!Path.GetFileName(genreDir).StartsWith("musicgenre", StringComparison.InvariantCultureIgnoreCase)) continue;
                 var id = int.Parse(Path.GetFileName(genreDir).Substring("musicgenre".Length));
                 var genreXml = new GenreXml(id, a, GamePath);
 
@@ -127,6 +128,7 @@ public partial class StaticSettings
             foreach (var versionDir in Directory.EnumerateDirectories(Path.Combine(StreamingAssets, a, "musicVersion"), "musicversion*"))
             {
                 if (!File.Exists(Path.Combine(versionDir, "MusicVersion.xml"))) continue;
+                if (!Path.GetFileName(versionDir).StartsWith("musicversion", StringComparison.InvariantCultureIgnoreCase)) continue;
                 var id = int.Parse(Path.GetFileName(versionDir).Substring("musicversion".Length));
                 var versionXml = new VersionXml(id, a, GamePath);
 
@@ -152,6 +154,7 @@ public partial class StaticSettings
             if (!Directory.Exists(Path.Combine(StreamingAssets, a, @"AssetBundleImages\jacket"))) continue;
             foreach (var jacketFile in Directory.EnumerateFiles(Path.Combine(StreamingAssets, a, @"AssetBundleImages\jacket")))
             {
+                if (!Path.GetFileName(jacketFile).StartsWith("ui_jacket_", StringComparison.InvariantCultureIgnoreCase)) continue;
                 var idStr = Path.GetFileName(jacketFile).Substring("ui_jacket_".Length, 6);
                 if (!int.TryParse(idStr, out var id)) continue;
                 if (Path.GetExtension(jacketFile).ToLowerInvariant() == ".ab")
