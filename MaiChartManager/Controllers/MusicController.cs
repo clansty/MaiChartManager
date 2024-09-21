@@ -146,6 +146,12 @@ public class MusicController(StaticSettings settings, ILogger<MusicController> l
             return "不支持的图片格式";
         }
 
+        var music = settings.MusicList.Find(it => it.Id == id);
+        while (music?.JacketPath is not null)
+        {
+            FileSystem.DeleteFile(music.JacketPath, UIOption.OnlyErrorDialogs, RecycleOption.SendToRecycleBin);
+        }
+
         var path = Path.Combine(StaticSettings.GamePath, "LocalAssets", $"{nonDxId:000000}{ext}");
         using var write = System.IO.File.Open(path, FileMode.Create);
         file.CopyTo(write);
