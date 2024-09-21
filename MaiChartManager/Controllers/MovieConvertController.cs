@@ -70,6 +70,8 @@ public class MovieConvertController(StaticSettings settings, ILogger<MovieConver
     [DisableRequestSizeLimit]
     public async Task SetMovie(int id, [FromForm] double padding, IFormFile file)
     {
+        id %= 10000;
+
         if (Path.GetExtension(file.FileName).Equals(".dat", StringComparison.InvariantCultureIgnoreCase))
         {
             var targetPath = Path.Combine(StaticSettings.StreamingAssets, settings.AssetDir, $@"MovieData\{id:000000}.dat");
