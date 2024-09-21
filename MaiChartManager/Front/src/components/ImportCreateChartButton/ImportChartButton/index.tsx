@@ -203,7 +203,7 @@ export default defineComponent({
         const padding = tempOptions.value.noShiftChart ? -music.first : music.musicPadding;
         await api.SetAudio(music.id, {file: music.track, padding});
 
-        if (music.movie) {
+        if (music.movie && !savedOptions.value.disableBga) {
           currentMovieProgress.value = 0;
           music.importStep = IMPORT_STEP.movie;
           try {

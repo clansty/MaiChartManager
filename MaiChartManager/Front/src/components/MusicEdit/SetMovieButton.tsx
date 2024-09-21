@@ -1,5 +1,5 @@
 import { defineComponent, PropType, ref } from "vue";
-import { NButton, NDrawer, NDrawerContent, NFlex, NInputNumber, NModal, NProgress, useDialog, useMessage } from "naive-ui";
+import { NButton, NCheckbox, NDrawer, NDrawerContent, NFlex, NInputNumber, NModal, NProgress, useDialog, useMessage } from "naive-ui";
 import FileTypeIcon from "@/components/FileTypeIcon";
 import { LicenseStatus, MusicXmlWithABJacket } from "@/client/apiGen";
 import api from "@/client/api";
@@ -26,12 +26,14 @@ export default defineComponent({
     const step = ref(STEP.None)
     const progress = ref(0)
     const message = useMessage();
+    const noScale = ref(false)
 
     const uploadMovie = (id: number, movie: File, offset: number) => new Promise<void>((resolve, reject) => {
       progress.value = 0;
       const body = new FormData();
       body.append('file', movie);
       body.append('offset', offset.toString());
+      body.append('noScale', noScale.value.toString());
       fetchEventSource(`/MaiChartManagerServlet/SetMovieApi/${id}`, {
         method: 'PUT',
         body,
@@ -132,6 +134,9 @@ export default defineComponent({
         default: () => <NFlex vertical size="large">
           <div>设为正数可以在视频前面添加黑场空白，设为负数则裁掉视频前面的一部分</div>
           <NInputNumber v-model:value={offset.value} class="w-full" step={0.01}/>
+          <NCheckbox v-model:checked={noScale.value}>
+            不要缩放 BGA 到 1080 宽度
+          </NCheckbox>
         </NFlex>,
         footer: () => <NFlex justify="end">
           <NButton onClick={okResolve.value as any}>确定</NButton>
