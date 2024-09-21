@@ -209,7 +209,7 @@ export default defineComponent({
           try {
             await uploadMovie(music.id, music.movie, padding);
           } catch (e: any) {
-            errors.value.push({level: MessageLevel.Warning, message: `视频转换失败: ${e.message || e.toString()}`, name: music.name});
+            errors.value.push({level: MessageLevel.Warning, message: `视频转换失败: ${e?.message || e?.toString() || '我也不知道为什么'}`, name: music.name});
           }
         }
 

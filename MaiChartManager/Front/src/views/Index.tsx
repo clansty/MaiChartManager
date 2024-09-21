@@ -1,5 +1,5 @@
 import { defineComponent, onMounted } from 'vue';
-import { NFlex, NScrollbar, useNotification } from "naive-ui";
+import { NFlex, NScrollbar, useDialog, useNotification } from "naive-ui";
 import MusicList from "@/components/MusicList";
 import GenreVersionManager from "@/components/GenreVersionManager";
 import { globalCapture, selectedADir, updateAddVersionList, updateAssetDirs, updateGenreList, updateSelectedAssetDir, updateVersion, version } from "@/store/refs";
@@ -15,6 +15,7 @@ import { HardwareAccelerationStatus, LicenseStatus } from "@/client/apiGen";
 export default defineComponent({
   setup() {
     const notification = useNotification();
+    const dialog = useDialog();
 
     onMounted(async () => {
       addEventListener("unhandledrejection", (event) => {
@@ -27,6 +28,22 @@ export default defineComponent({
         if (import.meta.env.DEV)
           notification.error({title: '未处理错误', content: event.reason?.error?.message || event.reason?.message});
       });
+
+      if (window.showDirectoryPicker === undefined) {
+        const showError = () => {
+          dialog.error({
+            title: '警告：不支持的浏览器',
+            content: '部分功能可能受到限制，请使用最新版的 Chrome 或 Edge 浏览器',
+            positiveText: '知道了',
+          })
+        }
+        window.showDirectoryPicker = () => {
+          showError()
+          throw new DOMException('不支持的浏览器', 'AbortError')
+        }
+        showError()
+      }
+
       updateVersion().then(() => {
         if (version.value?.license === LicenseStatus.Pending || version.value?.hardwareAcceleration === HardwareAccelerationStatus.Pending) {
           setTimeout(updateVersion, 2000)
