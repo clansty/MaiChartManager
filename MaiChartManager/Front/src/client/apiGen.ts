@@ -1548,6 +1548,20 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
+     * @tags Music
+     * @name RequestOpenExplorer
+     * @request POST:/MaiChartManagerServlet/RequestOpenExplorerApi/{id}
+     */
+    RequestOpenExplorer: (id: number, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/MaiChartManagerServlet/RequestOpenExplorerApi/${id}`,
+        method: "POST",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
      * @tags MusicBatch
      * @name BatchSetProps
      * @request POST:/MaiChartManagerServlet/BatchSetPropsApi

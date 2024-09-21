@@ -18,6 +18,7 @@ const getSubDirFile = async (folderHandle: FileSystemDirectoryHandle, fileName: 
 enum DROPDOWN_OPTIONS {
   exportZip,
   changeId,
+  showExplorer
 }
 
 export default defineComponent({
@@ -35,6 +36,10 @@ export default defineComponent({
       {
         label: '修改 ID',
         key: DROPDOWN_OPTIONS.changeId,
+      },
+      {
+        label: '在资源管理器中显示',
+        key: DROPDOWN_OPTIONS.showExplorer,
       }
     ])
 
@@ -46,6 +51,9 @@ export default defineComponent({
             return
           }
           showChangeId.value = true;
+          break;
+        case DROPDOWN_OPTIONS.showExplorer:
+          api.RequestOpenExplorer(selectMusicId.value);
           break;
       }
     }

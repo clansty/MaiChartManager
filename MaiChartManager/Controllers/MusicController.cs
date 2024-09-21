@@ -1,4 +1,5 @@
-﻿using System.IO.Compression;
+﻿using System.Diagnostics;
+using System.IO.Compression;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using AssetStudio;
@@ -188,5 +189,15 @@ public class MusicController(StaticSettings settings, ILogger<MusicController> l
 
         var texture = asset as Texture2D;
         return File(texture.ConvertToStream(ImageFormat.Png, true).GetBuffer(), "image/png");
+    }
+
+    [HttpPost]
+    public void RequestOpenExplorer(int id)
+    {
+        var music = settings.MusicList.Find(it => it.Id == id);
+        if (music != null)
+        {
+            Process.Start("explorer.exe", $"/select,\"{music.FilePath}\"");
+        }
     }
 }
