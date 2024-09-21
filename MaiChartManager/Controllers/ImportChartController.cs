@@ -21,6 +21,66 @@ public partial class ImportChartController(StaticSettings settings, ILogger<Stat
     private SimaiParser simaiParser = new();
     private SimaiTokenizer simaiTokenizer = new();
 
+    [NonAction]
+    private Chart? TryParseChart(string chartText, MaiChart simaiSharpChart, int level, List<ImportChartMessage> errors)
+    {
+        Chart? maiLibChart = null;
+        try
+        {
+            maiLibChart = simaiParser.ChartOfToken(simaiTokenizer.TokensFromText(chartText));
+        }
+        catch (Exception e)
+        {
+            logger.LogWarning(e, "无法直接解析谱面");
+        }
+
+        if (maiLibChart is null)
+        {
+            try
+            {
+                var normalizedText = chartText
+                    // 不飞的星星
+                    .Replace("-?", "?-");
+                // 移除注释
+                normalizedText = SimaiCommentRegex().Replace(normalizedText, "");
+                var tokens = simaiTokenizer.TokensFromText(normalizedText);
+                for (var i = 0; i < tokens.Length; i++)
+                {
+                    if (tokens[i].Contains("]b"))
+                    {
+                        tokens[i] = tokens[i].Replace("]b", "]").Replace("[", "b[");
+                    }
+                }
+
+                maiLibChart = simaiParser.ChartOfToken(tokens);
+            }
+            catch (Exception e)
+            {
+                logger.LogWarning(e, "无法在手动修正错误后解析谱面");
+            }
+        }
+
+        if (maiLibChart is null)
+        {
+            try
+            {
+                var reSerialized = SimaiConvert.Serialize(simaiSharpChart);
+                reSerialized = reSerialized.Replace("{0}", "{4}");
+                maiLibChart = simaiParser.ChartOfToken(simaiTokenizer.TokensFromText(reSerialized));
+                errors.Add(new ImportChartMessage($"就算修正了一些已知错误，MaiLib 还是无法解析谱面难度 {level}，我们尝试通过 AstroDX 的 SimaiSharp 解析。" +
+                                                  "如果转换结果发现有什么问题的话，可以试试在 AstroDX 中有没有同样的问题并告诉我们（不试也没关系）", MessageLevel.Warning));
+            }
+            catch (Exception e)
+            {
+                SentrySdk.CaptureException(e);
+                errors.Add(new ImportChartMessage($"试了各种办法都无法解析谱面难度 {level}，请检查谱面是否有问题", MessageLevel.Fatal));
+                return null;
+            }
+        }
+
+        return maiLibChart;
+    }
+
     public record ImportChartMessage(string Message, MessageLevel Level);
 
     public record ImportChartCheckResult(bool Accept, IEnumerable<ImportChartMessage> Errors, float MusicPadding, bool IsDx, string? Title, float first);
@@ -119,9 +179,7 @@ public partial class ImportChartController(StaticSettings settings, ILogger<Stat
                     var chart = SimaiConvert.Deserialize(chartText);
                     paddings.Add(Converter.CalcMusicPadding(chart, first));
 
-                    // 防止谱面不标准 MaiLib 解析不了
-                    chartText = SimaiConvert.Serialize(chart);
-                    var candidate = simaiParser.ChartOfToken(simaiTokenizer.TokensFromText(chartText));
+                    var candidate = TryParseChart(chartText, chart, kvp.Key, errors);
                     isDx = isDx || candidate.IsDxChart;
                 }
                 catch (Exception e)
@@ -269,56 +327,10 @@ public partial class ImportChartController(StaticSettings settings, ILogger<Stat
             }
 
             targetChart.Designer = maiData.GetValueOrDefault($"des_{level}") ?? maiData.GetValueOrDefault("des") ?? "";
-            Chart maiLibChart = null;
-            try
-            {
-                maiLibChart = simaiParser.ChartOfToken(simaiTokenizer.TokensFromText(chart.chartText));
-            }
-            catch (Exception e)
-            {
-                logger.LogWarning(e, "无法直接解析谱面");
-            }
-
+            var maiLibChart = TryParseChart(chart.chartText, chart.simaiSharpChart, level, errors);
             if (maiLibChart is null)
             {
-                try
-                {
-                    var normalizedText = chart.chartText
-                        // 不飞的星星
-                        .Replace("-?", "?-");
-                    // 移除注释
-                    normalizedText = SimaiCommentRegex().Replace(normalizedText, "");
-                    var tokens = simaiTokenizer.TokensFromText(normalizedText);
-                    for (var i = 0; i < tokens.Length; i++)
-                    {
-                        if (tokens[i].Contains("]b"))
-                        {
-                            tokens[i] = tokens[i].Replace("]b", "]").Replace("[", "b[");
-                        }
-                    }
-
-                    maiLibChart = simaiParser.ChartOfToken(tokens);
-                }
-                catch (Exception e)
-                {
-                    logger.LogWarning(e, "无法在手动修正错误后解析谱面");
-                }
-            }
-
-            if (maiLibChart is null)
-            {
-                try
-                {
-                    maiLibChart = simaiParser.ChartOfToken(simaiTokenizer.TokensFromText(SimaiConvert.Serialize(chart.simaiSharpChart)));
-                    errors.Add(new ImportChartMessage($"就算修正了一些已知错误，MaiLib 还是无法解析谱面难度 {level}，我们尝试通过 AstroDX 的 SimaiSharp 解析。" +
-                                                      "如果转换结果发现有什么问题的话，可以试试在 AstroDX 中有没有同样的问题并告诉我们（不试也没关系）", MessageLevel.Warning));
-                }
-                catch (Exception e)
-                {
-                    SentrySdk.CaptureException(e);
-                    errors.Add(new ImportChartMessage($"试了各种办法都无法解析谱面难度 {level}，请检查谱面是否有问题", MessageLevel.Fatal));
-                    return new ImportChartResult(errors, true);
-                }
+                return new ImportChartResult(errors, true);
             }
 
             var originalConverted = maiLibChart.Compose(ChartEnum.ChartVersion.Ma2_104);

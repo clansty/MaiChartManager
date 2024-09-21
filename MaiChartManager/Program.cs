@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using System.Text.Json;
 using MaiChartManager.Controllers;
 using Xabe.FFmpeg;
@@ -8,12 +9,16 @@ static class Program
 {
     public static Browser? BrowserWin { get; set; }
 
+    [DllImport("kernel32.dll", SetLastError = true)]
+    private static extern bool SetConsoleOutputCP(uint wCodePageID);
+
     /// <summary>
     ///  The main entry point for the application.
     /// </summary>
     [STAThread]
     static void Main()
     {
+        SetConsoleOutputCP(65001);
         try
         {
             SentrySdk.Init(o =>
