@@ -1,8 +1,9 @@
 import { computed, defineComponent, ref } from "vue";
 import api from "@/client/api";
-import { globalCapture, selectedMusicBrief, selectMusicId, updateMusicList } from "@/store/refs";
+import { globalCapture, selectedMusicBrief, selectMusicId, showNeedPurchaseDialog, updateMusicList, version } from "@/store/refs";
 import { NButton, NButtonGroup, NDropdown, useDialog, useMessage } from "naive-ui";
 import { ZipReader } from "@zip.js/zip.js";
+import ChangeIdDialog from "@/components/MusicSelectedTopRightToolbar/ChangeIdDialog";
 
 const getSubDirFile = async (folderHandle: FileSystemDirectoryHandle, fileName: string) => {
   const pathParts = fileName.split('/');
@@ -14,15 +15,40 @@ const getSubDirFile = async (folderHandle: FileSystemDirectoryHandle, fileName: 
   return await dirHandle.getFileHandle(pathParts[pathParts.length - 1], {create: true});
 }
 
+enum DROPDOWN_OPTIONS {
+  exportZip,
+  changeId,
+}
+
 export default defineComponent({
   setup() {
     const wait = ref(false);
     const dialog = useDialog();
     const message = useMessage();
+    const showChangeId = ref(false);
 
     const options = computed(() => [
-      {label: () => <a href={`/MaiChartManagerServlet/ExportOptApi/${selectMusicId.value}`} download={`${selectMusicId.value} - ${selectedMusicBrief.value?.name}.zip`}>导出 Zip</a>},
+      {
+        label: () => <a href={`/MaiChartManagerServlet/ExportOptApi/${selectMusicId.value}`} download={`${selectMusicId.value} - ${selectedMusicBrief.value?.name}.zip`}>导出 Zip</a>,
+        key: DROPDOWN_OPTIONS.exportZip,
+      },
+      {
+        label: '修改 ID',
+        key: DROPDOWN_OPTIONS.changeId,
+      }
     ])
+
+    const handleOptionClick = (key: DROPDOWN_OPTIONS) => {
+      switch (key) {
+        case DROPDOWN_OPTIONS.changeId:
+          if (version.value?.license !== 'Active') {
+            showNeedPurchaseDialog.value = true
+            return
+          }
+          showChangeId.value = true;
+          break;
+      }
+    }
 
     const copy = async () => {
       wait.value = true;
@@ -55,8 +81,7 @@ export default defineComponent({
           message.success('成功');
         } catch (e) {
           globalCapture(e, "下载歌曲失败")
-        }
-        finally {
+        } finally {
           wait.value = false;
         }
         return;
@@ -74,12 +99,12 @@ export default defineComponent({
         <NButton secondary onClick={copy} loading={wait.value}>
           复制到...
         </NButton>
-        <NDropdown options={options.value} trigger="click" placement="bottom-end">
+        <NDropdown options={options.value} trigger="click" placement="bottom-end" onSelect={handleOptionClick}>
           <NButton secondary class="px-.5 b-l b-l-solid b-l-[rgba(255,255,255,0.5)]">
             <span class="i-mdi-arrow-down-drop text-6 translate-y-.25"/>
           </NButton>
         </NDropdown>
+        <ChangeIdDialog v-model:show={showChangeId.value}/>
       </NButtonGroup>
-      ;
   }
 });

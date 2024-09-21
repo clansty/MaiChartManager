@@ -1,6 +1,6 @@
 import { defineComponent, ref } from "vue";
 import { NButton } from "naive-ui";
-import { globalCapture, updateAddVersionList, updateAssetDirs, updateGenreList, updateMusicList, updateSelectedAssetDir, updateVersion } from "@/store/refs";
+import { globalCapture, updateAddVersionList, updateAll, updateAssetDirs, updateGenreList, updateMusicList, updateSelectedAssetDir, updateVersion } from "@/store/refs";
 import api from "@/client/api";
 
 export default defineComponent({
@@ -11,14 +11,7 @@ export default defineComponent({
       load.value = true;
       try {
         await api.ReloadAll();
-        await Promise.all([
-          updateGenreList(),
-          updateAddVersionList(),
-          updateSelectedAssetDir(),
-          updateAssetDirs(),
-          updateVersion(),
-          updateMusicList(),
-        ]);
+        await updateAll();
       } catch (err) {
         globalCapture(err, "刷新失败")
       } finally {

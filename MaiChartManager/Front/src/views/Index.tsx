@@ -33,7 +33,7 @@ export default defineComponent({
         const showError = () => {
           dialog.error({
             title: '警告：不支持的浏览器',
-            content: '部分功能可能受到限制，请使用最新版的 Chrome 或 Edge 浏览器',
+            content: '部分功能可能受到限制，请使用最新版电脑端的 Chrome 或 Edge 浏览器',
             positiveText: '知道了',
           })
         }

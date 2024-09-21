@@ -22,6 +22,7 @@ export default defineComponent({
         <ul>
           <li>转换 PV</li>
           <li>设置音频的预览片段</li>
+          <li>修改歌曲 ID</li>
         </ul>
         <div>更多功能敬请期待</div>
         <NFlex align="center">

@@ -1548,34 +1548,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags Music
-     * @name RequestCopyTo
-     * @request POST:/MaiChartManagerServlet/RequestCopyToApi/{id}
-     */
-    RequestCopyTo: (id: number, params: RequestParams = {}) =>
-      this.request<void, any>({
-        path: `/MaiChartManagerServlet/RequestCopyToApi/${id}`,
-        method: "POST",
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags Music
-     * @name ExportOpt
-     * @request GET:/MaiChartManagerServlet/ExportOptApi/{id}
-     */
-    ExportOpt: (id: number, params: RequestParams = {}) =>
-      this.request<void, any>({
-        path: `/MaiChartManagerServlet/ExportOptApi/${id}`,
-        method: "GET",
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
      * @tags MusicBatch
      * @name BatchSetProps
      * @request POST:/MaiChartManagerServlet/BatchSetPropsApi
@@ -1646,6 +1618,50 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       this.request<void, any>({
         path: `/MaiChartManagerServlet/ReloadAllApi`,
         method: "POST",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags MusicTransfer
+     * @name RequestCopyTo
+     * @request POST:/MaiChartManagerServlet/RequestCopyToApi/{id}
+     */
+    RequestCopyTo: (id: number, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/MaiChartManagerServlet/RequestCopyToApi/${id}`,
+        method: "POST",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags MusicTransfer
+     * @name ExportOpt
+     * @request GET:/MaiChartManagerServlet/ExportOptApi/{id}
+     */
+    ExportOpt: (id: number, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/MaiChartManagerServlet/ExportOptApi/${id}`,
+        method: "GET",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags MusicTransfer
+     * @name ModifyId
+     * @request POST:/MaiChartManagerServlet/ModifyIdApi/{id}
+     */
+    ModifyId: (id: number, data: number, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/MaiChartManagerServlet/ModifyIdApi/${id}`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
         ...params,
       }),
   };

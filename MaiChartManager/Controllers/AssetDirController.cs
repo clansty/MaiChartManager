@@ -85,11 +85,7 @@ public class AssetDirController(StaticSettings settings, ILogger<AssetDirControl
         var dest = Path.Combine(StaticSettings.StreamingAssets, destName);
         logger.LogInformation("Src: {src} Dest: {dest}", src, dest);
         FileSystem.CopyDirectory(src, dest, UIOption.AllDialogs);
-        settings.ScanGenre();
-        settings.ScanVersionList();
-        settings.ScanAssetBundles();
-        settings.ScanSoundData();
-        settings.ScanMovieData();
+        settings.RescanAll();
     }
 
     public record UploadAssetDirResult(string DirName);
@@ -137,11 +133,7 @@ public class AssetDirController(StaticSettings settings, ILogger<AssetDirControl
             section = await reader.ReadNextSectionAsync();
         }
 
-        settings.ScanGenre();
-        settings.ScanVersionList();
-        settings.ScanAssetBundles();
-        settings.ScanSoundData();
-        settings.ScanMovieData();
+        settings.RescanAll();
 
         return new UploadAssetDirResult(destName);
     }

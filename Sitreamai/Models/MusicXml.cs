@@ -198,7 +198,19 @@ public class MusicXml
 
     private XmlNode RootNode => xmlDoc.SelectSingleNode("/MusicData");
 
-    public int Id => int.Parse(RootNode.SelectSingleNode("name/id")?.InnerText);
+    public int Id
+    {
+        get => int.Parse(RootNode.SelectSingleNode("name/id")?.InnerText);
+        set
+        {
+            var nonDxId = value % 10000;
+            Modified = true;
+            RootNode.SelectSingleNode("name/id").InnerText = value.ToString();
+            RootNode.SelectSingleNode("movieName/id").InnerText = nonDxId.ToString();
+            RootNode.SelectSingleNode("cueName/id").InnerText = nonDxId.ToString();
+            RootNode.SelectSingleNode("dataName").InnerText = $"music{value:000000}";
+        }
+    }
 
     public int NonDxId => Id % 10000;
 

@@ -8,14 +8,17 @@ export default defineComponent({
     const nMessage = useMessage();
 
     const message = computed(() => {
+      let msg: string;
       if (!error.value) return "";
       if (error.value.error) {
-        return error.value.error.message || error.value.error.toString();
+        msg = error.value.error.message || error.value.error.toString();
+      } else if (error.value.message) {
+        msg = error.value.message;
+      } else {
+        msg = error.value.toString();
       }
-      if (error.value.message) {
-        return error.value.message;
-      }
-      return error.value.toString();
+      msg = msg.split('\n')[0]
+      return msg
     })
 
     const userInput = ref("");

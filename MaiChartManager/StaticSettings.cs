@@ -28,12 +28,7 @@ public partial class StaticSettings
 
             AssetDir = "A500";
             GetGameVersion();
-            ScanMusicList();
-            ScanGenre();
-            ScanVersionList();
-            ScanAssetBundles();
-            ScanSoundData();
-            ScanMovieData();
+            RescanAll();
         }
         catch (Exception e)
         {
@@ -72,6 +67,16 @@ public partial class StaticSettings
     public static Dictionary<int, string> PseudoAssetBundleJacketMap { get; set; } = new();
     public static Dictionary<int, string> MovieDataMap { get; set; } = new();
     public static Dictionary<string, string> AcbAwb { get; set; } = new();
+
+    public void RescanAll()
+    {
+        ScanMusicList();
+        ScanGenre();
+        ScanVersionList();
+        ScanAssetBundles();
+        ScanSoundData();
+        ScanMovieData();
+    }
 
     public void ScanMusicList()
     {

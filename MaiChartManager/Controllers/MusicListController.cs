@@ -29,11 +29,6 @@ public class MusicListController(StaticSettings settings, ILogger<StaticSettings
     [HttpPost]
     public void ReloadAll()
     {
-        settings.ScanMusicList();
-        settings.ScanGenre();
-        settings.ScanVersionList();
-        settings.ScanAssetBundles();
-        settings.ScanSoundData();
-        settings.ScanMovieData();
+        settings.RescanAll();
     }
 }
