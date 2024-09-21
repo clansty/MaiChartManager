@@ -1,5 +1,5 @@
 import { defineComponent } from "vue";
-import { NButton, NFlex, NModal } from "naive-ui";
+import { NButton, NFlex, NModal, NPopover, NQrCode } from "naive-ui";
 import { showNeedPurchaseDialog } from "@/store/refs";
 import StorePurchaseButton from "@/components/StorePurchaseButton";
 import AfdianIcon from "@/icons/afdian.svg";
@@ -34,6 +34,17 @@ export default defineComponent({
               </span>
             爱发电
           </NButton>
+          <NPopover trigger="click">
+            {{
+              trigger: () => <NButton secondary>
+              <span class="text-lg i-ri-qq-fill c-gray-6 mr-1 translate-y-.12">
+                <AfdianIcon/>
+              </span>
+                QQ 群
+              </NButton>,
+              default: () => <div><NQrCode value="https://qm.qq.com/q/xA4HgfhIM8"/></div>
+            }}
+          </NPopover>
         </NFlex>
       </NFlex>
     </NModal>;
