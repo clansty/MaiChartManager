@@ -1309,6 +1309,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         padding?: number;
         /** @format binary */
         file?: File;
+        noScale?: boolean;
       },
       params: RequestParams = {},
     ) =>

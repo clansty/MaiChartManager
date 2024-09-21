@@ -68,7 +68,7 @@ public class MovieConvertController(StaticSettings settings, ILogger<MovieConver
 
     [HttpPut]
     [DisableRequestSizeLimit]
-    public async Task SetMovie(int id, [FromForm] double padding, IFormFile file)
+    public async Task SetMovie(int id, [FromForm] double padding, IFormFile file, [FromForm] bool noScale)
     {
         id %= 10000;
 
@@ -123,6 +123,11 @@ public class MovieConvertController(StaticSettings settings, ILogger<MovieConver
                 .AddParameter("-hwaccel dxva2", ParameterPosition.PreInput)
                 .UseMultiThread(true)
                 .AddParameter("-cpu-used 5");
+            if (!noScale)
+            {
+                conversion.AddParameter("-vf scale=1080:-1");
+            }
+
             logger.LogInformation("About to run FFMpeg with params: {params}", conversion.Build());
             conversion.OnProgress += async (sender, args) =>
             {
