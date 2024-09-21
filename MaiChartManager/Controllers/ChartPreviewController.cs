@@ -39,7 +39,7 @@ public class ChartPreviewController(StaticSettings settings, ILogger<StaticSetti
     [HttpGet]
     public ActionResult Track(int id, int level)
     {
-        return RedirectToAction("GetMusicWav", "Music", new { id });
+        return RedirectToAction("GetMusicWav", "CueConvert", new { id });
     }
 
     [HttpGet]
