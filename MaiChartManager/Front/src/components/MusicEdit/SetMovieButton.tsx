@@ -37,12 +37,12 @@ export default defineComponent({
       fetchEventSource(`/MaiChartManagerServlet/SetMovieApi/${id}`, {
         method: 'PUT',
         body,
-        onerror() {
-          reject();
+        onerror(e) {
+          reject(e);
           throw new Error("disable retry onerror");
         },
         onclose() {
-          reject();
+          reject(new Error("EventSource Close"));
           throw new Error("disable retry onclose");
         },
         openWhenHidden: true,
@@ -56,7 +56,7 @@ export default defineComponent({
               resolve();
               break;
             case 'Error':
-              reject(e.data);
+              reject(new Error(e.data));
               break;
           }
         }
@@ -101,9 +101,9 @@ export default defineComponent({
           message.success("保存成功")
         }
       } catch (e: any) {
-        if (e.name === 'AbortError') return
+        if (e?.name === 'AbortError') return
         console.log(e)
-        globalCapture(e, "导入音频出错")
+        globalCapture(e, "导入 PV 出错")
       } finally {
         step.value = STEP.None
         load.value = false;
