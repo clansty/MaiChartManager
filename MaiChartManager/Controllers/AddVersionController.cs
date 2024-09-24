@@ -65,7 +65,7 @@ public class AddVersionController(StaticSettings settings, ILogger<StaticSetting
             throw new Exception("Version not found");
         }
 
-        genre.FileName = $"UI_CMN_TabTitle_MaimaiTitle_Ver{id}";
+        genre.FileName = $"UI_CMN_TabTitle_MaimaiTitle_VerCustom{id}";
         genre.Save();
         Directory.CreateDirectory(Path.Combine(StaticSettings.GamePath, "LocalAssets"));
         var path = Path.Combine(genre.GamePath, "LocalAssets", genre.FileName + Path.GetExtension(image.FileName));
