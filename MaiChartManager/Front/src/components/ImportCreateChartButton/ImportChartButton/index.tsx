@@ -1,7 +1,7 @@
 import { defineComponent, ref } from "vue";
-import { NButton, useDialog, useNotification } from "naive-ui";
+import { NButton, useDialog } from "naive-ui";
 import SelectFileTypeTip from "./SelectFileTypeTip";
-import { ImportChartMessage, LicenseStatus, MessageLevel } from "@/client/apiGen";
+import { LicenseStatus, MessageLevel, ShiftMethod } from "@/client/apiGen";
 import CheckingModal from "./CheckingModal";
 import api from "@/client/api";
 import { globalCapture, musicList, selectMusicId, updateMusicList, version as appVersion } from "@/store/refs";
@@ -10,40 +10,7 @@ import ImportStepDisplay from "./ImportStepDisplay";
 import { useStorage } from "@vueuse/core";
 import { captureException } from "@sentry/vue";
 import { fetchEventSource } from "@microsoft/fetch-event-source";
-
-enum STEP {
-  none,
-  selectFile,
-  checking,
-  showWarning,
-  importing,
-  showResultError
-}
-
-export enum IMPORT_STEP {
-  start,
-  create,
-  chart,
-  music,
-  movie,
-  jacket,
-  finish
-}
-
-export type ImportMeta = {
-  id: number,
-  importStep: IMPORT_STEP,
-  maidata?: File,
-  track?: File,
-  bg?: File,
-  movie?: File,
-  name: string,
-  musicPadding: number,
-  first: number,
-}
-
-export type FirstPaddingMessage = { first: number, padding: number }
-export type ImportChartMessageEx = (ImportChartMessage | FirstPaddingMessage) & { name: string, isPaid?: boolean }
+import { defaultSavedOptions, defaultTempOptions, dummyMeta, IMPORT_STEP, ImportChartMessageEx, ImportMeta, STEP } from "./types";
 
 const tryGetFile = async (dir: FileSystemDirectoryHandle, file: string) => {
   try {
@@ -53,25 +20,6 @@ const tryGetFile = async (dir: FileSystemDirectoryHandle, file: string) => {
     return;
   }
 }
-
-const dummyMeta = {name: '', importStep: IMPORT_STEP.start} as ImportMeta
-
-const defaultTempOptions = {
-  noShiftChart: false,
-}
-
-const defaultSavedOptions = {
-  ignoreLevel: false,
-  addVersionId: 0,
-  genreId: 1,
-  // 大家都喜欢写 22001，甚至不理解这个选项是干什么的
-  version: 22001,
-  disableBga: false,
-  noScale: false,
-}
-
-export type TempOptions = typeof defaultTempOptions;
-export type SavedOptions = typeof defaultSavedOptions;
 
 export default defineComponent({
   setup(props) {
@@ -115,13 +63,14 @@ export default defineComponent({
         errors.value.push({level: MessageLevel.Warning, message: '转换 PV 目前是赞助版功能，点击获取', name: dir.name, isPaid: true});
       }
 
-      let musicPadding = 0, first = 0, name = dir.name;
+      let musicPadding = 0, first = 0, bar = 0, name = dir.name;
       if (maidata) {
         const checkRet = (await api.ImportChartCheck({file: maidata})).data;
         reject = reject || !checkRet.accept;
         errors.value.push(...(checkRet.errors || []).map(it => ({...it, name: dir.name})));
         musicPadding = checkRet.musicPadding!;
         first = checkRet.first!;
+        bar = checkRet.bar!;
         errors.value.push({first, padding: musicPadding, name: dir.name});
         // 为了本地的错误和远程的错误都显示本地的名称，这里在修改 name
         name = checkRet.title!;
@@ -130,7 +79,7 @@ export default defineComponent({
 
       if (!reject) {
         meta.value.push({
-          id, maidata, bg, track, musicPadding, name, first, movie,
+          id, maidata, bg, track, musicPadding, name, first, movie, bar,
           importStep: IMPORT_STEP.start,
         })
       }
@@ -186,7 +135,7 @@ export default defineComponent({
           genreId: savedOptions.value.genreId,
           addVersionId: savedOptions.value.addVersionId,
           version: savedOptions.value.version,
-          noShiftChart: tempOptions.value.noShiftChart,
+          shift: tempOptions.value.shift,
           debug: import.meta.env.DEV,
         })).data;
 
@@ -200,7 +149,18 @@ export default defineComponent({
         }
 
         music.importStep = IMPORT_STEP.music;
-        const padding = tempOptions.value.noShiftChart ? -music.first : music.musicPadding;
+        let padding = 0;
+        if (tempOptions.value.shift === ShiftMethod.Legacy) {
+          padding = music.musicPadding;
+        } else if (tempOptions.value.shift === ShiftMethod.Bar) {
+          if (music.musicPadding + music.first > 0.1)
+            padding = music.bar - music.first;
+          else
+            padding = -music.first;
+        } else if (tempOptions.value.shift === ShiftMethod.NoShift) {
+          padding = -music.first;
+        }
+
         await api.SetAudio(music.id, {file: music.track, padding});
 
         if (music.movie && !savedOptions.value.disableBga) {

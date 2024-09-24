@@ -1,6 +1,6 @@
 import { computed, defineComponent, PropType } from "vue";
 import { NButton, NFlex, NInputNumber, NModal, NProgress } from "naive-ui";
-import { IMPORT_STEP, ImportMeta } from "./index";
+import { IMPORT_STEP, ImportMeta } from "./types";
 
 export default defineComponent({
   props: {

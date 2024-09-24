@@ -21,6 +21,17 @@ public partial class ImportChartController(StaticSettings settings, ILogger<Stat
     private SimaiParser simaiParser = new();
     private SimaiTokenizer simaiTokenizer = new();
 
+    [GeneratedRegex(@"^\(\d+\)")]
+    private static partial Regex BpmTagRegex();
+
+    private static string Add1Bar(string maidata)
+    {
+        var regex = BpmTagRegex();
+        var bpm = regex.Match(maidata).Value;
+        // 这里使用 {4},,,, 而不是 {1}, 因为要是谱面一开始根本没有写 {x} 的话，默认是 {4}。要是用了 {1}, 会覆盖默认的 {4}
+        return string.Concat(bpm, "{4},,,,", maidata.AsSpan(bpm.Length));
+    }
+
     [NonAction]
     private Chart? TryParseChart(string chartText, MaiChart simaiSharpChart, int level, List<ImportChartMessage> errors)
     {
@@ -81,9 +92,35 @@ public partial class ImportChartController(StaticSettings settings, ILogger<Stat
         return maiLibChart;
     }
 
+    private static float getFirstBarFromChart(MaiChart chart)
+    {
+        var bpm = chart.TimingChanges[0].tempo;
+        return 60 / bpm * 4;
+    }
+
+    // v1.1.2 新增
+    public enum ShiftMethod
+    {
+        // 之前的办法，把第一押准确的对在第二小节的开头
+        // noShiftChart = false, padding = MusicPadding
+        Legacy,
+
+        // 简单粗暴的办法，不需要让库来平移谱面，解决各种平移不兼容问题
+        // 之前修库都白修了其实
+        // bar - 休止符的长度 如果是正数，那就直接在前面加一个小节的空白
+        // 判断一下 > 0.1 好了，因为 < 0.1 秒可以忽略不计
+        // noShiftChart = true, padding = (bar - 休止符的长度 > 0.1 ? bar - first : 0)
+        // bar - 休止符的长度 = MusicPadding + first
+        Bar,
+
+        // 把音频裁掉 &first 秒，完全不用动谱面
+        // noShiftChart = true, padding = -first
+        NoShift
+    }
+
     public record ImportChartMessage(string Message, MessageLevel Level);
 
-    public record ImportChartCheckResult(bool Accept, IEnumerable<ImportChartMessage> Errors, float MusicPadding, bool IsDx, string? Title, float first);
+    public record ImportChartCheckResult(bool Accept, IEnumerable<ImportChartMessage> Errors, float MusicPadding, bool IsDx, string? Title, float first, float bar);
 
     [HttpPost]
     public ImportChartCheckResult ImportChartCheck(IFormFile file)
@@ -164,7 +201,7 @@ public partial class ImportChartController(StaticSettings settings, ILogger<Stat
             {
                 errors.Add(new ImportChartMessage("乐曲没有谱面", MessageLevel.Fatal));
                 fatal = true;
-                return new ImportChartCheckResult(!fatal, errors, 0, false, title, 0);
+                return new ImportChartCheckResult(!fatal, errors, 0, false, title, 0, 0);
             }
 
             var paddings = new List<float>();
@@ -192,14 +229,17 @@ public partial class ImportChartController(StaticSettings settings, ILogger<Stat
 
             var padding = paddings.Max();
 
-            return new ImportChartCheckResult(!fatal, errors, padding, isDx, title, first);
+            // 计算 bar
+            var bar = getFirstBarFromChart(SimaiConvert.Deserialize(allChartText.First().Value));
+
+            return new ImportChartCheckResult(!fatal, errors, padding, isDx, title, first, bar);
         }
         catch (Exception e)
         {
             logger.LogError(e, "解析谱面失败（大）");
             errors.Add(new ImportChartMessage("谱面解析失败（大）", MessageLevel.Fatal));
             fatal = true;
-            return new ImportChartCheckResult(!fatal, errors, 0, false, "", 0);
+            return new ImportChartCheckResult(!fatal, errors, 0, false, "", 0, 0);
         }
     }
 
@@ -213,7 +253,7 @@ public partial class ImportChartController(StaticSettings settings, ILogger<Stat
     [HttpPost]
     // 创建完 Music 后调用
     public ImportChartResult ImportChart([FromForm] int id, IFormFile file, [FromForm] bool ignoreLevelNum, [FromForm] int addVersionId, [FromForm] int genreId, [FromForm] int version,
-        [FromForm] bool debug = false, [FromForm] bool noShiftChart = false)
+        [FromForm] ShiftMethod shift, [FromForm] bool debug = false)
     {
         var isUtage = id > 100000;
         var errors = new List<ImportChartMessage>();
@@ -241,14 +281,32 @@ public partial class ImportChartController(StaticSettings settings, ILogger<Stat
 
         float.TryParse(maiData.GetValueOrDefault("first"), out var first);
 
-        float chartPadding = 0;
-        if (!noShiftChart)
+        var paddings = allCharts.Values.Select(chart => Converter.CalcMusicPadding(chart.simaiSharpChart, first)).ToList();
+        // 音频前面被增加了多少
+        var audioPadding = paddings.Max(); // bar - firstTiming = bar - 谱面前面休止符的时间 - &first
+        var shouldAddBar = false;
+        float chartPadding;
+        switch (shift)
         {
-            var paddings = allCharts.Values.Select(chart => Converter.CalcMusicPadding(chart.simaiSharpChart, first)).ToList();
-            // 音频前面被增加了多少
-            var audioPadding = paddings.Max();
-            // 见下方注释
-            chartPadding = audioPadding + first; // = bar - firstTiming
+            case ShiftMethod.Legacy:
+                chartPadding = audioPadding + first;
+                break;
+            case ShiftMethod.Bar when audioPadding + first > 0.1:
+                shouldAddBar = true;
+                chartPadding = 0f;
+                break;
+            default:
+                chartPadding = 0f;
+                break;
+        }
+
+        if (shouldAddBar)
+        {
+            foreach (var (level, chart) in allCharts)
+            {
+                var newText = Add1Bar(chart.chartText);
+                allCharts[level] = new AllChartsEntry(newText, SimaiConvert.Deserialize(newText));
+            }
         }
 
         foreach (var (level, chart) in allCharts)

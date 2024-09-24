@@ -1,7 +1,7 @@
 import { computed, defineComponent, effect, PropType, watch } from "vue";
-import { NAlert, NButton, NCheckbox, NCollapse, NCollapseItem, NFlex, NForm, NFormItem, NInputNumber, NModal, NScrollbar, NSelect, SelectOption } from "naive-ui";
-import { ImportChartMessage, MessageLevel } from "@/client/apiGen";
-import { ImportChartMessageEx, ImportMeta, SavedOptions, TempOptions } from "./index";
+import { NAlert, NButton, NCheckbox, NCollapse, NCollapseItem, NFlex, NForm, NFormItem, NInputNumber, NModal, NPopover, NRadio, NRadioButton, NRadioGroup, NScrollbar, NSelect, SelectOption } from "naive-ui";
+import { ImportChartMessage, MessageLevel, ShiftMethod } from "@/client/apiGen";
+import { ImportChartMessageEx, ImportMeta, SavedOptions, TempOptions } from "./types";
 import noJacket from '@/assets/noJacket.webp';
 import { addVersionList, genreList, showNeedPurchaseDialog } from "@/store/refs";
 import GenreInput from "@/components/GenreInput";
@@ -37,21 +37,21 @@ export default defineComponent({
       v-model:show={show.value}
     >{{
       default: () => <NFlex vertical size="large">
-        <NScrollbar class="max-h-30vh">
+        <NScrollbar class="max-h-24vh">
           <NFlex vertical>
             {
               props.errors.map((error, i) => {
                 if ('first' in error) {
-                  if (error.padding > 0 && !props.tempOptions.noShiftChart) {
+                  if (error.padding > 0 && props.tempOptions.shift === ShiftMethod.Legacy) {
                     return <NAlert key={i} type="info" title={error.name}>将在音频前面加上 {error.padding.toFixed(3)} 秒空白以保证第一押在第二小节</NAlert>
                   }
-                  if (error.padding < 0 && !props.tempOptions.noShiftChart) {
+                  if (error.padding < 0 && props.tempOptions.shift === ShiftMethod.Legacy) {
                     return <NAlert key={i} type="info" title={error.name}>将裁剪 {(-error.padding).toFixed(3)} 秒音频以保证第一押在第二小节</NAlert>
                   }
-                  if (error.first > 0 && props.tempOptions.noShiftChart) {
+                  if (error.first > 0 && props.tempOptions.shift === ShiftMethod.NoShift) {
                     return <NAlert key={i} type="info" title={error.name}>将裁剪 {error.first.toFixed(3)} 秒音频以对应 &first 的值</NAlert>
                   }
-                  if (error.first < 0 && props.tempOptions.noShiftChart) {
+                  if (error.first < 0 && props.tempOptions.shift === ShiftMethod.NoShift) {
                     return <NAlert key={i} type="info" title={error.name}>将在音频前面加上 {(-error.first).toFixed(3)} 秒空白以对应 &first 的值</NAlert>
                   }
                   return <></>
@@ -78,7 +78,7 @@ export default defineComponent({
         </NScrollbar>
         {!!props.meta.length && <>
           为新导入的歌曲指定 ID
-          <NScrollbar class="max-h-25vh">
+          <NScrollbar class="max-h-24vh">
             <NFlex vertical size="large">
               {props.meta.map((meta, i) => <MusicIdInput key={i} meta={meta}/>)}
             </NFlex>
@@ -101,9 +101,43 @@ export default defineComponent({
           <NCollapse>
             <NCollapseItem title="高级选项">
               <NFlex vertical>
-                <NCheckbox v-model:checked={props.tempOptions.noShiftChart}>
-                  避免平移谱面 如果正常的转换失败了可以试试，但是可能会导致第一个音符出现的时机比较奇怪。此选项不会记住
-                </NCheckbox>
+                <NFormItem label="延迟调整模式" labelPlacement="left" showFeedback={false}>
+                  <NFlex vertical class="w-full">
+                    <NFlex class="h-34px" align="center">
+                      <NRadioGroup v-model:value={props.tempOptions.shift}>
+                        <NPopover trigger="hover">
+                          {{
+                            trigger: () => <NRadio value={ShiftMethod.Bar} label="按小节"/>,
+                            default: () => <div>
+                              如果谱面前面的休止符长度小于一小节，那就在前面加上一小节的空白<br/>
+                              适用于大部分谱面，防止第一个音符出现的时机奇怪和平移谱面引起的奇怪问题<br/>
+                              第一个音符会在第二小节之内出来
+                            </div>
+                          }}
+                        </NPopover>
+                        <NPopover trigger="hover">
+                          {{
+                            trigger: () => <NRadio value={ShiftMethod.Legacy} label="旧版"/>,
+                            default: () => <div>
+                              将谱面的第一押对准第二小节的第一拍<br/>
+                              v1.1.1 及以前版本默认的处理方式<br/>
+                              可能会因为谱面非整数平移而引起一些比如说 BPM 变化的谱面出现问题
+                            </div>
+                          }}
+                        </NPopover>
+                        <NPopover trigger="hover">
+                          {{
+                            trigger: () => <NRadio value={ShiftMethod.NoShift} label="不移动谱面"/>,
+                            default: () => <div>
+                              完全不修改谱面，从音频中删除 &first 的长度（如果有）<br/>
+                              可能会导致第一个音符出现的时机比较奇怪，比如说刚开始就有音符
+                            </div>
+                          }}
+                        </NPopover>
+                      </NRadioGroup>
+                    </NFlex>
+                  </NFlex>
+                </NFormItem>
                 <NCheckbox v-model:checked={props.savedOptions.noScale}>
                   不要缩放 BGA 到 1080 宽度，此选项会记住
                 </NCheckbox>

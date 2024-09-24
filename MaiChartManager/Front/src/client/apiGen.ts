@@ -146,6 +146,8 @@ export interface ImportChartCheckResult {
   title?: string | null;
   /** @format float */
   first?: number;
+  /** @format float */
+  bar?: number;
 }
 
 export interface ImportChartMessage {
@@ -234,6 +236,12 @@ export interface SetAudioPreviewRequest {
   startTime?: number;
   /** @format double */
   endTime?: number;
+}
+
+export enum ShiftMethod {
+  Legacy = "Legacy",
+  Bar = "Bar",
+  NoShift = "NoShift",
 }
 
 export enum StorePurchaseStatus {
@@ -1159,10 +1167,9 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         genreId?: number;
         /** @format int32 */
         version?: number;
+        shift?: ShiftMethod;
         /** @default false */
         debug?: boolean;
-        /** @default false */
-        noShiftChart?: boolean;
       },
       params: RequestParams = {},
     ) =>
