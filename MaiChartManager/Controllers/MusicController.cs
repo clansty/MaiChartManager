@@ -3,6 +3,7 @@ using System.IO.Compression;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using AssetStudio;
+using MaiChartManager.Attributes;
 using MaiChartManager.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualBasic.FileIO;
@@ -161,6 +162,7 @@ public class MusicController(StaticSettings settings, ILogger<MusicController> l
     }
 
 
+    [NoCache]
     [HttpGet]
     public ActionResult GetJacket(int id)
     {

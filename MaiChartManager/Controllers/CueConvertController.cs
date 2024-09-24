@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MaiChartManager.Attributes;
+using Microsoft.AspNetCore.Mvc;
 using NAudio.Wave;
 using Sitreamai;
 using Standart.Hash.xxHash;
@@ -31,6 +32,7 @@ public class CueConvertController(StaticSettings settings, ILogger<MusicControll
         return cachePath;
     }
 
+    [NoCache]
     [HttpGet]
     public async Task<ActionResult> GetMusicWav(int id)
     {
@@ -40,7 +42,7 @@ public class CueConvertController(StaticSettings settings, ILogger<MusicControll
             return NotFound();
         }
 
-        return PhysicalFile(cachePath, "audio/wav", true);
+        return PhysicalFile(cachePath, "audio/wav");
     }
 
     [HttpPut]

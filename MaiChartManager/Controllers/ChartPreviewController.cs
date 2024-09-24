@@ -1,4 +1,5 @@
-﻿using MaiLib;
+﻿using MaiChartManager.Attributes;
+using MaiLib;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MaiChartManager.Controllers;
@@ -36,12 +37,14 @@ public class ChartPreviewController(StaticSettings settings, ILogger<StaticSetti
                 """;
     }
 
+    [NoCache]
     [HttpGet]
     public ActionResult Track(int id, int level)
     {
         return RedirectToAction("GetMusicWav", "CueConvert", new { id });
     }
 
+    [NoCache]
     [HttpGet]
     public ActionResult ImageFull(int id, int level)
     {
