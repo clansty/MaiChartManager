@@ -116,8 +116,8 @@ export default defineComponent({
                 <NFlex vertical class="w-full ws-pre-line">
                   <NFlex class="h-34px" align="center">
                     {typeof section[k] === 'boolean' && <NSwitch v-model:value={section[k]}/>}
-                    {typeof section[k] === 'string' && <NInput v-model:value={section[k]} placeholder=""/>}
-                    {typeof section[k] === 'number' && <NInputNumber v-model:value={section[k]} placeholder="" step={comments.steps[k] || 1}/>}
+                    {typeof section[k] === 'string' && <NInput v-model:value={section[k]} placeholder="" onUpdateValue={v => section[k] = typeof v === 'string' ? v : ''}/>}
+                    {typeof section[k] === 'number' && <NInputNumber value={section[k]} onUpdateValue={v => section[k] = typeof v === 'number' ? v : 0} placeholder="" step={comments.steps[k] || 1}/>}
                     {comments.shouldEnableOptions[key]?.[k] && !section[k] && <ProblemsDisplay problems={['需要开启此选项']}/>}
                   </NFlex>
                   {comments[key]?.[k]}
