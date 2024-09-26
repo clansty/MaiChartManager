@@ -32,64 +32,106 @@ public partial class ImportChartController(StaticSettings settings, ILogger<Stat
         return string.Concat(bpm, "{4},,,,", maidata.AsSpan(bpm.Length));
     }
 
+    [GeneratedRegex(@"(\d){")]
+    private static partial Regex SimaiError1();
+
+    [GeneratedRegex(@"\[(\d+)-(\d+)]")]
+    private static partial Regex SimaiError2();
+
+    private static string FixChartSimaiSharp(string chart)
+    {
+        chart = chart.Replace("\n", "").Replace("\r", "");
+        chart = SimaiError1().Replace(chart, "$1,{");
+        chart = SimaiError2().Replace(chart, "[$1:$2]");
+        return chart;
+    }
+
+    private MaiChart TryParseChartSimaiSharp(string chartText, int level, List<ImportChartMessage> errors)
+    {
+        try
+        {
+            return SimaiConvert.Deserialize(chartText);
+        }
+        catch (Exception e)
+        {
+            logger.LogWarning(e, "SimaiSharp 无法直接解析谱面");
+        }
+
+        try
+        {
+            var chart = SimaiConvert.Deserialize(FixChartSimaiSharp(chartText));
+            errors.Add(new ImportChartMessage($"尝试修正了一些谱面难度 {level} 中的小错误", MessageLevel.Info));
+            return chart;
+        }
+        catch (Exception e)
+        {
+            logger.LogWarning(e, "SimaiSharp 无法解析修复后谱面");
+            throw;
+        }
+    }
+
     [NonAction]
     private Chart? TryParseChart(string chartText, MaiChart simaiSharpChart, int level, List<ImportChartMessage> errors)
     {
-        Chart? maiLibChart = null;
         try
         {
-            maiLibChart = simaiParser.ChartOfToken(simaiTokenizer.TokensFromText(chartText));
+            return simaiParser.ChartOfToken(simaiTokenizer.TokensFromText(chartText));
         }
         catch (Exception e)
         {
             logger.LogWarning(e, "无法直接解析谱面");
         }
 
-        if (maiLibChart is null)
+        try
         {
-            try
+            var normalizedText = SimaiCommentRegex().Replace(chartText, "");
+            return simaiParser.ChartOfToken(simaiTokenizer.TokensFromText(normalizedText));
+        }
+        catch (Exception)
+        {
+            // ignored
+        }
+
+        try
+        {
+            var normalizedText = FixChartSimaiSharp(chartText)
+                // 不飞的星星
+                .Replace("-?", "?-");
+            // 移除注释
+            normalizedText = SimaiCommentRegex().Replace(normalizedText, "");
+            var tokens = simaiTokenizer.TokensFromText(normalizedText);
+            for (var i = 0; i < tokens.Length; i++)
             {
-                var normalizedText = chartText
-                    // 不飞的星星
-                    .Replace("-?", "?-");
-                // 移除注释
-                normalizedText = SimaiCommentRegex().Replace(normalizedText, "");
-                var tokens = simaiTokenizer.TokensFromText(normalizedText);
-                for (var i = 0; i < tokens.Length; i++)
+                if (tokens[i].Contains("]b"))
                 {
-                    if (tokens[i].Contains("]b"))
-                    {
-                        tokens[i] = tokens[i].Replace("]b", "]").Replace("[", "b[");
-                    }
+                    tokens[i] = tokens[i].Replace("]b", "]").Replace("[", "b[");
                 }
+            }
 
-                maiLibChart = simaiParser.ChartOfToken(tokens);
-            }
-            catch (Exception e)
-            {
-                logger.LogWarning(e, "无法在手动修正错误后解析谱面");
-            }
+            var maiLibChart = simaiParser.ChartOfToken(tokens);
+            errors.Add(new ImportChartMessage($"尝试修正了一些谱面难度 {level} 中的小错误", MessageLevel.Info));
+            return maiLibChart;
         }
-
-        if (maiLibChart is null)
+        catch (Exception e)
         {
-            try
-            {
-                var reSerialized = SimaiConvert.Serialize(simaiSharpChart);
-                reSerialized = reSerialized.Replace("{0}", "{4}");
-                maiLibChart = simaiParser.ChartOfToken(simaiTokenizer.TokensFromText(reSerialized));
-                errors.Add(new ImportChartMessage($"就算修正了一些已知错误，MaiLib 还是无法解析谱面难度 {level}，我们尝试通过 AstroDX 的 SimaiSharp 解析。" +
-                                                  "如果转换结果发现有什么问题的话，可以试试在 AstroDX 中有没有同样的问题并告诉我们（不试也没关系）", MessageLevel.Warning));
-            }
-            catch (Exception e)
-            {
-                SentrySdk.CaptureException(e);
-                errors.Add(new ImportChartMessage($"试了各种办法都无法解析谱面难度 {level}，请检查谱面是否有问题", MessageLevel.Fatal));
-                return null;
-            }
+            logger.LogWarning(e, "无法在手动修正错误后解析谱面");
         }
 
-        return maiLibChart;
+        try
+        {
+            var reSerialized = SimaiConvert.Serialize(simaiSharpChart);
+            reSerialized = reSerialized.Replace("{0}", "{4}");
+            var maiLibChart = simaiParser.ChartOfToken(simaiTokenizer.TokensFromText(reSerialized));
+            errors.Add(new ImportChartMessage($"就算修正了一些已知错误，MaiLib 还是无法解析谱面难度 {level}，我们尝试通过 AstroDX 的 SimaiSharp 解析。" +
+                                              "如果转换结果发现有什么问题的话，可以试试在 AstroDX 中有没有同样的问题并告诉我们（不试也没关系）", MessageLevel.Warning));
+            return maiLibChart;
+        }
+        catch (Exception e)
+        {
+            SentrySdk.CaptureException(e);
+            errors.Add(new ImportChartMessage($"试了各种办法都无法解析谱面难度 {level}，请检查谱面是否有问题", MessageLevel.Fatal));
+            return null;
+        }
     }
 
     private static float getFirstBarFromChart(MaiChart chart)
@@ -98,7 +140,7 @@ public partial class ImportChartController(StaticSettings settings, ILogger<Stat
         return 60 / bpm * 4;
     }
 
-    // v1.1.2 新增
+// v1.1.2 新增
     public enum ShiftMethod
     {
         // 之前的办法，把第一押准确的对在第二小节的开头
@@ -213,7 +255,7 @@ public partial class ImportChartController(StaticSettings settings, ILogger<Stat
                 var chartText = kvp.Value;
                 try
                 {
-                    var chart = SimaiConvert.Deserialize(chartText);
+                    var chart = TryParseChartSimaiSharp(chartText, kvp.Key, errors);
                     paddings.Add(Converter.CalcMusicPadding(chart, first));
 
                     var candidate = TryParseChart(chartText, chart, kvp.Key, errors);
@@ -230,7 +272,7 @@ public partial class ImportChartController(StaticSettings settings, ILogger<Stat
             var padding = paddings.Max();
 
             // 计算 bar
-            var bar = getFirstBarFromChart(SimaiConvert.Deserialize(allChartText.First().Value));
+            var bar = getFirstBarFromChart(TryParseChartSimaiSharp(allChartText.First().Value, allChartText.First().Key, errors));
 
             return new ImportChartCheckResult(!fatal, errors, padding, isDx, title, first, bar);
         }
@@ -251,7 +293,7 @@ public partial class ImportChartController(StaticSettings settings, ILogger<Stat
     private static partial Regex SimaiCommentRegex();
 
     [HttpPost]
-    // 创建完 Music 后调用
+// 创建完 Music 后调用
     public ImportChartResult ImportChart([FromForm] int id, IFormFile file, [FromForm] bool ignoreLevelNum, [FromForm] int addVersionId, [FromForm] int genreId, [FromForm] int version,
         [FromForm] ShiftMethod shift, [FromForm] bool debug = false)
     {
@@ -270,13 +312,13 @@ public partial class ImportChartController(StaticSettings settings, ILogger<Stat
         {
             if (!string.IsNullOrWhiteSpace(maiData.GetValueOrDefault($"inote_{i}")))
             {
-                allCharts.Add(i, new AllChartsEntry(maiData[$"inote_{i}"], SimaiConvert.Deserialize(maiData[$"inote_{i}"])));
+                allCharts.Add(i, new AllChartsEntry(maiData[$"inote_{i}"], TryParseChartSimaiSharp(maiData[$"inote_{i}"], i, errors)));
             }
         }
 
         if (!string.IsNullOrWhiteSpace(maiData.GetValueOrDefault("inote_0")))
         {
-            allCharts.Add(0, new AllChartsEntry(maiData["inote_0"], SimaiConvert.Deserialize(maiData["inote_0"])));
+            allCharts.Add(0, new AllChartsEntry(maiData["inote_0"], TryParseChartSimaiSharp(maiData["inote_0"], 0, errors)));
         }
 
         float.TryParse(maiData.GetValueOrDefault("first"), out var first);
@@ -305,7 +347,7 @@ public partial class ImportChartController(StaticSettings settings, ILogger<Stat
             foreach (var (level, chart) in allCharts)
             {
                 var newText = Add1Bar(chart.chartText);
-                allCharts[level] = new AllChartsEntry(newText, SimaiConvert.Deserialize(newText));
+                allCharts[level] = new AllChartsEntry(newText, TryParseChartSimaiSharp(newText, level, errors));
             }
         }
 

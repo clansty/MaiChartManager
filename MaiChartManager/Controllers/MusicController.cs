@@ -162,7 +162,6 @@ public class MusicController(StaticSettings settings, ILogger<MusicController> l
     }
 
 
-    [NoCache]
     [HttpGet]
     public ActionResult GetJacket(int id)
     {
@@ -174,12 +173,12 @@ public class MusicController(StaticSettings settings, ILogger<MusicController> l
 
         if (System.IO.File.Exists(music.JacketPath))
         {
-            return File(System.IO.File.OpenRead(music.JacketPath), "image/png");
+            return PhysicalFile(music.JacketPath, "image/png");
         }
 
         if (System.IO.File.Exists(music.PseudoAssetBundleJacket))
         {
-            return File(System.IO.File.OpenRead(music.PseudoAssetBundleJacket), "image/png");
+            return PhysicalFile(music.PseudoAssetBundleJacket, "image/png");
         }
 
         if (music.AssetBundleJacket is null) return NotFound();
