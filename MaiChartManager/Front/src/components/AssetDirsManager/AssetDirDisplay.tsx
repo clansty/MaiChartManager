@@ -1,9 +1,10 @@
 import { computed, defineComponent, PropType } from "vue";
 import { GetAssetsDirsResult } from "@/client/apiGen";
-import { NPopover } from "naive-ui";
+import { NFlex, NPopover } from "naive-ui";
 import OfficialChartToggle from "@/components/AssetDirsManager/OfficialChartToggle";
 import MemosDisplay from "@/components/AssetDirsManager/MemosDisplay";
 import DeleteButton from "@/components/AssetDirsManager/DeleteButton";
+import CheckConflictButton from "@/components/AssetDirsManager/CheckConflictButton";
 
 export default defineComponent({
   props: {
@@ -11,7 +12,7 @@ export default defineComponent({
   },
   setup(props) {
 
-    return () => <div class="grid cols-[10em_1fr_9em_6em_6em] items-center gap-5 m-x">
+    return () => <div class="grid cols-[10em_1fr_9em_6em_14em] items-center gap-5 m-x">
       {props.dir.dirName}
       <div/>
       <div>
@@ -29,9 +30,12 @@ export default defineComponent({
       <div>
         <MemosDisplay dir={props.dir}/>
       </div>
-      <div>
-        {props.dir.dirName! !== 'A000' && <DeleteButton dir={props.dir}/>}
-      </div>
+      <NFlex>
+        {props.dir.dirName! !== 'A000' && <>
+            <DeleteButton dir={props.dir}/>
+            <CheckConflictButton dir={props.dir.dirName!}/>
+        </>}
+      </NFlex>
     </div>;
   }
 })

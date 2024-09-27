@@ -17,6 +17,11 @@ export interface AppVersionResult {
   hardwareAcceleration?: HardwareAccelerationStatus;
 }
 
+export enum AssetType {
+  Music = "Music",
+  Movie = "Movie",
+}
+
 export interface BatchSetPropsRequest {
   ids?: number[] | null;
   /** @format int32 */
@@ -57,6 +62,16 @@ export interface CheatConfig {
   debugFeature?: boolean;
 }
 
+export interface CheckConflictEntry {
+  type?: AssetType;
+  upperDir?: string | null;
+  lowerDir?: string | null;
+  fileName?: string | null;
+  /** @format int32 */
+  musicId?: number;
+  musicName?: string | null;
+}
+
 export interface Config {
   ux?: UXConfig;
   cheat?: CheatConfig;
@@ -64,6 +79,12 @@ export interface Config {
   fix?: FixConfig;
   utils?: UtilsConfig;
   touchSensitivity?: TouchSensitivityConfig;
+}
+
+export interface DeleteAssetRequest {
+  assetDir?: string | null;
+  type?: AssetType;
+  fileName?: string | null;
 }
 
 export interface FixConfig {
@@ -976,6 +997,39 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       this.request<void, any>({
         path: `/MaiChartManagerServlet/ChartPreview/${id}/${level}/ImageFull/1`,
         method: "GET",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags CheckConflict
+     * @name CheckConflict
+     * @request POST:/MaiChartManagerServlet/CheckConflictApi
+     */
+    CheckConflict: (data: string, params: RequestParams = {}) =>
+      this.request<CheckConflictEntry[], any>({
+        path: `/MaiChartManagerServlet/CheckConflictApi`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags CheckConflict
+     * @name DeleteAssets
+     * @request DELETE:/MaiChartManagerServlet/DeleteAssetsApi
+     */
+    DeleteAssets: (data: DeleteAssetRequest[], params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/MaiChartManagerServlet/DeleteAssetsApi`,
+        method: "DELETE",
+        body: data,
+        type: ContentType.Json,
         ...params,
       }),
 
