@@ -1,7 +1,7 @@
 ﻿using MaiChartManager.Models;
 using Microsoft.AspNetCore.Mvc;
 
-namespace MaiChartManager.Controllers;
+namespace MaiChartManager.Controllers.Catagory;
 
 [ApiController]
 [Route("MaiChartManagerServlet/[action]Api")]

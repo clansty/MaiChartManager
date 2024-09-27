@@ -2,7 +2,7 @@
 using Microsoft.VisualBasic.FileIO;
 using Xabe.FFmpeg;
 
-namespace MaiChartManager.Controllers;
+namespace MaiChartManager.Controllers.Music;
 
 [ApiController]
 [Route("MaiChartManagerServlet/[action]Api/{id:int}")]

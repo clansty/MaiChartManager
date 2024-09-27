@@ -1,11 +1,10 @@
-﻿using System.IO.Compression;
-using MaiChartManager.Attributes;
+﻿using MaiChartManager.Attributes;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Net.Http.Headers;
 using Microsoft.VisualBasic.FileIO;
 
-namespace MaiChartManager.Controllers;
+namespace MaiChartManager.Controllers.AssetDir;
 
 [ApiController]
 [Route("MaiChartManagerServlet/[action]Api")]

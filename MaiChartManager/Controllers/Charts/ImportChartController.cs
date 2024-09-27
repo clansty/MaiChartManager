@@ -5,7 +5,7 @@ using SimaiSharp;
 using SimaiSharp.Structures;
 using Sitreamai;
 
-namespace MaiChartManager.Controllers;
+namespace MaiChartManager.Controllers.Charts;
 
 [ApiController]
 [Route("MaiChartManagerServlet/[action]Api")]

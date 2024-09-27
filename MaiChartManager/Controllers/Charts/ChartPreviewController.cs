@@ -2,7 +2,7 @@
 using MaiLib;
 using Microsoft.AspNetCore.Mvc;
 
-namespace MaiChartManager.Controllers;
+namespace MaiChartManager.Controllers.Charts;
 
 [ApiController]
 [Route("MaiChartManagerServlet/[controller]/{id:int}/{level:int}/[action]/1")]

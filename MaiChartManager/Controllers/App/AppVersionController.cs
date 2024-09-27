@@ -1,7 +1,7 @@
-﻿using System.Windows.Forms;
+﻿using MaiChartManager.Controllers.Music;
 using Microsoft.AspNetCore.Mvc;
 
-namespace MaiChartManager.Controllers;
+namespace MaiChartManager.Controllers.App;
 
 [ApiController]
 [Route("MaiChartManagerServlet/[action]Api")]

@@ -1,16 +1,8 @@
 ﻿using System.IO.Compression;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using AssetStudio;
-using MaiChartManager.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualBasic.FileIO;
-using Sitreamai;
-using Sitreamai.Models;
-using Standart.Hash.xxHash;
-using Xabe.FFmpeg;
 
-namespace MaiChartManager.Controllers;
+namespace MaiChartManager.Controllers.Music;
 
 [ApiController]
 [Route("MaiChartManagerServlet/[action]Api/{id:int}")]

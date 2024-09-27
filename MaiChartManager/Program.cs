@@ -1,6 +1,7 @@
 using System.Runtime.InteropServices;
 using System.Text.Json;
 using MaiChartManager.Controllers;
+using MaiChartManager.Controllers.Music;
 using Xabe.FFmpeg;
 
 namespace MaiChartManager;

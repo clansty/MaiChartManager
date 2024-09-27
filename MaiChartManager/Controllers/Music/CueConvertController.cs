@@ -4,7 +4,7 @@ using NAudio.Wave;
 using Sitreamai;
 using Standart.Hash.xxHash;
 
-namespace MaiChartManager.Controllers;
+namespace MaiChartManager.Controllers.Music;
 
 [ApiController]
 [Route("MaiChartManagerServlet/[action]Api/{id:int}")]

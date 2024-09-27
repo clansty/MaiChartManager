@@ -1,7 +1,7 @@
 ﻿using Windows.Services.Store;
 using Microsoft.AspNetCore.Mvc;
 
-namespace MaiChartManager.Controllers;
+namespace MaiChartManager.Controllers.App;
 
 [ApiController]
 [Route("MaiChartManagerServlet/[action]Api")]

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Sitreamai.Models;
 
-namespace MaiChartManager.Controllers;
+namespace MaiChartManager.Controllers.AssetDir;
 
 [ApiController]
 [Route("MaiChartManagerServlet/[action]Api")]
