@@ -44,7 +44,7 @@ export default defineComponent({
         </NFlex>
         <NFormItem label="启用" labelPlacement="left" class="ml-2px">
           <NFlex align="center">
-            <NSwitch v-model:value={props.chart.enable} disabled={!!props.chart.problems?.length}/>
+            <NSwitch v-model:value={props.chart.enable}/>
             <ProblemsDisplay problems={props.chart.problems!}/>
           </NFlex>
         </NFormItem>
