@@ -50,7 +50,7 @@ public static class Audio
             case ".ogg":
             case ".wma":
             case ".aac":
-                return ConvertFile(ConvertToWav(read, padding), FileType.Wave, convertToType, loop, encrpytionKey);
+                return ConvertFile(ConvertToWav(read, Path.GetExtension(path).Equals(".ogg", StringComparison.InvariantCultureIgnoreCase), padding), FileType.Wave, convertToType, loop, encrpytionKey);
             case ".hca":
                 return ConvertFile(read, FileType.Hca, convertToType, loop, encrpytionKey);
             case ".adx":
@@ -73,9 +73,9 @@ public static class Audio
         throw new InvalidDataException($"Filetype of \"{path}\" is not supported.");
     }
 
-    public static Stream ConvertToWav(Stream src, float padding = 0)
+    public static Stream ConvertToWav(Stream src, bool isOgg, float padding = 0)
     {
-        using var reader = new StreamMediaFoundationReader(src);
+        using WaveStream reader = isOgg ? new NAudio.Vorbis.VorbisWaveReader(src, true) : new StreamMediaFoundationReader(src);
         var sample = reader.ToSampleProvider();
 
         switch (padding)
