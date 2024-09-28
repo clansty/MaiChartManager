@@ -21,7 +21,7 @@ public partial class ImportChartController(StaticSettings settings, ILogger<Stat
     private SimaiParser simaiParser = new();
     private SimaiTokenizer simaiTokenizer = new();
 
-    [GeneratedRegex(@"^\(\d+\)")]
+    [GeneratedRegex(@"^\([\d\.]+\)")]
     private static partial Regex BpmTagRegex();
 
     private static string Add1Bar(string maidata)
@@ -38,11 +38,19 @@ public partial class ImportChartController(StaticSettings settings, ILogger<Stat
     [GeneratedRegex(@"\[(\d+)-(\d+)]")]
     private static partial Regex SimaiError2();
 
+    [GeneratedRegex(@"(\d)\(")]
+    private static partial Regex SimaiError3();
+
+    [GeneratedRegex(@",[csbx\.\{\}],")]
+    private static partial Regex SimaiError4();
+
     private static string FixChartSimaiSharp(string chart)
     {
-        chart = chart.Replace("\n", "").Replace("\r", "");
+        chart = chart.Replace("\n", "").Replace("\r", "").Replace("{{", "{").Replace("}}", "}");
         chart = SimaiError1().Replace(chart, "$1,{");
+        chart = SimaiError3().Replace(chart, "$1,(");
         chart = SimaiError2().Replace(chart, "[$1:$2]");
+        chart = SimaiError4().Replace(chart, ",,");
         return chart;
     }
 
