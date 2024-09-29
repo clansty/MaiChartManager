@@ -5,6 +5,7 @@ sections:
   fix: 修复一些潜在的问题
   utils: 工具
   touchSensitivity: 触摸灵敏度
+  timeSaving: 节省一些不知道宝不宝贵的时间
 
 cheat:
   ticketUnlock: 解锁游戏里所有可能的跑图券
@@ -57,7 +58,7 @@ fix:
   forceAsServer: 强制服务器模式，配置店内招募时关闭
   forceFreePlay: 强制免费游玩
   forcePaidPlay: 强制付费游玩并锁定 24 个币，和 ForceFreePlay 冲突
-  extendNotesPool:  |
+  extendNotesPool: |
     增加更多待命的音符贴图，防止奇怪的自制谱用完音符贴图池
     如果遇到奇怪的谱面显示不正常或者闪退的话可以从 64 以上开始调整
 
@@ -66,6 +67,27 @@ utils:
   judgeAdjustA: 全局增加 A 判，单位和游戏里一样
   judgeAdjustB: 全局增加 B 判，单位和游戏里一样
   touchDelay: 给触摸屏增加额外延迟，单位为毫秒，一秒 = 1000 毫秒。必须是整数
+  windowed: 窗口化游戏
+  width: |
+    宽度和高度窗口化时为游戏窗口大小，全屏时为渲染分辨率
+    如果设为 0，窗口化将记住用户设定的大小，全屏时将使用当前显示器分辨率
+  height: 高度
+  practiseMode: |
+    练习模式
+    在游戏中界面按下 Test 键打开练习模式界面（需要开启 Test Proof）
+    可以前进 / 后退 / 暂停 / 片段循环 / 加速 / 减速
+
+timeSaving:
+  skipWarningScreen: 跳过日服启动时候的 WARNING 界面
+  improveLoadSpeed: |
+    在自检界面，每个屏幕结束的时候都会等两秒才进入下一个屏幕，很浪费时间
+    开了这个选项之后就不会等了
+  skipToMusicSelection: 登录完成后直接进入选歌界面
+  skipEventInfo: 跳过登录 / 注册游戏时候可能的 “发现了新的区域哟” “乐曲增加” “有活动哟” 之类的提示
+  iWontTapOrSlideVigorously: 跳过“不要大力拍打或滑动哦”这个界面，数据一旦加载完就立马进入下一个界面
+  skipGameOverScreen: 跳过游戏结束的“再见”界面
+  skipTrackStart: 跳过乐曲开始界面
+
 
 shouldEnableOptions:
   ux:
