@@ -6,6 +6,8 @@ sections:
   utils: 工具
   touchSensitivity: 触摸灵敏度
   timeSaving: 节省一些不知道宝不宝贵的时间
+  customKeyMap: 自定义按键映射
+  windowState: 游戏窗口属性
 
 cheat:
   ticketUnlock: 解锁游戏里所有可能的跑图券
@@ -46,6 +48,8 @@ ux:
     在选歌界面按下 Service 键或者键盘上的 “7” 键可以切换显示或者隐藏自制谱面
     使用 资源目录管理 可以设置自制谱的标记
   selectionDetail: 在选歌界面可以显示当前光标所在的乐曲的详情信息，比如说定数 版本 流派。以及鸟加之后可以推多少分
+  locale: Mod 中界面的语言
+  hideMask: 隐藏圆形遮罩
 
 performance:
   improveLoadSpeed: 在自检界面，每个屏幕结束的时候不会等两秒才进入下一个屏幕
@@ -61,6 +65,10 @@ fix:
   extendNotesPool: |
     增加更多待命的音符贴图，防止奇怪的自制谱用完音符贴图池
     如果遇到奇怪的谱面显示不正常或者闪退的话可以从 64 以上开始调整
+  frameRateLock: 强制设置帧率上限为 60 帧并关闭垂直同步。如果你的游戏没有问题，请不要使用
+  fontFix: |
+    在显示字库里没有的字时使用微软雅黑 Bold 显示
+    不可以和 CustomFont 一起使用
 
 utils:
   logUserId: 在玩家登录时调试输出用户 ID
@@ -77,6 +85,8 @@ utils:
     在游戏中界面按下 Test 键打开练习模式界面（需要开启 Test Proof）
     可以前进 / 后退 / 暂停 / 片段循环 / 加速 / 减速
   selectionDetail: 在选歌界面可以显示当前光标所在的乐曲的详情信息，比如说定数 版本 流派。以及鸟加之后可以推多少分
+  frameRateDisplay: 左上角帧率显示
+  showNetErrorDetail: 出现灰网时显示原因
 
 timeSaving:
   skipWarningScreen: 跳过日服启动时候的 WARNING 界面
@@ -89,6 +99,15 @@ timeSaving:
   skipGameOverScreen: 跳过游戏结束的“再见”界面
   skipTrackStart: 跳过乐曲开始界面
 
+windowState:
+  windowed: 窗口化游戏
+  width: |
+    宽度和高度窗口化时为游戏窗口大小，全屏时为渲染分辨率
+    如果设为 0，窗口化将记住用户设定的大小，全屏时将使用当前显示器分辨率
+  height: 高度
+  enable: |
+    启用此功能
+    不启用的话，不会对游戏窗口做任何操作
 
 shouldEnableOptions:
   ux:
@@ -98,3 +117,11 @@ shouldEnableOptions:
 steps:
   judgeAdjustA: 0.1
   judgeAdjustB: 0.1
+
+options:
+  ux:
+    locale:
+      - value: zh
+        label: 让我们说中文！
+      - value: en
+        label: Let's speak English!

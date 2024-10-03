@@ -59,7 +59,6 @@ export interface CheatConfig {
   ticketUnlock?: boolean;
   mapUnlock?: boolean;
   unlockUtage?: boolean;
-  debugFeature?: boolean;
 }
 
 export interface CheckConflictEntry {
@@ -75,10 +74,36 @@ export interface CheckConflictEntry {
 export interface Config {
   ux?: UXConfig;
   cheat?: CheatConfig;
-  performance?: PerformanceConfig;
   fix?: FixConfig;
   utils?: UtilsConfig;
+  timeSaving?: TimeSavingConfig;
+  windowState?: WindowStateConfig;
   touchSensitivity?: TouchSensitivityConfig;
+  customKeyMap?: CustomKeyMapConfig;
+}
+
+export interface CustomKeyMapConfig {
+  enable?: boolean;
+  test?: KeyCodeID;
+  service?: KeyCodeID;
+  button1_1P?: KeyCodeID;
+  button2_1P?: KeyCodeID;
+  button3_1P?: KeyCodeID;
+  button4_1P?: KeyCodeID;
+  button5_1P?: KeyCodeID;
+  button6_1P?: KeyCodeID;
+  button7_1P?: KeyCodeID;
+  button8_1P?: KeyCodeID;
+  select_1P?: KeyCodeID;
+  button1_2P?: KeyCodeID;
+  button2_2P?: KeyCodeID;
+  button3_2P?: KeyCodeID;
+  button4_2P?: KeyCodeID;
+  button5_2P?: KeyCodeID;
+  button6_2P?: KeyCodeID;
+  button7_2P?: KeyCodeID;
+  button8_2P?: KeyCodeID;
+  select_2P?: KeyCodeID;
 }
 
 export interface DeleteAssetRequest {
@@ -95,6 +120,8 @@ export interface FixConfig {
   forcePaidPlay?: boolean;
   /** @format int32 */
   extendNotesPool?: number;
+  frameRateLock?: boolean;
+  fontFix?: boolean;
 }
 
 export enum GameEdition {
@@ -185,6 +212,150 @@ export interface InstallAquaMaiRequest {
   version?: GameEdition;
 }
 
+export enum KeyCodeID {
+  None = "None",
+  Backspace = "Backspace",
+  Tab = "Tab",
+  Clear = "Clear",
+  Return = "Return",
+  Pause = "Pause",
+  Escape = "Escape",
+  Space = "Space",
+  Exclaim = "Exclaim",
+  DoubleQuote = "DoubleQuote",
+  Hash = "Hash",
+  Dollar = "Dollar",
+  Ampersand = "Ampersand",
+  Quote = "Quote",
+  LeftParen = "LeftParen",
+  RightParen = "RightParen",
+  Asterisk = "Asterisk",
+  Plus = "Plus",
+  Comma = "Comma",
+  Minus = "Minus",
+  Period = "Period",
+  Slash = "Slash",
+  Alpha0 = "Alpha0",
+  Alpha1 = "Alpha1",
+  Alpha2 = "Alpha2",
+  Alpha3 = "Alpha3",
+  Alpha4 = "Alpha4",
+  Alpha5 = "Alpha5",
+  Alpha6 = "Alpha6",
+  Alpha7 = "Alpha7",
+  Alpha8 = "Alpha8",
+  Alpha9 = "Alpha9",
+  Colon = "Colon",
+  Semicolon = "Semicolon",
+  Less = "Less",
+  Equals = "Equals",
+  Greater = "Greater",
+  Question = "Question",
+  At = "At",
+  LeftBracket = "LeftBracket",
+  Backslash = "Backslash",
+  RightBracket = "RightBracket",
+  Caret = "Caret",
+  Underscore = "Underscore",
+  BackQuote = "BackQuote",
+  A = "A",
+  B = "B",
+  C = "C",
+  D = "D",
+  E = "E",
+  F = "F",
+  G = "G",
+  H = "H",
+  I = "I",
+  J = "J",
+  K = "K",
+  L = "L",
+  M = "M",
+  N = "N",
+  O = "O",
+  P = "P",
+  Q = "Q",
+  R = "R",
+  S = "S",
+  T = "T",
+  U = "U",
+  V = "V",
+  W = "W",
+  X = "X",
+  Y = "Y",
+  Z = "Z",
+  Delete = "Delete",
+  Keypad0 = "Keypad0",
+  Keypad1 = "Keypad1",
+  Keypad2 = "Keypad2",
+  Keypad3 = "Keypad3",
+  Keypad4 = "Keypad4",
+  Keypad5 = "Keypad5",
+  Keypad6 = "Keypad6",
+  Keypad7 = "Keypad7",
+  Keypad8 = "Keypad8",
+  Keypad9 = "Keypad9",
+  KeypadPeriod = "KeypadPeriod",
+  KeypadDivide = "KeypadDivide",
+  KeypadMultiply = "KeypadMultiply",
+  KeypadMinus = "KeypadMinus",
+  KeypadPlus = "KeypadPlus",
+  KeypadEnter = "KeypadEnter",
+  KeypadEquals = "KeypadEquals",
+  UpArrow = "UpArrow",
+  DownArrow = "DownArrow",
+  RightArrow = "RightArrow",
+  LeftArrow = "LeftArrow",
+  Insert = "Insert",
+  Home = "Home",
+  End = "End",
+  PageUp = "PageUp",
+  PageDown = "PageDown",
+  F1 = "F1",
+  F2 = "F2",
+  F3 = "F3",
+  F4 = "F4",
+  F5 = "F5",
+  F6 = "F6",
+  F7 = "F7",
+  F8 = "F8",
+  F9 = "F9",
+  F10 = "F10",
+  F11 = "F11",
+  F12 = "F12",
+  F13 = "F13",
+  F14 = "F14",
+  F15 = "F15",
+  Numlock = "Numlock",
+  CapsLock = "CapsLock",
+  ScrollLock = "ScrollLock",
+  RightShift = "RightShift",
+  LeftShift = "LeftShift",
+  RightControl = "RightControl",
+  LeftControl = "LeftControl",
+  RightAlt = "RightAlt",
+  LeftAlt = "LeftAlt",
+  RightCommand = "RightCommand",
+  RightApple = "RightApple",
+  LeftCommand = "LeftCommand",
+  LeftApple = "LeftApple",
+  LeftWindows = "LeftWindows",
+  RightWindows = "RightWindows",
+  AltGr = "AltGr",
+  Help = "Help",
+  Print = "Print",
+  SysReq = "SysReq",
+  Break = "Break",
+  Menu = "Menu",
+  Mouse0 = "Mouse0",
+  Mouse1 = "Mouse1",
+  Mouse2 = "Mouse2",
+  Mouse3 = "Mouse3",
+  Mouse4 = "Mouse4",
+  Mouse5 = "Mouse5",
+  Mouse6 = "Mouse6",
+}
+
 export enum LicenseStatus {
   Pending = "Pending",
   Active = "Active",
@@ -237,10 +408,6 @@ export interface MusicXmlWithABJacket {
   problems?: string[] | null;
 }
 
-export interface PerformanceConfig {
-  improveLoadSpeed?: boolean;
-}
-
 export interface PutAssetDirTxtValueRequest {
   dirName?: string | null;
   fileName?: string | null;
@@ -271,6 +438,16 @@ export enum StorePurchaseStatus {
   NotPurchased = "NotPurchased",
   NetworkError = "NetworkError",
   ServerError = "ServerError",
+}
+
+export interface TimeSavingConfig {
+  skipWarningScreen?: boolean;
+  improveLoadSpeed?: boolean;
+  skipToMusicSelection?: boolean;
+  skipEventInfo?: boolean;
+  iWontTapOrSlideVigorously?: boolean;
+  skipGameOverScreen?: boolean;
+  skipTrackStart?: boolean;
 }
 
 export interface TouchSensitivityConfig {
@@ -346,9 +523,9 @@ export interface TouchSensitivityConfig {
 }
 
 export interface UXConfig {
-  skipWarningScreen?: boolean;
+  locale?: string | null;
   singlePlayer?: boolean;
-  skipToMusicSelection?: boolean;
+  hideMask?: boolean;
   loadAssetsPng?: boolean;
   loadJacketPng?: boolean;
   loadAssetBundleWithoutManifest?: boolean;
@@ -356,12 +533,11 @@ export interface UXConfig {
   randomBgm?: boolean;
   demoMaster?: boolean;
   extendTimer?: boolean;
-  skipEventInfo?: boolean;
   immediateSave?: boolean;
   loadLocalBga?: boolean;
   testProof?: boolean;
   hideSelfMadeCharts?: boolean;
-  selectionDetail?: boolean;
+  customFont?: boolean;
   customVersionString?: string | null;
   customPlaceName?: string | null;
   execOnIdle?: string | null;
@@ -380,6 +556,10 @@ export interface UtilsConfig {
   judgeAdjustB?: number;
   /** @format int32 */
   touchDelay?: number;
+  practiseMode?: boolean;
+  selectionDetail?: boolean;
+  showNetErrorDetail?: boolean;
+  frameRateDisplay?: boolean;
 }
 
 export interface VersionXml {
@@ -398,6 +578,15 @@ export interface VersionXml {
   colorB?: number;
   /** @format int32 */
   version?: number;
+}
+
+export interface WindowStateConfig {
+  enable?: boolean;
+  windowed?: boolean;
+  /** @format int32 */
+  width?: number;
+  /** @format int32 */
+  height?: number;
 }
 
 export type QueryParamsType = Record<string | number, any>;
@@ -1737,6 +1926,28 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         method: "POST",
         body: data,
         type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags MusicTransfer
+     * @name ExportAsMaidata
+     * @request GET:/MaiChartManagerServlet/ExportAsMaidataApi/{id}
+     */
+    ExportAsMaidata: (
+      id: number,
+      query?: {
+        /** @default false */
+        ignoreVideo?: boolean;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<void, any>({
+        path: `/MaiChartManagerServlet/ExportAsMaidataApi/${id}`,
+        method: "GET",
+        query: query,
         ...params,
       }),
   };

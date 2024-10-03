@@ -1,5 +1,5 @@
 import { computed, defineComponent, onMounted, PropType, ref, watch } from "vue";
-import { NButton, NCheckbox, NDivider, NFlex, NFormItem, NInput, NInputNumber, NModal, NScrollbar, NSwitch, useDialog } from "naive-ui";
+import { NButton, NCheckbox, NDivider, NFlex, NFormItem, NInput, NInputNumber, NModal, NScrollbar, NSelect, NSwitch, useDialog } from "naive-ui";
 import { Config, GameEdition, GameModInfo } from "@/client/apiGen";
 import comments from './modComments.yaml';
 import api from "@/client/api";
@@ -7,6 +7,7 @@ import { capitalCase } from "change-case";
 import ProblemsDisplay from "@/components/ProblemsDisplay";
 import { globalCapture } from "@/store/refs";
 import TouchSensitivityConfigurator from "@/components/ModManager/TouchSensitivityConfigurator";
+import CustomKeyBindingConfig from "@/components/ModManager/CustomKeyBindingConfig";
 
 export default defineComponent({
   props: {
@@ -108,21 +109,31 @@ export default defineComponent({
         {props.badgeType && <NCheckbox v-model:checked={disableBadge.value}>隐藏按钮上的角标</NCheckbox>}
         {config.value && <NScrollbar class="max-h-60vh p-2">
           {Object.entries(config.value).map(([key, section]) => !!section && <>
-            <NDivider titlePlacement="left" key={key}>{comments.sections[key]}</NDivider>
+              <NDivider titlePlacement="left" key={key}>{comments.sections[key]}</NDivider>
             {key === 'touchSensitivity' ?
               <TouchSensitivityConfigurator config={section}/>
-              :
-              Object.keys(section).map((k) => <NFormItem key={k} label={capitalCase(k)} labelPlacement="left" labelWidth="10em">
-                <NFlex vertical class="w-full ws-pre-line">
-                  <NFlex class="h-34px" align="center">
-                    {typeof section[k] === 'boolean' && <NSwitch v-model:value={section[k]}/>}
-                    {typeof section[k] === 'string' && <NInput v-model:value={section[k]} placeholder="" onUpdateValue={v => section[k] = typeof v === 'string' ? v : ''}/>}
-                    {typeof section[k] === 'number' && <NInputNumber value={section[k]} onUpdateValue={v => section[k] = typeof v === 'number' ? v : 0} placeholder="" step={comments.steps[k] || 1}/>}
-                    {comments.shouldEnableOptions[key]?.[k] && !section[k] && <ProblemsDisplay problems={['需要开启此选项']}/>}
+              : key === 'customKeyMap' ?
+                <CustomKeyBindingConfig config={section}/>
+                :
+                Object.keys(section).map((k) => <NFormItem key={k} label={capitalCase(k)} labelPlacement="left" labelWidth="10em">
+                  <NFlex vertical class="w-full ws-pre-line">
+                    <NFlex class="h-34px" align="center">
+                      {(() => {
+                        const choices = comments.options[key]?.[k]
+                        if (choices) {
+                          return <NSelect v-model:value={section[k]} options={choices} clearable/>
+                        }
+                        return <>
+                          {typeof section[k] === 'boolean' && <NSwitch v-model:value={section[k]}/>}
+                          {typeof section[k] === 'string' && <NInput v-model:value={section[k]} placeholder="" onUpdateValue={v => section[k] = typeof v === 'string' ? v : ''}/>}
+                          {typeof section[k] === 'number' && <NInputNumber value={section[k]} onUpdateValue={v => section[k] = typeof v === 'number' ? v : 0} placeholder="" step={comments.steps[k] || 1}/>}
+                        </>
+                      })()}
+                      {comments.shouldEnableOptions[key]?.[k] && !section[k] && <ProblemsDisplay problems={['需要开启此选项']}/>}
+                    </NFlex>
+                    {comments[key]?.[k]}
                   </NFlex>
-                  {comments[key]?.[k]}
-                </NFlex>
-              </NFormItem>)
+                </NFormItem>)
             }
           </>)}
         </NScrollbar>}

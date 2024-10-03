@@ -2,7 +2,6 @@ import { defineComponent, h, PropType, ref } from "vue";
 import { TouchSensitivityConfig } from "@/client/apiGen";
 import TouchSensitivityDisplay from "@/components/ModManager/TouchSensitivityDisplay";
 import { NButton, NButtonGroup, NDivider, NFlex, NFormItem, NInputNumber, NSwitch } from "naive-ui";
-import comments from "@/components/ModManager/modComments.yaml";
 
 export default defineComponent({
   props: {
