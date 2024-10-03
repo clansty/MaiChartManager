@@ -1,6 +1,11 @@
 ﻿using System.IO.Compression;
+using System.Text;
+using MaiChartManager.Utils;
+using MaiLib;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualBasic.FileIO;
+using SimaiSharp;
+using Xabe.FFmpeg;
 
 namespace MaiChartManager.Controllers.Music;
 
@@ -195,5 +200,81 @@ public class MusicTransferController(StaticSettings settings, ILogger<MusicTrans
 
         // rescan all
         settings.RescanAll();
+    }
+
+    [HttpGet]
+    public async Task ExportAsMaidata(int id, bool ignoreVideo = false)
+    {
+        var music = settings.MusicList.Find(it => it.Id == id);
+        if (music is null) return;
+
+        await using var zipStream = HttpContext.Response.BodyWriter.AsStream();
+        using var zipArchive = new ZipArchive(zipStream, ZipArchiveMode.Create, leaveOpen: true);
+
+        Ma2Parser parser = new();
+        var simaiFile = new StringBuilder();
+
+        simaiFile.AppendLine($"&title={music.Name}");
+        simaiFile.AppendLine($"&artist={music.Artist}");
+        simaiFile.AppendLine($"&wholebpm={music.Bpm}");
+        simaiFile.AppendLine("&first=0");
+        simaiFile.AppendLine($"&shortid={music.Id}");
+        simaiFile.AppendLine($"&chartconverter=MaiChartManager v{Application.ProductVersion}");
+
+        for (var i = 0; i < 5; i++)
+        {
+            var chart = music.Charts[i];
+            if (chart is null) continue;
+
+            var path = Path.Combine(Path.GetDirectoryName(music.FilePath)!, chart.Path);
+            if (!System.IO.File.Exists(path)) continue;
+            var ma2Content = await System.IO.File.ReadAllLinesAsync(path);
+            var ma2 = parser.ChartOfToken(ma2Content);
+            var simai = ma2.Compose(ChartEnum.ChartVersion.SimaiFes);
+            simaiFile.AppendLine($"&lv_{i + 2}={chart.Level}.{chart.LevelDecimal}");
+            simaiFile.AppendLine($"&inote_{i + 2}={simai}");
+        }
+
+        var maidataEntry = zipArchive.CreateEntry("maidata.txt");
+        await using var maidataStream = maidataEntry.Open();
+        await maidataStream.WriteAsync(Encoding.UTF8.GetBytes(simaiFile.ToString()));
+        maidataStream.Close();
+
+
+        var soundEntry = zipArchive.CreateEntry("track.mp3");
+        await using var soundStream = soundEntry.Open();
+        AudioConvert.ConvertWavPathToMp3Stream(await AudioConvert.GetCachedWavPath(id), soundStream);
+        soundStream.Close();
+
+        // copy jacket
+        var img = ImageConvert.GetMusicJacketPngData(music);
+        if (img is not null)
+        {
+            var imageEntry = zipArchive.CreateEntry("bg.png");
+            await using var imageStream = imageEntry.Open();
+            await imageStream.WriteAsync(img);
+            imageStream.Close();
+        }
+
+        if (!ignoreVideo && StaticSettings.MovieDataMap.TryGetValue(music.NonDxId, out var movieUsmPath))
+        {
+            var tmpDir = Directory.CreateTempSubdirectory();
+            logger.LogInformation("Temp dir: {tmpDir}", tmpDir.FullName);
+            var movieUsm = Path.Combine(tmpDir.FullName, "movie.usm");
+            FileSystem.CopyFile(movieUsmPath, movieUsm, UIOption.OnlyErrorDialogs);
+            await WannaCRI.WannaCRI.UnpackUsmAsync(movieUsm);
+            var outputIvfFile = Directory.EnumerateFiles(Path.Combine(tmpDir.FullName, @"output\movie.usm\videos")).FirstOrDefault();
+            if (outputIvfFile is not null)
+            {
+                var pvMp4Path = Path.Combine(tmpDir.FullName, "pv.mp4");
+                await FFmpeg.Conversions.New()
+                    .AddParameter("-i " + outputIvfFile)
+                    .AddParameter("-c:v copy")
+                    .SetOutput(pvMp4Path)
+                    .Start();
+
+                zipArchive.CreateEntryFromFile(pvMp4Path, "pv.mp4");
+            }
+        }
     }
 }

@@ -76,6 +76,7 @@ utils:
     练习模式
     在游戏中界面按下 Test 键打开练习模式界面（需要开启 Test Proof）
     可以前进 / 后退 / 暂停 / 片段循环 / 加速 / 减速
+  selectionDetail: 在选歌界面可以显示当前光标所在的乐曲的详情信息，比如说定数 版本 流派。以及鸟加之后可以推多少分
 
 timeSaving:
   skipWarningScreen: 跳过日服启动时候的 WARNING 界面

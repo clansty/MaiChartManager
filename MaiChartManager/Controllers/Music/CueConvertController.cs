@@ -1,4 +1,5 @@
 ﻿using MaiChartManager.Attributes;
+using MaiChartManager.Utils;
 using Microsoft.AspNetCore.Mvc;
 using NAudio.Wave;
 using Sitreamai;
@@ -10,33 +11,11 @@ namespace MaiChartManager.Controllers.Music;
 [Route("MaiChartManagerServlet/[action]Api/{id:int}")]
 public class CueConvertController(StaticSettings settings, ILogger<MusicController> logger) : ControllerBase
 {
-    private static async Task<string?> GetCachedWavPath(int id)
-    {
-        var awb = StaticSettings.AcbAwb.GetValueOrDefault($"music{(id % 10000):000000}.awb");
-        if (awb is null)
-        {
-            return null;
-        }
-
-        string hash;
-        await using (var readStream = System.IO.File.OpenRead(awb))
-        {
-            hash = (await xxHash64.ComputeHashAsync(readStream)).ToString();
-        }
-
-        var cachePath = Path.Combine(StaticSettings.tempPath, hash + ".wav");
-        if (System.IO.File.Exists(cachePath)) return cachePath;
-
-        var wav = Audio.AcbToWav(StaticSettings.AcbAwb[$"music{(id % 10000):000000}.acb"]);
-        await System.IO.File.WriteAllBytesAsync(cachePath, wav);
-        return cachePath;
-    }
-
     [NoCache]
     [HttpGet]
     public async Task<ActionResult> GetMusicWav(int id)
     {
-        var cachePath = await GetCachedWavPath(id);
+        var cachePath = await AudioConvert.GetCachedWavPath(id);
         if (cachePath is null)
         {
             return NotFound();
@@ -78,7 +57,7 @@ public class CueConvertController(StaticSettings settings, ILogger<MusicControll
     {
         if (IapManager.License != IapManager.LicenseStatus.Active) return;
         id %= 10000;
-        var cachePath = await GetCachedWavPath(id);
+        var cachePath = await AudioConvert.GetCachedWavPath(id);
         var targetAcbPath = StaticSettings.AcbAwb[$"music{id:000000}.acb"];
         if (cachePath is null) throw new Exception("音频文件不存在");
 

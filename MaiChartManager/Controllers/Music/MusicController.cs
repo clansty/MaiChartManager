@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using AssetStudio;
 using MaiChartManager.Models;
+using MaiChartManager.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualBasic.FileIO;
 using Sitreamai.Models;
@@ -159,30 +160,13 @@ public class MusicController(StaticSettings settings, ILogger<MusicController> l
     public ActionResult GetJacket(int id)
     {
         var music = settings.MusicList.FirstOrDefault(it => it.Id == id);
-        if (music == null)
+        var data = ImageConvert.GetMusicJacketPngData(music);
+        if (data is null)
         {
             return NotFound();
         }
 
-        if (System.IO.File.Exists(music.JacketPath))
-        {
-            return PhysicalFile(music.JacketPath, "image/png");
-        }
-
-        if (System.IO.File.Exists(music.PseudoAssetBundleJacket))
-        {
-            return PhysicalFile(music.PseudoAssetBundleJacket, "image/png");
-        }
-
-        if (music.AssetBundleJacket is null) return NotFound();
-
-        var manager = new AssetsManager();
-        manager.LoadFiles(music.AssetBundleJacket);
-        var asset = manager.assetsFileList[0].Objects.Find(it => it.type == ClassIDType.Texture2D);
-        if (asset is null) return NotFound();
-
-        var texture = asset as Texture2D;
-        return File(texture.ConvertToStream(ImageFormat.Png, true).GetBuffer(), "image/png");
+        return File(data, "image/png");
     }
 
     [HttpPost]
