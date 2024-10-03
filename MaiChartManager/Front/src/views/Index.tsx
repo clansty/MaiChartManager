@@ -11,6 +11,7 @@ import { captureException } from "@sentry/vue";
 import AssetDirsManager from "@/components/AssetDirsManager";
 import ImportCreateChartButton from "@/components/ImportCreateChartButton";
 import { HardwareAccelerationStatus, LicenseStatus } from "@/client/apiGen";
+import CopyToButton from "@/components/CopyToButton";
 
 export default defineComponent({
   setup() {
@@ -71,15 +72,16 @@ export default defineComponent({
           <NFlex class="shrink-0">
             <AssetDirsManager/>
             {selectedADir.value !== 'A000' && <>
-              <GenreVersionManager/>
+                <GenreVersionManager/>
             </>}
             <ModManager/>
 
             <div class="grow-1"/>
 
+            <CopyToButton/>
             {selectedADir.value !== 'A000' && <>
-              <MusicSelectedTopRightToolbar/>
-              <ImportCreateChartButton/>
+                <MusicSelectedTopRightToolbar/>
+                <ImportCreateChartButton/>
             </>}
             <VersionInfo/>
           </NFlex>

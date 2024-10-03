@@ -1,9 +1,9 @@
 import { computed, defineComponent, ref } from "vue";
 import api from "@/client/api";
-import { globalCapture, selectedMusicBrief, selectMusicId, showNeedPurchaseDialog, updateMusicList, version } from "@/store/refs";
+import { globalCapture, selectedADir, selectedMusicBrief, selectMusicId, showNeedPurchaseDialog, updateMusicList, version } from "@/store/refs";
 import { NButton, NButtonGroup, NDropdown, useDialog, useMessage } from "naive-ui";
 import { ZipReader } from "@zip.js/zip.js";
-import ChangeIdDialog from "@/components/MusicSelectedTopRightToolbar/ChangeIdDialog";
+import ChangeIdDialog from "./ChangeIdDialog";
 
 const getSubDirFile = async (folderHandle: FileSystemDirectoryHandle, fileName: string) => {
   const pathParts = fileName.split('/');
@@ -16,9 +16,12 @@ const getSubDirFile = async (folderHandle: FileSystemDirectoryHandle, fileName: 
 }
 
 enum DROPDOWN_OPTIONS {
+  export,
   exportZip,
   changeId,
-  showExplorer
+  showExplorer,
+  exportMaidata,
+  exportMaiDataZip,
 }
 
 export default defineComponent({
@@ -34,9 +37,17 @@ export default defineComponent({
         key: DROPDOWN_OPTIONS.exportZip,
       },
       {
+        label: '导出为 Maidata',
+        key: DROPDOWN_OPTIONS.exportMaidata,
+      },
+      {
+        label: () => <a href={`/MaiChartManagerServlet/ExportAsMaidataApi/${selectMusicId.value}`} download={`${selectMusicId.value} - ${selectedMusicBrief.value?.name} - Maidata.zip`}>导出 Zip (Maidata)</a>,
+        key: DROPDOWN_OPTIONS.exportMaiDataZip,
+      },
+      ...(selectedADir.value === 'A000' ? [] : [{
         label: '修改 ID',
         key: DROPDOWN_OPTIONS.changeId,
-      },
+      }]),
       {
         label: '在资源管理器中显示',
         key: DROPDOWN_OPTIONS.showExplorer,
@@ -55,12 +66,15 @@ export default defineComponent({
         case DROPDOWN_OPTIONS.showExplorer:
           api.RequestOpenExplorer(selectMusicId.value);
           break;
+        case DROPDOWN_OPTIONS.exportMaidata:
+          copy(key);
+          break;
       }
     }
 
-    const copy = async () => {
+    const copy = async (type: DROPDOWN_OPTIONS) => {
       wait.value = true;
-      if (location.hostname !== '127.0.0.1') {
+      if (location.hostname !== '127.0.0.1' || type === DROPDOWN_OPTIONS.exportMaidata) {
         // 浏览器模式，使用 zip.js 获取并解压
         let folderHandle: FileSystemDirectoryHandle;
         try {
@@ -74,7 +88,7 @@ export default defineComponent({
           return;
         }
         try {
-          const zip = await fetch(`/MaiChartManagerServlet/ExportOptApi/${selectMusicId.value}`)
+          const zip = await fetch(`/MaiChartManagerServlet/${type === DROPDOWN_OPTIONS.exportMaidata ? 'ExportAsMaidataApi' : 'ExportOptApi'}/${selectMusicId.value}`)
           const zipReader = new ZipReader(zip.body!);
           const entries = zipReader.getEntriesGenerator();
           for await (const entry of entries) {
@@ -88,7 +102,7 @@ export default defineComponent({
           }
           message.success('成功');
         } catch (e) {
-          globalCapture(e, "下载歌曲失败")
+          globalCapture(e, "导出歌曲失败（远程）")
         } finally {
           wait.value = false;
         }
@@ -104,7 +118,7 @@ export default defineComponent({
 
     return () =>
       <NButtonGroup>
-        <NButton secondary onClick={copy} loading={wait.value}>
+        <NButton secondary onClick={() => copy(DROPDOWN_OPTIONS.export)} loading={wait.value}>
           复制到...
         </NButton>
         <NDropdown options={options.value} trigger="click" placement="bottom-end" onSelect={handleOptionClick}>
