@@ -19,6 +19,7 @@ export default defineComponent({
     const dialog = useDialog();
 
     onMounted(async () => {
+      document.title = `MaiChartManager (${location.host})`
       addEventListener("unhandledrejection", (event) => {
         console.log(event)
         captureException(event.reason?.error || event.reason, {
