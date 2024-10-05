@@ -192,11 +192,23 @@ public class MusicTransferController(StaticSettings settings, ILogger<MusicTrans
             FileSystem.MoveFile(movie, movieTarget, UIOption.OnlyErrorDialogs);
         }
 
+        // 谱面
+        var oldMusicDir = Path.GetDirectoryName(music.FilePath)!;
+        for (var i = 0; i < 6; i++)
+        {
+            var chart = music.Charts[i];
+            if (!chart.Enable) continue;
+            if (!System.IO.File.Exists(Path.Combine(oldMusicDir, chart.Path))) continue;
+            var newFileName = $"{newId:000000}_0{i}.ma2";
+            FileSystem.MoveFile(Path.Combine(oldMusicDir, chart.Path), Path.Combine(oldMusicDir, newFileName));
+            chart.Path = newFileName;
+        }
+
         // xml
         music.Id = newId;
         music.Save();
         Directory.CreateDirectory(Path.Combine(settings.AssetDir, "music"));
-        FileSystem.MoveDirectory(Path.GetDirectoryName(music.FilePath), newMusicDir, UIOption.OnlyErrorDialogs);
+        FileSystem.MoveDirectory(oldMusicDir, newMusicDir, UIOption.OnlyErrorDialogs);
 
         // rescan all
         settings.RescanAll();
