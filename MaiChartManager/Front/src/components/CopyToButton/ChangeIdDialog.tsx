@@ -1,6 +1,6 @@
 import { computed, defineComponent, ref, watch } from "vue";
 import { DialogOptions, NButton, NFlex, NForm, NFormItem, NInputGroup, NInputGroupLabel, NInputNumber, NModal, useDialog } from "naive-ui";
-import { globalCapture, musicList, selectMusicId, updateAll } from "@/store/refs";
+import { globalCapture, musicList, selectedADir, selectMusicId, updateAll } from "@/store/refs";
 import api from "@/client/api";
 
 export default defineComponent({
@@ -51,7 +51,7 @@ export default defineComponent({
       }
       try {
         loading.value = true;
-        await api.ModifyId(selectMusicId.value, id.value);
+        await api.ModifyId(selectMusicId.value, selectedADir.value, id.value);
         await updateAll();
         selectMusicId.value = id.value;
         show.value = false;

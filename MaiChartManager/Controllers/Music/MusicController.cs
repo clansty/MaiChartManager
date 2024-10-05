@@ -9,19 +9,19 @@ using Sitreamai.Models;
 namespace MaiChartManager.Controllers.Music;
 
 [ApiController]
-[Route("MaiChartManagerServlet/[action]Api/{id:int}")]
+[Route("MaiChartManagerServlet/[action]Api/{assetDir}/{id:int}")]
 public class MusicController(StaticSettings settings, ILogger<MusicController> logger) : ControllerBase
 {
     [HttpGet]
-    public MusicXmlWithABJacket? GetMusicDetail(int id)
+    public MusicXmlWithABJacket? GetMusicDetail(int id, string assetDir)
     {
-        return settings.MusicList.Find(it => it.Id == id);
+        return settings.GetMusic(id, assetDir);
     }
 
     [HttpPost]
-    public void EditMusicName(int id, [FromBody] string value)
+    public void EditMusicName(int id, [FromBody] string value, string assetDir)
     {
-        var music = settings.MusicList.Find(it => it.Id == id);
+        var music = settings.GetMusic(id, assetDir);
         if (music != null)
         {
             music.Name = value;
@@ -29,9 +29,9 @@ public class MusicController(StaticSettings settings, ILogger<MusicController> l
     }
 
     [HttpPost]
-    public void EditMusicArtist(int id, [FromBody] string value)
+    public void EditMusicArtist(int id, [FromBody] string value, string assetDir)
     {
-        var music = settings.MusicList.Find(it => it.Id == id);
+        var music = settings.GetMusic(id, assetDir);
         if (music != null)
         {
             music.Artist = value;
@@ -39,9 +39,9 @@ public class MusicController(StaticSettings settings, ILogger<MusicController> l
     }
 
     [HttpPost]
-    public void EditMusicUtageKanji(int id, [FromBody] string value)
+    public void EditMusicUtageKanji(int id, [FromBody] string value, string assetDir)
     {
-        var music = settings.MusicList.Find(it => it.Id == id);
+        var music = settings.GetMusic(id, assetDir);
         if (music != null)
         {
             music.UtageKanji = value;
@@ -50,9 +50,9 @@ public class MusicController(StaticSettings settings, ILogger<MusicController> l
 
     [HttpPost]
     // Utage 备注
-    public void EditMusicComment(int id, [FromBody] string value)
+    public void EditMusicComment(int id, [FromBody] string value, string assetDir)
     {
-        var music = settings.MusicList.Find(it => it.Id == id);
+        var music = settings.GetMusic(id, assetDir);
         if (music != null)
         {
             music.Comment = value;
@@ -60,9 +60,9 @@ public class MusicController(StaticSettings settings, ILogger<MusicController> l
     }
 
     [HttpPost]
-    public void EditMusicBpm(int id, [FromBody] int value)
+    public void EditMusicBpm(int id, [FromBody] int value, string assetDir)
     {
-        var music = settings.MusicList.Find(it => it.Id == id);
+        var music = settings.GetMusic(id, assetDir);
         if (music != null)
         {
             music.Bpm = value;
@@ -70,9 +70,9 @@ public class MusicController(StaticSettings settings, ILogger<MusicController> l
     }
 
     [HttpPost]
-    public void EditMusicVersion(int id, [FromBody] int value)
+    public void EditMusicVersion(int id, [FromBody] int value, string assetDir)
     {
-        var music = settings.MusicList.Find(it => it.Id == id);
+        var music = settings.GetMusic(id, assetDir);
         if (music != null)
         {
             music.Version = value;
@@ -80,9 +80,9 @@ public class MusicController(StaticSettings settings, ILogger<MusicController> l
     }
 
     [HttpPost]
-    public void EditMusicGenre(int id, [FromBody] int value)
+    public void EditMusicGenre(int id, [FromBody] int value, string assetDir)
     {
-        var music = settings.MusicList.Find(it => it.Id == id);
+        var music = settings.GetMusic(id, assetDir);
         if (music != null)
         {
             music.GenreId = value;
@@ -90,9 +90,9 @@ public class MusicController(StaticSettings settings, ILogger<MusicController> l
     }
 
     [HttpPost]
-    public void EditMusicAddVersion(int id, [FromBody] int value)
+    public void EditMusicAddVersion(int id, [FromBody] int value, string assetDir)
     {
-        var music = settings.MusicList.Find(it => it.Id == id);
+        var music = settings.GetMusic(id, assetDir);
         if (music != null)
         {
             music.AddVersionId = value;
@@ -100,39 +100,39 @@ public class MusicController(StaticSettings settings, ILogger<MusicController> l
     }
 
     [HttpPost]
-    public void SaveMusic(int id)
+    public void SaveMusic(int id, string assetDir)
     {
-        var music = settings.MusicList.Find(it => it.Id == id);
+        var music = settings.GetMusic(id, assetDir);
         music?.Save();
     }
 
     [HttpDelete]
-    public void DeleteMusic(int id)
+    public void DeleteMusic(int id, string assetDir)
     {
-        var music = settings.MusicList.Find(it => it.Id == id);
+        var music = settings.GetMusic(id, assetDir);
         if (music != null)
         {
             music.Delete();
-            settings.MusicList.Remove(music);
+            settings.GetMusicList().Remove(music);
         }
     }
 
     [HttpPost]
-    public string AddMusic(int id)
+    public string AddMusic(int id, string assetDir)
     {
-        if (settings.MusicList.Any(it => it.Id == id))
+        if (settings.GetMusic(id, assetDir) is not null)
         {
             return "当前资源目录里已经存在这个 ID 了";
         }
 
-        var music = MusicXmlWithABJacket.CreateNew(id, StaticSettings.GamePath, settings.AssetDir);
-        settings.MusicList.Add(music);
+        var music = MusicXmlWithABJacket.CreateNew(id, StaticSettings.GamePath, assetDir);
+        settings.GetMusicList().Add(music);
 
         return "";
     }
 
     [HttpPut]
-    public string SetMusicJacket(int id, IFormFile file)
+    public string SetMusicJacket(int id, IFormFile file, string assetDir)
     {
         var nonDxId = id % 10000;
         Directory.CreateDirectory(Path.Combine(StaticSettings.GamePath, "LocalAssets"));
@@ -142,7 +142,7 @@ public class MusicController(StaticSettings settings, ILogger<MusicController> l
             return "不支持的图片格式";
         }
 
-        var music = settings.MusicList.Find(it => it.Id == id);
+        var music = settings.GetMusic(id, assetDir);
         while (music?.JacketPath is not null)
         {
             FileSystem.DeleteFile(music.JacketPath, UIOption.OnlyErrorDialogs, RecycleOption.SendToRecycleBin);
@@ -157,9 +157,9 @@ public class MusicController(StaticSettings settings, ILogger<MusicController> l
 
 
     [HttpGet]
-    public ActionResult GetJacket(int id)
+    public ActionResult GetJacket(int id, string assetDir)
     {
-        var music = settings.MusicList.FirstOrDefault(it => it.Id == id);
+        var music = settings.GetMusic(id, assetDir);
         var data = ImageConvert.GetMusicJacketPngData(music);
         if (data is null)
         {
@@ -170,9 +170,9 @@ public class MusicController(StaticSettings settings, ILogger<MusicController> l
     }
 
     [HttpPost]
-    public void RequestOpenExplorer(int id)
+    public void RequestOpenExplorer(int id, string assetDir)
     {
-        var music = settings.MusicList.Find(it => it.Id == id);
+        var music = settings.GetMusic(id, assetDir);
         if (music != null)
         {
             Process.Start("explorer.exe", $"/select,\"{music.FilePath}\"");

@@ -10,11 +10,11 @@ using Xabe.FFmpeg;
 namespace MaiChartManager.Controllers.Music;
 
 [ApiController]
-[Route("MaiChartManagerServlet/[action]Api/{id:int}")]
+[Route("MaiChartManagerServlet/[action]Api/{assetDir}/{id:int}")]
 public class MusicTransferController(StaticSettings settings, ILogger<MusicTransferController> logger) : ControllerBase
 {
     [HttpPost]
-    public void RequestCopyTo(int id)
+    public void RequestCopyTo(int id, string assetDir)
     {
         if (Program.BrowserWin is null) return;
         var dialog = new FolderBrowserDialog
@@ -25,7 +25,7 @@ public class MusicTransferController(StaticSettings settings, ILogger<MusicTrans
         var dest = dialog.SelectedPath;
         logger.LogInformation("CopyTo: {dest}", dest);
 
-        var music = settings.MusicList.Find(it => it.Id == id);
+        var music = settings.GetMusic(id, assetDir);
         if (music is null) return;
 
         // copy music
@@ -72,9 +72,9 @@ public class MusicTransferController(StaticSettings settings, ILogger<MusicTrans
     }
 
     [HttpGet]
-    public void ExportOpt(int id)
+    public void ExportOpt(int id, string assetDir)
     {
-        var music = settings.MusicList.Find(it => it.Id == id);
+        var music = settings.GetMusic(id, assetDir);
         if (music is null) return;
 
         var zipStream = HttpContext.Response.BodyWriter.AsStream();
@@ -139,17 +139,17 @@ public class MusicTransferController(StaticSettings settings, ILogger<MusicTrans
     }
 
     [HttpPost]
-    public void ModifyId(int id, [FromBody] int newId)
+    public void ModifyId(int id, [FromBody] int newId, string assetDir)
     {
         if (IapManager.License != IapManager.LicenseStatus.Active) return;
-        var music = settings.MusicList.Find(it => it.Id == id);
+        var music = settings.GetMusic(id, assetDir);
         if (music is null) return;
         var newNonDxId = newId % 10000;
 
-        var abJacketTarget = Path.Combine(settings.AssetDir, "AssetBundleImages", "jacket", $"ui_jacket_{newNonDxId:000000}.ab");
-        var acbawbTarget = Path.Combine(settings.AssetDir, "SoundData", $"music{newNonDxId:000000}");
-        var movieTarget = Path.Combine(settings.AssetDir, "MovieData", $"{newNonDxId:000000}.dat");
-        var newMusicDir = Path.Combine(settings.AssetDir, "music", $"music{newNonDxId:000000}");
+        var abJacketTarget = Path.Combine(assetDir, "AssetBundleImages", "jacket", $"ui_jacket_{newNonDxId:000000}.ab");
+        var acbawbTarget = Path.Combine(assetDir, "SoundData", $"music{newNonDxId:000000}");
+        var movieTarget = Path.Combine(assetDir, "MovieData", $"{newNonDxId:000000}.dat");
+        var newMusicDir = Path.Combine(assetDir, "music", $"music{newNonDxId:000000}");
         DeleteIfExists(abJacketTarget, abJacketTarget + ".manifest", acbawbTarget + ".acb", acbawbTarget + ".awb", movieTarget, newMusicDir);
 
         // jacket
@@ -207,7 +207,7 @@ public class MusicTransferController(StaticSettings settings, ILogger<MusicTrans
         // xml
         music.Id = newId;
         music.Save();
-        Directory.CreateDirectory(Path.Combine(settings.AssetDir, "music"));
+        Directory.CreateDirectory(Path.Combine(assetDir, "music"));
         FileSystem.MoveDirectory(oldMusicDir, newMusicDir, UIOption.OnlyErrorDialogs);
 
         // rescan all
@@ -215,9 +215,9 @@ public class MusicTransferController(StaticSettings settings, ILogger<MusicTrans
     }
 
     [HttpGet]
-    public async Task ExportAsMaidata(int id, bool ignoreVideo = false)
+    public async Task ExportAsMaidata(int id, string assetDir, bool ignoreVideo = false)
     {
-        var music = settings.MusicList.Find(it => it.Id == id);
+        var music = settings.GetMusic(id, assetDir);
         if (music is null) return;
 
         await using var zipStream = HttpContext.Response.BodyWriter.AsStream();

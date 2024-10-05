@@ -13,7 +13,6 @@ public partial class StaticSettings
     public static Config Config { get; set; } = new();
 
     private readonly ILogger<StaticSettings> _logger;
-    private string _assetDir;
 
     public StaticSettings(ILogger<StaticSettings> logger)
     {
@@ -26,7 +25,6 @@ public partial class StaticSettings
                 throw new ArgumentException("未指定游戏目录");
             }
 
-            AssetDir = "A500";
             GetGameVersion();
             RescanAll();
         }
@@ -48,25 +46,24 @@ public partial class StaticSettings
     public static IEnumerable<string> AssetsDirs => Directory.EnumerateDirectories(StreamingAssets)
         .Select(Path.GetFileName).Where(it => ADirRegex().IsMatch(it));
 
-    public string AssetDir
-    {
-        get => _assetDir;
-        set
-        {
-            if (!value.StartsWith(StreamingAssets))
-                value = Path.Combine(StreamingAssets, value);
-            _assetDir = value;
-        }
-    }
-
     public int gameVersion;
-    public List<MusicXmlWithABJacket> MusicList { get; set; } = [];
+    private List<MusicXmlWithABJacket> _musicList = [];
     public static List<GenreXml> GenreList { get; set; } = [];
     public static List<VersionXml> VersionList { get; set; } = [];
     public static Dictionary<int, string> AssetBundleJacketMap { get; set; } = new();
     public static Dictionary<int, string> PseudoAssetBundleJacketMap { get; set; } = new();
     public static Dictionary<int, string> MovieDataMap { get; set; } = new();
     public static Dictionary<string, string> AcbAwb { get; set; } = new();
+
+    public MusicXmlWithABJacket? GetMusic(int id, string assetDir)
+    {
+        return _musicList.FirstOrDefault(it => it.Id == id && it.AssetDir == assetDir);
+    }
+
+    public List<MusicXmlWithABJacket> GetMusicList()
+    {
+        return _musicList;
+    }
 
     public void RescanAll()
     {
@@ -80,21 +77,21 @@ public partial class StaticSettings
 
     public void ScanMusicList()
     {
-        MusicList.Clear();
-        var musicDir = Path.Combine(AssetDir, "music");
-        if (!Directory.Exists(musicDir))
+        _musicList.Clear();
+        foreach (var a in AssetsDirs)
         {
-            Directory.CreateDirectory(musicDir);
+            var musicDir = Path.Combine(StreamingAssets, a, "music");
+            if (!Directory.Exists(musicDir)) continue;
+
+            foreach (var subDir in Directory.EnumerateDirectories(musicDir))
+            {
+                if (!File.Exists(Path.Combine(subDir, "Music.xml"))) continue;
+                var musicXml = new MusicXmlWithABJacket(Path.Combine(subDir, "Music.xml"), GamePath, a);
+                _musicList.Add(musicXml);
+            }
         }
 
-        foreach (var subDir in Directory.EnumerateDirectories(musicDir))
-        {
-            if (!File.Exists(Path.Combine(subDir, "Music.xml"))) continue;
-            var musicXml = new MusicXmlWithABJacket(Path.Combine(subDir, "Music.xml"), GamePath);
-            MusicList.Add(musicXml);
-        }
-
-        _logger.LogInformation("Scan music list, found {0} music.", MusicList.Count);
+        _logger.LogInformation("Scan music list, found {0} music.", _musicList.Count);
     }
 
     public void ScanGenre()

@@ -10,7 +10,7 @@ export default defineComponent({
     const isAnimationShow = ref(false);
 
     const save = async () => {
-      await api.SaveMusic(selectMusicId.value);
+      await api.SaveMusic(selectMusicId.value, selectedADir.value);
       await updateMusicList();
       isAnimationShow.value = true;
       setTimeout(() => {

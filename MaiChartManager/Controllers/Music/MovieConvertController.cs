@@ -5,7 +5,7 @@ using Xabe.FFmpeg;
 namespace MaiChartManager.Controllers.Music;
 
 [ApiController]
-[Route("MaiChartManagerServlet/[action]Api/{id:int}")]
+[Route("MaiChartManagerServlet/[action]Api/{assetDir}/{id:int}")]
 public class MovieConvertController(StaticSettings settings, ILogger<MovieConvertController> logger) : ControllerBase
 {
     public enum HardwareAccelerationStatus
@@ -68,13 +68,13 @@ public class MovieConvertController(StaticSettings settings, ILogger<MovieConver
 
     [HttpPut]
     [DisableRequestSizeLimit]
-    public async Task SetMovie(int id, [FromForm] double padding, IFormFile file, [FromForm] bool noScale)
+    public async Task SetMovie(int id, [FromForm] double padding, IFormFile file, [FromForm] bool noScale, string assetDir)
     {
         id %= 10000;
 
         if (Path.GetExtension(file.FileName).Equals(".dat", StringComparison.InvariantCultureIgnoreCase))
         {
-            var targetPath = Path.Combine(StaticSettings.StreamingAssets, settings.AssetDir, $@"MovieData\{id:000000}.dat");
+            var targetPath = Path.Combine(StaticSettings.StreamingAssets, assetDir, $@"MovieData\{id:000000}.dat");
             Directory.CreateDirectory(Path.GetDirectoryName(targetPath));
             await using var stream = System.IO.File.Open(targetPath, FileMode.Create);
             await file.CopyToAsync(stream);
@@ -167,7 +167,7 @@ public class MovieConvertController(StaticSettings settings, ILogger<MovieConver
 
         try
         {
-            var targetPath = Path.Combine(StaticSettings.StreamingAssets, settings.AssetDir, $@"MovieData\{id:000000}.dat");
+            var targetPath = Path.Combine(StaticSettings.StreamingAssets, assetDir, $@"MovieData\{id:000000}.dat");
             Directory.CreateDirectory(Path.GetDirectoryName(targetPath));
             FileSystem.CopyFile(outputFile, targetPath, true);
 

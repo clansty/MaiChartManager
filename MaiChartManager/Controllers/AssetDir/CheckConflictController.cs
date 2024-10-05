@@ -32,7 +32,7 @@ public class CheckConflictController(StaticSettings settings, ILogger<CheckConfl
         foreach (var subDir in Directory.EnumerateDirectories(musicDir))
         {
             if (!System.IO.File.Exists(Path.Combine(subDir, "Music.xml"))) continue;
-            var musicXml = new MusicXmlWithABJacket(Path.Combine(subDir, "Music.xml"), StaticSettings.GamePath);
+            var musicXml = new MusicXmlWithABJacket(Path.Combine(subDir, "Music.xml"), StaticSettings.GamePath, dir);
             musicList.Add(musicXml);
         }
 

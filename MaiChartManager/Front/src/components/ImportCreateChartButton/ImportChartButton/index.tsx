@@ -4,7 +4,7 @@ import SelectFileTypeTip from "./SelectFileTypeTip";
 import { LicenseStatus, MessageLevel, ShiftMethod } from "@/client/apiGen";
 import CheckingModal from "./CheckingModal";
 import api from "@/client/api";
-import { globalCapture, musicList, selectMusicId, updateMusicList, version as appVersion } from "@/store/refs";
+import { globalCapture, musicList, selectedADir, selectMusicId, updateMusicList, version as appVersion } from "@/store/refs";
 import ErrorDisplayIdInput from "./ErrorDisplayIdInput";
 import ImportStepDisplay from "./ImportStepDisplay";
 import { useStorage } from "@vueuse/core";
@@ -92,7 +92,7 @@ export default defineComponent({
       body.append('file', movie);
       body.append('offset', offset.toString());
       body.append('noScale', savedOptions.value.noScale.toString());
-      fetchEventSource(`/MaiChartManagerServlet/SetMovieApi/${id}`, {
+      fetchEventSource(`/MaiChartManagerServlet/SetMovieApi/${selectedADir.value}/${id}`, {
         method: 'PUT',
         body,
         onerror(e) {
@@ -124,7 +124,7 @@ export default defineComponent({
       try {
         music.importStep = IMPORT_STEP.create;
 
-        const createRet = (await api.AddMusic(music.id)).data;
+        const createRet = (await api.AddMusic(music.id, selectedADir.value)).data;
         if (createRet) throw new Error(createRet);
 
         music.importStep = IMPORT_STEP.chart;
@@ -142,7 +142,7 @@ export default defineComponent({
         errors.value.push(...res.errors!.map(it => ({...it, name: music.name})));
         if (res.fatal) {
           try {
-            await api.DeleteMusic(music.id);
+            await api.DeleteMusic(music.id, selectedADir.value);
           } catch {
           }
           return;
@@ -161,7 +161,7 @@ export default defineComponent({
           padding = -music.first;
         }
 
-        await api.SetAudio(music.id, {file: music.track, padding});
+        await api.SetAudio(music.id, selectedADir.value, {file: music.track, padding});
 
         if (music.movie && !savedOptions.value.disableBga) {
           currentMovieProgress.value = 0;
@@ -174,7 +174,7 @@ export default defineComponent({
         }
 
         music.importStep = IMPORT_STEP.jacket;
-        if (music.bg) await api.SetMusicJacket(music.id, {file: music.bg});
+        if (music.bg) await api.SetMusicJacket(music.id, selectedADir.value, {file: music.bg});
 
         music.importStep = IMPORT_STEP.finish;
       } catch (e: any) {
@@ -187,7 +187,7 @@ export default defineComponent({
         })
         errors.value.push({level: MessageLevel.Fatal, message: e.error?.message || e.message || e.toString(), name: music.name});
         try {
-          await api.DeleteMusic(music.id);
+          await api.DeleteMusic(music.id, selectedADir.value);
         } catch {
         }
       }

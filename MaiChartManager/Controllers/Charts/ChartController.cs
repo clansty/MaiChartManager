@@ -3,13 +3,13 @@
 namespace MaiChartManager.Controllers.Charts;
 
 [ApiController]
-[Route("MaiChartManagerServlet/[action]Api/{id:int}/{level:int}")]
+[Route("MaiChartManagerServlet/[action]Api/{assetDir}/{id:int}/{level:int}")]
 public class ChartController(StaticSettings settings, ILogger<StaticSettings> logger) : ControllerBase
 {
     [HttpPost]
-    public void EditChartLevel(int id, int level, [FromBody] int value)
+    public void EditChartLevel(int id, int level, [FromBody] int value, string assetDir)
     {
-        var music = settings.MusicList.Find(it => it.Id == id);
+        var music = settings.GetMusic(id, assetDir);
         if (music != null)
         {
             var chart = music.Charts[level];
@@ -21,9 +21,9 @@ public class ChartController(StaticSettings settings, ILogger<StaticSettings> lo
     }
 
     [HttpPost]
-    public void EditChartLevelDisplay(int id, int level, [FromBody] int value)
+    public void EditChartLevelDisplay(int id, int level, [FromBody] int value, string assetDir)
     {
-        var music = settings.MusicList.Find(it => it.Id == id);
+        var music = settings.GetMusic(id, assetDir);
         if (music != null)
         {
             var chart = music.Charts[level];
@@ -35,9 +35,9 @@ public class ChartController(StaticSettings settings, ILogger<StaticSettings> lo
     }
 
     [HttpPost]
-    public void EditChartLevelDecimal(int id, int level, [FromBody] int value)
+    public void EditChartLevelDecimal(int id, int level, [FromBody] int value, string assetDir)
     {
-        var music = settings.MusicList.Find(it => it.Id == id);
+        var music = settings.GetMusic(id, assetDir);
         if (music != null)
         {
             var chart = music.Charts[level];
@@ -49,9 +49,9 @@ public class ChartController(StaticSettings settings, ILogger<StaticSettings> lo
     }
 
     [HttpPost]
-    public void EditChartDesigner(int id, int level, [FromBody] string value)
+    public void EditChartDesigner(int id, int level, [FromBody] string value, string assetDir)
     {
-        var music = settings.MusicList.Find(it => it.Id == id);
+        var music = settings.GetMusic(id, assetDir);
         if (music != null)
         {
             var chart = music.Charts[level];
@@ -63,9 +63,9 @@ public class ChartController(StaticSettings settings, ILogger<StaticSettings> lo
     }
 
     [HttpPost]
-    public void EditChartNoteCount(int id, int level, [FromBody] int value)
+    public void EditChartNoteCount(int id, int level, [FromBody] int value, string assetDir)
     {
-        var music = settings.MusicList.Find(it => it.Id == id);
+        var music = settings.GetMusic(id, assetDir);
         if (music != null)
         {
             var chart = music.Charts[level];
@@ -77,9 +77,9 @@ public class ChartController(StaticSettings settings, ILogger<StaticSettings> lo
     }
 
     [HttpPost]
-    public void EditChartEnable(int id, int level, [FromBody] bool value)
+    public void EditChartEnable(int id, int level, [FromBody] bool value, string assetDir)
     {
-        var music = settings.MusicList.Find(it => it.Id == id);
+        var music = settings.GetMusic(id, assetDir);
         if (music != null)
         {
             var chart = music.Charts[level];

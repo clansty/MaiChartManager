@@ -27,9 +27,7 @@ export default defineComponent({
         return;
       }
       if (selectedADir.value === props.dir.dirName) {
-        const dir = 'A000';
-        await api.SetAssetsDir(dir);
-        selectedADir.value = dir;
+        selectedADir.value = 'A000';
         selectMusicId.value = 0;
         await updateMusicList();
       }

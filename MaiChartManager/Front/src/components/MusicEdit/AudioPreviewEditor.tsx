@@ -2,7 +2,7 @@ import { computed, defineComponent, onMounted, ref } from "vue";
 import { NButton, NFlex, NModal } from "naive-ui";
 import RegionsPlugin, { Region } from "wavesurfer.js/dist/plugins/regions";
 import WaveSurfer from "wavesurfer.js";
-import { globalCapture, selectMusicId } from "@/store/refs";
+import { globalCapture, selectedADir, selectMusicId } from "@/store/refs";
 import ZoomPlugin from 'wavesurfer.js/dist/plugins/zoom'
 import Hover from 'wavesurfer.js/dist/plugins/hover'
 import TimelinePlugin from 'wavesurfer.js/dist/plugins/timeline'
@@ -25,7 +25,7 @@ export default defineComponent({
         container: waveSurferContainer.value,
         waveColor: 'rgb(107,203,152)',
         progressColor: 'rgb(33,194,118)',
-        url: `/MaiChartManagerServlet/GetMusicWavApi/${selectMusicId.value}`,
+        url: `/MaiChartManagerServlet/GetMusicWavApi/${selectedADir.value}/${selectMusicId.value}`,
         plugins: [
           regions,
           ZoomPlugin.create({
@@ -64,7 +64,7 @@ export default defineComponent({
     const save = async () => {
       load.value = true
       try {
-        await api.SetAudioPreview(selectMusicId.value, {startTime: region.value!.start, endTime: region.value!.end})
+        await api.SetAudioPreview(selectMusicId.value, selectedADir.value, {startTime: region.value!.start, endTime: region.value!.end})
         props.closeModel()
       } catch (e) {
         globalCapture(e, "保存音频预览失败")

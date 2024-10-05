@@ -1,6 +1,6 @@
 import { defineComponent, ref } from "vue";
 import { NButton } from "naive-ui";
-import { globalCapture, updateAddVersionList, updateAll, updateAssetDirs, updateGenreList, updateMusicList, updateSelectedAssetDir, updateVersion } from "@/store/refs";
+import { globalCapture, updateAll } from "@/store/refs";
 import api from "@/client/api";
 
 export default defineComponent({

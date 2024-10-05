@@ -6,14 +6,16 @@ namespace MaiChartManager.Controllers.Music;
 [Route("MaiChartManagerServlet/[action]Api")]
 public class MusicBatchController(StaticSettings settings, ILogger<MusicBatchController> logger) : ControllerBase
 {
-    public record BatchSetPropsRequest(int[] Ids, int AddVersionId, int GenreId, bool removeLevels, int Version);
+    public record MusicIdAndAssetDirPair(int Id, string AssetDir);
+
+    public record BatchSetPropsRequest(MusicIdAndAssetDirPair[] Ids, int AddVersionId, int GenreId, bool removeLevels, int Version);
 
     [HttpPost]
     public void BatchSetProps([FromBody] BatchSetPropsRequest request)
     {
         foreach (var id in request.Ids)
         {
-            var music = settings.MusicList.FirstOrDefault(m => m.Id == id);
+            var music = settings.GetMusic(id.Id, id.AssetDir);
             if (music == null)
             {
                 logger.LogWarning("Music with id {id} not found", id);

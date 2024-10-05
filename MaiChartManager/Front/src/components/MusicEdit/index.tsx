@@ -27,7 +27,7 @@ const Component = defineComponent({
       }
 
       try {
-        const response = await api.GetMusicDetail(selectMusicId.value);
+        const response = await api.GetMusicDetail(selectMusicId.value, selectedADir.value);
         info.value = response.data;
 
         const firstEnabledChart = info.value?.charts?.findIndex(chart => chart.enable);

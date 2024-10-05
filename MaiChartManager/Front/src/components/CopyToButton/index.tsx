@@ -33,7 +33,7 @@ export default defineComponent({
 
     const options = computed(() => [
       {
-        label: () => <a href={`/MaiChartManagerServlet/ExportOptApi/${selectMusicId.value}`} download={`${selectMusicId.value} - ${selectedMusicBrief.value?.name}.zip`}>导出 Zip</a>,
+        label: () => <a href={`/MaiChartManagerServlet/ExportOptApi/${selectedADir.value}/${selectMusicId.value}`} download={`${selectMusicId.value} - ${selectedMusicBrief.value?.name}.zip`}>导出 Zip</a>,
         key: DROPDOWN_OPTIONS.exportZip,
       },
       {
@@ -41,7 +41,7 @@ export default defineComponent({
         key: DROPDOWN_OPTIONS.exportMaidata,
       },
       {
-        label: () => <a href={`/MaiChartManagerServlet/ExportAsMaidataApi/${selectMusicId.value}`} download={`${selectMusicId.value} - ${selectedMusicBrief.value?.name} - Maidata.zip`}>导出 Zip (Maidata)</a>,
+        label: () => <a href={`/MaiChartManagerServlet/ExportAsMaidataApi/${selectedADir.value}/${selectMusicId.value}`} download={`${selectMusicId.value} - ${selectedMusicBrief.value?.name} - Maidata.zip`}>导出 Zip (Maidata)</a>,
         key: DROPDOWN_OPTIONS.exportMaiDataZip,
       },
       ...(selectedADir.value === 'A000' ? [] : [{
@@ -64,7 +64,7 @@ export default defineComponent({
           showChangeId.value = true;
           break;
         case DROPDOWN_OPTIONS.showExplorer:
-          api.RequestOpenExplorer(selectMusicId.value);
+          api.RequestOpenExplorer(selectMusicId.value, selectedADir.value);
           break;
         case DROPDOWN_OPTIONS.exportMaidata:
           copy(key);
@@ -88,7 +88,7 @@ export default defineComponent({
           return;
         }
         try {
-          const zip = await fetch(`/MaiChartManagerServlet/${type === DROPDOWN_OPTIONS.exportMaidata ? 'ExportAsMaidataApi' : 'ExportOptApi'}/${selectMusicId.value}`)
+          const zip = await fetch(`/MaiChartManagerServlet/${type === DROPDOWN_OPTIONS.exportMaidata ? 'ExportAsMaidataApi' : 'ExportOptApi'}/${selectedADir.value}/${selectMusicId.value}`)
           const zipReader = new ZipReader(zip.body!);
           const entries = zipReader.getEntriesGenerator();
           for await (const entry of entries) {
@@ -110,7 +110,7 @@ export default defineComponent({
       }
       try {
         // 本地 webview 打开，使用本地模式
-        await api.RequestCopyTo(selectMusicId.value);
+        await api.RequestCopyTo(selectMusicId.value, selectedADir.value);
       } finally {
         wait.value = false;
       }

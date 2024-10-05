@@ -3,7 +3,7 @@ import { NButton, NCheckbox, NDrawer, NDrawerContent, NFlex, NInputNumber, NModa
 import FileTypeIcon from "@/components/FileTypeIcon";
 import { LicenseStatus, MusicXmlWithABJacket } from "@/client/apiGen";
 import api from "@/client/api";
-import { globalCapture, showNeedPurchaseDialog, version } from "@/store/refs";
+import { globalCapture, selectedADir, showNeedPurchaseDialog, version } from "@/store/refs";
 import { fetchEventSource } from "@microsoft/fetch-event-source";
 
 enum STEP {
@@ -34,7 +34,7 @@ export default defineComponent({
       body.append('file', movie);
       body.append('offset', offset.toString());
       body.append('noScale', noScale.value.toString());
-      fetchEventSource(`/MaiChartManagerServlet/SetMovieApi/${id}`, {
+      fetchEventSource(`/MaiChartManagerServlet/SetMovieApi/${selectedADir.value}/${id}`, {
         method: 'PUT',
         body,
         onerror(e) {
@@ -84,7 +84,7 @@ export default defineComponent({
 
         if (file.name.endsWith('.dat')) {
           load.value = true;
-          await api.SetMovie(props.song.id!, {file, padding: 0});
+          await api.SetMovie(props.song.id!, selectedADir.value, {file, padding: 0});
         } else if (version.value?.license !== LicenseStatus.Active) {
           showNeedPurchaseDialog.value = true;
         } else {

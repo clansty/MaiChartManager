@@ -1,7 +1,7 @@
 import { defineComponent, PropType, ref } from "vue";
 import { NButton, NCheckbox, NFlex, NForm, NFormItem, NSelect } from "naive-ui";
 import GenreInput from "@/components/GenreInput";
-import { addVersionList, genreList, globalCapture, selectMusicId, updateMusicList, version } from "@/store/refs";
+import { addVersionList, genreList, globalCapture, selectedADir, selectMusicId, updateMusicList, version } from "@/store/refs";
 import api from "@/client/api";
 
 enum VERSION_OPTION {
@@ -38,7 +38,7 @@ export default defineComponent({
           newVersion = version.value!.gameVersion! * 100 + 20000;
         }
         await api.BatchSetProps({
-          ids: props.selectedMusicIds,
+          ids: props.selectedMusicIds.map(id => ({id, assetDir: selectedADir.value})),
           genreId: genre.value,
           version: newVersion,
           addVersionId: addVersion.value,

@@ -2,17 +2,18 @@
 
 namespace MaiChartManager.Models;
 
-public class MusicXmlWithABJacket(string filePath, string gamePath) : MusicXml(filePath, gamePath)
+public class MusicXmlWithABJacket(string filePath, string gamePath, string assetDir) : MusicXml(filePath, gamePath)
 {
     public string? AssetBundleJacket => StaticSettings.AssetBundleJacketMap.GetValueOrDefault(NonDxId);
     public string? PseudoAssetBundleJacket => StaticSettings.PseudoAssetBundleJacketMap.GetValueOrDefault(NonDxId);
+    public string AssetDir => assetDir;
 
     // 在 mod 里文件的 jacket 是优先的
     public new bool HasJacket => JacketPath is not null || AssetBundleJacket is not null || PseudoAssetBundleJacket is not null;
 
     public record ChartAvailable(int index, int levelId);
 
-    public record MusicBrief(int Id, int NonDxId, string Name, bool HasJacket, bool Modified, IEnumerable<ChartAvailable> ChartsAvailable, IEnumerable<string> Problems);
+    public record MusicBrief(int Id, int NonDxId, string Name, bool HasJacket, bool Modified, IEnumerable<ChartAvailable> ChartsAvailable, IEnumerable<string> Problems, string AssetDir);
 
     public MusicBrief GetBrief()
     {
@@ -25,13 +26,13 @@ public class MusicXmlWithABJacket(string filePath, string gamePath) : MusicXml(f
             }
         }
 
-        return new MusicBrief(Id, NonDxId, Name, HasJacket, Modified, chartsAvailable, Problems);
+        return new MusicBrief(Id, NonDxId, Name, HasJacket, Modified, chartsAvailable, Problems, assetDir);
     }
 
     public new static MusicXmlWithABJacket CreateNew(int id, string gamePath, string assetDir)
     {
         var old = MusicXml.CreateNew(id, gamePath, assetDir);
-        return new MusicXmlWithABJacket(old.FilePath, old.GamePath);
+        return new MusicXmlWithABJacket(old.FilePath, old.GamePath, assetDir);
     }
 
     public bool isAcbAwbExist => StaticSettings.AcbAwb.ContainsKey($"music{NonDxId:000000}.acb") && StaticSettings.AcbAwb.ContainsKey($"music{NonDxId:000000}.awb");

@@ -16,7 +16,7 @@ export default defineComponent({
   },
   setup(props) {
     const updateTime = ref(0)
-    const url = computed(() => `/MaiChartManagerServlet/GetMusicWavApi/${props.song.id}?${updateTime.value}`)
+    const url = computed(() => `/MaiChartManagerServlet/GetMusicWavApi/${selectedADir.value}/${props.song.id}?${updateTime.value}`)
     const tipShow = ref(false)
     const tipSelectAwbShow = ref(false)
     const setOffsetShow = ref(false)
@@ -65,7 +65,7 @@ export default defineComponent({
 
           load.value = true;
           const awb = await fileHandle.getFile() as File;
-          res = await api.SetAudio(props.song.id!, {file, awb, padding: 0});
+          res = await api.SetAudio(props.song.id!, selectedADir.value, {file, awb, padding: 0});
         } else {
           offset.value = 0;
           setOffsetShow.value = true;
@@ -74,7 +74,7 @@ export default defineComponent({
           });
           load.value = true;
           setOffsetShow.value = false;
-          res = await api.SetAudio(props.song.id!, {file, padding: offset.value});
+          res = await api.SetAudio(props.song.id!, selectedADir.value, {file, padding: offset.value});
         }
         if (res.error) {
           const error = res.error as any;

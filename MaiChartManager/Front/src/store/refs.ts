@@ -36,10 +36,11 @@ export const selectMusicId = ref(0)
 export const genreList = ref<GenreXml[]>([]);
 export const addVersionList = ref<VersionXml[]>([]);
 export const selectedADir = ref<string>('');
-export const musicList = ref<MusicBrief[]>([]);
+export const musicListAll = ref<MusicBrief[]>([]);
 export const assetDirs = ref<GetAssetsDirsResult[]>([]);
 export const version = ref<AppVersionResult>();
 
+export const musicList = computed(() => musicListAll.value.filter(m => m.assetDir === selectedADir.value));
 export const selectedMusicBrief = computed(() => musicList.value.find(m => m.id === selectMusicId.value));
 
 export const updateGenreList = async () => {
@@ -52,12 +53,8 @@ export const updateAddVersionList = async () => {
   addVersionList.value = response.data;
 }
 
-export const updateSelectedAssetDir = async () => {
-  selectedADir.value = (await api.GetSelectedAssetsDir()).data;
-}
-
 export const updateMusicList = async () => {
-  musicList.value = (await api.GetMusicList()).data;
+  musicListAll.value = (await api.GetMusicList()).data;
 }
 
 export const updateAssetDirs = async () => {
@@ -71,7 +68,6 @@ export const updateVersion = async () => {
 export const updateAll = async () => Promise.all([
   updateGenreList(),
   updateAddVersionList(),
-  updateSelectedAssetDir(),
   updateAssetDirs(),
   updateVersion(),
   updateMusicList(),

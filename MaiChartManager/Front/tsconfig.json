@@ -12,6 +12,7 @@
     "sourceMap": true,
     "resolveJsonModule": true,
     "esModuleInterop": true,
+    "noEmit": true,
     "lib": [
       "esnext",
       "dom"

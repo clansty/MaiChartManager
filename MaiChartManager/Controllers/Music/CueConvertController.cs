@@ -8,12 +8,12 @@ using Standart.Hash.xxHash;
 namespace MaiChartManager.Controllers.Music;
 
 [ApiController]
-[Route("MaiChartManagerServlet/[action]Api/{id:int}")]
+[Route("MaiChartManagerServlet/[action]Api/{assetDir}/{id:int}")]
 public class CueConvertController(StaticSettings settings, ILogger<MusicController> logger) : ControllerBase
 {
     [NoCache]
     [HttpGet]
-    public async Task<ActionResult> GetMusicWav(int id)
+    public async Task<ActionResult> GetMusicWav(int id, string assetDir)
     {
         var cachePath = await AudioConvert.GetCachedWavPath(id);
         if (cachePath is null)
@@ -26,11 +26,11 @@ public class CueConvertController(StaticSettings settings, ILogger<MusicControll
 
     [HttpPut]
     [DisableRequestSizeLimit]
-    public void SetAudio(int id, [FromForm] float padding, IFormFile file, IFormFile? awb, IFormFile? preview)
+    public void SetAudio(int id, [FromForm] float padding, IFormFile file, IFormFile? awb, IFormFile? preview, string assetDir)
     {
         id %= 10000;
-        var targetAcbPath = Path.Combine(StaticSettings.StreamingAssets, settings.AssetDir, $@"SoundData\music{id:000000}.acb");
-        var targetAwbPath = Path.Combine(StaticSettings.StreamingAssets, settings.AssetDir, $@"SoundData\music{id:000000}.awb");
+        var targetAcbPath = Path.Combine(StaticSettings.StreamingAssets, assetDir, $@"SoundData\music{id:000000}.acb");
+        var targetAwbPath = Path.Combine(StaticSettings.StreamingAssets, assetDir, $@"SoundData\music{id:000000}.awb");
         Directory.CreateDirectory(Path.GetDirectoryName(targetAcbPath));
 
         if (Path.GetExtension(file.FileName).Equals(".acb", StringComparison.InvariantCultureIgnoreCase))
@@ -53,7 +53,7 @@ public class CueConvertController(StaticSettings settings, ILogger<MusicControll
     public record SetAudioPreviewRequest(double StartTime, double EndTime);
 
     [HttpPost]
-    public async Task SetAudioPreview(int id, [FromBody] SetAudioPreviewRequest request)
+    public async Task SetAudioPreview(int id, [FromBody] SetAudioPreviewRequest request, string assetDir)
     {
         if (IapManager.License != IapManager.LicenseStatus.Active) return;
         id %= 10000;

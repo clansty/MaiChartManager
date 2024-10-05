@@ -10,34 +10,10 @@ import BatchActionButton from "@/components/MusicList/BatchActionButton";
 export default defineComponent({
   setup() {
     const dialog = useDialog();
-    const refresh = async () => {
-      await updateMusicList();
-    }
-
-    onMounted(async () => {
-      refresh();
-    });
 
     const setAssetsDir = async (dir: string) => {
-      if (musicList.value.some(it => it.modified)) {
-        const decide = await new Promise<boolean>((resolve) => {
-          dialog.warning({
-            title: '提示',
-            content: '当前有未保存的修改，切换的话，修改将丢失。继续吗？',
-            positiveText: '继续',
-            negativeText: '取消',
-            onPositiveClick: () => resolve(true),
-            onClose: () => resolve(false)
-          });
-        })
-        if (!decide) {
-          return;
-        }
-      }
-      await api.SetAssetsDir(dir);
       selectedADir.value = dir;
       selectMusicId.value = 0;
-      refresh();
     }
 
     return () => (

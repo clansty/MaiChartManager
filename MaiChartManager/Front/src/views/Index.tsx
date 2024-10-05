@@ -2,7 +2,7 @@ import { defineComponent, onMounted } from 'vue';
 import { NFlex, NScrollbar, useDialog, useNotification } from "naive-ui";
 import MusicList from "@/components/MusicList";
 import GenreVersionManager from "@/components/GenreVersionManager";
-import { globalCapture, selectedADir, updateAddVersionList, updateAssetDirs, updateGenreList, updateSelectedAssetDir, updateVersion, version } from "@/store/refs";
+import { globalCapture, selectedADir, updateAddVersionList, updateAssetDirs, updateGenreList, updateMusicList, updateVersion, version } from "@/store/refs";
 import MusicEdit from "@/components/MusicEdit";
 import MusicSelectedTopRightToolbar from "@/components/MusicSelectedTopRightToolbar";
 import ModManager from "@/components/ModManager";
@@ -55,8 +55,8 @@ export default defineComponent({
         await Promise.all([
           updateGenreList(),
           updateAddVersionList(),
-          updateSelectedAssetDir(),
           updateAssetDirs(),
+          updateMusicList(),
         ])
       } catch (err) {
         globalCapture(err, "初始化失败")

@@ -298,13 +298,13 @@ public partial class ImportChartController(StaticSettings settings, ILogger<Stat
     private static partial Regex SimaiCommentRegex();
 
     [HttpPost]
-// 创建完 Music 后调用
-    public ImportChartResult ImportChart([FromForm] int id, IFormFile file, [FromForm] bool ignoreLevelNum, [FromForm] int addVersionId, [FromForm] int genreId, [FromForm] int version,
+    // 创建完 Music 后调用
+    public ImportChartResult ImportChart([FromForm] int id, IFormFile file, [FromForm] bool ignoreLevelNum, [FromForm] int addVersionId, [FromForm] int genreId, [FromForm] int version, [FromForm] string assetDir,
         [FromForm] ShiftMethod shift, [FromForm] bool debug = false)
     {
         var isUtage = id > 100000;
         var errors = new List<ImportChartMessage>();
-        var music = settings.MusicList.First(it => it.Id == id);
+        var music = settings.GetMusic(id, assetDir);
         var kvps = new SimaiFile(file.OpenReadStream()).ToKeyValuePairs();
         var maiData = new Dictionary<string, string>();
         foreach (var (key, value) in kvps)

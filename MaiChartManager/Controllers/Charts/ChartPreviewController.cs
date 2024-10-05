@@ -5,13 +5,13 @@ using Microsoft.AspNetCore.Mvc;
 namespace MaiChartManager.Controllers.Charts;
 
 [ApiController]
-[Route("MaiChartManagerServlet/[controller]/{id:int}/{level:int}/[action]/1")]
+[Route("MaiChartManagerServlet/[controller]Api/{assetDir}/{id:int}/{level:int}/[action]/1")]
 public class ChartPreviewController(StaticSettings settings, ILogger<StaticSettings> logger) : ControllerBase
 {
     [HttpGet]
-    public string Maidata(int id, int level)
+    public string Maidata(int id, int level, string assetDir)
     {
-        var music = settings.MusicList.Find(it => it.Id == id);
+        var music = settings.GetMusic(id, assetDir);
         var chart = music?.Charts[level];
         if (chart == null)
         {
@@ -39,15 +39,15 @@ public class ChartPreviewController(StaticSettings settings, ILogger<StaticSetti
 
     [NoCache]
     [HttpGet]
-    public ActionResult Track(int id, int level)
+    public ActionResult Track(int id, int level, string assetDir)
     {
-        return RedirectToAction("GetMusicWav", "CueConvert", new { id });
+        return RedirectToAction("GetMusicWav", "CueConvert", new { id, assetDir });
     }
 
     [NoCache]
     [HttpGet]
-    public ActionResult ImageFull(int id, int level)
+    public ActionResult ImageFull(int id, int level, string assetDir)
     {
-        return RedirectToAction("GetJacket", "Music", new { id });
+        return RedirectToAction("GetJacket", "Music", new { id, assetDir });
     }
 }

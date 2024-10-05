@@ -2,7 +2,7 @@ import { computed, defineComponent, PropType, ref } from "vue";
 import noJacket from "@/assets/noJacket.webp";
 import api from "@/client/api";
 import { useDialog } from "naive-ui";
-import { globalCapture, selectedMusicBrief } from "@/store/refs";
+import { globalCapture, selectedADir, selectedMusicBrief } from "@/store/refs";
 import { MusicXmlWithABJacket } from "@/client/apiGen";
 
 export default defineComponent({
@@ -13,7 +13,7 @@ export default defineComponent({
     const dialog = useDialog();
     const updateTime = ref(0)
     const jacketUrl = computed(() => props.info.hasJacket ?
-      `/MaiChartManagerServlet/GetJacketApi/${props.info.id}?${updateTime.value}` : noJacket)
+      `/MaiChartManagerServlet/GetJacketApi/${selectedADir.value}/${props.info.id}?${updateTime.value}` : noJacket)
 
     const upload = async () => {
       try {
@@ -34,7 +34,7 @@ export default defineComponent({
         if (!fileHandle) return;
         const file = await fileHandle.getFile();
 
-        const res = await api.SetMusicJacket(props.info.id!, {file});
+        const res = await api.SetMusicJacket(props.info.id!, selectedADir.value, {file});
         if (res.error) {
           const error = res.error as any;
           dialog.warning({title: '设置失败', content: error.message || error});

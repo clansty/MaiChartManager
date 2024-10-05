@@ -1,6 +1,6 @@
 import { computed, defineComponent, ref, watch } from "vue";
 import { NButton, NFlex, NForm, NFormItem, NInputNumber, NModal, NRadio, NSelect } from "naive-ui";
-import { assetDirs, musicList, selectMusicId, updateMusicList } from "@/store/refs";
+import { assetDirs, musicList, selectedADir, selectMusicId, updateMusicList } from "@/store/refs";
 import dxIcon from "@/assets/dxIcon.png";
 import stdIcon from "@/assets/stdIcon.png";
 import api from "@/client/api";
@@ -30,7 +30,7 @@ export default defineComponent({
 
     const save = async () => {
       show.value = false;
-      await api.AddMusic(id.value);
+      await api.AddMusic(id.value, selectedADir.value);
       await updateMusicList();
       selectMusicId.value = id.value;
     }
