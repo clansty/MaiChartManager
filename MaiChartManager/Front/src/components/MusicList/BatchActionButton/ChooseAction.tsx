@@ -2,6 +2,8 @@ import { defineComponent, PropType, ref } from "vue";
 import { MusicXmlWithABJacket } from "@/client/apiGen";
 import { NButton, NFlex, NPopover, NRadio, NRadioGroup } from "naive-ui";
 import { STEP } from "@/components/MusicList/BatchActionButton/index";
+import api from "@/client/api";
+import { updateMusicList } from "@/store/refs";
 
 enum OPTIONS {
   None,
@@ -21,10 +23,16 @@ export default defineComponent({
     const selectedOption = ref(OPTIONS.None);
     const load = ref(false);
 
-    const proceed = () => {
+    const proceed = async () => {
       switch (selectedOption.value) {
         case OPTIONS.EditProps:
           props.continue(STEP.EditProps);
+          break;
+        case OPTIONS.Delete:
+          load.value = true;
+          await api.BatchDeleteMusic(props.selectedMusic!);
+          await updateMusicList();
+          props.continue(STEP.None);
           break;
       }
     }

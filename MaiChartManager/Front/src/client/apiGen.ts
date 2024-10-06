@@ -384,7 +384,7 @@ export interface MusicXmlWithABJacket {
   comment?: string | null;
   /** @format int32 */
   version?: number;
-  /** @format int32 */
+  /** @format float */
   bpm?: number;
   disable?: boolean;
   charts?: Chart[] | null;
@@ -1812,6 +1812,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       this.request<void, any>({
         path: `/MaiChartManagerServlet/BatchSetPropsApi`,
         method: "POST",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags MusicBatch
+     * @name BatchDeleteMusic
+     * @request DELETE:/MaiChartManagerServlet/BatchDeleteMusicApi
+     */
+    BatchDeleteMusic: (data: MusicIdAndAssetDirPair[], params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/MaiChartManagerServlet/BatchDeleteMusicApi`,
+        method: "DELETE",
         body: data,
         type: ContentType.Json,
         ...params,

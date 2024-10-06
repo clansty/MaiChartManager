@@ -1,4 +1,5 @@
 import {generateApi} from "swagger-typescript-api";
+// @ts-ignore
 import path from "node:path";
 
 /* NOTE: all fields are optional expect one of `input`, `url`, `spec` */

@@ -41,4 +41,21 @@ public class MusicBatchController(StaticSettings settings, ILogger<MusicBatchCon
             music.Save();
         }
     }
+
+    [HttpDelete]
+    public void BatchDeleteMusic([FromBody] MusicIdAndAssetDirPair[] ids)
+    {
+        foreach (var id in ids)
+        {
+            var music = settings.GetMusic(id.Id, id.AssetDir);
+            if (music == null)
+            {
+                logger.LogWarning("Music with id {id} not found", id);
+                continue;
+            }
+
+            music.Delete();
+            settings.GetMusicList().Remove(music);
+        }
+    }
 }

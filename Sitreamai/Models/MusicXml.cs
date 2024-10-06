@@ -452,6 +452,6 @@ public class MusicXml
 
     public void Delete()
     {
-        FileSystem.DeleteDirectory(Path.GetDirectoryName(FilePath), UIOption.AllDialogs, RecycleOption.SendToRecycleBin);
+        FileSystem.DeleteDirectory(Path.GetDirectoryName(FilePath), UIOption.OnlyErrorDialogs, RecycleOption.SendToRecycleBin);
     }
 }

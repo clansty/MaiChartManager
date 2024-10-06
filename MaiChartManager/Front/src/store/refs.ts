@@ -3,6 +3,7 @@ import { AppVersionResult, GenreXml, GetAssetsDirsResult, MusicXmlWithABJacket, 
 import api from "@/client/api";
 import { captureException } from "@sentry/vue";
 import posthog from "posthog-js";
+import { useStorage } from "@vueuse/core";
 
 export const error = ref();
 export const errorId = ref<string>();
@@ -35,7 +36,7 @@ export const showNeedPurchaseDialog = ref(false);
 export const selectMusicId = ref(0)
 export const genreList = ref<GenreXml[]>([]);
 export const addVersionList = ref<VersionXml[]>([]);
-export const selectedADir = ref<string>('');
+export const selectedADir = useStorage<string>('selectedADir', 'A000');
 export const musicListAll = ref<MusicXmlWithABJacket[]>([]);
 export const assetDirs = ref<GetAssetsDirsResult[]>([]);
 export const version = ref<AppVersionResult>();
