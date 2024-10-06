@@ -9,7 +9,7 @@ namespace Sitreamai.Models;
 
 public class MusicXml
 {
-    private XmlDocument xmlDoc;
+    protected XmlDocument xmlDoc;
     public string FilePath { get; set; }
     [JsonIgnore] public string GamePath { get; }
 

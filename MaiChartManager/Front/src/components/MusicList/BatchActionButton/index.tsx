@@ -4,6 +4,7 @@ import MusicSelector from "@/components/MusicList/BatchActionButton/MusicSelecto
 import EditProps from "@/components/MusicList/BatchActionButton/EditProps";
 import { MusicXmlWithABJacket } from "@/client/apiGen";
 import ChooseAction from "@/components/MusicList/BatchActionButton/ChooseAction";
+import ProgressDisplay from "@/components/MusicList/BatchActionButton/ProgressDisplay";
 
 export enum STEP {
   None,
@@ -32,10 +33,14 @@ export default defineComponent({
         title="批量操作"
         show={step.value !== STEP.None}
         onUpdateShow={() => step.value = STEP.None}
+        maskClosable={false}
+        closable={step.value !== STEP.ProgressDisplay}
+        closeOnEsc={step.value !== STEP.ProgressDisplay}
       >
         {step.value === STEP.Select && <MusicSelector v-model:selectedMusicIds={selectedMusic.value} continue={() => step.value = STEP.ChooseAction}/>}
         {step.value === STEP.ChooseAction && <ChooseAction selectedMusic={selectedMusic.value} continue={(action: STEP) => step.value = action}/>}
         {step.value === STEP.EditProps && <EditProps selectedMusicIds={selectedMusic.value} closeModal={() => step.value = STEP.None}/>}
+        {step.value === STEP.ProgressDisplay && <ProgressDisplay/>}
       </NModal>
     </NButton>;
   }

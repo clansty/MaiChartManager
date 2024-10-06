@@ -55,14 +55,14 @@ export default defineComponent({
       },
       {
         title: '添加版本',
-        key: 'addVersion',
+        key: 'addVersionId',
         render: (row) => <GenreOption genre={addVersionList.value.find(it => it.id === row.addVersionId)}/>,
         filter: "default",
         filterOptions: addVersionList.value.map(it => ({label: it.genreName!, value: it.id!}))
       },
       {
         title: '流派',
-        key: 'genre',
+        key: 'genreId',
         render: (row) => <GenreOption genre={genreList.value.find(it => it.id === row.genreId)}/>,
         filter: "default",
         filterOptions: genreList.value.map(it => ({label: it.genreName!, value: it.id!}))

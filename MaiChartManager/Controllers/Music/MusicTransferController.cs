@@ -72,7 +72,7 @@ public class MusicTransferController(StaticSettings settings, ILogger<MusicTrans
     }
 
     [HttpGet]
-    public void ExportOpt(int id, string assetDir)
+    public void ExportOpt(int id, string assetDir, bool removeEvents = false)
     {
         var music = settings.GetMusic(id, assetDir);
         if (music is null) return;
@@ -83,6 +83,16 @@ public class MusicTransferController(StaticSettings settings, ILogger<MusicTrans
         // copy music
         foreach (var file in Directory.EnumerateFiles(Path.GetDirectoryName(music.FilePath)))
         {
+            if (Path.GetFileName(file).Equals("Music.xml", StringComparison.InvariantCultureIgnoreCase) && removeEvents)
+            {
+                logger.LogInformation("Remove events and rights from Music.xml");
+                var xmlDoc = music.GetXmlWithoutEventsAndRights();
+                var entry = zipArchive.CreateEntry($"music/music{music.Id:000000}/Music.xml");
+                using var stream = entry.Open();
+                xmlDoc.Save(stream);
+                continue;
+            }
+
             zipArchive.CreateEntryFromFile(file, $"music/music{music.Id:000000}/{Path.GetFileName(file)}");
         }
 

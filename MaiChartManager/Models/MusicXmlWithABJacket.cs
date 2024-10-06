@@ -1,4 +1,5 @@
-﻿using Sitreamai.Models;
+﻿using System.Xml;
+using Sitreamai.Models;
 
 namespace MaiChartManager.Models;
 
@@ -18,6 +19,26 @@ public class MusicXmlWithABJacket(string filePath, string gamePath, string asset
     }
 
     public bool isAcbAwbExist => StaticSettings.AcbAwb.ContainsKey($"music{NonDxId:000000}.acb") && StaticSettings.AcbAwb.ContainsKey($"music{NonDxId:000000}.awb");
+
+    public XmlDocument GetInnerXmlClone()
+    {
+        return (XmlDocument)xmlDoc.Clone();
+    }
+
+    public XmlDocument GetXmlWithoutEventsAndRights()
+    {
+        var clone = GetInnerXmlClone();
+        var root = clone.SelectSingleNode("/MusicData");
+
+        root.SelectSingleNode("rightsInfoName/id").InnerText = "0";
+        root.SelectSingleNode("eventName/id").InnerText = "1";
+        root.SelectSingleNode("eventName2/id").InnerText = "0";
+        root.SelectSingleNode("subEventName/id").InnerText = "0";
+        root.SelectSingleNode("lockType").InnerText = "0";
+        root.SelectSingleNode("subLockType").InnerText = "0";
+
+        return clone;
+    }
 
     public List<string> Problems
     {

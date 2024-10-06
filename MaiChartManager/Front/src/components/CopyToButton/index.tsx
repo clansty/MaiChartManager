@@ -4,16 +4,7 @@ import { globalCapture, selectedADir, selectedMusic, selectMusicId, showNeedPurc
 import { NButton, NButtonGroup, NDropdown, useDialog, useMessage } from "naive-ui";
 import { ZipReader } from "@zip.js/zip.js";
 import ChangeIdDialog from "./ChangeIdDialog";
-
-const getSubDirFile = async (folderHandle: FileSystemDirectoryHandle, fileName: string) => {
-  const pathParts = fileName.split('/');
-
-  let dirHandle = folderHandle;
-  for (let i = 0; i < pathParts.length - 1; i++) {
-    dirHandle = await dirHandle.getDirectoryHandle(pathParts[i], {create: true});
-  }
-  return await dirHandle.getFileHandle(pathParts[pathParts.length - 1], {create: true});
-}
+import getSubDirFile from "@/utils/getSubDirFile";
 
 enum DROPDOWN_OPTIONS {
   export,

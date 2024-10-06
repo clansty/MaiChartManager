@@ -1,17 +1,19 @@
 import { defineComponent, PropType, ref } from "vue";
 import { MusicXmlWithABJacket } from "@/client/apiGen";
-import { NButton, NFlex, NPopover, NRadio, NRadioGroup } from "naive-ui";
+import { NButton, NFlex, NPopover, NRadio, NRadioGroup, useMessage, useNotification } from "naive-ui";
 import { STEP } from "@/components/MusicList/BatchActionButton/index";
 import api from "@/client/api";
 import { updateMusicList } from "@/store/refs";
+import remoteExport from "@/components/MusicList/BatchActionButton/remoteExport";
 
-enum OPTIONS {
+export enum OPTIONS {
   None,
   EditProps,
   Delete,
   CreateNewOpt,
   CreateNewOptCompatible,
-  ConvertToMaidata
+  ConvertToMaidata,
+  ConvertToMaidataIgnoreVideo,
 }
 
 export default defineComponent({
@@ -22,6 +24,7 @@ export default defineComponent({
   setup(props) {
     const selectedOption = ref(OPTIONS.None);
     const load = ref(false);
+    const notify = useNotification();
 
     const proceed = async () => {
       switch (selectedOption.value) {
@@ -34,6 +37,11 @@ export default defineComponent({
           await updateMusicList();
           props.continue(STEP.None);
           break;
+        case OPTIONS.CreateNewOpt:
+        case OPTIONS.CreateNewOptCompatible:
+        case OPTIONS.ConvertToMaidata:
+        case OPTIONS.ConvertToMaidataIgnoreVideo:
+          remoteExport(props.continue as any, props.selectedMusic!, selectedOption.value, notify);
       }
     }
 
@@ -68,13 +76,16 @@ export default defineComponent({
               </>
           }
           <NRadio value={OPTIONS.CreateNewOpt}>
-            导出为 Opt（原始数据）
+            导出为 Opt（原始）
           </NRadio>
           <NRadio value={OPTIONS.CreateNewOptCompatible}>
-            导出为 Opt（兼容其他版本，移除 Event 等）
+            导出为 Opt（兼容任意版本游戏，移除 Event 等）
           </NRadio>
           <NRadio value={OPTIONS.ConvertToMaidata}>
             转换为 Maidata
+          </NRadio>
+          <NRadio value={OPTIONS.ConvertToMaidataIgnoreVideo}>
+            转换为 Maidata（无 BGA）
           </NRadio>
         </NFlex>
       </NRadioGroup>

@@ -143,7 +143,7 @@ public class MusicController(StaticSettings settings, ILogger<MusicController> l
         }
 
         var music = settings.GetMusic(id, assetDir);
-        while (music?.JacketPath is not null)
+        while (music?.JacketPath is not null && System.IO.File.Exists(music.JacketPath))
         {
             FileSystem.DeleteFile(music.JacketPath, UIOption.OnlyErrorDialogs, RecycleOption.SendToRecycleBin);
         }
