@@ -363,7 +363,7 @@ public partial class ImportChartController(StaticSettings settings, ILogger<Stat
 
             // var levelPadding = Converter.CalcMusicPadding(chart, first);
             var bpm = chart.simaiSharpChart.TimingChanges[0].tempo;
-            music.Bpm = (int)Math.Floor(bpm);
+            music.Bpm = bpm;
             // 一个小节多少秒
             var bar = 60 / bpm * 4;
 

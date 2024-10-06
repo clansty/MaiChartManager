@@ -60,7 +60,7 @@ public class MusicController(StaticSettings settings, ILogger<MusicController> l
     }
 
     [HttpPost]
-    public void EditMusicBpm(int id, [FromBody] int value, string assetDir)
+    public void EditMusicBpm(int id, [FromBody] float value, string assetDir)
     {
         var music = settings.GetMusic(id, assetDir);
         if (music != null)
@@ -152,6 +152,8 @@ public class MusicController(StaticSettings settings, ILogger<MusicController> l
         using var write = System.IO.File.Open(path, FileMode.Create);
         file.CopyTo(write);
         write.Close();
+        if (music is not null)
+            music.JacketPath = path;
         return "";
     }
 

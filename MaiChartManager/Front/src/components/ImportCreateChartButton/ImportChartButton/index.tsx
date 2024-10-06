@@ -137,6 +137,7 @@ export default defineComponent({
           version: savedOptions.value.version,
           shift: tempOptions.value.shift,
           debug: import.meta.env.DEV,
+          assetDir: selectedADir.value,
         })).data;
 
         errors.value.push(...res.errors!.map(it => ({...it, name: music.name})));

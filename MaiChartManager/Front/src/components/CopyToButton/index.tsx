@@ -1,6 +1,6 @@
 import { computed, defineComponent, ref } from "vue";
 import api from "@/client/api";
-import { globalCapture, selectedADir, selectedMusicBrief, selectMusicId, showNeedPurchaseDialog, updateMusicList, version } from "@/store/refs";
+import { globalCapture, selectedADir, selectedMusic, selectMusicId, showNeedPurchaseDialog, updateMusicList, version } from "@/store/refs";
 import { NButton, NButtonGroup, NDropdown, useDialog, useMessage } from "naive-ui";
 import { ZipReader } from "@zip.js/zip.js";
 import ChangeIdDialog from "./ChangeIdDialog";
@@ -33,7 +33,7 @@ export default defineComponent({
 
     const options = computed(() => [
       {
-        label: () => <a href={`/MaiChartManagerServlet/ExportOptApi/${selectedADir.value}/${selectMusicId.value}`} download={`${selectMusicId.value} - ${selectedMusicBrief.value?.name}.zip`}>导出 Zip</a>,
+        label: () => <a href={`/MaiChartManagerServlet/ExportOptApi/${selectedADir.value}/${selectMusicId.value}`} download={`${selectMusicId.value} - ${selectedMusic.value?.name}.zip`}>导出 Zip</a>,
         key: DROPDOWN_OPTIONS.exportZip,
       },
       {
@@ -41,7 +41,7 @@ export default defineComponent({
         key: DROPDOWN_OPTIONS.exportMaidata,
       },
       {
-        label: () => <a href={`/MaiChartManagerServlet/ExportAsMaidataApi/${selectedADir.value}/${selectMusicId.value}`} download={`${selectMusicId.value} - ${selectedMusicBrief.value?.name} - Maidata.zip`}>导出 Zip (Maidata)</a>,
+        label: () => <a href={`/MaiChartManagerServlet/ExportAsMaidataApi/${selectedADir.value}/${selectMusicId.value}`} download={`${selectMusicId.value} - ${selectedMusic.value?.name} - Maidata.zip`}>导出 Zip (Maidata)</a>,
         key: DROPDOWN_OPTIONS.exportMaiDataZip,
       },
       ...(selectedADir.value === 'A000' ? [] : [{

@@ -1,8 +1,21 @@
 import { computed, defineComponent, PropType } from "vue";
-import { NButton, NFlex, NScrollbar, NVirtualList } from "naive-ui";
-import { musicList, selectMusicId } from "@/store/refs";
-import { MusicBrief } from "@/client/apiGen";
+import { DataTableColumns, NButton, NFlex, NVirtualList } from "naive-ui";
+import { musicList } from "@/store/refs";
+import { MusicXmlWithABJacket } from "@/client/apiGen";
 import MusicEntry from "@/components/MusicList/MusicEntry";
+import JacketBox from "@/components/JacketBox";
+
+const columns: DataTableColumns<MusicXmlWithABJacket> = [
+  {type: 'selection'},
+  {title: '资源目录', key: 'assetDir'},
+  {title: 'ID', key: 'id'},
+  {
+    title: '封面',
+    key: 'jacket',
+    render: (row) => <JacketBox info={row} upload={false}/>
+  },
+  {title: '标题', key: 'title'},
+]
 
 export default defineComponent({
   props: {
@@ -26,7 +39,7 @@ export default defineComponent({
       </NFlex>
       <NVirtualList class="flex-1 max-h-70vh h-70vh" itemSize={20 / 4 * 16} items={musicList.value}>
         {{
-          default({item}: { item: MusicBrief }) {
+          default({item}: { item: MusicXmlWithABJacket }) {
             return (
               <MusicEntry music={item} selected={selectedMusicIds.value.includes(item.id!)} onClick={() => {
                 selectedMusicIds.value = selectedMusicIds.value.includes(item.id!)

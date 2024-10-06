@@ -1,6 +1,6 @@
 import { defineComponent, onMounted } from "vue";
 import api from "@/client/api";
-import { MusicBrief } from "@/client/apiGen";
+import { MusicXmlWithABJacket } from "@/client/apiGen";
 import { NFlex, NSelect, NVirtualList, useDialog } from "naive-ui";
 import MusicEntry from "@/components/MusicList/MusicEntry";
 import { assetDirs, musicList, selectedADir, selectMusicId, updateMusicList } from "@/store/refs";
@@ -30,7 +30,7 @@ export default defineComponent({
         </NFlex>
         <NVirtualList class="flex-1" itemSize={20 / 4 * 16} items={musicList.value}>
           {{
-            default({item}: { item: MusicBrief }) {
+            default({item}: { item: MusicXmlWithABJacket }) {
               return (
                 <MusicEntry music={item} selected={selectMusicId.value === item.id} onClick={() => selectMusicId.value = item.id!} key={item.id}/>
               )

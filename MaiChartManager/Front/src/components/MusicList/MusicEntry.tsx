@@ -1,5 +1,5 @@
 import { computed, defineComponent, PropType } from "vue";
-import { MusicBrief } from "@/client/apiGen";
+import { MusicXmlWithABJacket } from "@/client/apiGen";
 import noJacket from '@/assets/noJacket.webp';
 import { NBadge, NFlex } from "naive-ui";
 import { LEVEL_COLOR, LEVELS } from "@/consts";
@@ -8,7 +8,7 @@ import { selectedADir } from "@/store/refs";
 
 export default defineComponent({
   props: {
-    music: {type: Object as PropType<MusicBrief>, required: true},
+    music: {type: Object as PropType<MusicXmlWithABJacket>, required: true},
     selected: Boolean,
     onClick: Function as PropType<() => any>,
   },
@@ -28,8 +28,8 @@ export default defineComponent({
           <div class="text-ellipsis of-hidden ws-nowrap">{props.music.name}</div>
           <NFlex class="pt-1 text-sm" size="small">
             {
-              (props.music.chartsAvailable || []).map(chart =>
-                <div key={chart.index} class="c-white rounded-full px-2" style={{backgroundColor: LEVEL_COLOR[chart.index!]}}>{LEVELS[chart.levelId!]}</div>)
+              (props.music.charts || []).map((chart, index) =>
+                chart.enable && <div key={index} class="c-white rounded-full px-2" style={{backgroundColor: LEVEL_COLOR[index!]}}>{LEVELS[chart.levelId!]}</div>)
             }
           </NFlex>
         </div>

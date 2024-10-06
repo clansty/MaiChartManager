@@ -3,7 +3,7 @@ import { GenreXml } from "@/client/apiGen";
 import { NButton } from "naive-ui";
 import api from "@/client/api";
 import SelectFileTypeTip from "@/components/GenreVersionManager/SelectFileTypeTip";
-import { globalCapture, selectedMusicBrief, updateAddVersionList, updateGenreList } from "@/store/refs";
+import { globalCapture, selectedMusic, updateAddVersionList, updateGenreList } from "@/store/refs";
 import { EDIT_TYPE } from "./index";
 
 export default defineComponent({

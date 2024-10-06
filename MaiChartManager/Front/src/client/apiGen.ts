@@ -48,13 +48,6 @@ export interface Chart {
   problems?: string[] | null;
 }
 
-export interface ChartAvailable {
-  /** @format int32 */
-  index?: number;
-  /** @format int32 */
-  levelId?: number;
-}
-
 export interface CheatConfig {
   ticketUnlock?: boolean;
   mapUnlock?: boolean;
@@ -366,19 +359,6 @@ export enum MessageLevel {
   Info = "Info",
   Warning = "Warning",
   Fatal = "Fatal",
-}
-
-export interface MusicBrief {
-  /** @format int32 */
-  id?: number;
-  /** @format int32 */
-  nonDxId?: number;
-  name?: string | null;
-  hasJacket?: boolean;
-  modified?: boolean;
-  chartsAvailable?: ChartAvailable[] | null;
-  problems?: string[] | null;
-  assetDir?: string | null;
 }
 
 export interface MusicIdAndAssetDirPair {
@@ -1155,11 +1135,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      *
      * @tags ChartPreview
      * @name 1
-     * @request GET:/MaiChartManagerServlet/ChartPreview/{assetDir}/{id}/{level}/Maidata/1
+     * @request GET:/MaiChartManagerServlet/ChartPreviewApi/{assetDir}/{id}/{level}/Maidata/1
      */
     1: (id: number, level: number, assetDir: string, params: RequestParams = {}) =>
       this.request<string, any>({
-        path: `/MaiChartManagerServlet/ChartPreview/${assetDir}/${id}/${level}/Maidata/1`,
+        path: `/MaiChartManagerServlet/ChartPreviewApi/${assetDir}/${id}/${level}/Maidata/1`,
         method: "GET",
         format: "json",
         ...params,
@@ -1170,13 +1150,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      *
      * @tags ChartPreview
      * @name 12
-     * @request GET:/MaiChartManagerServlet/ChartPreview/{assetDir}/{id}/{level}/Track/1
+     * @request GET:/MaiChartManagerServlet/ChartPreviewApi/{assetDir}/{id}/{level}/Track/1
      * @originalName 1
      * @duplicate
      */
     12: (id: number, level: number, assetDir: string, params: RequestParams = {}) =>
       this.request<void, any>({
-        path: `/MaiChartManagerServlet/ChartPreview/${assetDir}/${id}/${level}/Track/1`,
+        path: `/MaiChartManagerServlet/ChartPreviewApi/${assetDir}/${id}/${level}/Track/1`,
         method: "GET",
         ...params,
       }),
@@ -1186,13 +1166,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      *
      * @tags ChartPreview
      * @name 13
-     * @request GET:/MaiChartManagerServlet/ChartPreview/{assetDir}/{id}/{level}/ImageFull/1
+     * @request GET:/MaiChartManagerServlet/ChartPreviewApi/{assetDir}/{id}/{level}/ImageFull/1
      * @originalName 1
      * @duplicate
      */
     13: (id: number, level: number, assetDir: string, params: RequestParams = {}) =>
       this.request<void, any>({
-        path: `/MaiChartManagerServlet/ChartPreview/${assetDir}/${id}/${level}/ImageFull/1`,
+        path: `/MaiChartManagerServlet/ChartPreviewApi/${assetDir}/${id}/${level}/ImageFull/1`,
         method: "GET",
         ...params,
       }),
@@ -1845,7 +1825,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/MaiChartManagerServlet/GetMusicListApi
      */
     GetMusicList: (params: RequestParams = {}) =>
-      this.request<MusicBrief[], any>({
+      this.request<MusicXmlWithABJacket[], any>({
         path: `/MaiChartManagerServlet/GetMusicListApi`,
         method: "GET",
         format: "json",

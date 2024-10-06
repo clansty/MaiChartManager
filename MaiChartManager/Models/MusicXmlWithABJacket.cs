@@ -11,24 +11,6 @@ public class MusicXmlWithABJacket(string filePath, string gamePath, string asset
     // 在 mod 里文件的 jacket 是优先的
     public new bool HasJacket => JacketPath is not null || AssetBundleJacket is not null || PseudoAssetBundleJacket is not null;
 
-    public record ChartAvailable(int index, int levelId);
-
-    public record MusicBrief(int Id, int NonDxId, string Name, bool HasJacket, bool Modified, IEnumerable<ChartAvailable> ChartsAvailable, IEnumerable<string> Problems, string AssetDir);
-
-    public MusicBrief GetBrief()
-    {
-        var chartsAvailable = new List<ChartAvailable>();
-        for (var i = 0; i < 5; i++)
-        {
-            if (Charts[i].Enable)
-            {
-                chartsAvailable.Add(new ChartAvailable(i, Charts[i].LevelId));
-            }
-        }
-
-        return new MusicBrief(Id, NonDxId, Name, HasJacket, Modified, chartsAvailable, Problems, assetDir);
-    }
-
     public new static MusicXmlWithABJacket CreateNew(int id, string gamePath, string assetDir)
     {
         var old = MusicXml.CreateNew(id, gamePath, assetDir);

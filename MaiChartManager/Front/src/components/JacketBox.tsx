@@ -2,12 +2,13 @@ import { computed, defineComponent, PropType, ref } from "vue";
 import noJacket from "@/assets/noJacket.webp";
 import api from "@/client/api";
 import { useDialog } from "naive-ui";
-import { globalCapture, selectedADir, selectedMusicBrief } from "@/store/refs";
+import { globalCapture, selectedADir, selectedMusic } from "@/store/refs";
 import { MusicXmlWithABJacket } from "@/client/apiGen";
 
 export default defineComponent({
   props: {
-    info: {type: Object as PropType<MusicXmlWithABJacket>, required: true}
+    info: {type: Object as PropType<MusicXmlWithABJacket>, required: true},
+    upload: {type: Boolean, default: true}
   },
   setup(props) {
     const dialog = useDialog();
@@ -16,6 +17,7 @@ export default defineComponent({
       `/MaiChartManagerServlet/GetJacketApi/${selectedADir.value}/${props.info.id}?${updateTime.value}` : noJacket)
 
     const upload = async () => {
+      if (!props.upload) return;
       try {
         const [fileHandle] = await window.showOpenFilePicker({
           id: 'jacket',
@@ -46,8 +48,8 @@ export default defineComponent({
         }
         updateTime.value = Date.now()
         props.info.hasJacket = true;
-        selectedMusicBrief.value!.hasJacket = true;
-        (selectedMusicBrief.value as any).updateTime = updateTime.value
+        selectedMusic.value!.hasJacket = true;
+        (selectedMusic.value as any).updateTime = updateTime.value
       } catch (e: any) {
         if (e.name === 'AbortError') return
         console.log(e)
@@ -55,6 +57,6 @@ export default defineComponent({
       }
     }
 
-    return () => <img src={jacketUrl.value} class="object-fill rounded-lg cursor-pointer" onClick={upload}/>
+    return () => <img src={jacketUrl.value} class={`object-fill rounded-lg ${props.upload && 'cursor-pointer'}`} onClick={upload}/>
   }
 })

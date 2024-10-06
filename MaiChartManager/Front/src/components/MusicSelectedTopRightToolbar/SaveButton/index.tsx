@@ -1,5 +1,5 @@
 import { defineComponent, ref, Teleport } from "vue";
-import { selectedADir, selectedMusicBrief, selectMusicId, updateMusicList } from "@/store/refs";
+import { selectedADir, selectedMusic, selectMusicId, updateMusicList } from "@/store/refs";
 import api from "@/client/api";
 import { NButton } from "naive-ui";
 import animation from './animation.module.sass';
@@ -11,11 +11,11 @@ export default defineComponent({
 
     const save = async () => {
       await api.SaveMusic(selectMusicId.value, selectedADir.value);
-      await updateMusicList();
       isAnimationShow.value = true;
       setTimeout(() => {
         isAnimationShow.value = false;
       }, 250);
+      await updateMusicList();
     }
 
     const {ctrl_s} = useMagicKeys({
@@ -27,8 +27,8 @@ export default defineComponent({
     })
     whenever(ctrl_s, save);
 
-    return () => selectedMusicBrief.value && (
-      <NButton secondary onClick={save} type={selectedMusicBrief.value.modified ? "warning" : undefined}>
+    return () => selectedMusic.value && (
+      <NButton secondary onClick={save} type={selectedMusic.value.modified ? "warning" : undefined}>
         保存
         {isAnimationShow.value && <Teleport to="body">
           <div class={animation.box}/>

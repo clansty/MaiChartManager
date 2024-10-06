@@ -25,6 +25,16 @@ public class MusicXml
         {
             Charts[i] = new Chart(notes[i], this);
         }
+
+        foreach (var ext in jacketExtensions)
+        {
+            var path = Path.Combine(GamePath, "LocalAssets", $"{NonDxId:000000}.{ext}");
+            if (File.Exists(path))
+            {
+                JacketPath = path;
+                break;
+            }
+        }
     }
 
     public static MusicXml CreateNew(int dxId, string gamePath, string assetDir)
@@ -316,9 +326,9 @@ public class MusicXml
         }
     }
 
-    public int Bpm
+    public float Bpm
     {
-        get => int.Parse(RootNode.SelectSingleNode("bpm")?.InnerText ?? "0");
+        get => float.Parse(RootNode.SelectSingleNode("bpm")?.InnerText ?? "0");
         set
         {
             Modified = true;
@@ -336,115 +346,101 @@ public class MusicXml
         }
     }
 
-    public class Chart(XmlNode node, MusicXml parent)
+    public class Chart
     {
+        private readonly XmlNode _node;
+        private readonly MusicXml _parent;
+
+        public Chart(XmlNode node, MusicXml parent)
+        {
+            _node = node;
+            _parent = parent;
+
+            if (!File.Exists(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(_parent.FilePath), Path)))
+            {
+                Problems.Add("谱面文件不存在");
+            }
+        }
+
         public string Path
         {
-            get => node.SelectSingleNode("file/path")?.InnerText;
+            get => _node.SelectSingleNode("file/path")?.InnerText;
             set
             {
-                parent.Modified = true;
-                node.SelectSingleNode("file/path").InnerText = value;
+                _parent.Modified = true;
+                _node.SelectSingleNode("file/path").InnerText = value;
             }
         }
 
         public int Level
         {
-            get => int.Parse(node.SelectSingleNode("level")?.InnerText ?? "0");
+            get => int.Parse(_node.SelectSingleNode("level")?.InnerText ?? "0");
             set
             {
-                parent.Modified = true;
-                node.SelectSingleNode("level").InnerText = value.ToString();
+                _parent.Modified = true;
+                _node.SelectSingleNode("level").InnerText = value.ToString();
             }
         }
 
         public int LevelDecimal
         {
-            get => int.Parse(node.SelectSingleNode("levelDecimal")?.InnerText ?? "0");
+            get => int.Parse(_node.SelectSingleNode("levelDecimal")?.InnerText ?? "0");
             set
             {
-                parent.Modified = true;
-                node.SelectSingleNode("levelDecimal").InnerText = value.ToString();
+                _parent.Modified = true;
+                _node.SelectSingleNode("levelDecimal").InnerText = value.ToString();
             }
         }
 
         public int LevelId
         {
-            get => int.Parse(node.SelectSingleNode("musicLevelID")?.InnerText ?? "0");
+            get => int.Parse(_node.SelectSingleNode("musicLevelID")?.InnerText ?? "0");
             set
             {
-                parent.Modified = true;
-                node.SelectSingleNode("musicLevelID").InnerText = value.ToString();
+                _parent.Modified = true;
+                _node.SelectSingleNode("musicLevelID").InnerText = value.ToString();
             }
         }
 
         public int MaxNotes
         {
-            get => int.Parse(node.SelectSingleNode("maxNotes")?.InnerText ?? "0");
+            get => int.Parse(_node.SelectSingleNode("maxNotes")?.InnerText ?? "0");
             set
             {
-                parent.Modified = true;
-                node.SelectSingleNode("maxNotes").InnerText = value.ToString();
+                _parent.Modified = true;
+                _node.SelectSingleNode("maxNotes").InnerText = value.ToString();
             }
         }
 
         public bool Enable
         {
-            get => bool.Parse(node.SelectSingleNode("isEnable")?.InnerText ?? "false");
+            get => bool.Parse(_node.SelectSingleNode("isEnable")?.InnerText ?? "false");
             set
             {
-                parent.Modified = true;
-                node.SelectSingleNode("isEnable").InnerText = value ? "true" : "false";
+                _parent.Modified = true;
+                _node.SelectSingleNode("isEnable").InnerText = value ? "true" : "false";
             }
         }
 
         public string Designer
         {
-            get => node.SelectSingleNode("notesDesigner/str")?.InnerText;
+            get => _node.SelectSingleNode("notesDesigner/str")?.InnerText;
             set
             {
-                parent.Modified = true;
-                node.SelectSingleNode("notesDesigner/str").InnerText = value;
-                node.SelectSingleNode("notesDesigner/id").InnerText = "999";
+                _parent.Modified = true;
+                _node.SelectSingleNode("notesDesigner/str").InnerText = value;
+                _node.SelectSingleNode("notesDesigner/id").InnerText = "999";
             }
         }
 
-        public List<string> Problems
-        {
-            get
-            {
-                var res = new List<string>();
-                if (!File.Exists(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(parent.FilePath), Path)))
-                {
-                    res.Add("谱面文件不存在");
-                }
-
-                return res;
-            }
-        }
+        public List<string> Problems { get; private set; } = [];
     }
 
     public Chart[] Charts { get; } = new Chart[6];
 
     public static readonly string[] jacketExtensions = ["jpg", "png", "jpeg"];
 
-    [JsonIgnore]
-    public string JacketPath
-    {
-        get
-        {
-            foreach (var ext in jacketExtensions)
-            {
-                var path = Path.Combine(GamePath, "LocalAssets", $"{NonDxId:000000}.{ext}");
-                if (File.Exists(path))
-                {
-                    return path;
-                }
-            }
-
-            return null;
-        }
-    }
+    [JsonIgnore] public string JacketPath { get; set; }
 
     public bool HasJacket => JacketPath is not null;
 

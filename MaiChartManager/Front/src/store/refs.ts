@@ -1,5 +1,5 @@
 import { computed, ref } from "vue";
-import { AppVersionResult, GenreXml, GetAssetsDirsResult, MusicBrief, VersionXml } from "@/client/apiGen";
+import { AppVersionResult, GenreXml, GetAssetsDirsResult, MusicXmlWithABJacket, VersionXml } from "@/client/apiGen";
 import api from "@/client/api";
 import { captureException } from "@sentry/vue";
 import posthog from "posthog-js";
@@ -36,12 +36,12 @@ export const selectMusicId = ref(0)
 export const genreList = ref<GenreXml[]>([]);
 export const addVersionList = ref<VersionXml[]>([]);
 export const selectedADir = ref<string>('');
-export const musicListAll = ref<MusicBrief[]>([]);
+export const musicListAll = ref<MusicXmlWithABJacket[]>([]);
 export const assetDirs = ref<GetAssetsDirsResult[]>([]);
 export const version = ref<AppVersionResult>();
 
 export const musicList = computed(() => musicListAll.value.filter(m => m.assetDir === selectedADir.value));
-export const selectedMusicBrief = computed(() => musicList.value.find(m => m.id === selectMusicId.value));
+export const selectedMusic = computed(() => musicList.value.find(m => m.id === selectMusicId.value));
 
 export const updateGenreList = async () => {
   const response = await api.GetAllGenres();

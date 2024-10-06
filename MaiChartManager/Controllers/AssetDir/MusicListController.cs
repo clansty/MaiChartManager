@@ -8,9 +8,9 @@ namespace MaiChartManager.Controllers;
 public class MusicListController(StaticSettings settings, ILogger<StaticSettings> logger) : ControllerBase
 {
     [HttpGet]
-    public IEnumerable<MusicXmlWithABJacket.MusicBrief> GetMusicList()
+    public IEnumerable<MusicXmlWithABJacket> GetMusicList()
     {
-        return settings.GetMusicList().Select(it => it.GetBrief());
+        return settings.GetMusicList();
     }
 
     [HttpPost]
