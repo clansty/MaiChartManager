@@ -3,6 +3,7 @@ import { NButton, NCheckbox, NFlex, NForm, NFormItem, NSelect } from "naive-ui";
 import GenreInput from "@/components/GenreInput";
 import { addVersionList, genreList, globalCapture, selectedADir, selectMusicId, updateMusicList, version } from "@/store/refs";
 import api from "@/client/api";
+import { MusicXmlWithABJacket } from "@/client/apiGen";
 
 enum VERSION_OPTION {
   NotChange,
@@ -19,7 +20,7 @@ const versionOptions = [
 export default defineComponent({
   props: {
     closeModal: {type: Function, required: true},
-    selectedMusicIds: {type: Array as PropType<number[]>, required: true}
+    selectedMusicIds: {type: Array as PropType<MusicXmlWithABJacket[]>, required: true}
   },
   setup(props) {
     const versionOpt = ref(VERSION_OPTION.NotChange);
@@ -38,7 +39,7 @@ export default defineComponent({
           newVersion = version.value!.gameVersion! * 100 + 20000;
         }
         await api.BatchSetProps({
-          ids: props.selectedMusicIds.map(id => ({id, assetDir: selectedADir.value})),
+          ids: props.selectedMusicIds.map(id => ({id: id.id, assetDir: id.assetDir})),
           genreId: genre.value,
           version: newVersion,
           addVersionId: addVersion.value,

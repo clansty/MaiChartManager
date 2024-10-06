@@ -14,7 +14,7 @@ export default defineComponent({
     const dialog = useDialog();
     const updateTime = ref(0)
     const jacketUrl = computed(() => props.info.hasJacket ?
-      `/MaiChartManagerServlet/GetJacketApi/${selectedADir.value}/${props.info.id}?${updateTime.value}` : noJacket)
+      `/MaiChartManagerServlet/GetJacketApi/${props.info.assetDir}/${props.info.id}?${updateTime.value}` : noJacket)
 
     const upload = async () => {
       if (!props.upload) return;

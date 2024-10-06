@@ -19,9 +19,9 @@ export default defineComponent({
   }
 })
 
-const GenreOption = defineComponent({
+export const GenreOption = defineComponent({
   props: {
-    genre: {type: Object as PropType<GenreXml>, required: true},
+    genre: {type: Object as PropType<GenreXml>},
   },
   setup(props) {
     return () => <NFlex align="center">
