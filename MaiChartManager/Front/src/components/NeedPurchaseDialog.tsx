@@ -23,6 +23,8 @@ export default defineComponent({
           <li>转换 PV</li>
           <li>设置音频的预览片段</li>
           <li>修改歌曲 ID</li>
+          <li>批量将乐曲导出成新的 Opt</li>
+          <li>批量将乐曲转换成 Maidata</li>
         </ul>
         <div>更多功能敬请期待</div>
         <NFlex align="center">

@@ -402,6 +402,11 @@ export interface PutAssetDirTxtValueRequest {
   content?: string | null;
 }
 
+export interface RequestCopyToRequest {
+  music?: MusicIdAndAssetDirPair[] | null;
+  removeEvents?: boolean;
+}
+
 export interface RequestPurchaseResult {
   errorMessage?: string | null;
   status?: StorePurchaseStatus;
@@ -1867,12 +1872,14 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      *
      * @tags MusicTransfer
      * @name RequestCopyTo
-     * @request POST:/MaiChartManagerServlet/RequestCopyToApi/{assetDir}/{id}
+     * @request POST:/MaiChartManagerServlet/RequestCopyToApi
      */
-    RequestCopyTo: (id: number, assetDir: string, params: RequestParams = {}) =>
+    RequestCopyTo: (data: RequestCopyToRequest, params: RequestParams = {}) =>
       this.request<void, any>({
-        path: `/MaiChartManagerServlet/RequestCopyToApi/${assetDir}/${id}`,
+        path: `/MaiChartManagerServlet/RequestCopyToApi`,
         method: "POST",
+        body: data,
+        type: ContentType.Json,
         ...params,
       }),
 
@@ -1883,10 +1890,19 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name ExportOpt
      * @request GET:/MaiChartManagerServlet/ExportOptApi/{assetDir}/{id}
      */
-    ExportOpt: (id: number, assetDir: string, params: RequestParams = {}) =>
+    ExportOpt: (
+      id: number,
+      assetDir: string,
+      query?: {
+        /** @default false */
+        removeEvents?: boolean;
+      },
+      params: RequestParams = {},
+    ) =>
       this.request<void, any>({
         path: `/MaiChartManagerServlet/ExportOptApi/${assetDir}/${id}`,
         method: "GET",
+        query: query,
         ...params,
       }),
 

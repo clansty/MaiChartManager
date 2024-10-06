@@ -39,6 +39,11 @@ export default defineComponent({
           break;
         case OPTIONS.CreateNewOpt:
         case OPTIONS.CreateNewOptCompatible:
+          if (location.hostname === '127.0.0.1') {
+            props.continue(STEP.None);
+            await api.RequestCopyTo({music: props.selectedMusic, removeEvents: selectedOption.value === OPTIONS.CreateNewOptCompatible});
+            break;
+          }
         case OPTIONS.ConvertToMaidata:
         case OPTIONS.ConvertToMaidataIgnoreVideo:
           if (version.value?.license !== 'Active') {

@@ -116,7 +116,10 @@ export default defineComponent({
       }
       try {
         // 本地 webview 打开，使用本地模式
-        await api.RequestCopyTo(selectMusicId.value, selectedADir.value);
+        await api.RequestCopyTo({
+          music: [{id: selectMusicId.value, assetDir: selectedADir.value}],
+          removeEvents: false,
+        });
       } finally {
         wait.value = false;
       }

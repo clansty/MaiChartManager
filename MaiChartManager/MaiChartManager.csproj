@@ -46,6 +46,7 @@
       <PackageReference Include="Standart.Hash.xxHash" Version="4.0.5" />
       <PackageReference Include="Swashbuckle.AspNetCore" Version="6.7.1" />
       <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.7.1" />
+      <PackageReference Include="Vanara.Windows.Forms" Version="4.0.4" />
       <PackageReference Include="Xabe.FFmpeg" Version="5.2.6" />
     </ItemGroup>
 

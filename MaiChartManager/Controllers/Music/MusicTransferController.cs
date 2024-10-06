@@ -5,7 +5,9 @@ using MaiLib;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualBasic.FileIO;
 using SimaiSharp;
+using Vanara.Windows.Forms;
 using Xabe.FFmpeg;
+using FolderBrowserDialog = System.Windows.Forms.FolderBrowserDialog;
 
 namespace MaiChartManager.Controllers.Music;
 
@@ -13,62 +15,102 @@ namespace MaiChartManager.Controllers.Music;
 [Route("MaiChartManagerServlet/[action]Api/{assetDir}/{id:int}")]
 public class MusicTransferController(StaticSettings settings, ILogger<MusicTransferController> logger) : ControllerBase
 {
+    public record RequestCopyToRequest(MusicBatchController.MusicIdAndAssetDirPair[] music, bool removeEvents);
+
     [HttpPost]
-    public void RequestCopyTo(int id, string assetDir)
+    [Route("/MaiChartManagerServlet/[action]Api")]
+    public void RequestCopyTo(RequestCopyToRequest request)
     {
         if (Program.BrowserWin is null) return;
         var dialog = new FolderBrowserDialog
         {
-            Description = "请选择要复制到的另一份游戏的资源目录（Axxx）位置"
+            Description = "请选择目标位置"
         };
         if (Program.BrowserWin.Invoke(() => dialog.ShowDialog(Program.BrowserWin)) != DialogResult.OK) return;
         var dest = dialog.SelectedPath;
         logger.LogInformation("CopyTo: {dest}", dest);
 
-        var music = settings.GetMusic(id, assetDir);
-        if (music is null) return;
-
-        // copy music
-        Directory.CreateDirectory(Path.Combine(dest, "music"));
-        FileSystem.CopyDirectory(Path.GetDirectoryName(music.FilePath), Path.Combine(dest, $@"music\music{music.Id:000000}"), UIOption.OnlyErrorDialogs);
-
-        // copy jacket
-        Directory.CreateDirectory(Path.Combine(dest, @"AssetBundleImages\jacket"));
-        if (music.JacketPath is not null)
+        ShellProgressDialog? progress = null;
+        if (request.music.Length > 1)
         {
-            FileSystem.CopyFile(music.JacketPath, Path.Combine(dest, $@"AssetBundleImages\jacket\ui_jacket_{music.NonDxId:000000}{Path.GetExtension(music.JacketPath)}"), UIOption.OnlyErrorDialogs);
-        }
-        else if (music.AssetBundleJacket is not null)
-        {
-            FileSystem.CopyFile(music.AssetBundleJacket, Path.Combine(dest, $@"AssetBundleImages\jacket\{Path.GetFileName(music.AssetBundleJacket)}"), UIOption.OnlyErrorDialogs);
-            if (System.IO.File.Exists(music.AssetBundleJacket + ".manifest"))
+            progress = new ShellProgressDialog()
             {
-                FileSystem.CopyFile(music.AssetBundleJacket + ".manifest", Path.Combine(dest, $@"AssetBundleImages\jacket\{Path.GetFileName(music.AssetBundleJacket)}.manifest"), UIOption.OnlyErrorDialogs);
+                AutoTimeEstimation = false,
+                Title = "正在导出…",
+                Description = $"正在导出 {request.music.Length} 首乐曲…",
+                CancelMessage = "正在取消…",
+                HideTimeRemaining = true,
+            };
+            progress.Start(Program.BrowserWin);
+            progress.UpdateProgress(0, (ulong)request.music.Length);
+        }
+
+        for (var i = 0; i < request.music.Length; i++)
+        {
+            var musicId = request.music[i];
+            var music = settings.GetMusic(musicId.Id, musicId.AssetDir);
+            if (music is null) continue;
+            if (progress?.IsCancelled ?? false)
+            {
+                break;
+            }
+
+            if (progress is not null)
+            {
+                progress.Detail = music.Name;
+                progress.UpdateProgress((ulong)i, (ulong)request.music.Length);
+            }
+
+            // copy music
+            Directory.CreateDirectory(Path.Combine(dest, "music"));
+            FileSystem.CopyDirectory(Path.GetDirectoryName(music.FilePath), Path.Combine(dest, $@"music\music{music.Id:000000}"), UIOption.OnlyErrorDialogs);
+
+            if (request.removeEvents)
+            {
+                var xmlDoc = music.GetXmlWithoutEventsAndRights();
+                xmlDoc.Save(Path.Combine(dest, $@"music\music{music.Id:000000}\Music.xml"));
+            }
+
+            // copy jacket
+            Directory.CreateDirectory(Path.Combine(dest, @"AssetBundleImages\jacket"));
+            if (music.JacketPath is not null)
+            {
+                FileSystem.CopyFile(music.JacketPath, Path.Combine(dest, $@"AssetBundleImages\jacket\ui_jacket_{music.NonDxId:000000}{Path.GetExtension(music.JacketPath)}"), UIOption.OnlyErrorDialogs);
+            }
+            else if (music.AssetBundleJacket is not null)
+            {
+                FileSystem.CopyFile(music.AssetBundleJacket, Path.Combine(dest, $@"AssetBundleImages\jacket\{Path.GetFileName(music.AssetBundleJacket)}"), UIOption.OnlyErrorDialogs);
+                if (System.IO.File.Exists(music.AssetBundleJacket + ".manifest"))
+                {
+                    FileSystem.CopyFile(music.AssetBundleJacket + ".manifest", Path.Combine(dest, $@"AssetBundleImages\jacket\{Path.GetFileName(music.AssetBundleJacket)}.manifest"), UIOption.OnlyErrorDialogs);
+                }
+            }
+            else if (music.PseudoAssetBundleJacket is not null)
+            {
+                FileSystem.CopyFile(music.PseudoAssetBundleJacket, Path.Combine(dest, $@"AssetBundleImages\jacket\{Path.GetFileName(music.PseudoAssetBundleJacket)}"), UIOption.OnlyErrorDialogs);
+            }
+
+            // copy acbawb
+            Directory.CreateDirectory(Path.Combine(dest, "SoundData"));
+            if (StaticSettings.AcbAwb.TryGetValue($"music{music.NonDxId:000000}.acb", out var acb))
+            {
+                FileSystem.CopyFile(acb, Path.Combine(dest, $@"SoundData\music{music.NonDxId:000000}.acb"), UIOption.OnlyErrorDialogs);
+            }
+
+            if (StaticSettings.AcbAwb.TryGetValue($"music{music.NonDxId:000000}.awb", out var awb))
+            {
+                FileSystem.CopyFile(awb, Path.Combine(dest, $@"SoundData\music{music.NonDxId:000000}.awb"), UIOption.OnlyErrorDialogs);
+            }
+
+            // copy movie data
+            if (StaticSettings.MovieDataMap.TryGetValue(music.NonDxId, out var movie))
+            {
+                Directory.CreateDirectory(Path.Combine(dest, "MovieData"));
+                FileSystem.CopyFile(movie, Path.Combine(dest, $@"MovieData\{music.NonDxId:000000}.dat"), UIOption.OnlyErrorDialogs);
             }
         }
-        else if (music.PseudoAssetBundleJacket is not null)
-        {
-            FileSystem.CopyFile(music.PseudoAssetBundleJacket, Path.Combine(dest, $@"AssetBundleImages\jacket\{Path.GetFileName(music.PseudoAssetBundleJacket)}"), UIOption.OnlyErrorDialogs);
-        }
 
-        // copy acbawb
-        Directory.CreateDirectory(Path.Combine(dest, "SoundData"));
-        if (StaticSettings.AcbAwb.TryGetValue($"music{music.NonDxId:000000}.acb", out var acb))
-        {
-            FileSystem.CopyFile(acb, Path.Combine(dest, $@"SoundData\music{music.NonDxId:000000}.acb"), UIOption.OnlyErrorDialogs);
-        }
-
-        if (StaticSettings.AcbAwb.TryGetValue($"music{music.NonDxId:000000}.awb", out var awb))
-        {
-            FileSystem.CopyFile(awb, Path.Combine(dest, $@"SoundData\music{music.NonDxId:000000}.awb"), UIOption.OnlyErrorDialogs);
-        }
-
-        // copy movie data
-        if (StaticSettings.MovieDataMap.TryGetValue(music.NonDxId, out var movie))
-        {
-            Directory.CreateDirectory(Path.Combine(dest, "MovieData"));
-            FileSystem.CopyFile(movie, Path.Combine(dest, $@"MovieData\{music.NonDxId:000000}.dat"), UIOption.OnlyErrorDialogs);
-        }
+        progress?.Stop();
     }
 
     [HttpGet]
