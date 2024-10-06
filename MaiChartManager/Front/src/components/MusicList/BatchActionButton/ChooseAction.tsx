@@ -3,7 +3,7 @@ import { MusicXmlWithABJacket } from "@/client/apiGen";
 import { NButton, NFlex, NPopover, NRadio, NRadioGroup, useMessage, useNotification } from "naive-ui";
 import { STEP } from "@/components/MusicList/BatchActionButton/index";
 import api from "@/client/api";
-import { updateMusicList } from "@/store/refs";
+import { showNeedPurchaseDialog, updateMusicList, version } from "@/store/refs";
 import remoteExport from "@/components/MusicList/BatchActionButton/remoteExport";
 
 export enum OPTIONS {
@@ -41,7 +41,12 @@ export default defineComponent({
         case OPTIONS.CreateNewOptCompatible:
         case OPTIONS.ConvertToMaidata:
         case OPTIONS.ConvertToMaidataIgnoreVideo:
+          if (version.value?.license !== 'Active') {
+            showNeedPurchaseDialog.value = true
+            break;
+          }
           remoteExport(props.continue as any, props.selectedMusic!, selectedOption.value, notify);
+          break;
       }
     }
 

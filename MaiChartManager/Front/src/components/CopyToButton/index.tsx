@@ -12,7 +12,9 @@ enum DROPDOWN_OPTIONS {
   changeId,
   showExplorer,
   exportMaidata,
+  exportMaidataIgnoreVideo,
   exportMaiDataZip,
+  exportMaiDataZipIgnoreVideo,
 }
 
 export default defineComponent({
@@ -34,6 +36,14 @@ export default defineComponent({
       {
         label: () => <a href={`/MaiChartManagerServlet/ExportAsMaidataApi/${selectedADir.value}/${selectMusicId.value}`} download={`${selectMusicId.value} - ${selectedMusic.value?.name} - Maidata.zip`}>导出 Zip (Maidata)</a>,
         key: DROPDOWN_OPTIONS.exportMaiDataZip,
+      },
+      {
+        label: '导出为 Maidata（无 BGA）',
+        key: DROPDOWN_OPTIONS.exportMaidataIgnoreVideo,
+      },
+      {
+        label: () => <a href={`/MaiChartManagerServlet/ExportAsMaidataApi/${selectedADir.value}/${selectMusicId.value}?ignoreVideo=true`} download={`${selectMusicId.value} - ${selectedMusic.value?.name} - Maidata.zip`}>导出 Zip (Maidata，无 BGA)</a>,
+        key: DROPDOWN_OPTIONS.exportMaiDataZipIgnoreVideo,
       },
       ...(selectedADir.value === 'A000' ? [] : [{
         label: '修改 ID',
@@ -58,6 +68,7 @@ export default defineComponent({
           api.RequestOpenExplorer(selectMusicId.value, selectedADir.value);
           break;
         case DROPDOWN_OPTIONS.exportMaidata:
+        case DROPDOWN_OPTIONS.exportMaidataIgnoreVideo:
           copy(key);
           break;
       }
@@ -65,7 +76,7 @@ export default defineComponent({
 
     const copy = async (type: DROPDOWN_OPTIONS) => {
       wait.value = true;
-      if (location.hostname !== '127.0.0.1' || type === DROPDOWN_OPTIONS.exportMaidata) {
+      if (location.hostname !== '127.0.0.1' || type === DROPDOWN_OPTIONS.exportMaidata || type === DROPDOWN_OPTIONS.exportMaidataIgnoreVideo) {
         // 浏览器模式，使用 zip.js 获取并解压
         let folderHandle: FileSystemDirectoryHandle;
         try {
@@ -79,7 +90,11 @@ export default defineComponent({
           return;
         }
         try {
-          const zip = await fetch(`/MaiChartManagerServlet/${type === DROPDOWN_OPTIONS.exportMaidata ? 'ExportAsMaidataApi' : 'ExportOptApi'}/${selectedADir.value}/${selectMusicId.value}`)
+          let url = `/MaiChartManagerServlet/${type === DROPDOWN_OPTIONS.export ? 'ExportOptApi' : 'ExportAsMaidataApi'}/${selectedADir.value}/${selectMusicId.value}`;
+          if (type === DROPDOWN_OPTIONS.exportMaidataIgnoreVideo) {
+            url += '?ignoreVideo=true';
+          }
+          const zip = await fetch(url)
           const zipReader = new ZipReader(zip.body!);
           const entries = zipReader.getEntriesGenerator();
           for await (const entry of entries) {
