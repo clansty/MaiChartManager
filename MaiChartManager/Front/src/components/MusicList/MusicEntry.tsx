@@ -4,7 +4,8 @@ import noJacket from '@/assets/noJacket.webp';
 import { NBadge, NFlex } from "naive-ui";
 import { LEVEL_COLOR, LEVELS } from "@/consts";
 import ProblemsDisplay from "@/components/ProblemsDisplay";
-import { selectedADir } from "@/store/refs";
+import { musicListAll, selectedADir } from "@/store/refs";
+import ConflictDisplay from "@/components/MusicList/ConflictDisplay";
 
 export default defineComponent({
   props: {
@@ -16,6 +17,9 @@ export default defineComponent({
   setup(props) {
     const jacketUrl = computed(() => props.music.hasJacket ?
       `/MaiChartManagerServlet/GetJacketApi/${selectedADir.value}/${props.music.id}?${(props.music as any).updateTime}` : noJacket)
+
+    const overridingOthers = computed(() => musicListAll.value.filter(m => m.id === props.music.id && m.assetDir! < props.music.assetDir!))
+    const overrideByOthers = computed(() => musicListAll.value.filter(m => m.id === props.music.id && m.assetDir! > props.music.assetDir!))
 
     return () => (
       <div class={`flex gap-5 h-20 w-full p-2 m-y-1 hover:bg-op-40 rd-md relative ${props.selected ? 'bg-[var(--selected-bg)]' : 'hover:bg-zinc-3'}`} onClick={props.onClick} title={props.music.name!}>
@@ -33,7 +37,9 @@ export default defineComponent({
             }
           </NFlex>
         </div>
-        <NFlex class="absolute right-0 bottom-0 mr-2 mb-2">
+        <NFlex class="absolute right-0 bottom-0 mr-2 mb-2" size="small">
+          <ConflictDisplay conflicts={overridingOthers.value} type="up"/>
+          <ConflictDisplay conflicts={overrideByOthers.value} type="down"/>
           <ProblemsDisplay problems={props.music.problems!}/>
         </NFlex>
       </div>

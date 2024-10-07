@@ -27,7 +27,7 @@ export default defineComponent({
     const sync = (key: keyof Chart, method: Function) => async () => {
       if (!props.chart) return;
       selectedMusic.value!.modified = true;
-      await method(props.songId, props.chartIndex, props.chart[key]!);
+      await method(props.songId, props.chartIndex, selectedADir.value, props.chart[key]!);
     }
 
     watch(() => props.chart.designer, sync('designer', api.EditChartDesigner));
