@@ -1,4 +1,6 @@
 ﻿using System.Net;
+using System.Net.NetworkInformation;
+using System.Net.Sockets;
 using System.Security.Cryptography.X509Certificates;
 using System.Text.Json.Serialization;
 using System.Windows.Forms;
@@ -60,6 +62,33 @@ public static class ServerManager
         return cert;
     }
 
+    private static bool IsPortAvailable(int port)
+    {
+        var ipGlobalProperties = IPGlobalProperties.GetIPGlobalProperties();
+        var tcpConnInfoArray = ipGlobalProperties.GetActiveTcpConnections();
+        Console.WriteLine(string.Join(", ", tcpConnInfoArray.Select(tcpi => tcpi.LocalEndPoint.Port.ToString())));
+        foreach (var tcpi in tcpConnInfoArray)
+        {
+            if (tcpi.LocalEndPoint.Port == port)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private static int GetAvailablePort()
+    {
+        var port = 49182;
+        while (!IsPortAvailable(port))
+        {
+            port++;
+        }
+
+        return port;
+    }
+
     public static void StartApp(bool export, Action? onStart = null)
     {
         var builder = WebApplication.CreateBuilder();
@@ -92,7 +121,7 @@ public static class ServerManager
 # if !DEBUG
         builder.WebHost.ConfigureKestrel((context, serverOptions) =>
         {
-            serverOptions.Listen(IPAddress.Loopback, 0);
+            serverOptions.Listen(IPAddress.Loopback, GetAvailablePort());
             if (export)
             {
                 serverOptions.Listen(IPAddress.Any, 5001, listenOptions =>
