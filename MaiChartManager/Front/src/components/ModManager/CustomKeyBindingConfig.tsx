@@ -15,7 +15,12 @@ export default defineComponent({
           <NFlex class="h-34px" align="center">
             <NSwitch v-model:value={props.config.enable}/>
           </NFlex>
-          这里的设置无论你是否启用了 segatools 的 io4 模拟都会工作
+          <div>
+            这里的设置无论你是否启用了 segatools 的 io4 模拟都会工作
+          </div>
+          <div>
+            但是它可能会和其他 Mod 类型的输入插件冲突，比如说 Mai2InputMod.dll。如有需要可以期待后续更新兼容的版本
+          </div>
         </NFlex>
       </NFormItem>
       <NGrid cols={2}>
