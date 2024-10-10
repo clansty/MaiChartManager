@@ -19,7 +19,11 @@ public class MusicXml
         GamePath = gamePath;
         xmlDoc = new XmlDocument();
         xmlDoc.Load(filePath);
+        Refresh();
+    }
 
+    public void Refresh()
+    {
         var notes = xmlDoc.SelectSingleNode("MusicData/notesData")?.ChildNodes;
         for (var i = 0; i < 6; i++)
         {

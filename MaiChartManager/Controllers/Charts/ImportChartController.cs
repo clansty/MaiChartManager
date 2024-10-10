@@ -488,6 +488,7 @@ public partial class ImportChartController(StaticSettings settings, ILogger<Stat
         music.GenreId = genreId;
         music.Version = version;
         music.Save();
+        music.Refresh();
         return new ImportChartResult(errors, false);
     }
 }
