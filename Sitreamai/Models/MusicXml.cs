@@ -100,7 +100,7 @@ public class MusicXml
                         <str>解放なし</str>
                       </eventName2>
                       <subEventName>
-                        <id>0</id>
+                        <id>1</id>
                         <str>解放なし</str>
                       </subEventName>
                       <lockType>0</lockType>
