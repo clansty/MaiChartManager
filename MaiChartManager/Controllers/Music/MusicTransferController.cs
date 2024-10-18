@@ -174,17 +174,19 @@ public class MusicTransferController(StaticSettings settings, ILogger<MusicTrans
         }
     }
 
-    private static void DeleteIfExists(params string[] path)
+    private void DeleteIfExists(params string[] path)
     {
         foreach (var p in path)
         {
             if (Directory.Exists(p))
             {
+                logger.LogInformation("Delete directory: {p}", p);
                 FileSystem.DeleteDirectory(p, UIOption.OnlyErrorDialogs, RecycleOption.SendToRecycleBin);
             }
 
             if (System.IO.File.Exists(p))
             {
+                logger.LogInformation("Delete file: {p}", p);
                 FileSystem.DeleteFile(p, UIOption.OnlyErrorDialogs, RecycleOption.SendToRecycleBin);
             }
         }
@@ -198,10 +200,10 @@ public class MusicTransferController(StaticSettings settings, ILogger<MusicTrans
         if (music is null) return;
         var newNonDxId = newId % 10000;
 
-        var abJacketTarget = Path.Combine(assetDir, "AssetBundleImages", "jacket", $"ui_jacket_{newNonDxId:000000}.ab");
-        var acbawbTarget = Path.Combine(assetDir, "SoundData", $"music{newNonDxId:000000}");
-        var movieTarget = Path.Combine(assetDir, "MovieData", $"{newNonDxId:000000}.dat");
-        var newMusicDir = Path.Combine(assetDir, "music", $"music{newNonDxId:000000}");
+        var abJacketTarget = Path.Combine(StaticSettings.StreamingAssets, assetDir, "AssetBundleImages", "jacket", $"ui_jacket_{newNonDxId:000000}.ab");
+        var acbawbTarget = Path.Combine(StaticSettings.StreamingAssets, assetDir, "SoundData", $"music{newNonDxId:000000}");
+        var movieTarget = Path.Combine(StaticSettings.StreamingAssets, assetDir, "MovieData", $"{newNonDxId:000000}.dat");
+        var newMusicDir = Path.Combine(StaticSettings.StreamingAssets, assetDir, "music", $"music{newNonDxId:000000}");
         DeleteIfExists(abJacketTarget, abJacketTarget + ".manifest", acbawbTarget + ".acb", acbawbTarget + ".awb", movieTarget, newMusicDir);
 
         // jacket
@@ -209,19 +211,23 @@ public class MusicTransferController(StaticSettings settings, ILogger<MusicTrans
         {
             var localJacketTarget = Path.Combine(StaticSettings.GamePath, "LocalAssets", $"{newNonDxId:000000}{Path.GetExtension(music.JacketPath)}");
             DeleteIfExists(localJacketTarget);
+            logger.LogInformation("Move jacket: {music.JacketPath} -> {localJacketTarget}", music.JacketPath, localJacketTarget);
             FileSystem.MoveFile(music.JacketPath, localJacketTarget, UIOption.OnlyErrorDialogs);
         }
         else if (music.PseudoAssetBundleJacket is not null)
         {
             var localJacketTarget = Path.Combine(StaticSettings.GamePath, "LocalAssets", $"{newNonDxId:000000}{Path.GetExtension(music.PseudoAssetBundleJacket)}");
             DeleteIfExists(localJacketTarget);
+            logger.LogInformation("Move jacket: {music.PseudoAssetBundleJacket} -> {localJacketTarget}", music.PseudoAssetBundleJacket, localJacketTarget);
             FileSystem.MoveFile(music.PseudoAssetBundleJacket, localJacketTarget, UIOption.OnlyErrorDialogs);
         }
         else if (music.AssetBundleJacket is not null)
         {
+            logger.LogInformation("Move jacket: {music.AssetBundleJacket} -> {abJacketTarget}", music.AssetBundleJacket, abJacketTarget);
             FileSystem.MoveFile(music.AssetBundleJacket, abJacketTarget, UIOption.OnlyErrorDialogs);
             if (System.IO.File.Exists(music.AssetBundleJacket + ".manifest"))
             {
+                logger.LogInformation("Move jacket manifest: {music.AssetBundleJacket}.manifest -> {abJacketTarget}.manifest", music.AssetBundleJacket, abJacketTarget);
                 FileSystem.MoveFile(music.AssetBundleJacket + ".manifest", abJacketTarget + ".manifest", UIOption.OnlyErrorDialogs);
             }
         }
@@ -230,17 +236,20 @@ public class MusicTransferController(StaticSettings settings, ILogger<MusicTrans
         // 是可以的
         if (StaticSettings.AcbAwb.TryGetValue($"music{music.NonDxId:000000}.acb", out var acb))
         {
+            logger.LogInformation("Move acb: {acb} -> {acbawbTarget}.acb", acb, acbawbTarget);
             FileSystem.MoveFile(acb, acbawbTarget + ".acb", UIOption.OnlyErrorDialogs);
         }
 
         if (StaticSettings.AcbAwb.TryGetValue($"music{music.NonDxId:000000}.awb", out var awb))
         {
+            logger.LogInformation("Move awb: {awb} -> {acbawbTarget}.awb", awb, acbawbTarget);
             FileSystem.MoveFile(awb, acbawbTarget + ".awb", UIOption.OnlyErrorDialogs);
         }
 
         // movie data
         if (StaticSettings.MovieDataMap.TryGetValue(music.NonDxId, out var movie))
         {
+            logger.LogInformation("Move movie: {movie} -> {movieTarget}", movie, movieTarget);
             FileSystem.MoveFile(movie, movieTarget, UIOption.OnlyErrorDialogs);
         }
 
@@ -252,6 +261,7 @@ public class MusicTransferController(StaticSettings settings, ILogger<MusicTrans
             if (!chart.Enable) continue;
             if (!System.IO.File.Exists(Path.Combine(oldMusicDir, chart.Path))) continue;
             var newFileName = $"{newId:000000}_0{i}.ma2";
+            logger.LogInformation("Move chart: {chart.Path} -> {newFileName}", chart.Path, newFileName);
             FileSystem.MoveFile(Path.Combine(oldMusicDir, chart.Path), Path.Combine(oldMusicDir, newFileName));
             chart.Path = newFileName;
         }
@@ -259,7 +269,8 @@ public class MusicTransferController(StaticSettings settings, ILogger<MusicTrans
         // xml
         music.Id = newId;
         music.Save();
-        Directory.CreateDirectory(Path.Combine(assetDir, "music"));
+        Directory.CreateDirectory(Path.Combine(StaticSettings.StreamingAssets, assetDir, "music"));
+        logger.LogInformation("Move music dir: {oldMusicDir} -> {newMusicDir}", oldMusicDir, newMusicDir);
         FileSystem.MoveDirectory(oldMusicDir, newMusicDir, UIOption.OnlyErrorDialogs);
 
         // rescan all

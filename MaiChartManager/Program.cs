@@ -1,17 +1,16 @@
 using System.Runtime.InteropServices;
 using System.Text.Json;
-using MaiChartManager.Controllers;
 using MaiChartManager.Controllers.Music;
 using Xabe.FFmpeg;
 
 namespace MaiChartManager;
 
-static class Program
+static partial class Program
 {
     public static Browser? BrowserWin { get; set; }
 
-    [DllImport("kernel32.dll", SetLastError = true)]
-    private static extern bool SetConsoleOutputCP(uint wCodePageID);
+    [LibraryImport("kernel32.dll", SetLastError = true)]
+    private static partial void SetConsoleOutputCP(uint wCodePageID);
 
     /// <summary>
     ///  The main entry point for the application.
