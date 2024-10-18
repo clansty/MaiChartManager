@@ -21,6 +21,9 @@ public partial class ImportChartController(StaticSettings settings, ILogger<Stat
     [GeneratedRegex(@"^\([\d\.]+\)")]
     private static partial Regex BpmTagRegex();
 
+    [GeneratedRegex(@"\{([\d\.]+)\}")]
+    private static partial Regex MeasureTagRegex();
+
     private static string Add1Bar(string maidata)
     {
         var regex = BpmTagRegex();
@@ -76,7 +79,7 @@ public partial class ImportChartController(StaticSettings settings, ILogger<Stat
     }
 
     [NonAction]
-    private Chart? TryParseChart(string chartText, MaiChart simaiSharpChart, int level, List<ImportChartMessage> errors)
+    private Chart? TryParseChart(string chartText, MaiChart? simaiSharpChart, int level, List<ImportChartMessage> errors)
     {
         try
         {
@@ -120,6 +123,11 @@ public partial class ImportChartController(StaticSettings settings, ILogger<Stat
         catch (Exception e)
         {
             logger.LogWarning(e, "无法在手动修正错误后解析谱面");
+        }
+
+        if (simaiSharpChart is null)
+        {
+            return null;
         }
 
         try
@@ -258,12 +266,24 @@ public partial class ImportChartController(StaticSettings settings, ILogger<Stat
             foreach (var kvp in allChartText)
             {
                 var chartText = kvp.Value;
+                var measures = MeasureTagRegex().Matches(chartText);
+                foreach (Match measure in measures)
+                {
+                    if (!float.TryParse(measure.Groups[1].Value, out var measureValue)) continue;
+                    if (measureValue > 384)
+                    {
+                        errors.Add(new ImportChartMessage($"谱面难度 {kvp.Key} 存在 {measureValue} 分音符，这个数值不能大于 384。绝大多数这样的情况都是可以修改谱面解决的", MessageLevel.Fatal));
+                        fatal = true;
+                    }
+                }
+
                 try
                 {
                     var chart = TryParseChartSimaiSharp(chartText, kvp.Key, errors);
                     paddings.Add(Converter.CalcMusicPadding(chart, first));
 
                     var candidate = TryParseChart(chartText, chart, kvp.Key, errors);
+                    if (candidate is null) throw new Exception("解析谱面失败");
                     isDx = isDx || candidate.IsDxChart;
                 }
                 catch (Exception e)
