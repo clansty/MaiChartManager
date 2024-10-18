@@ -274,6 +274,7 @@ public partial class ImportChartController(StaticSettings settings, ILogger<Stat
                     {
                         errors.Add(new ImportChartMessage($"谱面难度 {kvp.Key} 存在 {measureValue} 分音符，这个数值不能大于 384。绝大多数这样的情况都是可以修改谱面解决的", MessageLevel.Fatal));
                         fatal = true;
+                        goto foreachAllChartTextContinue;
                     }
                 }
 
@@ -292,6 +293,8 @@ public partial class ImportChartController(StaticSettings settings, ILogger<Stat
                     errors.Add(new ImportChartMessage($"谱面难度 {kvp.Key} 解析失败", MessageLevel.Fatal));
                     fatal = true;
                 }
+
+                foreachAllChartTextContinue: ;
             }
 
             var padding = paddings.Max();

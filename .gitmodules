@@ -4,3 +4,6 @@
 [submodule "MaiLib"]
 	path = MaiLib
 	url = git@github.com:clansty/MaiLib.git
+[submodule "SonicAudioTools"]
+	path = SonicAudioTools
+	url = git@github.com:clansty/SonicAudioTools.git

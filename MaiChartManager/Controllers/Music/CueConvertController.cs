@@ -1,4 +1,5 @@
-﻿using MaiChartManager.Attributes;
+﻿using System.Security.Cryptography;
+using MaiChartManager.Attributes;
 using MaiChartManager.Utils;
 using Microsoft.AspNetCore.Mvc;
 using NAudio.Wave;
@@ -61,13 +62,12 @@ public class CueConvertController(StaticSettings settings, ILogger<MusicControll
         var targetAcbPath = StaticSettings.AcbAwb[$"music{id:000000}.acb"];
         if (cachePath is null) throw new Exception("音频文件不存在");
 
-        await using var srcAudioFile = new AudioFileReader(cachePath);
-        var sample = srcAudioFile.ToSampleProvider().Skip(TimeSpan.FromSeconds(request.StartTime)).Take(TimeSpan.FromSeconds(request.EndTime - request.StartTime));
+        var loopStart = TimeSpan.FromSeconds(request.StartTime);
+        var loopEnd = TimeSpan.FromSeconds(request.EndTime);
 
-        var stream = new MemoryStream();
-        WaveFileWriter.WriteWavFileToStream(stream, sample.ToWaveProvider16());
-        stream.Position = 0;
-
-        Audio.ConvertToMai(cachePath, targetAcbPath, 0, null, cachePath, stream);
+        using var sha1 = SHA1.Create();
+        var awbHash = await sha1.ComputeHashAsync(System.IO.File.OpenRead(StaticSettings.AcbAwb[$"music{id:000000}.awb"]));
+        var acbBytes = CriUtils.CreateAcbWithPreview(cachePath, awbHash, loopStart, loopEnd);
+        await System.IO.File.WriteAllBytesAsync(targetAcbPath, acbBytes);
     }
 }

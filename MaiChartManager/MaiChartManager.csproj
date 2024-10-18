@@ -35,6 +35,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Sitreamai\Sitreamai.csproj" />
+      <ProjectReference Include="..\SonicAudioTools\Source\SonicAudioLib\SonicAudioLib.csproj" />
     </ItemGroup>
 
     <ItemGroup>
@@ -72,6 +73,8 @@
     <ItemGroup>
       <EmbeddedResource Remove="Front\**" />
       <EmbeddedResource Remove="Libs\**" />
+      <None Remove="Resources\templateV3.acb" />
+      <EmbeddedResource Include="Resources\templateV3.acb" />
     </ItemGroup>
 
     <ItemGroup>
@@ -109,6 +112,9 @@
       </Reference>
       <Reference Include="AssetStudioUtility">
         <HintPath>Libs\AssetStudioUtility.dll</HintPath>
+      </Reference>
+      <Reference Include="LB_Common">
+        <HintPath>..\Sitreamai\Lib\LB_Common.dll</HintPath>
       </Reference>
       <Reference Include="WinBlur">
         <HintPath>Libs\WinBlur.dll</HintPath>

@@ -10,6 +10,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimaiSharp", "SimaiSharp\Si
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MaiLib", "MaiLib\MaiLib.csproj", "{077998A7-9AD8-4F41-B93B-B63EFD19A550}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SonicAudioLib", "SonicAudioTools\Source\SonicAudioLib\SonicAudioLib.csproj", "{63138773-1F47-474C-9345-15EB6183ECC6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -32,6 +34,10 @@ Global
 		{077998A7-9AD8-4F41-B93B-B63EFD19A550}.Debug|x64.Build.0 = Debug|Any CPU
 		{077998A7-9AD8-4F41-B93B-B63EFD19A550}.Release|x64.ActiveCfg = Release|Any CPU
 		{077998A7-9AD8-4F41-B93B-B63EFD19A550}.Release|x64.Build.0 = Release|Any CPU
+		{63138773-1F47-474C-9345-15EB6183ECC6}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{63138773-1F47-474C-9345-15EB6183ECC6}.Debug|x64.Build.0 = Debug|Any CPU
+		{63138773-1F47-474C-9345-15EB6183ECC6}.Release|x64.ActiveCfg = Release|Any CPU
+		{63138773-1F47-474C-9345-15EB6183ECC6}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

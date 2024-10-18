@@ -47,6 +47,7 @@
     <None Remove="Resources\template.acb" />
     <EmbeddedResource Include="Resources\nopreview.acb" />
     <EmbeddedResource Include="Resources\template.acb" />
+    <None Remove="C:\Users\Clansty\.nuget\packages\naudio.vorbis\1.5.0\contentFiles\any\netstandard2.0\README.md" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Lib\**" />
