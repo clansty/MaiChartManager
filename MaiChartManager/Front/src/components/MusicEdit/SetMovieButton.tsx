@@ -74,6 +74,7 @@ export default defineComponent({
               description: "支持的文件类型",
               accept: {
                 "video/*": [".dat"],
+                "image/*": [],
               },
             },
           ],
@@ -89,10 +90,12 @@ export default defineComponent({
           showNeedPurchaseDialog.value = true;
         } else {
           offset.value = 0;
-          step.value = STEP.Offset
-          await new Promise((resolve) => {
-            okResolve.value = resolve;
-          });
+          if (file.type.startsWith("video/")) {
+            step.value = STEP.Offset
+            await new Promise((resolve) => {
+              okResolve.value = resolve;
+            });
+          }
           load.value = true;
           progress.value = 0;
           step.value = STEP.Progress
@@ -116,9 +119,10 @@ export default defineComponent({
       <NDrawer show={step.value === STEP.Select} height={250} placement="bottom">
         <NDrawerContent title="可以选择的文件类型">
           <NFlex vertical>
-            任何 FFmpeg 支持的视频格式（赞助版功能），或者已经自行转换好的 DAT 文件
+            任何 FFmpeg 支持的视频格式或单张图片（赞助版功能），或者已经自行转换好的 DAT 文件
             <div class="grid cols-4 justify-items-center text-8em gap-10">
               <FileTypeIcon type="MP4"/>
+              <FileTypeIcon type="JPG"/>
               <FileTypeIcon type="DAT"/>
             </div>
           </NFlex>

@@ -98,6 +98,12 @@ public class MovieConvertController(StaticSettings settings, ILogger<MovieConver
             var srcMedia = await FFmpeg.GetMediaInfo(srcFilePath);
             var conversion = FFmpeg.Conversions.New()
                 .AddStream(srcMedia.VideoStreams.First().SetCodec(Vp9Encoding));
+            if (file.ContentType.StartsWith("image/"))
+            {
+                conversion.AddParameter("-r 1 -t 2");
+                conversion.AddParameter("-loop 1", ParameterPosition.PreInput);
+            }
+
             if (padding < 0)
             {
                 conversion.SetSeek(TimeSpan.FromSeconds(-padding));

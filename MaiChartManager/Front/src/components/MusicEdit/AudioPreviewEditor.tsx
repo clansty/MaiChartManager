@@ -111,6 +111,7 @@ export default defineComponent({
 
     return () => <NSpin show={dataLoad.value}>
       <NFlex vertical size="large">
+        Ctrl / Shift + 点击可直接将点击位置设为开始 / 结束时间
         <div ref={waveSurferContainer}/>
         <NFlex justify="center">
           <NButton secondary onClick={() => {
