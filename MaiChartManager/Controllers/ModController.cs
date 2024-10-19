@@ -1,4 +1,5 @@
 ﻿using System.IO.Compression;
+using System.Reflection;
 using Microsoft.AspNetCore.Mvc;
 using Tomlet;
 
@@ -64,8 +65,8 @@ public class ModController(StaticSettings settings, ILogger<ModController> logge
             return;
         }
 
-        var zipFile = Path.Combine(StaticSettings.exeDir, @"AquaMai\MelonLoader.x64.zip");
-        var zip = ZipFile.OpenRead(zipFile);
+        using var s = Assembly.GetExecutingAssembly().GetManifestResourceStream("MaiChartManager.Resources.MelonLoader.x64.zip")!;
+        var zip = new ZipArchive(s, ZipArchiveMode.Read);
         foreach (var entry in zip.Entries)
         {
             if (entry.Name == "NOTICE.txt")
@@ -76,18 +77,10 @@ public class ModController(StaticSettings settings, ILogger<ModController> logge
         }
     }
 
-    public enum GameEdition
-    {
-        SDGA,
-        SDEZ
-    }
-
-    public record InstallAquaMaiRequest(GameEdition Version);
-
     [HttpPost]
-    public void InstallAquaMai(InstallAquaMaiRequest request)
+    public void InstallAquaMai()
     {
-        var src = Path.Combine(StaticSettings.exeDir, "AquaMai", request.Version.ToString(), "AquaMai.dll");
+        var src = Path.Combine(StaticSettings.exeDir, "AquaMai.dll");
         var dest = Path.Combine(StaticSettings.GamePath, @"Mods\AquaMai.dll");
         Directory.CreateDirectory(Path.GetDirectoryName(dest));
         System.IO.File.Copy(src, dest, true);

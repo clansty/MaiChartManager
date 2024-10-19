@@ -78,8 +78,22 @@ export interface Config {
   utils?: UtilsConfig;
   timeSaving?: TimeSavingConfig;
   windowState?: WindowStateConfig;
+  customCameraId?: CustomCameraIdConfig;
   touchSensitivity?: TouchSensitivityConfig;
   customKeyMap?: CustomKeyMapConfig;
+}
+
+export interface CustomCameraIdConfig {
+  enable?: boolean;
+  printCameraList?: boolean;
+  /** @format int32 */
+  leftQrCamera?: number;
+  /** @format int32 */
+  rightQrCamera?: number;
+  /** @format int32 */
+  photoCamera?: number;
+  /** @format int32 */
+  chimeCamera?: number;
 }
 
 export interface CustomKeyMapConfig {
@@ -124,11 +138,7 @@ export interface FixConfig {
   fontFix?: boolean;
   slideJudgeTweak?: boolean;
   hanabiFix?: boolean;
-}
-
-export enum GameEdition {
-  SDGA = "SDGA",
-  SDEZ = "SDEZ",
+  ignoreAimeServerError?: boolean;
 }
 
 export interface GameModInfo {
@@ -208,10 +218,6 @@ export interface ImportChartMessage {
 export interface ImportChartResult {
   errors?: ImportChartMessage[] | null;
   fatal?: boolean;
-}
-
-export interface InstallAquaMaiRequest {
-  version?: GameEdition;
 }
 
 export enum KeyCodeID {
@@ -450,6 +456,7 @@ export interface TimeSavingConfig {
   iWontTapOrSlideVigorously?: boolean;
   skipGameOverScreen?: boolean;
   skipTrackStart?: boolean;
+  showQuickEndPlay?: boolean;
 }
 
 export interface TouchSensitivityConfig {
@@ -541,6 +548,7 @@ export interface UXConfig {
   hideSelfMadeCharts?: boolean;
   customFont?: boolean;
   customNoteSkin?: boolean;
+  touchToButtonInput?: boolean;
   trackStartProcessTweak?: boolean;
   hideHanabi?: boolean;
   customVersionString?: string | null;
@@ -1558,12 +1566,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name InstallAquaMai
      * @request POST:/MaiChartManagerServlet/InstallAquaMaiApi
      */
-    InstallAquaMai: (data: InstallAquaMaiRequest, params: RequestParams = {}) =>
+    InstallAquaMai: (params: RequestParams = {}) =>
       this.request<void, any>({
         path: `/MaiChartManagerServlet/InstallAquaMaiApi`,
         method: "POST",
-        body: data,
-        type: ContentType.Json,
         ...params,
       }),
 

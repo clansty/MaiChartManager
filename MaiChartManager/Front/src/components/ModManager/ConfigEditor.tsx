@@ -32,7 +32,6 @@ export default defineComponent({
     const installingMelonLoader = ref(false)
     const installingAquaMai = ref(false)
     const showAquaMaiInstallDone = ref(false)
-    const showVersionSelect = ref(false);
 
     onMounted(async () => {
       config.value = (await api.GetAquaMaiConfig()).data;
@@ -50,17 +49,11 @@ export default defineComponent({
       }
     }
 
-    const installAquaMai = async (version?: GameEdition) => {
-      showVersionSelect.value = false
-      if (showAquaMaiInstallDone.value) return
-      if (!version) {
-        showVersionSelect.value = true
-        return
-      }
+    const installAquaMai = async () => {
       try {
         // 但是你根本看不到这个加载图标，因为太快了
         installingAquaMai.value = true
-        await api.InstallAquaMai({version})
+        await api.InstallAquaMai()
         await props.refresh()
         showAquaMaiInstallDone.value = true
         setTimeout(() => showAquaMaiInstallDone.value = false, 3000);
@@ -138,17 +131,6 @@ export default defineComponent({
           </>)}
         </NScrollbar>}
       </NFlex>
-      <NModal
-        preset="card"
-        class="w-[min(50vw,50em)]"
-        title="请选择你的游戏类型"
-        v-model:show={showVersionSelect.value}
-      >
-        <NFlex vertical>
-          <NButton secondary onClick={() => installAquaMai(GameEdition.SDGA)}>SDGA</NButton>
-          <NButton secondary onClick={() => installAquaMai(GameEdition.SDEZ)}>SDEZ</NButton>
-        </NFlex>
-      </NModal>
     </NModal>;
   }
 })

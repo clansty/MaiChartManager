@@ -75,6 +75,8 @@
       <EmbeddedResource Remove="Libs\**" />
       <None Remove="Resources\templateV3.acb" />
       <EmbeddedResource Include="Resources\templateV3.acb" />
+      <None Remove="Resources\MelonLoader.x64.zip" />
+      <EmbeddedResource Include="Resources\MelonLoader.x64.zip" />
     </ItemGroup>
 
     <ItemGroup>
@@ -105,7 +107,7 @@
 
     <ItemGroup>
       <Reference Include="AquaMai">
-        <HintPath>AquaMai\SDGA\AquaMai.dll</HintPath>
+        <HintPath>Libs\AquaMai.dll</HintPath>
       </Reference>
       <Reference Include="AssetStudio">
         <HintPath>Libs\AssetStudio.dll</HintPath>
