@@ -79,7 +79,7 @@ public class CueConvertController(StaticSettings settings, ILogger<MusicControll
         }
         catch
         {
-            return new CriUtils.AudioPreviewTime(0, 0);
+            return new CriUtils.AudioPreviewTime(-1, -1);
         }
     }
 }

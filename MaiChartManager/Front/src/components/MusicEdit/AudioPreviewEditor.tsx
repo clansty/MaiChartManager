@@ -28,6 +28,9 @@ export default defineComponent({
       try {
         const req = await api.GetAudioPreviewTime(selectMusicId.value, selectedADir.value)
         savedRegion = req.data
+        if (savedRegion.startTime! >= savedRegion.endTime!) {
+          throw new Error("音频预览时间错误")
+        }
       } catch (e) {
         savedRegion = {startTime: -1, endTime: -1}
       }
