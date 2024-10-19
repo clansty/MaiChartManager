@@ -336,7 +336,7 @@ public class MusicXml
         set
         {
             Modified = true;
-            RootNode.SelectSingleNode("bpm").InnerText = value.ToString();
+            RootNode.SelectSingleNode("bpm").InnerText = ((int)value).ToString();
         }
     }
 
