@@ -1,5 +1,5 @@
 import { computed, defineComponent, onMounted, ref } from "vue";
-import { NButton, NFlex, NModal, NSpin } from "naive-ui";
+import { NButton, NFlex, NModal, NSpin, useMessage } from "naive-ui";
 import RegionsPlugin, { Region } from "wavesurfer.js/dist/plugins/regions";
 import WaveSurfer from "wavesurfer.js";
 import { globalCapture, selectedADir, selectMusicId } from "@/store/refs";
@@ -8,6 +8,7 @@ import Hover from 'wavesurfer.js/dist/plugins/hover'
 import TimelinePlugin from 'wavesurfer.js/dist/plugins/timeline'
 import api from "@/client/api";
 import { AudioPreviewTime } from "@/client/apiGen";
+import { useMagicKeys } from "@vueuse/core";
 
 export default defineComponent({
   props: {
@@ -21,6 +22,8 @@ export default defineComponent({
     const isPlaySection = ref(false)
     const load = ref(false)
     const dataLoad = ref(true)
+    const {ctrl, shift} = useMagicKeys()
+    const message = useMessage()
 
     onMounted(async () => {
       dataLoad.value = true
@@ -62,6 +65,23 @@ export default defineComponent({
           resize: true,
           id: 'selection',
         })
+      })
+
+      ws.value.on('click', (e) => {
+        const time = ws.value?.getDuration()! * e;
+        if (ctrl.value) {
+          if (time >= region.value!.end) {
+            message.warning("开始时间不能大于结束时间")
+            return
+          }
+          region.value!.setOptions({start: time})
+        } else if (shift.value) {
+          if (time <= region.value!.start) {
+            message.warning("结束时间不能小于开始时间")
+            return
+          }
+          region.value!.setOptions({end: time, start: region.value!.start})
+        }
       })
 
       regions.on("region-out", () => {
