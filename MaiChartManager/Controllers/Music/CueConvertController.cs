@@ -2,9 +2,7 @@
 using MaiChartManager.Attributes;
 using MaiChartManager.Utils;
 using Microsoft.AspNetCore.Mvc;
-using NAudio.Wave;
 using Sitreamai;
-using Standart.Hash.xxHash;
 
 namespace MaiChartManager.Controllers.Music;
 
@@ -69,5 +67,19 @@ public class CueConvertController(StaticSettings settings, ILogger<MusicControll
         var awbHash = await sha1.ComputeHashAsync(System.IO.File.OpenRead(StaticSettings.AcbAwb[$"music{id:000000}.awb"]));
         var acbBytes = CriUtils.CreateAcbWithPreview(cachePath, awbHash, loopStart, loopEnd);
         await System.IO.File.WriteAllBytesAsync(targetAcbPath, acbBytes);
+    }
+
+    [HttpGet]
+    public CriUtils.AudioPreviewTime GetAudioPreviewTime(int id, string assetDir)
+    {
+        id %= 10000;
+        try
+        {
+            return CriUtils.GetAudioPreviewTime(StaticSettings.AcbAwb[$"music{id:000000}.acb"]);
+        }
+        catch
+        {
+            return new CriUtils.AudioPreviewTime(0, 0);
+        }
     }
 }

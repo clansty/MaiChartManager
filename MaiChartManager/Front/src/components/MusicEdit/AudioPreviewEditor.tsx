@@ -1,5 +1,5 @@
 import { computed, defineComponent, onMounted, ref } from "vue";
-import { NButton, NFlex, NModal } from "naive-ui";
+import { NButton, NFlex, NModal, NSpin } from "naive-ui";
 import RegionsPlugin, { Region } from "wavesurfer.js/dist/plugins/regions";
 import WaveSurfer from "wavesurfer.js";
 import { globalCapture, selectedADir, selectMusicId } from "@/store/refs";
@@ -7,6 +7,7 @@ import ZoomPlugin from 'wavesurfer.js/dist/plugins/zoom'
 import Hover from 'wavesurfer.js/dist/plugins/hover'
 import TimelinePlugin from 'wavesurfer.js/dist/plugins/timeline'
 import api from "@/client/api";
+import { AudioPreviewTime } from "@/client/apiGen";
 
 export default defineComponent({
   props: {
@@ -18,8 +19,19 @@ export default defineComponent({
     const ws = ref<WaveSurfer>()
     const isPlaying = ref(false)
     const isPlaySection = ref(false)
+    const load = ref(false)
+    const dataLoad = ref(true)
 
-    onMounted(() => {
+    onMounted(async () => {
+      dataLoad.value = true
+      let savedRegion: AudioPreviewTime | null = null
+      try {
+        const req = await api.GetAudioPreviewTime(selectMusicId.value, selectedADir.value)
+        savedRegion = req.data
+      } catch (e) {
+        savedRegion = {startTime: -1, endTime: -1}
+      }
+
       const regions = RegionsPlugin.create()
       ws.value = WaveSurfer.create({
         container: waveSurferContainer.value,
@@ -41,8 +53,8 @@ export default defineComponent({
       ws.value.on('decode', (duration) => {
         // Regions
         region.value = regions.addRegion({
-          start: 0,
-          end: duration,
+          start: savedRegion!.startTime! >= 0 ? savedRegion.startTime! : 0,
+          end: savedRegion!.endTime! >= 0 ? savedRegion.endTime! : duration,
           drag: true,
           resize: true,
           id: 'selection',
@@ -57,9 +69,8 @@ export default defineComponent({
       ws.value.on('finish', () => {
         isPlaying.value = false
       })
+      dataLoad.value = false
     })
-
-    const load = ref(false)
 
     const save = async () => {
       load.value = true
@@ -75,31 +86,33 @@ export default defineComponent({
 
     const playIcon = computed(() => isPlaying.value ? 'i-mdi-pause' : 'i-mdi-play')
 
-    return () => <NFlex vertical size="large">
-      <div ref={waveSurferContainer}/>
-      <NFlex justify="center">
-        <NButton secondary onClick={() => {
-          isPlaySection.value = false
-          if (isPlaying.value) ws.value?.pause()
-          else ws.value?.play()
-          isPlaying.value = !isPlaying.value
-        }}>
-          <span class={`text-lg ${playIcon.value}`}/>
-        </NButton>
-        <NButton secondary onClick={() => {
-          isPlaySection.value = true
-          isPlaying.value = true
-          region.value?.play()
-        }}>
-          <span class="i-mdi-play text-lg m-r-2"/>
-          选区
-        </NButton>
+    return () => <NSpin show={dataLoad.value}>
+      <NFlex vertical size="large">
+        <div ref={waveSurferContainer}/>
+        <NFlex justify="center">
+          <NButton secondary onClick={() => {
+            isPlaySection.value = false
+            if (isPlaying.value) ws.value?.pause()
+            else ws.value?.play()
+            isPlaying.value = !isPlaying.value
+          }}>
+            <span class={`text-lg ${playIcon.value}`}/>
+          </NButton>
+          <NButton secondary onClick={() => {
+            isPlaySection.value = true
+            isPlaying.value = true
+            region.value?.play()
+          }}>
+            <span class="i-mdi-play text-lg m-r-2"/>
+            选区
+          </NButton>
+        </NFlex>
+        <NFlex justify="end">
+          <NButton secondary onClick={save} loading={load.value}>
+            保存
+          </NButton>
+        </NFlex>
       </NFlex>
-      <NFlex justify="end">
-        <NButton secondary onClick={save} loading={load.value}>
-          保存
-        </NButton>
-      </NFlex>
-    </NFlex>;
+    </NSpin>;
   }
 })

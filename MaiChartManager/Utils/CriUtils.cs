@@ -60,6 +60,19 @@ public static class CriUtils
         return criTable.Save();
     }
 
+    public record AudioPreviewTime(double StartTime, double EndTime);
+
+    public static AudioPreviewTime GetAudioPreviewTime(string acbPath)
+    {
+        var criTable = new CriTable();
+        criTable.Load(File.ReadAllBytes(acbPath));
+        var trackEventTable = criTable.Rows[0].GetTable("TrackEventTable");
+        var command = trackEventTable.Rows[1]["Command"] as byte[];
+        var loopStart = BitConverter.ToUInt32(command[3..7].Reverse().ToArray(), 0);
+        var loopEnd = BitConverter.ToUInt32(command[17..21].Reverse().ToArray(), 0);
+        return new AudioPreviewTime(loopStart / 1000.0, loopEnd / 1000.0);
+    }
+
     private static byte[] MakeCommandForPreview(TimeSpan loopStart, TimeSpan loopEnd)
     {
         using var ms = new MemoryStream();

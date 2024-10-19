@@ -22,6 +22,13 @@ export enum AssetType {
   Movie = "Movie",
 }
 
+export interface AudioPreviewTime {
+  /** @format double */
+  startTime?: number;
+  /** @format double */
+  endTime?: number;
+}
+
 export interface BatchSetPropsRequest {
   ids?: MusicIdAndAssetDirPair[] | null;
   /** @format int32 */
@@ -115,6 +122,8 @@ export interface FixConfig {
   extendNotesPool?: number;
   frameRateLock?: boolean;
   fontFix?: boolean;
+  slideJudgeTweak?: boolean;
+  hanabiFix?: boolean;
 }
 
 export enum GameEdition {
@@ -531,6 +540,9 @@ export interface UXConfig {
   testProof?: boolean;
   hideSelfMadeCharts?: boolean;
   customFont?: boolean;
+  customNoteSkin?: boolean;
+  trackStartProcessTweak?: boolean;
+  hideHanabi?: boolean;
   customVersionString?: string | null;
   customPlaceName?: string | null;
   execOnIdle?: string | null;
@@ -1272,6 +1284,21 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         method: "POST",
         body: data,
         type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags CueConvert
+     * @name GetAudioPreviewTime
+     * @request GET:/MaiChartManagerServlet/GetAudioPreviewTimeApi/{assetDir}/{id}
+     */
+    GetAudioPreviewTime: (id: number, assetDir: string, params: RequestParams = {}) =>
+      this.request<AudioPreviewTime, any>({
+        path: `/MaiChartManagerServlet/GetAudioPreviewTimeApi/${assetDir}/${id}`,
+        method: "GET",
+        format: "json",
         ...params,
       }),
 
