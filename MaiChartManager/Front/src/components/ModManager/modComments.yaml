@@ -8,6 +8,7 @@ sections:
   timeSaving: 节省一些不知道宝不宝贵的时间
   customKeyMap: 自定义按键映射
   windowState: 游戏窗口属性
+  customCameraId: 自定义摄像头 ID
 
 cheat:
   ticketUnlock: 解锁游戏里所有可能的跑图券
@@ -26,6 +27,7 @@ ux:
   quickSkip: |
     长按 Service 键或者键盘上的 “7” 键可以跳过登录过程中的界面直接进入选歌界面或在选歌界面直接结束游戏
     在游玩界面，按一下 “7” 或者 Service 键重开当前的歌，按 1P 的“选择”键立即结束当前乐曲
+    按住下方四个按钮（3456）使用官方快速重开（仅对非宴谱有效）
   loadAssetBundleWithoutManifest: |
     优化图片资源的加载，就算没有 AssetBundleImages.manifest 也可以正常加载 ab 格式的图片资源
     导入了删除曲包之类的话，应该需要开启这个
@@ -61,6 +63,9 @@ ux:
   hideHanabi: |
     完全隐藏烟花
     不能和 HanabiFix 一起使用
+  touchToButtonInput: |
+    映射触摸操作至实体按键
+    仅在非游戏中界面工作
 
 performance:
   improveLoadSpeed: 在自检界面，每个屏幕结束的时候不会等两秒才进入下一个屏幕
@@ -86,6 +91,9 @@ fix:
   hanabiFix: |
     修复 1p 模式下的烟花大小
     不能和 HideHanabi 一起使用
+  ignoreAimeServerError: |
+    防止因错误认为 AimeDB 服务器问题引起的灰网
+    建议开启
 
 utils:
   logUserId: 在玩家登录时调试输出用户 ID
@@ -104,6 +112,10 @@ utils:
   selectionDetail: 在选歌界面可以显示当前光标所在的乐曲的详情信息，比如说定数 版本 流派。以及鸟加之后可以推多少分
   frameRateDisplay: 左上角帧率显示
   showNetErrorDetail: 出现灰网时显示原因
+  touchPanelBaudRate: |
+    调整触摸屏串口波特率，默认值 9600
+    需要硬件配合。如果你不清楚你是否可以使用，那你不能使用
+    改为 0 禁用
 
 timeSaving:
   skipWarningScreen: 跳过日服启动时候的 WARNING 界面
@@ -115,6 +127,7 @@ timeSaving:
   iWontTapOrSlideVigorously: 跳过“不要大力拍打或滑动哦”这个界面，数据一旦加载完就立马进入下一个界面
   skipGameOverScreen: 跳过游戏结束的“再见”界面
   skipTrackStart: 跳过乐曲开始界面
+  showQuickEndPlay: 音符结束之后显示像 AstroDX 一样的“跳过”按钮
 
 windowState:
   windowed: 窗口化游戏
@@ -125,6 +138,14 @@ windowState:
   enable: |
     启用此功能
     不启用的话，不会对游戏窗口做任何操作
+
+customCameraId:
+  enable: 启用后可以指定游戏使用的摄像头
+  printCameraList: 启动时打印摄像头列表到日志中，可以作为修改的依据
+  leftQrCamera: DX Pass 1P
+  rightQrCamera: DX Pass 2P
+  photoCamera: 玩家摄像头
+  chimeCamera: 二维码扫描摄像头
 
 shouldEnableOptions:
   ux:
