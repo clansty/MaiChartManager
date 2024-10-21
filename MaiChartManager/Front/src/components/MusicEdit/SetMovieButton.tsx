@@ -161,7 +161,9 @@ export default defineComponent({
           percentage={progress.value}
           indicator-placement="inside"
           processing
-        />
+        >
+          {progress.value === 100 ? '还在处理，别急…' : `${progress.value}%`}
+        </NProgress>
       </NModal>
     </NButton>;
   }
