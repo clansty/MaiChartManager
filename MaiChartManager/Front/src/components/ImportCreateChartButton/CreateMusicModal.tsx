@@ -4,6 +4,7 @@ import { assetDirs, musicList, selectedADir, selectMusicId, updateMusicList } fr
 import dxIcon from "@/assets/dxIcon.png";
 import stdIcon from "@/assets/stdIcon.png";
 import api from "@/client/api";
+import MusicIdConflictNotifier from "@/components/MusicIdConflictNotifier";
 
 export default defineComponent({
   props: {
@@ -45,7 +46,10 @@ export default defineComponent({
         default: () => <NForm label-placement="left" labelWidth="5em" showFeedback={false}>
           <NFlex vertical size="large">
             <NFormItem label="ID">
-              <NInputNumber v-model:value={id.value} class="w-full" min={1} max={2e4 - 1}/>
+              <NFlex align="center" wrap={false}>
+                <NInputNumber v-model:value={id.value} class="w-full" min={1} max={2e4 - 1}/>
+                <MusicIdConflictNotifier id={id.value}/>
+              </NFlex>
             </NFormItem>
             <NFormItem label="谱面类型">
               <NFlex>

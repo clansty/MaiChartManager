@@ -27,8 +27,6 @@ export default defineComponent({
             context: 'unhandledrejection'
           }
         })
-        if (import.meta.env.DEV)
-          notification.error({title: '未处理错误', content: event.reason?.error?.message || event.reason?.message});
       });
 
       if (window.showDirectoryPicker === undefined) {

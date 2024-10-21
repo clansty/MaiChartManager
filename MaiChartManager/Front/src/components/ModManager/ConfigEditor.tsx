@@ -1,6 +1,6 @@
 import { computed, defineComponent, onMounted, PropType, ref, watch } from "vue";
 import { NButton, NCheckbox, NDivider, NFlex, NFormItem, NInput, NInputNumber, NModal, NScrollbar, NSelect, NSwitch, useDialog } from "naive-ui";
-import { Config, GameEdition, GameModInfo } from "@/client/apiGen";
+import { Config, GameModInfo } from "@/client/apiGen";
 import comments from './modComments.yaml';
 import api from "@/client/api";
 import { capitalCase } from "change-case";

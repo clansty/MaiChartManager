@@ -2,6 +2,7 @@ import { computed, defineComponent, ref, watch } from "vue";
 import { DialogOptions, NButton, NFlex, NForm, NFormItem, NInputGroup, NInputGroupLabel, NInputNumber, NModal, useDialog } from "naive-ui";
 import { globalCapture, musicList, selectedADir, selectMusicId, updateAll } from "@/store/refs";
 import api from "@/client/api";
+import MusicIdConflictNotifier from "@/components/MusicIdConflictNotifier";
 
 export default defineComponent({
   props: {
@@ -71,7 +72,10 @@ export default defineComponent({
       default: () => <NForm label-placement="left" labelWidth="5em" showFeedback={false} disabled={loading.value}>
         <NFlex vertical size="large">
           <NFormItem label="新的 ID">
-            <NInputNumber v-model:value={id.value} class="w-full" min={1} max={999999}/>
+            <NFlex align="center" wrap={false}>
+              <NInputNumber v-model:value={id.value} class="w-full" min={1} max={999999}/>
+              <MusicIdConflictNotifier id={id.value}/>
+            </NFlex>
           </NFormItem>
         </NFlex>
       </NForm>,

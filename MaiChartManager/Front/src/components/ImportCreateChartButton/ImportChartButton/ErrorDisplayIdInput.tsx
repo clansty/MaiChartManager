@@ -7,6 +7,7 @@ import { addVersionList, genreList, showNeedPurchaseDialog } from "@/store/refs"
 import GenreInput from "@/components/GenreInput";
 import VersionInput from "@/components/VersionInput";
 import { UTAGE_GENRE } from "@/consts";
+import MusicIdConflictNotifier from "@/components/MusicIdConflictNotifier";
 
 export default defineComponent({
   props: {
@@ -77,73 +78,73 @@ export default defineComponent({
           </NFlex>
         </NScrollbar>
         {!!props.meta.length && <>
-          为新导入的歌曲指定 ID
-          <NScrollbar class="max-h-24vh">
-            <NFlex vertical size="large">
-              {props.meta.map((meta, i) => <MusicIdInput key={i} meta={meta}/>)}
-            </NFlex>
-          </NScrollbar>
-          <NFormItem label="流派" labelPlacement="left" labelWidth="5em" showFeedback={false}>
-            <GenreInput options={genreList.value} v-model:value={props.savedOptions.genreId}/>
-          </NFormItem>
-          <NFormItem label="版本分类" labelPlacement="left" labelWidth="5em" showFeedback={false}>
-            <GenreInput options={addVersionList.value} v-model:value={props.savedOptions.addVersionId}/>
-          </NFormItem>
-          <NFormItem label="版本" labelPlacement="left" labelWidth="5em" showFeedback={false}>
-            <VersionInput v-model:value={props.savedOptions.version}/>
-          </NFormItem>
-          <NCheckbox v-model:checked={props.savedOptions.ignoreLevel}>
-            忽略定数，不参与 B50 计算
-          </NCheckbox>
-          <NCheckbox v-model:checked={props.savedOptions.disableBga}>
-            有 BGA 也不要导入
-          </NCheckbox>
-          <NCollapse>
-            <NCollapseItem title="高级选项">
-              <NFlex vertical>
-                <NFormItem label="延迟调整模式" labelPlacement="left" showFeedback={false}>
-                  <NFlex vertical class="w-full">
-                    <NFlex class="h-34px" align="center">
-                      <NRadioGroup v-model:value={props.tempOptions.shift}>
-                        <NPopover trigger="hover">
-                          {{
-                            trigger: () => <NRadio value={ShiftMethod.Bar} label="按小节"/>,
-                            default: () => <div>
-                              如果谱面前面的休止符长度小于一小节，那就在前面加上一小节的空白<br/>
-                              适用于大部分谱面，防止第一个音符出现的时机奇怪和平移谱面引起的奇怪问题<br/>
-                              第一个音符会在第二小节之内出来
-                            </div>
-                          }}
-                        </NPopover>
-                        <NPopover trigger="hover">
-                          {{
-                            trigger: () => <NRadio value={ShiftMethod.Legacy} label="旧版"/>,
-                            default: () => <div>
-                              将谱面的第一押对准第二小节的第一拍<br/>
-                              v1.1.1 及以前版本默认的处理方式<br/>
-                              可能会因为谱面非整数平移而引起一些比如说 BPM 变化的谱面出现问题
-                            </div>
-                          }}
-                        </NPopover>
-                        <NPopover trigger="hover">
-                          {{
-                            trigger: () => <NRadio value={ShiftMethod.NoShift} label="不移动谱面"/>,
-                            default: () => <div>
-                              完全不修改谱面，从音频中删除 &first 的长度（如果有）<br/>
-                              可能会导致第一个音符出现的时机比较奇怪，比如说刚开始就有音符
-                            </div>
-                          }}
-                        </NPopover>
-                      </NRadioGroup>
+            为新导入的歌曲指定 ID
+            <NScrollbar class="max-h-24vh">
+                <NFlex vertical size="large">
+                  {props.meta.map((meta, i) => <MusicIdInput key={i} meta={meta}/>)}
+                </NFlex>
+            </NScrollbar>
+            <NFormItem label="流派" labelPlacement="left" labelWidth="5em" showFeedback={false}>
+                <GenreInput options={genreList.value} v-model:value={props.savedOptions.genreId}/>
+            </NFormItem>
+            <NFormItem label="版本分类" labelPlacement="left" labelWidth="5em" showFeedback={false}>
+                <GenreInput options={addVersionList.value} v-model:value={props.savedOptions.addVersionId}/>
+            </NFormItem>
+            <NFormItem label="版本" labelPlacement="left" labelWidth="5em" showFeedback={false}>
+                <VersionInput v-model:value={props.savedOptions.version}/>
+            </NFormItem>
+            <NCheckbox v-model:checked={props.savedOptions.ignoreLevel}>
+                忽略定数，不参与 B50 计算
+            </NCheckbox>
+            <NCheckbox v-model:checked={props.savedOptions.disableBga}>
+                有 BGA 也不要导入
+            </NCheckbox>
+            <NCollapse>
+                <NCollapseItem title="高级选项">
+                    <NFlex vertical>
+                        <NFormItem label="延迟调整模式" labelPlacement="left" showFeedback={false}>
+                            <NFlex vertical class="w-full">
+                                <NFlex class="h-34px" align="center">
+                                    <NRadioGroup v-model:value={props.tempOptions.shift}>
+                                        <NPopover trigger="hover">
+                                          {{
+                                            trigger: () => <NRadio value={ShiftMethod.Bar} label="按小节"/>,
+                                            default: () => <div>
+                                              如果谱面前面的休止符长度小于一小节，那就在前面加上一小节的空白<br/>
+                                              适用于大部分谱面，防止第一个音符出现的时机奇怪和平移谱面引起的奇怪问题<br/>
+                                              第一个音符会在第二小节之内出来
+                                            </div>
+                                          }}
+                                        </NPopover>
+                                        <NPopover trigger="hover">
+                                          {{
+                                            trigger: () => <NRadio value={ShiftMethod.Legacy} label="旧版"/>,
+                                            default: () => <div>
+                                              将谱面的第一押对准第二小节的第一拍<br/>
+                                              v1.1.1 及以前版本默认的处理方式<br/>
+                                              可能会因为谱面非整数平移而引起一些比如说 BPM 变化的谱面出现问题
+                                            </div>
+                                          }}
+                                        </NPopover>
+                                        <NPopover trigger="hover">
+                                          {{
+                                            trigger: () => <NRadio value={ShiftMethod.NoShift} label="不移动谱面"/>,
+                                            default: () => <div>
+                                              完全不修改谱面，从音频中删除 &first 的长度（如果有）<br/>
+                                              可能会导致第一个音符出现的时机比较奇怪，比如说刚开始就有音符
+                                            </div>
+                                          }}
+                                        </NPopover>
+                                    </NRadioGroup>
+                                </NFlex>
+                            </NFlex>
+                        </NFormItem>
+                        <NCheckbox v-model:checked={props.savedOptions.noScale}>
+                            不要缩放 BGA 到 1080 宽度，此选项会记住
+                        </NCheckbox>
                     </NFlex>
-                  </NFlex>
-                </NFormItem>
-                <NCheckbox v-model:checked={props.savedOptions.noScale}>
-                  不要缩放 BGA 到 1080 宽度，此选项会记住
-                </NCheckbox>
-              </NFlex>
-            </NCollapseItem>
-          </NCollapse>
+                </NCollapseItem>
+            </NCollapse>
         </>}
       </NFlex>,
       footer: () => <NFlex justify="end">
@@ -169,6 +170,7 @@ const MusicIdInput = defineComponent({
     return () => <NFlex align="center" size="large">
       <img src={img.value} class="h-16 w-16 object-fill shrink-0"/>
       <div class="w-0 grow">{props.meta.name}</div>
+      <MusicIdConflictNotifier id={props.meta.id}/>
       <NInputNumber v-model:value={props.meta.id} min={dxBase.value + 1} max={dxBase.value + 1e4 - 1} step={1} class="shrink-0"/>
     </NFlex>
   }
