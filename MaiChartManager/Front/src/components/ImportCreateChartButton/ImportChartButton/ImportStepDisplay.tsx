@@ -33,11 +33,13 @@ export default defineComponent({
         <Step step={IMPORT_STEP.music} current={props.current.importStep} name="转码音频"/>
         {props.current.movie && <Step step={IMPORT_STEP.movie} current={props.current.importStep} name="转码视频"/>}
         {props.current.movie && !!props.movieProgress && <NProgress
-          type="line"
-          percentage={props.movieProgress}
-          indicator-placement="inside"
-          processing
-        />}
+            type="line"
+            percentage={props.movieProgress}
+            indicator-placement="inside"
+            processing
+        >
+          {props.movieProgress === 100 ? '还在处理，别急…' : `${props.movieProgress}%`}
+        </NProgress>}
         <Step step={IMPORT_STEP.jacket} current={props.current.importStep} name="导入封面"/>
       </NFlex>
     </NModal>

@@ -111,9 +111,11 @@ export default defineComponent({
               break;
             case 'Success':
               resolve();
+              currentMovieProgress.value = 0;
               break;
             case 'Error':
               reject(new Error(e.data));
+              currentMovieProgress.value = 0;
               break;
           }
         }
