@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Net.Sockets;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Microsoft.AspNetCore.Hosting.Server;
@@ -88,6 +89,15 @@ public partial class Launcher : Form
 
     private string loopbackUrl;
 
+
+    [GeneratedRegex(@"[^\u0000-\u007F]")]
+    private static partial Regex SpecialCharactersRegex();
+
+    private static bool ContainsSpecialCharacters(string input)
+    {
+        return SpecialCharactersRegex().IsMatch(input);
+    }
+
     private void StartClicked(object sender, EventArgs e)
     {
         if (button2.Text == "停止")
@@ -109,6 +119,12 @@ public partial class Launcher : Form
         }
 
         StaticSettings.GamePath = textBox1.Text;
+        if (ContainsSpecialCharacters(StaticSettings.GamePath))
+        {
+            MessageBox.Show("警告：路径中包含特殊字符或中文，可能会导致 MelonLoader 之类的工具出现兼容性问题，请将目录移动至英文路径！", "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            return;
+        }
+
         if (!Path.Exists(StaticSettings.StreamingAssets))
         {
             MessageBox.Show("选择的路径中看起来不包含游戏文件，请选择 Sinmai.exe 所在的文件夹");
