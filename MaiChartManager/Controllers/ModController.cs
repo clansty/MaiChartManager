@@ -1,7 +1,10 @@
 ﻿using System.IO.Compression;
 using System.Reflection;
+using AquaMai;
+using AquaMai.Attributes;
 using Microsoft.AspNetCore.Mvc;
 using Tomlet;
+using Tomlet.Models;
 
 namespace MaiChartManager.Controllers;
 
@@ -32,28 +35,48 @@ public class ModController(StaticSettings settings, ILogger<ModController> logge
         var aquaMaiVersion = "N/A";
         if (aquaMaiInstalled)
         {
-            aquaMaiVersion = System.Diagnostics.FileVersionInfo.GetVersionInfo(Path.Combine(StaticSettings.GamePath, @"Mods\AquaMai.dll")).ProductVersion;
+            aquaMaiVersion = System.Diagnostics.FileVersionInfo.GetVersionInfo(Path.Combine(StaticSettings.GamePath, @"Mods\AquaMai.dll")).ProductVersion ?? "N/A";
         }
 
-        var bundledAquaMaiVersion = AppDomain.CurrentDomain.GetAssemblies()
-            .FirstOrDefault(a => a.GetName().Name == "AquaMai")?.GetName().Version?.ToString(3) ?? "N/A";
-
-        return new GameModInfo(IsMelonInstalled(), aquaMaiInstalled, aquaMaiVersion, bundledAquaMaiVersion);
+        return new GameModInfo(IsMelonInstalled(), aquaMaiInstalled, aquaMaiVersion, AquaMai.BuildInfo.Version);
     }
 
+    public record AquaMaiConfigAndComments(AquaMai.Config Config, Dictionary<string, Dictionary<string, string>> Comments);
+
     [HttpGet]
-    public AquaMai.Config GetAquaMaiConfig()
+    public AquaMaiConfigAndComments GetAquaMaiConfig()
     {
         var path = Path.Combine(StaticSettings.GamePath, "AquaMai.toml");
-        return System.IO.File.Exists(path)
+        var config = System.IO.File.Exists(path)
             ? TomletMain.To<AquaMai.Config>(System.IO.File.ReadAllText(path))
             : new AquaMai.Config();
+        var comments = new Dictionary<string, Dictionary<string, string>>();
+        var sections = new Dictionary<string, string>();
+        foreach (var property in typeof(AquaMai.Config).GetProperties())
+        {
+            var comment = property.GetCustomAttribute<ConfigCommentAttribute>();
+            if (comment == null) continue;
+            sections[property.Name] = comment.CommentZh;
+            var subComments = new Dictionary<string, string>();
+
+            foreach (var subProp in property.PropertyType.GetProperties())
+            {
+                var subComment = subProp.GetCustomAttribute<ConfigCommentAttribute>();
+                if (subComment == null) continue;
+                subComments[subProp.Name] = subComment.CommentZh;
+            }
+
+            comments[property.Name] = subComments;
+        }
+
+        comments["sections"] = sections;
+        return new AquaMaiConfigAndComments(config, comments);
     }
 
     [HttpPut]
     public void SetAquaMaiConfig(AquaMai.Config config)
     {
-        System.IO.File.WriteAllText(Path.Combine(StaticSettings.GamePath, "AquaMai.toml"), TomletMain.DocumentFrom(config).SerializedValue);
+        System.IO.File.WriteAllText(Path.Combine(StaticSettings.GamePath, "AquaMai.toml"), ConfigGenerator.SerializeConfigWithComments(config, "zh"));
     }
 
     [HttpPost]

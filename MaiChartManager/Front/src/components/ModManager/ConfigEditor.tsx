@@ -1,9 +1,9 @@
 import { computed, defineComponent, onMounted, PropType, ref, watch } from "vue";
 import { NButton, NCheckbox, NDivider, NFlex, NFormItem, NInput, NInputNumber, NModal, NScrollbar, NSelect, NSwitch, useDialog } from "naive-ui";
-import { Config, GameModInfo } from "@/client/apiGen";
+import { AquaMaiConfig, GameModInfo } from "@/client/apiGen";
 import comments from './modComments.yaml';
 import api from "@/client/api";
-import { capitalCase } from "change-case";
+import { capitalCase, pascalCase } from "change-case";
 import ProblemsDisplay from "@/components/ProblemsDisplay";
 import { globalCapture } from "@/store/refs";
 import TouchSensitivityConfigurator from "@/components/ModManager/TouchSensitivityConfigurator";
@@ -27,14 +27,17 @@ export default defineComponent({
       set: (val) => emit('update:disableBadge', val)
     })
 
-    const config = ref<Config>()
+    const config = ref<AquaMaiConfig>()
+    const commentsEmbedded = ref<Record<string, Record<string, string>>>({})
     const dialog = useDialog()
     const installingMelonLoader = ref(false)
     const installingAquaMai = ref(false)
     const showAquaMaiInstallDone = ref(false)
 
     onMounted(async () => {
-      config.value = (await api.GetAquaMaiConfig()).data;
+      const ret = (await api.GetAquaMaiConfig()).data;
+      config.value = ret.config
+      commentsEmbedded.value = ret.comments!
     })
 
     const installMelonLoader = async () => {
@@ -102,7 +105,7 @@ export default defineComponent({
         {props.badgeType && <NCheckbox v-model:checked={disableBadge.value}>隐藏按钮上的角标</NCheckbox>}
         {config.value && <NScrollbar class="max-h-60vh p-2">
           {Object.entries(config.value).map(([key, section]) => !!section && <>
-              <NDivider titlePlacement="left" key={key}>{comments.sections[key]}</NDivider>
+              <NDivider titlePlacement="left" key={key}>{comments.sections[key] || commentsEmbedded.value.sections?.[pascalCase(key)]}</NDivider>
             {key === 'touchSensitivity' ?
               <TouchSensitivityConfigurator config={section}/>
               : key === 'customKeyMap' ?
@@ -124,7 +127,7 @@ export default defineComponent({
                       })()}
                       {comments.shouldEnableOptions[key]?.[k] && !section[k] && <ProblemsDisplay problems={['需要开启此选项']}/>}
                     </NFlex>
-                    {comments[key]?.[k]}
+                    {comments[key]?.[k] || commentsEmbedded.value[pascalCase(key)]?.[pascalCase(k)]}
                   </NFlex>
                 </NFormItem>)
             }

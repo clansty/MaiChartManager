@@ -108,7 +108,7 @@ public static class ServerManager
 
         builder.Services.AddSingleton<StaticSettings>()
             .AddEndpointsApiExplorer()
-            .AddSwaggerGen()
+            .AddSwaggerGen(options => { options.CustomSchemaIds(type => type.Name == "Config" ? type.FullName : type.Name); })
             .Configure<FormOptions>(x =>
             {
                 x.ValueLengthLimit = int.MaxValue;

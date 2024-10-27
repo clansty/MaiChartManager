@@ -17,6 +17,224 @@ export interface AppVersionResult {
   hardwareAcceleration?: HardwareAccelerationStatus;
 }
 
+export interface AquaMaiCheatConfig {
+  ticketUnlock?: boolean;
+  mapUnlock?: boolean;
+  unlockUtage?: boolean;
+}
+
+export interface AquaMaiConfig {
+  ux?: AquaMaiUXConfig;
+  cheat?: AquaMaiCheatConfig;
+  fix?: AquaMaiFixConfig;
+  utils?: AquaMaiUtilsConfig;
+  timeSaving?: AquaMaiTimeSavingConfig;
+  visual?: AquaMaiVisualConfig;
+  windowState?: AquaMaiWindowStateConfig;
+  customCameraId?: AquaMaiCustomCameraIdConfig;
+  touchSensitivity?: AquaMaiTouchSensitivityConfig;
+  customKeyMap?: AquaMaiCustomKeyMapConfig;
+}
+
+export interface AquaMaiCustomCameraIdConfig {
+  enable?: boolean;
+  printCameraList?: boolean;
+  /** @format int32 */
+  leftQrCamera?: number;
+  /** @format int32 */
+  rightQrCamera?: number;
+  /** @format int32 */
+  photoCamera?: number;
+  /** @format int32 */
+  chimeCamera?: number;
+}
+
+export interface AquaMaiCustomKeyMapConfig {
+  enable?: boolean;
+  test?: KeyCodeID;
+  service?: KeyCodeID;
+  button1_1P?: KeyCodeID;
+  button2_1P?: KeyCodeID;
+  button3_1P?: KeyCodeID;
+  button4_1P?: KeyCodeID;
+  button5_1P?: KeyCodeID;
+  button6_1P?: KeyCodeID;
+  button7_1P?: KeyCodeID;
+  button8_1P?: KeyCodeID;
+  select_1P?: KeyCodeID;
+  button1_2P?: KeyCodeID;
+  button2_2P?: KeyCodeID;
+  button3_2P?: KeyCodeID;
+  button4_2P?: KeyCodeID;
+  button5_2P?: KeyCodeID;
+  button6_2P?: KeyCodeID;
+  button7_2P?: KeyCodeID;
+  button8_2P?: KeyCodeID;
+  select_2P?: KeyCodeID;
+}
+
+export interface AquaMaiFixConfig {
+  skipVersionCheck?: boolean;
+  removeEncryption?: boolean;
+  forceAsServer?: boolean;
+  forceFreePlay?: boolean;
+  forcePaidPlay?: boolean;
+  /** @format int32 */
+  extendNotesPool?: number;
+  frameRateLock?: boolean;
+  fontFix?: boolean;
+  realisticRandomJudge?: boolean;
+  hanabiFix?: boolean;
+  ignoreAimeServerError?: boolean;
+}
+
+export interface AquaMaiTimeSavingConfig {
+  skipWarningScreen?: boolean;
+  improveLoadSpeed?: boolean;
+  skipToMusicSelection?: boolean;
+  skipEventInfo?: boolean;
+  iWontTapOrSlideVigorously?: boolean;
+  skipGameOverScreen?: boolean;
+  skipTrackStart?: boolean;
+  showQuickEndPlay?: boolean;
+}
+
+export interface AquaMaiTouchSensitivityConfig {
+  enable?: boolean;
+  /** @format int32 */
+  a1?: number;
+  /** @format int32 */
+  a2?: number;
+  /** @format int32 */
+  a3?: number;
+  /** @format int32 */
+  a4?: number;
+  /** @format int32 */
+  a5?: number;
+  /** @format int32 */
+  a6?: number;
+  /** @format int32 */
+  a7?: number;
+  /** @format int32 */
+  a8?: number;
+  /** @format int32 */
+  b1?: number;
+  /** @format int32 */
+  b2?: number;
+  /** @format int32 */
+  b3?: number;
+  /** @format int32 */
+  b4?: number;
+  /** @format int32 */
+  b5?: number;
+  /** @format int32 */
+  b6?: number;
+  /** @format int32 */
+  b7?: number;
+  /** @format int32 */
+  b8?: number;
+  /** @format int32 */
+  c1?: number;
+  /** @format int32 */
+  c2?: number;
+  /** @format int32 */
+  d1?: number;
+  /** @format int32 */
+  d2?: number;
+  /** @format int32 */
+  d3?: number;
+  /** @format int32 */
+  d4?: number;
+  /** @format int32 */
+  d5?: number;
+  /** @format int32 */
+  d6?: number;
+  /** @format int32 */
+  d7?: number;
+  /** @format int32 */
+  d8?: number;
+  /** @format int32 */
+  e1?: number;
+  /** @format int32 */
+  e2?: number;
+  /** @format int32 */
+  e3?: number;
+  /** @format int32 */
+  e4?: number;
+  /** @format int32 */
+  e5?: number;
+  /** @format int32 */
+  e6?: number;
+  /** @format int32 */
+  e7?: number;
+  /** @format int32 */
+  e8?: number;
+}
+
+export interface AquaMaiUXConfig {
+  locale?: string | null;
+  singlePlayer?: boolean;
+  hideMask?: boolean;
+  loadAssetsPng?: boolean;
+  loadAssetBundleWithoutManifest?: boolean;
+  quickSkip?: boolean;
+  randomBgm?: boolean;
+  demoMaster?: boolean;
+  extendTimer?: boolean;
+  immediateSave?: boolean;
+  loadLocalBga?: boolean;
+  testProof?: boolean;
+  hideSelfMadeCharts?: boolean;
+  customFont?: boolean;
+  touchToButtonInput?: boolean;
+  hideHanabi?: boolean;
+  customVersionString?: string | null;
+  customPlaceName?: string | null;
+  execOnIdle?: string | null;
+  execOnEntry?: string | null;
+}
+
+export interface AquaMaiUtilsConfig {
+  logUserId?: boolean;
+  /** @format float */
+  judgeAdjustA?: number;
+  /** @format float */
+  judgeAdjustB?: number;
+  /** @format int32 */
+  touchDelay?: number;
+  practiseMode?: boolean;
+  selectionDetail?: boolean;
+  showNetErrorDetail?: boolean;
+  showErrorLog?: boolean;
+  frameRateDisplay?: boolean;
+  /** @format int32 */
+  touchPanelBaudRate?: number;
+}
+
+export interface AquaMaiVisualConfig {
+  customSkins?: boolean;
+  judgeDisplay4B?: boolean;
+  customTrackStartDiff?: boolean;
+  trackStartProcessTweak?: boolean;
+  disableTrackStartTabs?: boolean;
+  fanJudgeFlip?: boolean;
+  breakSlideJudgeBlink?: boolean;
+}
+
+export interface AquaMaiWindowStateConfig {
+  enable?: boolean;
+  windowed?: boolean;
+  /** @format int32 */
+  width?: number;
+  /** @format int32 */
+  height?: number;
+}
+
+export interface AquaMaiConfigAndComments {
+  config?: AquaMaiConfig;
+  comments?: Record<string, Record<string, string>>;
+}
+
 export enum AssetType {
   Music = "Music",
   Movie = "Movie",
@@ -55,12 +273,6 @@ export interface Chart {
   problems?: string[] | null;
 }
 
-export interface CheatConfig {
-  ticketUnlock?: boolean;
-  mapUnlock?: boolean;
-  unlockUtage?: boolean;
-}
-
 export interface CheckConflictEntry {
   type?: AssetType;
   upperDir?: string | null;
@@ -71,74 +283,10 @@ export interface CheckConflictEntry {
   musicName?: string | null;
 }
 
-export interface Config {
-  ux?: UXConfig;
-  cheat?: CheatConfig;
-  fix?: FixConfig;
-  utils?: UtilsConfig;
-  timeSaving?: TimeSavingConfig;
-  windowState?: WindowStateConfig;
-  customCameraId?: CustomCameraIdConfig;
-  touchSensitivity?: TouchSensitivityConfig;
-  customKeyMap?: CustomKeyMapConfig;
-}
-
-export interface CustomCameraIdConfig {
-  enable?: boolean;
-  printCameraList?: boolean;
-  /** @format int32 */
-  leftQrCamera?: number;
-  /** @format int32 */
-  rightQrCamera?: number;
-  /** @format int32 */
-  photoCamera?: number;
-  /** @format int32 */
-  chimeCamera?: number;
-}
-
-export interface CustomKeyMapConfig {
-  enable?: boolean;
-  test?: KeyCodeID;
-  service?: KeyCodeID;
-  button1_1P?: KeyCodeID;
-  button2_1P?: KeyCodeID;
-  button3_1P?: KeyCodeID;
-  button4_1P?: KeyCodeID;
-  button5_1P?: KeyCodeID;
-  button6_1P?: KeyCodeID;
-  button7_1P?: KeyCodeID;
-  button8_1P?: KeyCodeID;
-  select_1P?: KeyCodeID;
-  button1_2P?: KeyCodeID;
-  button2_2P?: KeyCodeID;
-  button3_2P?: KeyCodeID;
-  button4_2P?: KeyCodeID;
-  button5_2P?: KeyCodeID;
-  button6_2P?: KeyCodeID;
-  button7_2P?: KeyCodeID;
-  button8_2P?: KeyCodeID;
-  select_2P?: KeyCodeID;
-}
-
 export interface DeleteAssetRequest {
   assetDir?: string | null;
   type?: AssetType;
   fileName?: string | null;
-}
-
-export interface FixConfig {
-  skipVersionCheck?: boolean;
-  removeEncryption?: boolean;
-  forceAsServer?: boolean;
-  forceFreePlay?: boolean;
-  forcePaidPlay?: boolean;
-  /** @format int32 */
-  extendNotesPool?: number;
-  frameRateLock?: boolean;
-  fontFix?: boolean;
-  slideJudgeTweak?: boolean;
-  hanabiFix?: boolean;
-  ignoreAimeServerError?: boolean;
 }
 
 export interface GameModInfo {
@@ -448,131 +596,8 @@ export enum StorePurchaseStatus {
   ServerError = "ServerError",
 }
 
-export interface TimeSavingConfig {
-  skipWarningScreen?: boolean;
-  improveLoadSpeed?: boolean;
-  skipToMusicSelection?: boolean;
-  skipEventInfo?: boolean;
-  iWontTapOrSlideVigorously?: boolean;
-  skipGameOverScreen?: boolean;
-  skipTrackStart?: boolean;
-  showQuickEndPlay?: boolean;
-}
-
-export interface TouchSensitivityConfig {
-  enable?: boolean;
-  /** @format int32 */
-  a1?: number;
-  /** @format int32 */
-  a2?: number;
-  /** @format int32 */
-  a3?: number;
-  /** @format int32 */
-  a4?: number;
-  /** @format int32 */
-  a5?: number;
-  /** @format int32 */
-  a6?: number;
-  /** @format int32 */
-  a7?: number;
-  /** @format int32 */
-  a8?: number;
-  /** @format int32 */
-  b1?: number;
-  /** @format int32 */
-  b2?: number;
-  /** @format int32 */
-  b3?: number;
-  /** @format int32 */
-  b4?: number;
-  /** @format int32 */
-  b5?: number;
-  /** @format int32 */
-  b6?: number;
-  /** @format int32 */
-  b7?: number;
-  /** @format int32 */
-  b8?: number;
-  /** @format int32 */
-  c1?: number;
-  /** @format int32 */
-  c2?: number;
-  /** @format int32 */
-  d1?: number;
-  /** @format int32 */
-  d2?: number;
-  /** @format int32 */
-  d3?: number;
-  /** @format int32 */
-  d4?: number;
-  /** @format int32 */
-  d5?: number;
-  /** @format int32 */
-  d6?: number;
-  /** @format int32 */
-  d7?: number;
-  /** @format int32 */
-  d8?: number;
-  /** @format int32 */
-  e1?: number;
-  /** @format int32 */
-  e2?: number;
-  /** @format int32 */
-  e3?: number;
-  /** @format int32 */
-  e4?: number;
-  /** @format int32 */
-  e5?: number;
-  /** @format int32 */
-  e6?: number;
-  /** @format int32 */
-  e7?: number;
-  /** @format int32 */
-  e8?: number;
-}
-
-export interface UXConfig {
-  locale?: string | null;
-  singlePlayer?: boolean;
-  hideMask?: boolean;
-  loadAssetsPng?: boolean;
-  loadJacketPng?: boolean;
-  loadAssetBundleWithoutManifest?: boolean;
-  quickSkip?: boolean;
-  randomBgm?: boolean;
-  demoMaster?: boolean;
-  extendTimer?: boolean;
-  immediateSave?: boolean;
-  loadLocalBga?: boolean;
-  testProof?: boolean;
-  hideSelfMadeCharts?: boolean;
-  customFont?: boolean;
-  customNoteSkin?: boolean;
-  touchToButtonInput?: boolean;
-  trackStartProcessTweak?: boolean;
-  hideHanabi?: boolean;
-  customVersionString?: string | null;
-  customPlaceName?: string | null;
-  execOnIdle?: string | null;
-  execOnEntry?: string | null;
-}
-
 export interface UploadAssetDirResult {
   dirName?: string | null;
-}
-
-export interface UtilsConfig {
-  logUserId?: boolean;
-  /** @format float */
-  judgeAdjustA?: number;
-  /** @format float */
-  judgeAdjustB?: number;
-  /** @format int32 */
-  touchDelay?: number;
-  practiseMode?: boolean;
-  selectionDetail?: boolean;
-  showNetErrorDetail?: boolean;
-  frameRateDisplay?: boolean;
 }
 
 export interface VersionXml {
@@ -591,15 +616,6 @@ export interface VersionXml {
   colorB?: number;
   /** @format int32 */
   version?: number;
-}
-
-export interface WindowStateConfig {
-  enable?: boolean;
-  windowed?: boolean;
-  /** @format int32 */
-  width?: number;
-  /** @format int32 */
-  height?: number;
 }
 
 export type QueryParamsType = Record<string | number, any>;
@@ -1522,7 +1538,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/MaiChartManagerServlet/GetAquaMaiConfigApi
      */
     GetAquaMaiConfig: (params: RequestParams = {}) =>
-      this.request<Config, any>({
+      this.request<AquaMaiConfigAndComments, any>({
         path: `/MaiChartManagerServlet/GetAquaMaiConfigApi`,
         method: "GET",
         format: "json",
@@ -1536,7 +1552,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name SetAquaMaiConfig
      * @request PUT:/MaiChartManagerServlet/SetAquaMaiConfigApi
      */
-    SetAquaMaiConfig: (data: Config, params: RequestParams = {}) =>
+    SetAquaMaiConfig: (data: AquaMaiConfig, params: RequestParams = {}) =>
       this.request<void, any>({
         path: `/MaiChartManagerServlet/SetAquaMaiConfigApi`,
         method: "PUT",

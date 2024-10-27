@@ -122,7 +122,6 @@ public partial class Launcher : Form
         if (ContainsSpecialCharacters(StaticSettings.GamePath))
         {
             MessageBox.Show("警告：路径中包含特殊字符或中文，可能会导致 MelonLoader 之类的工具出现兼容性问题，请将目录移动至英文路径！", "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            return;
         }
 
         if (!Path.Exists(StaticSettings.StreamingAssets))

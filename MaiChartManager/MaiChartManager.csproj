@@ -77,6 +77,8 @@
       <EmbeddedResource Include="Resources\templateV3.acb" />
       <None Remove="Resources\MelonLoader.x64.zip" />
       <EmbeddedResource Include="Resources\MelonLoader.x64.zip" />
+      <None Remove="Resources\JudgeDisplay4B.zip" />
+      <EmbeddedResource Include="Resources\JudgeDisplay4B.zip" />
     </ItemGroup>
 
     <ItemGroup>
