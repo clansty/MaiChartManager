@@ -343,7 +343,7 @@ public class MusicTransferController(StaticSettings settings, ILogger<MusicTrans
             {
                 var pvMp4Path = Path.Combine(tmpDir.FullName, "pv.mp4");
                 await FFmpeg.Conversions.New()
-                    .AddParameter("-i " + outputIvfFile)
+                    .AddParameter("-i " + outputIvfFile.Escape())
                     .AddParameter("-c:v copy")
                     .SetOutput(pvMp4Path)
                     .Start();
