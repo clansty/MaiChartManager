@@ -294,6 +294,7 @@ export interface GameModInfo {
   aquaMaiInstalled?: boolean;
   aquaMaiVersion?: string | null;
   bundledAquaMaiVersion?: string | null;
+  isJudgeDisplay4BInstalled?: boolean;
 }
 
 export interface GenreAddRequest {
@@ -1527,6 +1528,20 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         path: `/MaiChartManagerServlet/GetGameModInfoApi`,
         method: "GET",
         format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Mod
+     * @name InstallJudgeDisplay4B
+     * @request POST:/MaiChartManagerServlet/InstallJudgeDisplay4BApi
+     */
+    InstallJudgeDisplay4B: (params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/MaiChartManagerServlet/InstallJudgeDisplay4BApi`,
+        method: "POST",
         ...params,
       }),
 

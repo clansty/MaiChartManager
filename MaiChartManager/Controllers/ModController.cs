@@ -12,6 +12,8 @@ namespace MaiChartManager.Controllers;
 [Route("MaiChartManagerServlet/[action]Api")]
 public class ModController(StaticSettings settings, ILogger<ModController> logger) : ControllerBase
 {
+    private static string judgeDisplay4BPath = Path.Combine(StaticSettings.exeDir, "Resources", "JudgeDisplay4B");
+
     [HttpGet]
     public bool IsMelonInstalled()
     {
@@ -26,7 +28,7 @@ public class ModController(StaticSettings settings, ILogger<ModController> logge
         return System.IO.File.Exists(Path.Combine(StaticSettings.GamePath, @"Mods\AquaMai.dll"));
     }
 
-    public record GameModInfo(bool MelonLoaderInstalled, bool AquaMaiInstalled, string AquaMaiVersion, string BundledAquaMaiVersion);
+    public record GameModInfo(bool MelonLoaderInstalled, bool AquaMaiInstalled, string AquaMaiVersion, string BundledAquaMaiVersion, bool IsJudgeDisplay4BInstalled);
 
     [HttpGet]
     public GameModInfo GetGameModInfo()
@@ -38,7 +40,29 @@ public class ModController(StaticSettings settings, ILogger<ModController> logge
             aquaMaiVersion = System.Diagnostics.FileVersionInfo.GetVersionInfo(Path.Combine(StaticSettings.GamePath, @"Mods\AquaMai.dll")).ProductVersion ?? "N/A";
         }
 
-        return new GameModInfo(IsMelonInstalled(), aquaMaiInstalled, aquaMaiVersion, AquaMai.BuildInfo.Version);
+        return new GameModInfo(IsMelonInstalled(), aquaMaiInstalled, aquaMaiVersion, AquaMai.BuildInfo.Version, GetIsJudgeDisplay4BInstalled());
+    }
+
+    [NonAction]
+    private static bool GetIsJudgeDisplay4BInstalled()
+    {
+        var skinPath = Path.Combine(StaticSettings.GamePath, "LocalAssets", "Skins");
+        if (!Directory.Exists(skinPath)) return false;
+
+        var filesShouldBeInstalled = Directory.EnumerateFiles(judgeDisplay4BPath);
+        return filesShouldBeInstalled.Select(file => Path.Combine(skinPath, Path.GetFileName(file))).All(System.IO.File.Exists);
+    }
+
+    [HttpPost]
+    public void InstallJudgeDisplay4B()
+    {
+        var skinPath = Path.Combine(StaticSettings.GamePath, "LocalAssets", "Skins");
+        Directory.CreateDirectory(skinPath);
+
+        foreach (var file in Directory.EnumerateFiles(judgeDisplay4BPath))
+        {
+            System.IO.File.Copy(file, Path.Combine(skinPath, Path.GetFileName(file)), true);
+        }
     }
 
     public record AquaMaiConfigAndComments(AquaMai.Config Config, Dictionary<string, Dictionary<string, string>> Comments);

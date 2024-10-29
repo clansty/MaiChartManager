@@ -5,14 +5,12 @@ import comments from './modComments.yaml';
 import api from "@/client/api";
 import { capitalCase, pascalCase } from "change-case";
 import ProblemsDisplay from "@/components/ProblemsDisplay";
-import { globalCapture } from "@/store/refs";
+import { globalCapture, modInfo, updateModInfo } from "@/store/refs";
 
 export default defineComponent({
   props: {
     show: Boolean,
     disableBadge: Boolean,
-    info: {type: Object as PropType<GameModInfo>, required: true},
-    refresh: {type: Function, required: true},
     badgeType: String,
   },
   setup(props, {emit}) {
@@ -43,7 +41,7 @@ export default defineComponent({
       try {
         installingMelonLoader.value = true
         await api.InstallMelonLoader()
-        await props.refresh()
+        await updateModInfo()
       } catch (e: any) {
         globalCapture(e, "安装 MelonLoader 失败")
       } finally {
@@ -56,7 +54,7 @@ export default defineComponent({
         // 但是你根本看不到这个加载图标，因为太快了
         installingAquaMai.value = true
         await api.InstallAquaMai()
-        await props.refresh()
+        await updateModInfo()
         showAquaMaiInstallDone.value = true
         setTimeout(() => showAquaMaiInstallDone.value = false, 3000);
       } catch (e: any) {
@@ -91,24 +89,24 @@ export default defineComponent({
       title="Mod 管理"
       v-model:show={show.value}
     >
-      <NFlex vertical>
+      {!!modInfo.value && <NFlex vertical>
         <NFlex align="center">
           MelonLoader:
-          {props.info.melonLoaderInstalled ? <span class="c-green-6">已安装</span> : <span class="c-red-6">未安装</span>}
-          {!props.info.melonLoaderInstalled && <NButton secondary loading={installingMelonLoader.value} onClick={installMelonLoader}>安装</NButton>}
+          {modInfo.value.melonLoaderInstalled ? <span class="c-green-6">已安装</span> : <span class="c-red-6">未安装</span>}
+          {!modInfo.value.melonLoaderInstalled && <NButton secondary loading={installingMelonLoader.value} onClick={installMelonLoader}>安装</NButton>}
           <div class="w-8"/>
           AquaMai:
-          {props.info.aquaMaiInstalled ?
-            props.info.aquaMaiVersion === props.info.bundledAquaMaiVersion ? <span class="c-green-6">已安装</span> : <span class="c-orange">可更新</span> :
+          {modInfo.value.aquaMaiInstalled ?
+            modInfo.value.aquaMaiVersion === modInfo.value.bundledAquaMaiVersion ? <span class="c-green-6">已安装</span> : <span class="c-orange">可更新</span> :
             <span class="c-red-6">未安装</span>}
           <NButton secondary loading={installingAquaMai.value} onClick={() => installAquaMai()}
                    type={showAquaMaiInstallDone.value ? 'success' : 'default'}>
-            {showAquaMaiInstallDone.value ? <span class="i-material-symbols-done"/> : props.info.aquaMaiInstalled ? '重新安装 / 更新' : '安装'}
+            {showAquaMaiInstallDone.value ? <span class="i-material-symbols-done"/> : modInfo.value.aquaMaiInstalled ? '重新安装 / 更新' : '安装'}
           </NButton>
           已安装:
-          <span>{props.info.aquaMaiVersion}</span>
+          <span>{modInfo.value.aquaMaiVersion}</span>
           可安装:
-          <span class={props.info.aquaMaiVersion === props.info.bundledAquaMaiVersion ? "" : "c-orange"}>{props.info.bundledAquaMaiVersion}</span>
+          <span class={modInfo.value.aquaMaiVersion === modInfo.value.bundledAquaMaiVersion ? "" : "c-orange"}>{modInfo.value.bundledAquaMaiVersion}</span>
         </NFlex>
         {props.badgeType && <NCheckbox v-model:checked={disableBadge.value}>隐藏按钮上的角标</NCheckbox>}
         <div class="grid cols-[17em_auto]">
@@ -122,35 +120,45 @@ export default defineComponent({
             {Object.entries(config.value).map(([key, section]) => {
               // 这里开始某个分类设置的渲染
               const CustomPanel = getCustomPanelForSetting(key)
-              return !!section && <div id={key}>
+
+              return !!section && <div id={key} key={key}>
                   <NDivider titlePlacement="left" key={key}>{getSectionTitle(key)}</NDivider>
                 {CustomPanel ?
                   <CustomPanel config={section}/> :
-                  Object.keys(section).map((k) => <NFormItem key={k} label={capitalCase(k)} labelPlacement="left" labelWidth="10em">
-                    <NFlex vertical class="w-full ws-pre-line">
-                      <NFlex class="h-34px" align="center">
-                        {(() => {
-                          const choices = comments.options[key]?.[k]
-                          if (choices) {
-                            return <NSelect v-model:value={section[k]} options={choices} clearable/>
-                          }
-                          return <>
-                            {typeof section[k] === 'boolean' && <NSwitch v-model:value={section[k]}/>}
-                            {typeof section[k] === 'string' && <NInput v-model:value={section[k]} placeholder="" onUpdateValue={v => section[k] = typeof v === 'string' ? v : ''}/>}
-                            {typeof section[k] === 'number' && <NInputNumber value={section[k]} onUpdateValue={v => section[k] = typeof v === 'number' ? v : 0} placeholder="" step={comments.steps[k] || 1}/>}
-                          </>
-                        })()}
-                        {comments.shouldEnableOptions[key]?.[k] && !section[k] && <ProblemsDisplay problems={['需要开启此选项']}/>}
+                  Object.keys(section).map((k) => {
+                    // 这里开始某个设置子项的渲染
+                    const CustomPanelSub = getCustomPanelForSetting(key, k)
+
+                    if (CustomPanelSub) {
+                      return <CustomPanelSub config={section} key={k}/>
+                    }
+
+                    return <NFormItem key={k} label={capitalCase(k)} labelPlacement="left" labelWidth="10em">
+                      <NFlex vertical class="w-full ws-pre-line">
+                        <NFlex class="h-34px" align="center">
+                          {(() => {
+                            const choices = comments.options[key]?.[k]
+                            if (choices) {
+                              return <NSelect v-model:value={section[k]} options={choices} clearable/>
+                            }
+                            return <>
+                              {typeof section[k] === 'boolean' && <NSwitch v-model:value={section[k]}/>}
+                              {typeof section[k] === 'string' && <NInput v-model:value={section[k]} placeholder="" onUpdateValue={v => section[k] = typeof v === 'string' ? v : ''}/>}
+                              {typeof section[k] === 'number' && <NInputNumber value={section[k]} onUpdateValue={v => section[k] = typeof v === 'number' ? v : 0} placeholder="" step={comments.steps[k] || 1}/>}
+                            </>
+                          })()}
+                          {comments.shouldEnableOptions[key]?.[k] && !section[k] && <ProblemsDisplay problems={['需要开启此选项']}/>}
+                        </NFlex>
+                        {comments[key]?.[k] || commentsEmbedded.value[pascalCase(key)]?.[pascalCase(k)]}
                       </NFlex>
-                      {comments[key]?.[k] || commentsEmbedded.value[pascalCase(key)]?.[pascalCase(k)]}
-                    </NFlex>
-                  </NFormItem>)
+                    </NFormItem>;
+                  })
                 }
               </div>;
             })}
           </NScrollbar>}
         </div>
-      </NFlex>
+      </NFlex>}
     </NModal>;
   }
 })

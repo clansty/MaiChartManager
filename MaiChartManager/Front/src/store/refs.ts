@@ -1,5 +1,5 @@
 import { computed, ref } from "vue";
-import { AppVersionResult, GenreXml, GetAssetsDirsResult, MusicXmlWithABJacket, VersionXml } from "@/client/apiGen";
+import { AppVersionResult, GameModInfo, GenreXml, GetAssetsDirsResult, MusicXmlWithABJacket, VersionXml } from "@/client/apiGen";
 import api from "@/client/api";
 import { captureException } from "@sentry/vue";
 import posthog from "posthog-js";
@@ -40,6 +40,7 @@ export const selectedADir = useStorage<string>('selectedADir', 'A000');
 export const musicListAll = ref<MusicXmlWithABJacket[]>([]);
 export const assetDirs = ref<GetAssetsDirsResult[]>([]);
 export const version = ref<AppVersionResult>();
+export const modInfo = ref<GameModInfo>();
 
 export const musicList = computed(() => musicListAll.value.filter(m => m.assetDir === selectedADir.value));
 export const selectedMusic = computed(() => musicList.value.find(m => m.id === selectMusicId.value));
@@ -66,10 +67,15 @@ export const updateVersion = async () => {
   version.value = (await api.GetAppVersion()).data;
 }
 
+export const updateModInfo = async () => {
+  modInfo.value = (await api.GetGameModInfo()).data;
+}
+
 export const updateAll = async () => Promise.all([
   updateGenreList(),
   updateAddVersionList(),
   updateAssetDirs(),
   updateVersion(),
   updateMusicList(),
+  updateModInfo(),
 ])
