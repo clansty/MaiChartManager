@@ -81,7 +81,7 @@ export default defineComponent({
             为新导入的歌曲指定 ID
             <NScrollbar class="max-h-24vh">
                 <NFlex vertical size="large">
-                  {props.meta.map((meta, i) => <MusicIdInput key={i} meta={meta}/>)}
+                  {props.meta.map((meta, i) => <MusicIdInput key={i} meta={meta} utage={props.savedOptions.genreId === UTAGE_GENRE}/>)}
                 </NFlex>
             </NScrollbar>
             <NFormItem label="流派" labelPlacement="left" labelWidth="5em" showFeedback={false}>
@@ -158,11 +158,12 @@ export default defineComponent({
 const MusicIdInput = defineComponent({
   props: {
     meta: {type: Object as PropType<ImportMeta>, required: true},
+    utage: {type: Boolean, required: true},
   },
   setup(props) {
     const dxBase = computed(() => {
-      const dx = props.meta.id % 1e5 >= 1e4 ? 1e4 : 0
-      const utage = props.meta.id >= 1e5 ? 1e5 : 0
+      const dx = props.meta.isDx ? 1e4 : 0
+      const utage = props.utage ? 1e5 : 0
       return dx + utage;
     });
     const img = computed(() => props.meta.bg ? URL.createObjectURL(props.meta.bg) : noJacket);

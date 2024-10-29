@@ -30,6 +30,7 @@ export type ImportMeta = {
   musicPadding: number,
   first: number,
   bar: number,
+  isDx: boolean,
 }
 
 export type FirstPaddingMessage = { first: number, padding: number }

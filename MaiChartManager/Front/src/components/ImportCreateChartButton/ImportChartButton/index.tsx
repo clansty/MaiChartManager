@@ -63,7 +63,7 @@ export default defineComponent({
         errors.value.push({level: MessageLevel.Warning, message: '转换 PV 目前是赞助版功能，点击获取', name: dir.name, isPaid: true});
       }
 
-      let musicPadding = 0, first = 0, bar = 0, name = dir.name;
+      let musicPadding = 0, first = 0, bar = 0, name = dir.name, isDx = false;
       if (maidata) {
         const checkRet = (await api.ImportChartCheck({file: maidata})).data;
         reject = reject || !checkRet.accept;
@@ -75,11 +75,12 @@ export default defineComponent({
         // 为了本地的错误和远程的错误都显示本地的名称，这里在修改 name
         name = checkRet.title!;
         if (checkRet.isDx) id += 1e4;
+        isDx = checkRet.isDx!;
       }
 
       if (!reject) {
         meta.value.push({
-          id, maidata, bg, track, musicPadding, name, first, movie, bar,
+          id, maidata, bg, track, musicPadding, name, first, movie, bar, isDx,
           importStep: IMPORT_STEP.start,
         })
       }
