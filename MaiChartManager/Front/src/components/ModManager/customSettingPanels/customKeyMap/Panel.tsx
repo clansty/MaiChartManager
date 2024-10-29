@@ -1,12 +1,12 @@
 import { defineComponent, h, PropType } from "vue";
-import { CustomKeyMapConfig, KeyCodeID } from "@/client/apiGen";
+import { AquaMaiCustomKeyMapConfig, KeyCodeID } from "@/client/apiGen";
 import { NFlex, NFormItem, NGrid, NGridItem, NSelect, NSwitch } from "naive-ui";
 
 const options = Object.entries(KeyCodeID).map(([key, value]) => ({label: key, value}))
 
 export default defineComponent({
   props: {
-    config: {type: Object as PropType<CustomKeyMapConfig>, required: true},
+    config: {type: Object as PropType<AquaMaiCustomKeyMapConfig>, required: true},
   },
   setup(props) {
     return () => <div>
@@ -27,7 +27,7 @@ export default defineComponent({
         <NGridItem>
           {
             new Array(8).fill(0).map((_, i) => <NFormItem key={i} label={`1P 按键 ${i + 1}`} labelPlacement="left" labelWidth="10em">
-              <NSelect v-model:value={props.config[`button${i + 1}_1P` as keyof CustomKeyMapConfig]} options={options}/>
+              <NSelect v-model:value={props.config[`button${i + 1}_1P` as keyof AquaMaiCustomKeyMapConfig]} options={options}/>
             </NFormItem>)
           }
           <NFormItem label="1P 选择键" labelPlacement="left" labelWidth="10em">
@@ -37,7 +37,7 @@ export default defineComponent({
         <NGridItem>
           {
             new Array(8).fill(0).map((_, i) => <NFormItem key={i} label={`2P 按键 ${i + 1}`} labelPlacement="left" labelWidth="10em">
-              <NSelect v-model:value={props.config[`button${i + 1}_2P` as keyof CustomKeyMapConfig]} options={options}/>
+              <NSelect v-model:value={props.config[`button${i + 1}_2P` as keyof AquaMaiCustomKeyMapConfig]} options={options}/>
             </NFormItem>)
           }
           <NFormItem label="2P 选择键" labelPlacement="left" labelWidth="10em">

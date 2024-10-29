@@ -1,14 +1,14 @@
 import { defineComponent, h, PropType, ref } from "vue";
-import { TouchSensitivityConfig } from "@/client/apiGen";
-import TouchSensitivityDisplay from "@/components/ModManager/TouchSensitivityDisplay";
-import { NButton, NButtonGroup, NDivider, NFlex, NFormItem, NInputNumber, NSwitch } from "naive-ui";
+import { AquaMaiTouchSensitivityConfig } from "@/client/apiGen";
+import TouchSensitivityDisplay from "./TouchSensitivityDisplay";
+import { NButton, NButtonGroup, NFlex, NFormItem, NInputNumber, NSwitch } from "naive-ui";
 
 export default defineComponent({
   props: {
-    config: {type: Object as PropType<TouchSensitivityConfig>, required: true},
+    config: {type: Object as PropType<AquaMaiTouchSensitivityConfig>, required: true},
   },
   setup(props) {
-    const selected = ref<keyof TouchSensitivityConfig>()
+    const selected = ref<keyof AquaMaiTouchSensitivityConfig>()
 
     const applyPreset = (id: number) => {
       const PRESET_A = [90, 80, 70, 60, 50, 40, 30, 26, 23, 20, 10]
@@ -16,14 +16,14 @@ export default defineComponent({
 
       for (const key of Object.keys(props.config)) {
         if (key === "enable") continue
-        props.config[key as keyof TouchSensitivityConfig] = (key.startsWith('a') ? PRESET_A : PRESET_OTHERS)[id] as any
+        props.config[key as keyof AquaMaiTouchSensitivityConfig] = (key.startsWith('a') ? PRESET_A : PRESET_OTHERS)[id] as any
       }
     }
 
     const applyToGlobal = (value: number) => {
       for (const key of Object.keys(props.config)) {
         if (key === "enable") continue
-        props.config[key as keyof TouchSensitivityConfig] = value as any
+        props.config[key as keyof AquaMaiTouchSensitivityConfig] = value as any
       }
     }
 
@@ -31,7 +31,7 @@ export default defineComponent({
       for (const key of Object.keys(props.config)) {
         if (key === "enable") continue
         if (key.startsWith(area)) {
-          props.config[key as keyof TouchSensitivityConfig] = value as any
+          props.config[key as keyof AquaMaiTouchSensitivityConfig] = value as any
         }
       }
     }

@@ -6,8 +6,6 @@ import api from "@/client/api";
 import { capitalCase, pascalCase } from "change-case";
 import ProblemsDisplay from "@/components/ProblemsDisplay";
 import { globalCapture } from "@/store/refs";
-import TouchSensitivityConfigurator from "@/components/ModManager/TouchSensitivityConfigurator";
-import CustomKeyBindingConfig from "@/components/ModManager/CustomKeyBindingConfig";
 
 export default defineComponent({
   props: {
@@ -33,6 +31,7 @@ export default defineComponent({
     const installingMelonLoader = ref(false)
     const installingAquaMai = ref(false)
     const showAquaMaiInstallDone = ref(false)
+    const customSettingsPanels = import.meta.glob('./customSettingPanels/**/Panel.tsx', {eager: true})
 
     onMounted(async () => {
       const ret = (await api.GetAquaMaiConfig()).data;
@@ -79,6 +78,13 @@ export default defineComponent({
 
     const getSectionTitle = (key: string) => comments.sections[key] || commentsEmbedded.value.sections?.[pascalCase(key)]
 
+    const getCustomPanelForSetting = (section: string, key?: string) => {
+      if (!key) {
+        return (customSettingsPanels[`./customSettingPanels/${section}/Panel.tsx`] as any)?.default
+      }
+      return (customSettingsPanels[`./customSettingPanels/${section}/${key}/Panel.tsx`] as any)?.default
+    }
+
     return () => <NModal
       preset="card"
       class="w-[min(90vw,90em)]"
@@ -113,13 +119,13 @@ export default defineComponent({
             // @ts-ignore
                                        id="scroll"
           >
-            {Object.entries(config.value).map(([key, section]) => !!section && <div id={key}>
-                <NDivider titlePlacement="left" key={key}>{getSectionTitle(key)}</NDivider>
-              {key === 'touchSensitivity' ?
-                <TouchSensitivityConfigurator config={section}/>
-                : key === 'customKeyMap' ?
-                  <CustomKeyBindingConfig config={section}/>
-                  :
+            {Object.entries(config.value).map(([key, section]) => {
+              // 这里开始某个分类设置的渲染
+              const CustomPanel = getCustomPanelForSetting(key)
+              return !!section && <div id={key}>
+                  <NDivider titlePlacement="left" key={key}>{getSectionTitle(key)}</NDivider>
+                {CustomPanel ?
+                  <CustomPanel config={section}/> :
                   Object.keys(section).map((k) => <NFormItem key={k} label={capitalCase(k)} labelPlacement="left" labelWidth="10em">
                     <NFlex vertical class="w-full ws-pre-line">
                       <NFlex class="h-34px" align="center">
@@ -139,8 +145,9 @@ export default defineComponent({
                       {comments[key]?.[k] || commentsEmbedded.value[pascalCase(key)]?.[pascalCase(k)]}
                     </NFlex>
                   </NFormItem>)
-              }
-            </div>)}
+                }
+              </div>;
+            })}
           </NScrollbar>}
         </div>
       </NFlex>
