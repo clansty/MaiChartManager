@@ -1,5 +1,5 @@
 import { computed, defineComponent, onMounted, PropType, ref, watch } from "vue";
-import { NButton, NCheckbox, NDivider, NFlex, NFormItem, NInput, NInputNumber, NModal, NScrollbar, NSelect, NSwitch, useDialog } from "naive-ui";
+import { NAnchor, NAnchorLink, NButton, NCheckbox, NDivider, NFlex, NFormItem, NInput, NInputNumber, NModal, NScrollbar, NSelect, NSwitch, useDialog } from "naive-ui";
 import { AquaMaiConfig, GameModInfo } from "@/client/apiGen";
 import comments from './modComments.yaml';
 import api from "@/client/api";
@@ -77,9 +77,11 @@ export default defineComponent({
       }
     })
 
+    const getSectionTitle = (key: string) => comments.sections[key] || commentsEmbedded.value.sections?.[pascalCase(key)]
+
     return () => <NModal
       preset="card"
-      class="w-[min(90vw,70em)]"
+      class="w-[min(90vw,90em)]"
       title="Mod 管理"
       v-model:show={show.value}
     >
@@ -103,36 +105,44 @@ export default defineComponent({
           <span class={props.info.aquaMaiVersion === props.info.bundledAquaMaiVersion ? "" : "c-orange"}>{props.info.bundledAquaMaiVersion}</span>
         </NFlex>
         {props.badgeType && <NCheckbox v-model:checked={disableBadge.value}>隐藏按钮上的角标</NCheckbox>}
-        {config.value && <NScrollbar class="max-h-60vh p-2">
-          {Object.entries(config.value).map(([key, section]) => !!section && <>
-              <NDivider titlePlacement="left" key={key}>{comments.sections[key] || commentsEmbedded.value.sections?.[pascalCase(key)]}</NDivider>
-            {key === 'touchSensitivity' ?
-              <TouchSensitivityConfigurator config={section}/>
-              : key === 'customKeyMap' ?
-                <CustomKeyBindingConfig config={section}/>
-                :
-                Object.keys(section).map((k) => <NFormItem key={k} label={capitalCase(k)} labelPlacement="left" labelWidth="10em">
-                  <NFlex vertical class="w-full ws-pre-line">
-                    <NFlex class="h-34px" align="center">
-                      {(() => {
-                        const choices = comments.options[key]?.[k]
-                        if (choices) {
-                          return <NSelect v-model:value={section[k]} options={choices} clearable/>
-                        }
-                        return <>
-                          {typeof section[k] === 'boolean' && <NSwitch v-model:value={section[k]}/>}
-                          {typeof section[k] === 'string' && <NInput v-model:value={section[k]} placeholder="" onUpdateValue={v => section[k] = typeof v === 'string' ? v : ''}/>}
-                          {typeof section[k] === 'number' && <NInputNumber value={section[k]} onUpdateValue={v => section[k] = typeof v === 'number' ? v : 0} placeholder="" step={comments.steps[k] || 1}/>}
-                        </>
-                      })()}
-                      {comments.shouldEnableOptions[key]?.[k] && !section[k] && <ProblemsDisplay problems={['需要开启此选项']}/>}
+        <div class="grid cols-[17em_auto]">
+          <NAnchor type="block" offsetTarget="#scroll">
+            {Object.keys(config.value!).map((key) => <NAnchorLink key={key} title={getSectionTitle(key)} href={`#${key}`}/>)}
+          </NAnchor>
+          {config.value && <NScrollbar class="max-h-60vh p-2"
+            // @ts-ignore
+                                       id="scroll"
+          >
+            {Object.entries(config.value).map(([key, section]) => !!section && <div id={key}>
+                <NDivider titlePlacement="left" key={key}>{getSectionTitle(key)}</NDivider>
+              {key === 'touchSensitivity' ?
+                <TouchSensitivityConfigurator config={section}/>
+                : key === 'customKeyMap' ?
+                  <CustomKeyBindingConfig config={section}/>
+                  :
+                  Object.keys(section).map((k) => <NFormItem key={k} label={capitalCase(k)} labelPlacement="left" labelWidth="10em">
+                    <NFlex vertical class="w-full ws-pre-line">
+                      <NFlex class="h-34px" align="center">
+                        {(() => {
+                          const choices = comments.options[key]?.[k]
+                          if (choices) {
+                            return <NSelect v-model:value={section[k]} options={choices} clearable/>
+                          }
+                          return <>
+                            {typeof section[k] === 'boolean' && <NSwitch v-model:value={section[k]}/>}
+                            {typeof section[k] === 'string' && <NInput v-model:value={section[k]} placeholder="" onUpdateValue={v => section[k] = typeof v === 'string' ? v : ''}/>}
+                            {typeof section[k] === 'number' && <NInputNumber value={section[k]} onUpdateValue={v => section[k] = typeof v === 'number' ? v : 0} placeholder="" step={comments.steps[k] || 1}/>}
+                          </>
+                        })()}
+                        {comments.shouldEnableOptions[key]?.[k] && !section[k] && <ProblemsDisplay problems={['需要开启此选项']}/>}
+                      </NFlex>
+                      {comments[key]?.[k] || commentsEmbedded.value[pascalCase(key)]?.[pascalCase(k)]}
                     </NFlex>
-                    {comments[key]?.[k] || commentsEmbedded.value[pascalCase(key)]?.[pascalCase(k)]}
-                  </NFlex>
-                </NFormItem>)
-            }
-          </>)}
-        </NScrollbar>}
+                  </NFormItem>)
+              }
+            </div>)}
+          </NScrollbar>}
+        </div>
       </NFlex>
     </NModal>;
   }

@@ -9,6 +9,7 @@ sections:
   customKeyMap: 自定义按键映射
   windowState: 游戏窗口属性
   customCameraId: 自定义摄像头 ID
+  visual: 音符等视觉效果调整
 
 cheat:
   ticketUnlock: 解锁游戏里所有可能的跑图券
@@ -146,6 +147,11 @@ customCameraId:
   rightQrCamera: DX Pass 2P
   photoCamera: 玩家摄像头
   chimeCamera: 二维码扫描摄像头
+
+visual:
+  judgeDisplay4B: |
+    更精细的判定表示
+    需开启 CustomSkins 并安装资源文件
 
 shouldEnableOptions:
   ux:
