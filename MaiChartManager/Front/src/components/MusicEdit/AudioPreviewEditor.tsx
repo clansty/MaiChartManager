@@ -132,6 +132,9 @@ export default defineComponent({
           </NButton>
         </NFlex>
         <NFlex justify="end">
+          <NButton type="error" secondary onClick={props.closeModel as any} disabled={load.value}>
+            放弃
+          </NButton>
           <NButton secondary onClick={save} loading={load.value}>
             保存
           </NButton>

@@ -24,6 +24,8 @@ export default defineComponent({
         title="编辑预览"
         v-model:show={show.value}
         maskClosable={false}
+        closeOnEsc={false}
+        closable={false}
       >{{
         default: () =>
           <AudioPreviewEditor closeModel={() => show.value = false}/>,
