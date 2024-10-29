@@ -8,6 +8,7 @@ import loaderUrl from '@/assets/majdata-wasm/Build.loader.js?url';
 import { NButton, NFlex, NInputNumber, NModal } from "naive-ui";
 import UnityVue from 'unity-webgl/vue'
 import { selectedADir } from "@/store/refs";
+import { getUrl } from "@/client/api";
 
 export default defineComponent({
   props: {
@@ -26,7 +27,7 @@ export default defineComponent({
     unityContext.on("mounted", () => {
       console.log("Unity mounted")
       setTimeout(() => {
-        unityContext.send("HandleJSMessages", "ReceiveMessage", `jsnmsl\n/MaiChartManagerServlet/ChartPreviewApi/${selectedADir.value}/${props.songId}/${props.level}\n1\nlv0`)
+        unityContext.send("HandleJSMessages", "ReceiveMessage", `jsnmsl\n${getUrl(`ChartPreviewApi/${selectedADir.value}/${props.songId}/${props.level}`)}\n1\nlv0`)
       }, 3000)
     })
 

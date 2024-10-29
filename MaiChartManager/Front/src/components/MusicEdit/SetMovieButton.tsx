@@ -2,7 +2,7 @@ import { defineComponent, PropType, ref } from "vue";
 import { NButton, NCheckbox, NDrawer, NDrawerContent, NFlex, NInputNumber, NModal, NProgress, useDialog, useMessage } from "naive-ui";
 import FileTypeIcon from "@/components/FileTypeIcon";
 import { LicenseStatus, MusicXmlWithABJacket } from "@/client/apiGen";
-import api from "@/client/api";
+import api, { getUrl } from "@/client/api";
 import { globalCapture, selectedADir, showNeedPurchaseDialog, version } from "@/store/refs";
 import { fetchEventSource } from "@microsoft/fetch-event-source";
 
@@ -34,7 +34,7 @@ export default defineComponent({
       body.append('file', movie);
       body.append('offset', offset.toString());
       body.append('noScale', noScale.value.toString());
-      fetchEventSource(`/MaiChartManagerServlet/SetMovieApi/${selectedADir.value}/${id}`, {
+      fetchEventSource(getUrl(`SetMovieApi/${selectedADir.value}/${id}`), {
         method: 'PUT',
         body,
         onerror(e) {

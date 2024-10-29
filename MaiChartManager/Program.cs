@@ -12,6 +12,14 @@ static partial class Program
     [LibraryImport("kernel32.dll", SetLastError = true)]
     private static partial void SetConsoleOutputCP(uint wCodePageID);
 
+    private static ILoggerFactory _loggerFactory = LoggerFactory.Create(builder =>
+    {
+        builder.AddConsole();
+        builder.SetMinimumLevel(LogLevel.Information);
+    });
+
+    public static ILogger GetLogger<T>() => _loggerFactory.CreateLogger<T>();
+
     /// <summary>
     ///  The main entry point for the application.
     /// </summary>

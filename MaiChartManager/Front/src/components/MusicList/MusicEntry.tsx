@@ -6,6 +6,7 @@ import { LEVEL_COLOR, LEVELS } from "@/consts";
 import ProblemsDisplay from "@/components/ProblemsDisplay";
 import { musicListAll, selectedADir } from "@/store/refs";
 import ConflictDisplay from "@/components/MusicList/ConflictDisplay";
+import { getUrl } from "@/client/api";
 
 export default defineComponent({
   props: {
@@ -16,7 +17,7 @@ export default defineComponent({
 
   setup(props) {
     const jacketUrl = computed(() => props.music.hasJacket ?
-      `/MaiChartManagerServlet/GetJacketApi/${selectedADir.value}/${props.music.id}?${(props.music as any).updateTime}` : noJacket)
+      getUrl(`GetJacketApi/${selectedADir.value}/${props.music.id}?${(props.music as any).updateTime}`) : noJacket)
 
     const overridingOthers = computed(() => musicListAll.value.filter(m => m.id === props.music.id && m.assetDir! < props.music.assetDir!))
     const overrideByOthers = computed(() => musicListAll.value.filter(m => m.id === props.music.id && m.assetDir! > props.music.assetDir!))

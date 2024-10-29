@@ -2,7 +2,7 @@
 
 namespace MaiChartManager;
 
-partial class Browser
+sealed partial class Browser
 {
     /// <summary>
     /// Required designer variable.

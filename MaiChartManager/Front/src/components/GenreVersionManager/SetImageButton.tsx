@@ -1,7 +1,7 @@
 import { defineComponent, onMounted, PropType, ref } from "vue";
 import { GenreXml } from "@/client/apiGen";
 import { NButton } from "naive-ui";
-import api from "@/client/api";
+import api, { getUrl } from "@/client/api";
 import SelectFileTypeTip from "@/components/GenreVersionManager/SelectFileTypeTip";
 import { globalCapture, selectedMusic, updateAddVersionList, updateGenreList } from "@/store/refs";
 import { EDIT_TYPE } from "./index";
@@ -17,7 +17,7 @@ export default defineComponent({
 
     const refresh = async () => {
       if (!props.genre.fileName) return;
-      const req = await fetch(`/MaiChartManagerServlet/GetLocalAssetApi/${props.genre.fileName}`);
+      const req = await fetch(getUrl(`GetLocalAssetApi/${props.genre.fileName}`));
       if (!req.ok) return;
       const image = await req.blob();
       imageUrl.value = URL.createObjectURL(image);

@@ -19,6 +19,7 @@ export default {
       replaysOnErrorSampleRate: 1.0, // If you're not already sampling the entire session, change the sample rate to 100% when sampling sessions where errors occur.
       // Profiling
       profilesSampleRate: 1.0, // Profile 100% of the transactions. This value is relative to tracesSampleRate
+      tracePropagationTargets: [/localhost/]
     })
   },
 };

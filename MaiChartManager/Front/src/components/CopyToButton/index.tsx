@@ -1,5 +1,5 @@
 import { computed, defineComponent, ref } from "vue";
-import api from "@/client/api";
+import api, { getUrl } from "@/client/api";
 import { globalCapture, selectedADir, selectedMusic, selectMusicId, showNeedPurchaseDialog, updateMusicList, version } from "@/store/refs";
 import { NButton, NButtonGroup, NDropdown, useDialog, useMessage } from "naive-ui";
 import { ZipReader } from "@zip.js/zip.js";
@@ -26,7 +26,7 @@ export default defineComponent({
 
     const options = computed(() => [
       {
-        label: () => <a href={`/MaiChartManagerServlet/ExportOptApi/${selectedADir.value}/${selectMusicId.value}`} download={`${selectMusicId.value} - ${selectedMusic.value?.name}.zip`}>导出 Zip</a>,
+        label: () => <a href={getUrl(`ExportOptApi/${selectedADir.value}/${selectMusicId.value}`)} download={`${selectMusicId.value} - ${selectedMusic.value?.name}.zip`}>导出 Zip</a>,
         key: DROPDOWN_OPTIONS.exportZip,
       },
       {
@@ -34,7 +34,7 @@ export default defineComponent({
         key: DROPDOWN_OPTIONS.exportMaidata,
       },
       {
-        label: () => <a href={`/MaiChartManagerServlet/ExportAsMaidataApi/${selectedADir.value}/${selectMusicId.value}`} download={`${selectMusicId.value} - ${selectedMusic.value?.name} - Maidata.zip`}>导出 Zip (Maidata)</a>,
+        label: () => <a href={getUrl(`ExportAsMaidataApi/${selectedADir.value}/${selectMusicId.value}`)} download={`${selectMusicId.value} - ${selectedMusic.value?.name} - Maidata.zip`}>导出 Zip (Maidata)</a>,
         key: DROPDOWN_OPTIONS.exportMaiDataZip,
       },
       {
@@ -42,7 +42,7 @@ export default defineComponent({
         key: DROPDOWN_OPTIONS.exportMaidataIgnoreVideo,
       },
       {
-        label: () => <a href={`/MaiChartManagerServlet/ExportAsMaidataApi/${selectedADir.value}/${selectMusicId.value}?ignoreVideo=true`} download={`${selectMusicId.value} - ${selectedMusic.value?.name} - Maidata.zip`}>导出 Zip (Maidata，无 BGA)</a>,
+        label: () => <a href={getUrl(`ExportAsMaidataApi/${selectedADir.value}/${selectMusicId.value}?ignoreVideo=true`)} download={`${selectMusicId.value} - ${selectedMusic.value?.name} - Maidata.zip`}>导出 Zip (Maidata，无 BGA)</a>,
         key: DROPDOWN_OPTIONS.exportMaiDataZipIgnoreVideo,
       },
       ...(selectedADir.value === 'A000' ? [] : [{
@@ -90,7 +90,7 @@ export default defineComponent({
           return;
         }
         try {
-          let url = `/MaiChartManagerServlet/${type === DROPDOWN_OPTIONS.export ? 'ExportOptApi' : 'ExportAsMaidataApi'}/${selectedADir.value}/${selectMusicId.value}`;
+          let url = getUrl(`${type === DROPDOWN_OPTIONS.export ? 'ExportOptApi' : 'ExportAsMaidataApi'}/${selectedADir.value}/${selectMusicId.value}`);
           if (type === DROPDOWN_OPTIONS.exportMaidataIgnoreVideo) {
             url += '?ignoreVideo=true';
           }

@@ -106,7 +106,8 @@ public static class ServerManager
                 serverOptions.Limits.MaxRequestBodySize = null; // 允许无限制的请求体大小
             });
 
-        builder.Services.AddSingleton<StaticSettings>()
+        builder.Services
+            .AddSingleton<StaticSettings>()
             .AddEndpointsApiExplorer()
             .AddSwaggerGen(options => { options.CustomSchemaIds(type => type.Name == "Config" ? type.FullName : type.Name); })
             .Configure<FormOptions>(x =>
@@ -114,6 +115,12 @@ public static class ServerManager
                 x.ValueLengthLimit = int.MaxValue;
                 x.MultipartBodyLengthLimit = long.MaxValue; // In case of multipart
             })
+            .AddCors(options => options.AddPolicy("qwq", policy =>
+            {
+                policy.WithOrigins("https://mcm.invalid")
+                    .AllowAnyMethod()
+                    .AllowAnyHeader();
+            }))
             .AddControllers()
             .AddJsonOptions(options =>
                 options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
@@ -121,7 +128,6 @@ public static class ServerManager
 # if !DEBUG
         builder.WebHost.ConfigureKestrel((context, serverOptions) =>
         {
-            serverOptions.Listen(IPAddress.Loopback, GetAvailablePort());
             if (export)
             {
                 serverOptions.Listen(IPAddress.Any, 5001, listenOptions =>
@@ -132,6 +138,10 @@ public static class ServerManager
                     });
                 });
             }
+            else
+            {
+                serverOptions.Listen(IPAddress.Loopback, 0);
+            }
         });
 # endif
 
@@ -141,9 +151,11 @@ public static class ServerManager
         if (onStart != null)
             app.Lifetime.ApplicationStarted.Register(onStart);
 
-        app.UseSwagger();
-        app.UseSwaggerUI();
-        app.UseFileServer();
+        app.UseSwagger()
+            .UseSwaggerUI()
+            .UseCors("qwq");
+        if (export)
+            app.UseFileServer();
         app.MapControllers();
         Task.Run(app.Run);
     }

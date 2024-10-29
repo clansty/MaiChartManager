@@ -6,7 +6,7 @@ import { globalCapture, selectedADir, selectMusicId } from "@/store/refs";
 import ZoomPlugin from 'wavesurfer.js/dist/plugins/zoom'
 import Hover from 'wavesurfer.js/dist/plugins/hover'
 import TimelinePlugin from 'wavesurfer.js/dist/plugins/timeline'
-import api from "@/client/api";
+import api, { getUrl } from "@/client/api";
 import { AudioPreviewTime } from "@/client/apiGen";
 import { useMagicKeys } from "@vueuse/core";
 
@@ -43,7 +43,7 @@ export default defineComponent({
         container: waveSurferContainer.value,
         waveColor: 'rgb(107,203,152)',
         progressColor: 'rgb(33,194,118)',
-        url: `/MaiChartManagerServlet/GetMusicWavApi/${selectedADir.value}/${selectMusicId.value}`,
+        url: getUrl(`GetMusicWavApi/${selectedADir.value}/${selectMusicId.value}`),
         plugins: [
           regions,
           ZoomPlugin.create({

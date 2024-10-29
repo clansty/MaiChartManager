@@ -175,7 +175,7 @@ public partial class Launcher : Form
     {
         if (Program.BrowserWin is null || Program.BrowserWin.IsDisposed)
         {
-            Program.BrowserWin = new Browser($"{loopbackUrl}?ts={DateTime.Now.Ticks}");
+            Program.BrowserWin = new Browser(loopbackUrl);
             Program.BrowserWin.Show();
         }
         else

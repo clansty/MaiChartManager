@@ -48,7 +48,6 @@
     "vite-svg-loader": "^5.1.0",
     "vue": "^3.5.11",
     "vue-contenteditable": "^4.1.0",
-    "vue-router": "^4.4.5",
     "wavesurfer.js": "^7.8.6"
   },
   "packageManager": "pnpm@9.7.0+sha512.dc09430156b427f5ecfc79888899e1c39d2d690f004be70e05230b72cb173d96839587545d09429b55ac3c429c801b4dc3c0e002f653830a420fa2dd4e3cf9cf"

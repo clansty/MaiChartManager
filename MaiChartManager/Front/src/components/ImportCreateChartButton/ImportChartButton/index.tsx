@@ -3,7 +3,7 @@ import { NButton, useDialog } from "naive-ui";
 import SelectFileTypeTip from "./SelectFileTypeTip";
 import { LicenseStatus, MessageLevel, ShiftMethod } from "@/client/apiGen";
 import CheckingModal from "./CheckingModal";
-import api from "@/client/api";
+import api, { getUrl } from "@/client/api";
 import { globalCapture, musicList, selectedADir, selectMusicId, updateMusicList, version as appVersion } from "@/store/refs";
 import ErrorDisplayIdInput from "./ErrorDisplayIdInput";
 import ImportStepDisplay from "./ImportStepDisplay";
@@ -93,7 +93,7 @@ export default defineComponent({
       body.append('file', movie);
       body.append('offset', offset.toString());
       body.append('noScale', savedOptions.value.noScale.toString());
-      fetchEventSource(`/MaiChartManagerServlet/SetMovieApi/${selectedADir.value}/${id}`, {
+      fetchEventSource(getUrl(`SetMovieApi/${selectedADir.value}/${id}`), {
         method: 'PUT',
         body,
         onerror(e) {

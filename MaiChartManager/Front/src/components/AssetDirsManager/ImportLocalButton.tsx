@@ -1,6 +1,6 @@
 import { defineComponent, ref } from "vue";
 import { NButton, NModal, NProgress, useDialog, useMessage } from "naive-ui";
-import api from "@/client/api";
+import api, { getUrl } from "@/client/api";
 import { updateAssetDirs } from "@/store/refs";
 import axios from "axios";
 import { UploadAssetDirResult } from "@/client/apiGen";
@@ -45,7 +45,7 @@ export default defineComponent({
 
           progress.value = 0;
           showProgress.value = true;
-          const res = await axios.post<UploadAssetDirResult>(`/MaiChartManagerServlet/UploadAssetDirApi/${folderHandle.name}`, data, {
+          const res = await axios.post<UploadAssetDirResult>(getUrl(`UploadAssetDirApi/${folderHandle.name}`), data, {
             onUploadProgress: data => {
               progress.value = Math.floor((data.progress || 0) * 100);
             },

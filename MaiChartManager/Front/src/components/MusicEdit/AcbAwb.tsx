@@ -6,7 +6,7 @@ import { globalCapture, selectedADir } from "@/store/refs";
 import FileTypeIcon from "@/components/FileTypeIcon";
 import stdIcon from "@/assets/stdIcon.png";
 import dxIcon from "@/assets/dxIcon.png";
-import api from "@/client/api";
+import api, { getUrl } from "@/client/api";
 import AudioPreviewEditorButton from "@/components/MusicEdit/AudioPreviewEditorButton";
 import SetMovieButton from "@/components/MusicEdit/SetMovieButton";
 
@@ -16,7 +16,7 @@ export default defineComponent({
   },
   setup(props) {
     const updateTime = ref(0)
-    const url = computed(() => `/MaiChartManagerServlet/GetMusicWavApi/${selectedADir.value}/${props.song.id}?${updateTime.value}`)
+    const url = computed(() => getUrl(`GetMusicWavApi/${selectedADir.value}/${props.song.id}?${updateTime.value}`))
     const tipShow = ref(false)
     const tipSelectAwbShow = ref(false)
     const setOffsetShow = ref(false)

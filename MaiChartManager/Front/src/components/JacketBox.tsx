@@ -1,6 +1,6 @@
 import { computed, defineComponent, PropType, ref } from "vue";
 import noJacket from "@/assets/noJacket.webp";
-import api from "@/client/api";
+import api, { getUrl } from "@/client/api";
 import { useDialog } from "naive-ui";
 import { globalCapture, selectedADir, selectedMusic } from "@/store/refs";
 import { MusicXmlWithABJacket } from "@/client/apiGen";
@@ -14,7 +14,7 @@ export default defineComponent({
     const dialog = useDialog();
     const updateTime = ref(0)
     const jacketUrl = computed(() => props.info.hasJacket ?
-      `/MaiChartManagerServlet/GetJacketApi/${props.info.assetDir}/${props.info.id}?${updateTime.value}` : noJacket)
+      getUrl(`GetJacketApi/${props.info.assetDir}/${props.info.id}?${updateTime.value}`) : noJacket)
 
     const upload = async () => {
       if (!props.upload) return;

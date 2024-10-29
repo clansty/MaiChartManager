@@ -5,6 +5,7 @@ import { ZipReader } from "@zip.js/zip.js";
 import getSubDirFile from "@/utils/getSubDirFile";
 import { OPTIONS } from "@/components/MusicList/BatchActionButton/ChooseAction";
 import { useNotification } from "naive-ui";
+import { getUrl } from "@/client/api";
 
 export default async (setStep: (step: STEP) => void, musicList: MusicXmlWithABJacket[], action: OPTIONS, notify: ReturnType<typeof useNotification>) => {
   let folderHandle: FileSystemDirectoryHandle;
@@ -33,18 +34,19 @@ export default async (setStep: (step: STEP) => void, musicList: MusicXmlWithABJa
     let url = '';
     switch (action) {
       case OPTIONS.CreateNewOpt:
-        url = `/MaiChartManagerServlet/ExportOptApi/${music.assetDir}/${music.id}`;
+        url = `ExportOptApi/${music.assetDir}/${music.id}`;
         break;
       case OPTIONS.CreateNewOptCompatible:
-        url = `/MaiChartManagerServlet/ExportOptApi/${music.assetDir}/${music.id}?removeEvents=true`;
+        url = `ExportOptApi/${music.assetDir}/${music.id}?removeEvents=true`;
         break;
       case OPTIONS.ConvertToMaidata:
-        url = `/MaiChartManagerServlet/ExportAsMaidataApi/${music.assetDir}/${music.id}`;
+        url = `ExportAsMaidataApi/${music.assetDir}/${music.id}`;
         break;
       case OPTIONS.ConvertToMaidataIgnoreVideo:
-        url = `/MaiChartManagerServlet/ExportAsMaidataApi/${music.assetDir}/${music.id}?ignoreVideo=true`;
+        url = `ExportAsMaidataApi/${music.assetDir}/${music.id}?ignoreVideo=true`;
         break;
     }
+    url = getUrl(url);
     const zip = await fetch(url);
     const zipReader = new ZipReader(zip.body!);
     const entries = zipReader.getEntriesGenerator();
