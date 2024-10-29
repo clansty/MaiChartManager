@@ -1,5 +1,6 @@
 cd %~dp0
 del .\*.appx
+rmdir /s /q Pack
 
 pushd ..\MaiChartManager\Front
 call pnpm build
@@ -9,6 +10,7 @@ pushd ..
 msbuild /p:Configuration=Release /p:DeployOnBuild=true /p:PublishProfile=FolderProfile
 popd
 
+copy Base\* Pack
 pushd Pack
 
 del .\priconfig.xml
