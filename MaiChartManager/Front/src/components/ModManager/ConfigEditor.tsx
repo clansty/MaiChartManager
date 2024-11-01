@@ -124,13 +124,13 @@ export default defineComponent({
               return !!section && <div id={key} key={key}>
                   <NDivider titlePlacement="left" key={key}>{getSectionTitle(key)}</NDivider>
                 {CustomPanel ?
-                  <CustomPanel config={section}/> :
+                  <CustomPanel config={section} commentsEmbedded={commentsEmbedded.value}/> :
                   Object.keys(section).map((k) => {
                     // 这里开始某个设置子项的渲染
                     const CustomPanelSub = getCustomPanelForSetting(key, k)
 
                     if (CustomPanelSub) {
-                      return <CustomPanelSub config={section} key={k}/>
+                      return <CustomPanelSub config={section} commentsEmbedded={commentsEmbedded.value} key={k}/>
                     }
 
                     return <NFormItem key={k} label={capitalCase(k)} labelPlacement="left" labelWidth="10em">
