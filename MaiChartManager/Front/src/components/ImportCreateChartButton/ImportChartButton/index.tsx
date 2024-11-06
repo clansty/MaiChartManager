@@ -93,15 +93,19 @@ export default defineComponent({
       body.append('file', movie);
       body.append('offset', offset.toString());
       body.append('noScale', savedOptions.value.noScale.toString());
+      const controller = new AbortController();
       fetchEventSource(getUrl(`SetMovieApi/${selectedADir.value}/${id}`), {
+        signal: controller.signal,
         method: 'PUT',
         body,
         onerror(e) {
           reject(e);
+          controller.abort();
           throw new Error("disable retry onerror");
         },
         onclose() {
           reject(new Error("EventSource Close"));
+          controller.abort();
           throw new Error("disable retry onclose");
         },
         openWhenHidden: true,
@@ -112,10 +116,12 @@ export default defineComponent({
               break;
             case 'Success':
               resolve();
+              controller.abort();
               currentMovieProgress.value = 0;
               break;
             case 'Error':
               reject(new Error(e.data));
+              controller.abort();
               currentMovieProgress.value = 0;
               break;
           }

@@ -34,15 +34,19 @@ export default defineComponent({
       body.append('file', movie);
       body.append('offset', offset.toString());
       body.append('noScale', noScale.value.toString());
+      const controller = new AbortController();
       fetchEventSource(getUrl(`SetMovieApi/${selectedADir.value}/${id}`), {
+        signal: controller.signal,
         method: 'PUT',
         body,
         onerror(e) {
           reject(e);
+          controller.abort();
           throw new Error("disable retry onerror");
         },
         onclose() {
           reject(new Error("EventSource Close"));
+          controller.abort();
           throw new Error("disable retry onclose");
         },
         openWhenHidden: true,
@@ -53,9 +57,11 @@ export default defineComponent({
               break;
             case 'Success':
               console.log("success")
+              controller.abort();
               resolve();
               break;
             case 'Error':
+              controller.abort();
               reject(new Error(e.data));
               break;
           }
