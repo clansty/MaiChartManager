@@ -5,6 +5,7 @@ import dxIcon from "@/assets/dxIcon.png";
 import stdIcon from "@/assets/stdIcon.png";
 import api from "@/client/api";
 import MusicIdConflictNotifier from "@/components/MusicIdConflictNotifier";
+import getNextUnusedMusicId from "@/utils/getNextUnusedMusicId";
 
 export default defineComponent({
   props: {
@@ -20,13 +21,7 @@ export default defineComponent({
 
     watch(() => show.value, (newValue, oldValue) => {
       if (!newValue) return;
-      id.value = 4999;
-      for (const existedMusic of musicList.value) {
-        if (id.value < existedMusic.id! % 1e4) {
-          id.value = existedMusic.id! % 1e4;
-        }
-      }
-      id.value++;
+      id.value = getNextUnusedMusicId();
     })
 
     const save = async () => {

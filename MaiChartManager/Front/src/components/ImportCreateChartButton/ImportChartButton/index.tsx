@@ -11,6 +11,7 @@ import { useStorage } from "@vueuse/core";
 import { captureException } from "@sentry/vue";
 import { fetchEventSource } from "@microsoft/fetch-event-source";
 import { defaultSavedOptions, defaultTempOptions, dummyMeta, IMPORT_STEP, ImportChartMessageEx, ImportMeta, STEP } from "./types";
+import getNextUnusedMusicId from "@/utils/getNextUnusedMusicId";
 
 const tryGetFile = async (dir: FileSystemDirectoryHandle, file: string) => {
   try {
@@ -204,13 +205,8 @@ export default defineComponent({
     }
 
     const startProcess = async () => {
-      let id = 4999;
-      for (const existedMusic of musicList.value) {
-        if (id < existedMusic.id! % 1e4) {
-          id = existedMusic.id! % 1e4;
-        }
-      }
-      id++;
+      let id = getNextUnusedMusicId();
+      const usedIds = [] as number[];
       errors.value = [];
       tempOptions.value = {...defaultTempOptions};
       step.value = STEP.selectFile;
@@ -228,7 +224,10 @@ export default defineComponent({
         } else {
           for await (const entry of dir.values()) {
             if (entry.kind !== 'directory') continue;
-            if (await prepareFolder(entry, id)) id++;
+            if (await prepareFolder(entry, id)) {
+              usedIds.push(id);
+              id = getNextUnusedMusicId(usedIds);
+            }
           }
         }
 
