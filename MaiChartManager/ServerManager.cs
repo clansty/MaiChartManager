@@ -6,6 +6,7 @@ using System.Text.Json.Serialization;
 using System.Windows.Forms;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Server.Kestrel.Https;
+using Microsoft.Extensions.FileProviders;
 using Pluralsight.Crypto;
 using Sentry.AspNetCore;
 
@@ -152,7 +153,10 @@ public static class ServerManager
             .UseSwaggerUI()
             .UseCors("qwq");
         if (export)
-            app.UseFileServer();
+            app.UseFileServer(new FileServerOptions
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(StaticSettings.exeDir, "wwwroot")),
+            });
         app.MapControllers();
         Task.Run(app.Run);
     }
