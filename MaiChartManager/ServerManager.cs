@@ -128,6 +128,7 @@ public static class ServerManager
 # if !DEBUG
         builder.WebHost.ConfigureKestrel((context, serverOptions) =>
         {
+            serverOptions.Listen(IPAddress.Loopback, 0);
             if (export)
             {
                 serverOptions.Listen(IPAddress.Any, 5001, listenOptions =>
@@ -137,10 +138,6 @@ public static class ServerManager
                         ServerCertificate = GetCert()
                     });
                 });
-            }
-            else
-            {
-                serverOptions.Listen(IPAddress.Loopback, 0);
             }
         });
 # endif
