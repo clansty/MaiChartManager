@@ -162,7 +162,7 @@ public class MovieConvertController(StaticSettings settings, ILogger<MovieConver
         var outputFile = Path.Combine(tmpDir.FullName, "out.usm");
         try
         {
-            await WannaCRI.WannaCRI.CreateUsmAsync(outVideoPath);
+            WannaCRI.WannaCRI.CreateUsm(outVideoPath);
             if (!System.IO.File.Exists(outputFile) || new FileInfo(outputFile).Length == 0)
             {
                 throw new Exception("Output file not found or empty");

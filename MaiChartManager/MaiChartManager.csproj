@@ -56,6 +56,7 @@
       <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2651.64" />
       <PackageReference Include="NAudio.Lame" Version="2.1.0" />
       <PackageReference Include="Pluralsight.Crypto" Version="1.1.0" />
+      <PackageReference Include="pythonnet" Version="3.0.4" />
       <PackageReference Include="Samboy063.Tomlet" Version="5.4.0" />
       <PackageReference Include="Sentry" Version="4.10.2" />
       <PackageReference Include="Sentry.AspNetCore" Version="4.10.2" />
@@ -114,6 +115,10 @@
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
       <None Update="FFMpeg\**">
+        <Link>%(Filename)%(Extension)</Link>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Python\**">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
       <None Update="Resources\JudgeDisplay4B\**">

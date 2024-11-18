@@ -44,7 +44,7 @@ static partial class Program
 
             Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);
             ApplicationConfiguration.Initialize();
-            FFmpeg.SetExecutablesPath(Path.Combine(StaticSettings.exeDir, "FFMpeg"));
+            FFmpeg.SetExecutablesPath(StaticSettings.exeDir);
             IapManager.Init();
             MovieConvertController.CheckHardwareAcceleration();
 

@@ -337,7 +337,7 @@ public class MusicTransferController(StaticSettings settings, ILogger<MusicTrans
             logger.LogInformation("Temp dir: {tmpDir}", tmpDir.FullName);
             var movieUsm = Path.Combine(tmpDir.FullName, "movie.usm");
             FileSystem.CopyFile(movieUsmPath, movieUsm, UIOption.OnlyErrorDialogs);
-            await WannaCRI.WannaCRI.UnpackUsmAsync(movieUsm);
+            WannaCRI.WannaCRI.UnpackUsm(movieUsm);
             var outputIvfFile = Directory.EnumerateFiles(Path.Combine(tmpDir.FullName, @"output\movie.usm\videos")).FirstOrDefault();
             if (outputIvfFile is not null)
             {
