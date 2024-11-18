@@ -46,6 +46,7 @@
     <ItemGroup>
       <ProjectReference Include="..\Sitreamai\Sitreamai.csproj" />
       <ProjectReference Include="..\SonicAudioTools\Source\SonicAudioLib\SonicAudioLib.csproj" />
+      <ProjectReference Include="..\XV2-Tools\LB_Common\LB_Common.csproj" />
     </ItemGroup>
 
     <ItemGroup>
@@ -129,9 +130,6 @@
       </Reference>
       <Reference Include="AssetStudioUtility">
         <HintPath>Libs\AssetStudioUtility.dll</HintPath>
-      </Reference>
-      <Reference Include="LB_Common">
-        <HintPath>..\Sitreamai\Lib\LB_Common.dll</HintPath>
       </Reference>
       <Reference Include="WinBlur">
         <HintPath>Libs\WinBlur.dll</HintPath>

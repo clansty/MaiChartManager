@@ -12,6 +12,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MaiLib", "MaiLib\MaiLib.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SonicAudioLib", "SonicAudioTools\Source\SonicAudioLib\SonicAudioLib.csproj", "{63138773-1F47-474C-9345-15EB6183ECC6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LB_Common", "XV2-Tools\LB_Common\LB_Common.csproj", "{513B1851-4576-45EC-8F8E-400A38B05502}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xv2CoreLib", "XV2-Tools\Xv2CoreLib\Xv2CoreLib.csproj", "{FDB88E51-0D73-47B9-A342-E574EC0BA583}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -45,6 +49,18 @@ Global
 		{63138773-1F47-474C-9345-15EB6183ECC6}.Release|x64.ActiveCfg = Release|Any CPU
 		{63138773-1F47-474C-9345-15EB6183ECC6}.Release|x64.Build.0 = Release|Any CPU
 		{63138773-1F47-474C-9345-15EB6183ECC6}.Crack|x64.ActiveCfg = Release|Any CPU
+		{513B1851-4576-45EC-8F8E-400A38B05502}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{513B1851-4576-45EC-8F8E-400A38B05502}.Debug|x64.Build.0 = Debug|Any CPU
+		{513B1851-4576-45EC-8F8E-400A38B05502}.Release|x64.ActiveCfg = Release|Any CPU
+		{513B1851-4576-45EC-8F8E-400A38B05502}.Release|x64.Build.0 = Release|Any CPU
+		{513B1851-4576-45EC-8F8E-400A38B05502}.Crack|x64.ActiveCfg = Debug|Any CPU
+		{513B1851-4576-45EC-8F8E-400A38B05502}.Crack|x64.Build.0 = Debug|Any CPU
+		{FDB88E51-0D73-47B9-A342-E574EC0BA583}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{FDB88E51-0D73-47B9-A342-E574EC0BA583}.Debug|x64.Build.0 = Debug|Any CPU
+		{FDB88E51-0D73-47B9-A342-E574EC0BA583}.Release|x64.ActiveCfg = Release|Any CPU
+		{FDB88E51-0D73-47B9-A342-E574EC0BA583}.Release|x64.Build.0 = Release|Any CPU
+		{FDB88E51-0D73-47B9-A342-E574EC0BA583}.Crack|x64.ActiveCfg = Debug|Any CPU
+		{FDB88E51-0D73-47B9-A342-E574EC0BA583}.Crack|x64.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

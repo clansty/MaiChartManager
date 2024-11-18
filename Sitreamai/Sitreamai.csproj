@@ -21,14 +21,8 @@
     <OutputPath>bin\x64\Debug\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="LB_Common">
-      <HintPath>Lib\LB_Common.dll</HintPath>
-    </Reference>
     <Reference Include="System.Core">
       <HintPath>Lib\System.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Xv2CoreLib">
-      <HintPath>Lib\Xv2CoreLib.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -55,5 +49,7 @@
   <ItemGroup>
     <ProjectReference Include="..\MaiLib\MaiLib.csproj" />
     <ProjectReference Include="..\SimaiSharp\SimaiSharp\SimaiSharp.csproj" />
+    <ProjectReference Include="..\XV2-Tools\LB_Common\LB_Common.csproj" />
+    <ProjectReference Include="..\XV2-Tools\Xv2CoreLib\Xv2CoreLib.csproj" />
   </ItemGroup>
 </Project>
