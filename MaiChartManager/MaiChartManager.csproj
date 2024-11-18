@@ -19,10 +19,11 @@
         <UseWindowsForms>true</UseWindowsForms>
 	    <NoWarn>NU1605</NoWarn>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <Configurations>Debug;Release;Crack</Configurations>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      <IsPublishable>True</IsPublishable>
+      <IsPublishable>False</IsPublishable>
       <PlatformTarget>x64</PlatformTarget>
       <DefineConstants>TRACE;CRACK</DefineConstants>
     </PropertyGroup>
@@ -31,6 +32,15 @@
       <IsPublishable>True</IsPublishable>
       <PlatformTarget>x64</PlatformTarget>
       <DefineConstants />
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Crack|x64' ">
+      <IsPublishable>False</IsPublishable>
+      <PlatformTarget>x64</PlatformTarget>
+      <DefineConstants>CRACK</DefineConstants>
+      <Optimize Condition=" '$(Optimize)' == '' ">true</Optimize>
+      <PublishReadyToRun>true</PublishReadyToRun>
+      <SelfContained>true</SelfContained>
     </PropertyGroup>
 
     <ItemGroup>

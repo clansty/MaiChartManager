@@ -16,28 +16,35 @@ Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
 		Release|x64 = Release|x64
+		Crack|x64 = Crack|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{5ABCC8F1-29A2-4493-98EB-AFD2CCF68FB7}.Debug|x64.ActiveCfg = Debug|x64
 		{5ABCC8F1-29A2-4493-98EB-AFD2CCF68FB7}.Debug|x64.Build.0 = Debug|x64
 		{5ABCC8F1-29A2-4493-98EB-AFD2CCF68FB7}.Release|x64.ActiveCfg = Release|x64
 		{5ABCC8F1-29A2-4493-98EB-AFD2CCF68FB7}.Release|x64.Build.0 = Release|x64
+		{5ABCC8F1-29A2-4493-98EB-AFD2CCF68FB7}.Crack|x64.ActiveCfg = Release|x64
 		{16CDF3F3-C0E1-4D32-BFC9-07C8057B8F68}.Debug|x64.ActiveCfg = Debug|x64
 		{16CDF3F3-C0E1-4D32-BFC9-07C8057B8F68}.Debug|x64.Build.0 = Debug|x64
 		{16CDF3F3-C0E1-4D32-BFC9-07C8057B8F68}.Release|x64.ActiveCfg = Release|x64
 		{16CDF3F3-C0E1-4D32-BFC9-07C8057B8F68}.Release|x64.Build.0 = Release|x64
+		{16CDF3F3-C0E1-4D32-BFC9-07C8057B8F68}.Crack|x64.ActiveCfg = Crack|x64
+		{16CDF3F3-C0E1-4D32-BFC9-07C8057B8F68}.Crack|x64.Build.0 = Crack|x64
 		{5633AACB-9089-497C-8596-2C27BEAD2201}.Debug|x64.ActiveCfg = Debug|Any CPU
 		{5633AACB-9089-497C-8596-2C27BEAD2201}.Debug|x64.Build.0 = Debug|Any CPU
 		{5633AACB-9089-497C-8596-2C27BEAD2201}.Release|x64.ActiveCfg = Release|Any CPU
 		{5633AACB-9089-497C-8596-2C27BEAD2201}.Release|x64.Build.0 = Release|Any CPU
+		{5633AACB-9089-497C-8596-2C27BEAD2201}.Crack|x64.ActiveCfg = Release|Any CPU
 		{077998A7-9AD8-4F41-B93B-B63EFD19A550}.Debug|x64.ActiveCfg = Debug|Any CPU
 		{077998A7-9AD8-4F41-B93B-B63EFD19A550}.Debug|x64.Build.0 = Debug|Any CPU
 		{077998A7-9AD8-4F41-B93B-B63EFD19A550}.Release|x64.ActiveCfg = Release|Any CPU
 		{077998A7-9AD8-4F41-B93B-B63EFD19A550}.Release|x64.Build.0 = Release|Any CPU
+		{077998A7-9AD8-4F41-B93B-B63EFD19A550}.Crack|x64.ActiveCfg = Release|Any CPU
 		{63138773-1F47-474C-9345-15EB6183ECC6}.Debug|x64.ActiveCfg = Debug|Any CPU
 		{63138773-1F47-474C-9345-15EB6183ECC6}.Debug|x64.Build.0 = Debug|Any CPU
 		{63138773-1F47-474C-9345-15EB6183ECC6}.Release|x64.ActiveCfg = Release|Any CPU
 		{63138773-1F47-474C-9345-15EB6183ECC6}.Release|x64.Build.0 = Release|Any CPU
+		{63138773-1F47-474C-9345-15EB6183ECC6}.Crack|x64.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

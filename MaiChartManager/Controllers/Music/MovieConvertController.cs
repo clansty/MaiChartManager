@@ -137,7 +137,6 @@ public class MovieConvertController(StaticSettings settings, ILogger<MovieConver
             logger.LogInformation("About to run FFMpeg with params: {params}", conversion.Build());
             conversion.OnProgress += async (sender, args) =>
             {
-                logger.LogInformation("FFMpeg progress: {progress}", args.Percent);
                 await Response.WriteAsync($"event: {SetMovieEventType.Progress}\ndata: {args.Percent}\n\n");
                 await Response.Body.FlushAsync();
             };
@@ -153,6 +152,13 @@ public class MovieConvertController(StaticSettings settings, ILogger<MovieConver
         }
 
         // Convert ivf to usm
+        if (!System.IO.File.Exists(outVideoPath) || new FileInfo(outVideoPath).Length == 0)
+        {
+            await Response.WriteAsync($"event: {SetMovieEventType.Error}\ndata: 视频转换为 VP9 失败：输出文件不存在\n\n");
+            await Response.Body.FlushAsync();
+            return;
+        }
+
         var outputFile = Path.Combine(tmpDir.FullName, "out.usm");
         try
         {
