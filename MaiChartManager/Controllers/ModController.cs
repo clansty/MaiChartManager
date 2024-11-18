@@ -112,7 +112,7 @@ public class ModController(StaticSettings settings, ILogger<ModController> logge
             return;
         }
 
-        using var s = Assembly.GetExecutingAssembly().GetManifestResourceStream("MaiChartManager.Resources.MelonLoader.x64.zip")!;
+        using var s = System.IO.File.OpenRead(Path.Combine(StaticSettings.exeDir, "MelonLoader.x64.zip"));
         var zip = new ZipArchive(s, ZipArchiveMode.Read);
         foreach (var entry in zip.Entries)
         {

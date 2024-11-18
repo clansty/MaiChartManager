@@ -36,7 +36,7 @@ public static class CriUtils
         var format = audioData.GetFormat<Pcm16Format>();
 
         var criTable = new CriTable();
-        criTable.Load(ReadResourceFile("MaiChartManager.Resources.templateV3.acb"));
+        criTable.Load(File.ReadAllBytes(Path.Combine(StaticSettings.exeDir, "templateV3.acb")));
 
         var cueTable = criTable.Rows[0].GetTable("CueTable");
         cueTable.Rows[0]["Length"] = (int)((float)format.SampleCount / format.SampleRate * 1000);

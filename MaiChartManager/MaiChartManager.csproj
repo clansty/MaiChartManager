@@ -85,15 +85,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <EmbeddedResource Remove="Front\**" />
-      <EmbeddedResource Remove="Libs\**" />
-      <None Remove="Resources\templateV3.acb" />
-      <EmbeddedResource Include="Resources\templateV3.acb" />
-      <None Remove="Resources\MelonLoader.x64.zip" />
-      <EmbeddedResource Include="Resources\MelonLoader.x64.zip" />
-    </ItemGroup>
-
-    <ItemGroup>
       <Content Remove="Front\**" />
       <Content Remove="Libs\**" />
       <Content Include="..\LICENSE">
@@ -115,13 +106,17 @@
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
       <None Update="FFMpeg\**">
-        <Link>%(Filename)%(Extension)</Link>
+        <TargetPath>%(Filename)%(Extension)</TargetPath>
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
       <None Update="Python\**">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
       <None Update="Resources\JudgeDisplay4B\**">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Resources\*">
+        <TargetPath>%(Filename)%(Extension)</TargetPath>
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
     </ItemGroup>
