@@ -54,13 +54,11 @@ Global
 		{513B1851-4576-45EC-8F8E-400A38B05502}.Release|x64.ActiveCfg = Release|Any CPU
 		{513B1851-4576-45EC-8F8E-400A38B05502}.Release|x64.Build.0 = Release|Any CPU
 		{513B1851-4576-45EC-8F8E-400A38B05502}.Crack|x64.ActiveCfg = Debug|Any CPU
-		{513B1851-4576-45EC-8F8E-400A38B05502}.Crack|x64.Build.0 = Debug|Any CPU
 		{FDB88E51-0D73-47B9-A342-E574EC0BA583}.Debug|x64.ActiveCfg = Debug|Any CPU
 		{FDB88E51-0D73-47B9-A342-E574EC0BA583}.Debug|x64.Build.0 = Debug|Any CPU
 		{FDB88E51-0D73-47B9-A342-E574EC0BA583}.Release|x64.ActiveCfg = Release|Any CPU
 		{FDB88E51-0D73-47B9-A342-E574EC0BA583}.Release|x64.Build.0 = Release|Any CPU
 		{FDB88E51-0D73-47B9-A342-E574EC0BA583}.Crack|x64.ActiveCfg = Debug|Any CPU
-		{FDB88E51-0D73-47B9-A342-E574EC0BA583}.Crack|x64.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
