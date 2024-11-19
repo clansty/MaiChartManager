@@ -4,4 +4,5 @@ public class Config
 {
     public bool Export { get; set; } = false;
     public string GamePath { get; set; } = "";
+    public string OfflineKey { get; set; } = "";
 }

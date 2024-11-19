@@ -6,6 +6,7 @@ using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
+using Microsoft.VisualBasic;
 
 namespace MaiChartManager;
 
@@ -15,6 +16,9 @@ public partial class Launcher : Form
     {
         InitializeComponent();
         label3.Text = $@"v{Application.ProductVersion}";
+# if CRACK
+        label3.Text += " 此版本不可流通";
+# endif
         checkBox1.Checked = StaticSettings.Config.Export;
         textBox1.Text = StaticSettings.Config.GamePath;
         CheckStartupStatus();
@@ -197,7 +201,7 @@ public partial class Launcher : Form
 
     private async void checkBox_startup_Click(object sender, EventArgs e)
     {
-        await File.WriteAllTextAsync(Path.Combine(StaticSettings.appData, "config.json"), JsonSerializer.Serialize(StaticSettings.Config));
+        await SaveConfigFileAsync();
         var startupTask = await StartupTask.GetAsync("MaiChartManagerStartupId");
         if (checkBox_startup.Checked)
         {
@@ -214,5 +218,32 @@ public partial class Launcher : Form
         Visible = true;
         WindowState = FormWindowState.Normal;
         notifyIcon1.Visible = false;
+    }
+
+    private static async Task SaveConfigFileAsync()
+    {
+        await File.WriteAllTextAsync(Path.Combine(StaticSettings.appData, "config.json"), JsonSerializer.Serialize(StaticSettings.Config));
+    }
+
+    private async void label3_Click(object sender, EventArgs e)
+    {
+        if ((ModifierKeys & Keys.Shift) != Keys.Shift) return;
+        if (IapManager.License == IapManager.LicenseStatus.Active) return;
+
+        var input = Interaction.InputBox("请输入激活码", "离线激活");
+        if (string.IsNullOrWhiteSpace(input)) return;
+
+        var verify = await OfflineReg.VerifyAsync(input);
+        if (!verify.IsValid)
+        {
+            MessageBox.Show("激活码无效");
+            return;
+        }
+
+        MessageBox.Show("赞助版功能已激活，谢谢你");
+
+        StaticSettings.Config.OfflineKey = input;
+        await SaveConfigFileAsync();
+        await IapManager.Init();
     }
 }

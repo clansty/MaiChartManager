@@ -25,6 +25,12 @@ public static class IapManager
         License = LicenseStatus.Active;
         return;
 # endif
+        if (!string.IsNullOrWhiteSpace(StaticSettings.Config.OfflineKey) && (await OfflineReg.VerifyAsync(StaticSettings.Config.OfflineKey)).IsValid)
+        {
+            License = LicenseStatus.Active;
+            return;
+        }
+
         var license = await StoreContext.GetAppLicenseAsync();
         if (license is null)
         {

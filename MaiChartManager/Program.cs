@@ -1,6 +1,9 @@
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 using System.Text.Json;
 using MaiChartManager.Controllers.Music;
+using Microsoft.IdentityModel.JsonWebTokens;
+using Microsoft.IdentityModel.Tokens;
 using Xabe.FFmpeg;
 
 namespace MaiChartManager;
@@ -45,13 +48,13 @@ static partial class Program
             Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);
             ApplicationConfiguration.Initialize();
             FFmpeg.SetExecutablesPath(StaticSettings.exeDir);
-            IapManager.Init();
             MovieConvertController.CheckHardwareAcceleration();
 
             Directory.CreateDirectory(StaticSettings.appData);
             Directory.CreateDirectory(StaticSettings.tempPath);
             if (File.Exists(Path.Combine(StaticSettings.appData, "config.json")))
                 StaticSettings.Config = JsonSerializer.Deserialize<Config>(File.ReadAllText(Path.Combine(StaticSettings.appData, "config.json")));
+            IapManager.Init();
 
             new Launcher();
 
