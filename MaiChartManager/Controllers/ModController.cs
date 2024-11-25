@@ -1,4 +1,6 @@
 ﻿using System.IO.Compression;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using AquaMai.Config.HeadlessLoader;
 using AquaMai.Config.Interfaces;
 using MaiChartManager.Models;
@@ -82,12 +84,25 @@ public class ModController(StaticSettings settings, ILogger<ModController> logge
 
         if (migrationManager.GetVersion(view) != migrationManager.LatestVersion)
         {
+            logger.LogInformation("Migrating AquaMai config from {0} to {1}", migrationManager.GetVersion(view), migrationManager.LatestVersion);
             view = migrationManager.Migrate(view);
         }
 
         var parser = configInterface.GetConfigParser();
         var config = configInterface.CreateConfig();
-        parser.Parse(config, view);
+
+        // 未解之谜
+        // logger.LogInformation("{}", lockCredits.GetType());
+        // var type = typeof(ModController).GetField("lockCredits", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null);
+        // logger.LogInformation("{}", type.GetType());
+        // logger.LogInformation("{}", AquaMaiDllInstalledPath);
+        // logger.LogInformation("{}", config.GetEntryState(config.ReflectionManager.Entries.First(it => it.Path == "GameSettings.CreditConfig.LockCredits")).DefaultValue.GetType());
+        // logger.LogInformation("{}", config.GetEntryState(config.ReflectionManager.Entries.First(it => it.Path == "GameSettings.CreditConfig.LockCredits")).Value.GetType());
+        // logger.LogInformation("{}", config.ReflectionManager.Entries.First(it => it.Path == "GameSettings.CreditConfig.LockCredits").Field.FieldType);
+        //
+        // parser.Parse(config, view);
+        // logger.LogInformation("{}", config.GetEntryState(config.ReflectionManager.Entries.First(it => it.Path == "GameSettings.CreditConfig.LockCredits")).Value.GetType());
+        // logger.LogInformation("{}", config.ReflectionManager.Entries.First(it => it.Path == "GameSettings.CreditConfig.LockCredits").Field.FieldType);
 
         return new AquaMaiConfigDto.ConfigDto(
             config.ReflectionManager.Sections.Select(section =>
@@ -103,13 +118,47 @@ public class ModController(StaticSettings settings, ILogger<ModController> logge
     [HttpPut]
     public void SetAquaMaiConfig(AquaMaiConfigDto.ConfigSaveDto config)
     {
-        // var configInterface = HeadlessConfigLoader.LoadFromPacked(AquaMaiDllInstalledPath);
-        // var serializer = configInterface.CreateConfigSerializer(new IConfigSerializer.Options()
-        // {
-        //     Lang = "zh",
-        //     IncludeBanner = true
-        // });
-        // System.IO.File.WriteAllText(Path.Combine(StaticSettings.GamePath, "AquaMai.toml"), serializer.Serialize(config));
+        var jsonOptions = new JsonSerializerOptions();
+        jsonOptions.Converters.Add(new JsonStringEnumConverter());
+
+        var configInterface = HeadlessConfigLoader.LoadFromPacked(AquaMaiDllInstalledPath);
+        var configEdit = configInterface.CreateConfig();
+
+        foreach (var section in configEdit.ReflectionManager.Sections)
+        {
+            var newState = config.SectionStates[section.Path];
+            var oldState = configEdit.GetSectionState(section);
+            if (newState.Enabled != oldState.Enabled)
+                configEdit.SetSectionEnabled(section, newState.Enabled);
+
+            // 看起来现在如果禁用了 section 并且改了选项，选项会被写到上一个 section 里面
+            // 两个 section 有名字一样的选项怕不是会出问题
+            if (!newState.Enabled) continue;
+
+            foreach (var entry in section.Entries)
+            {
+                var newEntryState = config.EntryStates[entry.Path];
+                var oldEntryState = configEdit.GetEntryState(entry);
+                var newEntryValue = newEntryState.Value.Deserialize(entry.Field.FieldType, jsonOptions);
+                if (!oldEntryState.Value.Equals(newEntryValue))
+                {
+                    logger.LogInformation("Not same: {Path}, {type1}, {newEntryValue}, {type2}, {oldEntryState}", entry.Path, newEntryValue?.GetType(), newEntryValue, oldEntryState.Value?.GetType(), oldEntryState.Value);
+                    configEdit.SetEntryValue(entry, newEntryValue);
+                }
+                else if (!newEntryState.IsDefault)
+                {
+                    logger.LogInformation("Not default: {Path}", entry.Path);
+                    configEdit.SetEntryValue(entry, newEntryValue);
+                }
+            }
+        }
+
+        var serializer = configInterface.CreateConfigSerializer(new IConfigSerializer.Options()
+        {
+            Lang = "zh",
+            IncludeBanner = true
+        });
+        System.IO.File.WriteAllText(Path.Combine(StaticSettings.GamePath, "AquaMai.toml"), serializer.Serialize(configEdit));
     }
 
     [HttpPost]
