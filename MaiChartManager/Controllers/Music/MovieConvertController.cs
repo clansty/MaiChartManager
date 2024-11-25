@@ -49,7 +49,7 @@ public class MovieConvertController(StaticSettings settings, ILogger<MovieConver
         Error
     }
 
-    private static IConversion Concatenate(params IMediaInfo[] mediaInfos)
+    private static IConversion Concatenate(bool scale, params IMediaInfo[] mediaInfos)
     {
         var conversion = FFmpeg.Conversions.New();
         foreach (var inputVideo in mediaInfos)
@@ -61,7 +61,15 @@ public class MovieConvertController(StaticSettings settings, ILogger<MovieConver
         var videoStream = mediaInfos.Select((Func<IMediaInfo, IVideoStream>)(x => x.VideoStreams.OrderByDescending<IVideoStream, int>(z => z.Width).First())).OrderByDescending((Func<IVideoStream, int>)(x => x.Width)).First();
         for (var index = 0; index < mediaInfos.Length; ++index)
             conversion.AddParameter($"[{index}:v] ");
-        conversion.AddParameter($"concat=n={mediaInfos.Length}:v=1 [v]\" -map \"[v]\"");
+        if (scale)
+        {
+            conversion.AddParameter($"concat=n={mediaInfos.Length}:v=1 [v]; [v]scale=1080:-1[vout]\" -map \"[vout]\"");
+        }
+        else
+        {
+            conversion.AddParameter($"concat=n={mediaInfos.Length}:v=1 [v]\" -map \"[v]\"");
+        }
+
         conversion.AddParameter("-aspect " + videoStream.Ratio);
         return conversion;
     }
@@ -120,7 +128,7 @@ public class MovieConvertController(StaticSettings settings, ILogger<MovieConver
                 logger.LogInformation("About to run FFMpeg with params: {params}", blank.Build());
                 await blank.Start();
                 var blankVideoInfo = await FFmpeg.GetMediaInfo(blankPath);
-                conversion = Concatenate(blankVideoInfo, srcMedia);
+                conversion = Concatenate(!noScale, blankVideoInfo, srcMedia);
                 conversion.AddParameter($"-c:v {Vp9Encoding}");
             }
 
@@ -129,7 +137,7 @@ public class MovieConvertController(StaticSettings settings, ILogger<MovieConver
                 .AddParameter("-hwaccel dxva2", ParameterPosition.PreInput)
                 .UseMultiThread(true)
                 .AddParameter("-cpu-used 5");
-            if (!noScale)
+            if (!noScale && padding <= 0)
             {
                 conversion.AddParameter("-vf scale=1080:-1");
             }

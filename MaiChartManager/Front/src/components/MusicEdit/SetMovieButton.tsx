@@ -32,7 +32,7 @@ export default defineComponent({
       progress.value = 0;
       const body = new FormData();
       body.append('file', movie);
-      body.append('offset', offset.toString());
+      body.append('padding', offset.toString());
       body.append('noScale', noScale.value.toString());
       const controller = new AbortController();
       fetchEventSource(getUrl(`SetMovieApi/${selectedADir.value}/${id}`), {
