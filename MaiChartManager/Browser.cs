@@ -8,6 +8,12 @@ public sealed partial class Browser : Form
     private readonly Uri loopbackUrl;
     private static ILogger logger = Program.GetLogger<Browser>();
 
+    private static bool IsRunningAsUwp()
+    {
+        var helpers = new DesktopBridge.Helpers();
+        return helpers.IsRunningAsUwp();
+    }
+
     public Browser(string loopbackUrl)
     {
         InitializeComponent();
@@ -21,10 +27,16 @@ public sealed partial class Browser : Form
 
     private void webView21_CoreWebView2InitializationCompleted(object sender, CoreWebView2InitializationCompletedEventArgs e)
     {
-# if !DEBUG
-        webView21.CoreWebView2.Settings.AreDevToolsEnabled = false;
-        webView21.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
-# endif
+        if (IsRunningAsUwp())
+        {
+            webView21.CoreWebView2.Settings.AreDevToolsEnabled = false;
+            webView21.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
+        }
+        else
+        {
+            Text += " (Unsupported)";
+        }
+
         // 这里如果直接写 mcm 的话会让启动的时候白屏时间更久
         webView21.CoreWebView2.SetVirtualHostNameToFolderMapping("mcm.invalid", Path.Combine(StaticSettings.exeDir, "wwwroot"), CoreWebView2HostResourceAccessKind.Deny);
         webView21.CoreWebView2.AddScriptToExecuteOnDocumentCreatedAsync($"globalThis.backendUrl = `{loopbackUrl.ToString().TrimEnd('/')}`");

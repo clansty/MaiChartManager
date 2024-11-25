@@ -26,6 +26,7 @@ export default defineComponent({
 
     const config = ref<ConfigDto>()
     const configReadErr = ref('')
+    const configReadErrTitle = ref('')
     const dialog = useDialog()
     const installingMelonLoader = ref(false)
     const installingAquaMai = ref(false)
@@ -34,12 +35,23 @@ export default defineComponent({
     const updateAquaMaiConfig = async () => {
       try {
         configReadErr.value = ''
+        configReadErrTitle.value = ''
         config.value = (await api.GetAquaMaiConfig()).data;
       } catch (err: any) {
         if (err instanceof Response) {
           if (!err.bodyUsed) {
-            // @ts-ignore
             const text = await err.text();
+            try {
+              const json = JSON.parse(text);
+              if (json.detail) {
+                configReadErr.value = json.detail;
+              }
+              if (json.title) {
+                configReadErrTitle.value = json.title;
+              }
+              return
+            } catch {
+            }
             configReadErr.value = text.split('\n')[0];
             return
           }
@@ -125,7 +137,8 @@ export default defineComponent({
         {props.badgeType && <NCheckbox v-model:checked={disableBadge.value}>隐藏按钮上的角标</NCheckbox>}
         {configReadErr.value ? <NFlex vertical justify="center" align="center" class="min-h-100">
           <div class="text-8">AquaMai 未安装或需要更新</div>
-          <div class="c-gray-5">{configReadErr.value}</div>
+          <div class="c-gray-5 text-lg">{configReadErr.value}</div>
+          <div class="c-gray-4 text-sm">{configReadErrTitle.value}</div>
         </NFlex> : <AquaMaiConfigurator config={config.value!}/>}
       </NFlex>}
     </NModal>;

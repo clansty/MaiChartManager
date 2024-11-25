@@ -122,6 +122,7 @@ public static class ServerManager
                     .AllowAnyMethod()
                     .AllowAnyHeader();
             }))
+            .AddProblemDetails()
             .AddControllers()
             .AddJsonOptions(options =>
                 options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));

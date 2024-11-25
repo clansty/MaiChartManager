@@ -1,9 +1,9 @@
-import { computed, ref } from "vue";
-import { AppVersionResult, GameModInfo, GenreXml, GetAssetsDirsResult, MusicXmlWithABJacket, VersionXml } from "@/client/apiGen";
+import {computed, ref} from "vue";
+import {AppVersionResult, GameModInfo, GenreXml, GetAssetsDirsResult, MusicXmlWithABJacket, VersionXml} from "@/client/apiGen";
 import api from "@/client/api";
-import { captureException } from "@sentry/vue";
+import {captureException} from "@sentry/vue";
 import posthog from "posthog-js";
-import { useStorage } from "@vueuse/core";
+import {useStorage} from "@vueuse/core";
 
 export const error = ref();
 export const errorId = ref<string>();
@@ -14,7 +14,15 @@ export const globalCapture = async (err: any, context: string) => {
   if (err instanceof Response) {
     if (!err.bodyUsed) {
       // @ts-ignore
-      err.error = await err.text();
+      const errText = err.error = await err.text();
+      try {
+        const json = JSON.parse(errText);
+        if (json.exception.details && json.detail) {
+          // @ts-ignore
+          err.error = json.detail + '\n' + json.exception.details;
+        }
+      } catch {
+      }
     }
   }
   error.value = err;
