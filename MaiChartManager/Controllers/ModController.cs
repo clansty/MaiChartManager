@@ -31,6 +31,7 @@ public class ModController(StaticSettings settings, ILogger<ModController> logge
     public record GameModInfo(bool MelonLoaderInstalled, bool AquaMaiInstalled, string AquaMaiVersion, string BundledAquaMaiVersion, bool IsJudgeDisplay4BInstalled);
 
     private static string AquaMaiConfigPath => Path.Combine(StaticSettings.GamePath, "AquaMai.toml");
+    private static string AquaMaiConfigBackupDirPath => Path.Combine(StaticSettings.GamePath, "AquaMai.toml.bak");
     private static string AquaMaiDllInstalledPath => Path.Combine(StaticSettings.GamePath, @"Mods\AquaMai.dll");
     private static string AquaMaiDllBuiltinPath => Path.Combine(StaticSettings.exeDir, "AquaMai.dll");
     private static string SkinPath => Path.Combine(StaticSettings.GamePath, "LocalAssets", "Skins");
@@ -100,7 +101,7 @@ public class ModController(StaticSettings settings, ILogger<ModController> logge
         // logger.LogInformation("{}", config.GetEntryState(config.ReflectionManager.Entries.First(it => it.Path == "GameSettings.CreditConfig.LockCredits")).Value.GetType());
         // logger.LogInformation("{}", config.ReflectionManager.Entries.First(it => it.Path == "GameSettings.CreditConfig.LockCredits").Field.FieldType);
         //
-        // parser.Parse(config, view);
+        parser.Parse(config, view);
         // logger.LogInformation("{}", config.GetEntryState(config.ReflectionManager.Entries.First(it => it.Path == "GameSettings.CreditConfig.LockCredits")).Value.GetType());
         // logger.LogInformation("{}", config.ReflectionManager.Entries.First(it => it.Path == "GameSettings.CreditConfig.LockCredits").Field.FieldType);
 
@@ -158,6 +159,13 @@ public class ModController(StaticSettings settings, ILogger<ModController> logge
             Lang = "zh",
             IncludeBanner = true
         });
+
+        if (System.IO.File.Exists(AquaMaiConfigPath))
+        {
+            Directory.CreateDirectory(AquaMaiConfigBackupDirPath);
+            System.IO.File.Move(AquaMaiConfigPath, Path.Combine(AquaMaiConfigBackupDirPath, $"{DateTime.Now:yyyy-MM-dd_HH-mm-ss}.toml"));
+        }
+
         System.IO.File.WriteAllText(Path.Combine(StaticSettings.GamePath, "AquaMai.toml"), serializer.Serialize(configEdit));
     }
 
