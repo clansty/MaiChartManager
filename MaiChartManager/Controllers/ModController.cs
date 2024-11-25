@@ -1,10 +1,8 @@
 ﻿using System.IO.Compression;
-using System.Reflection;
-using AquaMai;
-using AquaMai.Attributes;
+using AquaMai.Config.HeadlessLoader;
+using AquaMai.Config.Interfaces;
+using MaiChartManager.Models;
 using Microsoft.AspNetCore.Mvc;
-using Tomlet;
-using Tomlet.Models;
 
 namespace MaiChartManager.Controllers;
 
@@ -25,10 +23,15 @@ public class ModController(StaticSettings settings, ILogger<ModController> logge
     [HttpGet]
     public bool IsAquaMaiInstalled()
     {
-        return System.IO.File.Exists(Path.Combine(StaticSettings.GamePath, @"Mods\AquaMai.dll"));
+        return System.IO.File.Exists(AquaMaiDllInstalledPath);
     }
 
     public record GameModInfo(bool MelonLoaderInstalled, bool AquaMaiInstalled, string AquaMaiVersion, string BundledAquaMaiVersion, bool IsJudgeDisplay4BInstalled);
+
+    private static string AquaMaiConfigPath => Path.Combine(StaticSettings.GamePath, "AquaMai.toml");
+    private static string AquaMaiDllInstalledPath => Path.Combine(StaticSettings.GamePath, @"Mods\AquaMai.dll");
+    private static string AquaMaiDllBuiltinPath => Path.Combine(StaticSettings.exeDir, "AquaMai.dll");
+    private static string SkinPath => Path.Combine(StaticSettings.GamePath, "LocalAssets", "Skins");
 
     [HttpGet]
     public GameModInfo GetGameModInfo()
@@ -37,70 +40,76 @@ public class ModController(StaticSettings settings, ILogger<ModController> logge
         var aquaMaiVersion = "N/A";
         if (aquaMaiInstalled)
         {
-            aquaMaiVersion = System.Diagnostics.FileVersionInfo.GetVersionInfo(Path.Combine(StaticSettings.GamePath, @"Mods\AquaMai.dll")).ProductVersion ?? "N/A";
+            aquaMaiVersion = System.Diagnostics.FileVersionInfo.GetVersionInfo(AquaMaiDllInstalledPath).ProductVersion ?? "N/A";
         }
 
-        return new GameModInfo(IsMelonInstalled(), aquaMaiInstalled, aquaMaiVersion, AquaMai.BuildInfo.Version, GetIsJudgeDisplay4BInstalled());
+        var aquaMaiBuiltinVersion = System.Diagnostics.FileVersionInfo.GetVersionInfo(AquaMaiDllBuiltinPath).ProductVersion;
+
+        return new GameModInfo(IsMelonInstalled(), aquaMaiInstalled, aquaMaiVersion, aquaMaiBuiltinVersion!, GetIsJudgeDisplay4BInstalled());
     }
 
     [NonAction]
     private static bool GetIsJudgeDisplay4BInstalled()
     {
-        var skinPath = Path.Combine(StaticSettings.GamePath, "LocalAssets", "Skins");
-        if (!Directory.Exists(skinPath)) return false;
+        if (!Directory.Exists(SkinPath)) return false;
 
         var filesShouldBeInstalled = Directory.EnumerateFiles(judgeDisplay4BPath);
-        return filesShouldBeInstalled.Select(file => Path.Combine(skinPath, Path.GetFileName(file))).All(System.IO.File.Exists);
+        return filesShouldBeInstalled.Select(file => Path.Combine(SkinPath, Path.GetFileName(file))).All(System.IO.File.Exists);
     }
 
     [HttpPost]
     public void InstallJudgeDisplay4B()
     {
-        var skinPath = Path.Combine(StaticSettings.GamePath, "LocalAssets", "Skins");
-        Directory.CreateDirectory(skinPath);
+        Directory.CreateDirectory(SkinPath);
 
         foreach (var file in Directory.EnumerateFiles(judgeDisplay4BPath))
         {
-            System.IO.File.Copy(file, Path.Combine(skinPath, Path.GetFileName(file)), true);
+            System.IO.File.Copy(file, Path.Combine(SkinPath, Path.GetFileName(file)), true);
         }
     }
 
-    public record AquaMaiConfigAndComments(AquaMai.Config Config, Dictionary<string, Dictionary<string, string>> Comments);
-
     [HttpGet]
-    public AquaMaiConfigAndComments GetAquaMaiConfig()
+    public AquaMaiConfigDto.ConfigDto GetAquaMaiConfig()
     {
-        var path = Path.Combine(StaticSettings.GamePath, "AquaMai.toml");
-        var config = System.IO.File.Exists(path)
-            ? TomletMain.To<AquaMai.Config>(System.IO.File.ReadAllText(path))
-            : new AquaMai.Config();
-        var comments = new Dictionary<string, Dictionary<string, string>>();
-        var sections = new Dictionary<string, string>();
-        foreach (var property in typeof(AquaMai.Config).GetProperties())
+        if (!IsAquaMaiInstalled())
         {
-            var comment = property.GetCustomAttribute<ConfigCommentAttribute>();
-            if (comment == null) continue;
-            sections[property.Name] = comment.CommentZh;
-            var subComments = new Dictionary<string, string>();
-
-            foreach (var subProp in property.PropertyType.GetProperties())
-            {
-                var subComment = subProp.GetCustomAttribute<ConfigCommentAttribute>();
-                if (subComment == null) continue;
-                subComments[subProp.Name] = subComment.CommentZh;
-            }
-
-            comments[property.Name] = subComments;
+            throw new InvalidOperationException("AquaMai 没有安装");
         }
 
-        comments["sections"] = sections;
-        return new AquaMaiConfigAndComments(config, comments);
+        var configInterface = HeadlessConfigLoader.LoadFromPacked(AquaMaiDllInstalledPath);
+        var view = configInterface.CreateConfigView(System.IO.File.ReadAllText(AquaMaiConfigPath));
+        var migrationManager = configInterface.GetConfigMigrationManager();
+
+        if (migrationManager.GetVersion(view) != migrationManager.LatestVersion)
+        {
+            view = migrationManager.Migrate(view);
+        }
+
+        var parser = configInterface.GetConfigParser();
+        var config = configInterface.CreateConfig();
+        parser.Parse(config, view);
+
+        return new AquaMaiConfigDto.ConfigDto(
+            config.ReflectionManager.Sections.Select(section =>
+            {
+                var entries = section.Entries.Select(entry => new AquaMaiConfigDto.Entry(entry.Path, entry.Name, entry.Attribute, entry.Field.FieldType.FullName ?? entry.Field.FieldType.Name));
+                return new AquaMaiConfigDto.Section(section.Path, entries, section.Attribute);
+            }),
+            config.ReflectionManager.Sections.ToDictionary(section => section.Path, section => config.GetSectionState(section)),
+            config.ReflectionManager.Entries.ToDictionary(entry => entry.Path, entry => config.GetEntryState(entry))
+        );
     }
 
     [HttpPut]
-    public void SetAquaMaiConfig(AquaMai.Config config)
+    public void SetAquaMaiConfig(AquaMaiConfigDto.ConfigSaveDto config)
     {
-        System.IO.File.WriteAllText(Path.Combine(StaticSettings.GamePath, "AquaMai.toml"), ConfigGenerator.SerializeConfigWithComments(config, "zh"));
+        // var configInterface = HeadlessConfigLoader.LoadFromPacked(AquaMaiDllInstalledPath);
+        // var serializer = configInterface.CreateConfigSerializer(new IConfigSerializer.Options()
+        // {
+        //     Lang = "zh",
+        //     IncludeBanner = true
+        // });
+        // System.IO.File.WriteAllText(Path.Combine(StaticSettings.GamePath, "AquaMai.toml"), serializer.Serialize(config));
     }
 
     [HttpPost]

@@ -17,237 +17,6 @@ export interface AppVersionResult {
   hardwareAcceleration?: HardwareAccelerationStatus;
 }
 
-export interface AquaMaiCheatConfig {
-  ticketUnlock?: boolean;
-  mapUnlock?: boolean;
-  unlockUtage?: boolean;
-}
-
-export interface AquaMaiConfig {
-  ux?: AquaMaiUXConfig;
-  cheat?: AquaMaiCheatConfig;
-  fix?: AquaMaiFixConfig;
-  utils?: AquaMaiUtilsConfig;
-  timeSaving?: AquaMaiTimeSavingConfig;
-  visual?: AquaMaiVisualConfig;
-  modKeyMap?: AquaMaiModKeyMapConfig;
-  windowState?: AquaMaiWindowStateConfig;
-  customCameraId?: AquaMaiCustomCameraIdConfig;
-  touchSensitivity?: AquaMaiTouchSensitivityConfig;
-  customKeyMap?: AquaMaiCustomKeyMapConfig;
-}
-
-export interface AquaMaiCustomCameraIdConfig {
-  enable?: boolean;
-  printCameraList?: boolean;
-  /** @format int32 */
-  leftQrCamera?: number;
-  /** @format int32 */
-  rightQrCamera?: number;
-  /** @format int32 */
-  photoCamera?: number;
-  /** @format int32 */
-  chimeCamera?: number;
-}
-
-export interface AquaMaiCustomKeyMapConfig {
-  enable?: boolean;
-  test?: KeyCodeID;
-  service?: KeyCodeID;
-  button1_1P?: KeyCodeID;
-  button2_1P?: KeyCodeID;
-  button3_1P?: KeyCodeID;
-  button4_1P?: KeyCodeID;
-  button5_1P?: KeyCodeID;
-  button6_1P?: KeyCodeID;
-  button7_1P?: KeyCodeID;
-  button8_1P?: KeyCodeID;
-  select_1P?: KeyCodeID;
-  button1_2P?: KeyCodeID;
-  button2_2P?: KeyCodeID;
-  button3_2P?: KeyCodeID;
-  button4_2P?: KeyCodeID;
-  button5_2P?: KeyCodeID;
-  button6_2P?: KeyCodeID;
-  button7_2P?: KeyCodeID;
-  button8_2P?: KeyCodeID;
-  select_2P?: KeyCodeID;
-}
-
-export interface AquaMaiFixConfig {
-  skipVersionCheck?: boolean;
-  removeEncryption?: boolean;
-  forceAsServer?: boolean;
-  forceFreePlay?: boolean;
-  forcePaidPlay?: boolean;
-  /** @format int32 */
-  extendNotesPool?: number;
-  frameRateLock?: boolean;
-  fontFix?: boolean;
-  realisticRandomJudge?: boolean;
-  hanabiFix?: boolean;
-  ignoreAimeServerError?: boolean;
-}
-
-export interface AquaMaiModKeyMapConfig {
-  quickSkip?: ModKeyCode;
-  quickSkipLongPress?: boolean;
-  inGameRetry?: ModKeyCode;
-  inGameRetryLongPress?: boolean;
-  inGameSkip?: ModKeyCode;
-  inGameSkipLongPress?: boolean;
-  testMode?: ModKeyCode;
-  testModeLongPress?: boolean;
-  practiseMode?: ModKeyCode;
-  practiseModeLongPress?: boolean;
-  hideSelfMadeCharts?: ModKeyCode;
-  hideSelfMadeChartsLongPress?: boolean;
-  enableNativeQuickRetry?: boolean;
-}
-
-export interface AquaMaiTimeSavingConfig {
-  skipWarningScreen?: boolean;
-  improveLoadSpeed?: boolean;
-  skipToMusicSelection?: boolean;
-  skipEventInfo?: boolean;
-  iWontTapOrSlideVigorously?: boolean;
-  skipGameOverScreen?: boolean;
-  skipTrackStart?: boolean;
-  showQuickEndPlay?: boolean;
-}
-
-export interface AquaMaiTouchSensitivityConfig {
-  enable?: boolean;
-  /** @format int32 */
-  a1?: number;
-  /** @format int32 */
-  a2?: number;
-  /** @format int32 */
-  a3?: number;
-  /** @format int32 */
-  a4?: number;
-  /** @format int32 */
-  a5?: number;
-  /** @format int32 */
-  a6?: number;
-  /** @format int32 */
-  a7?: number;
-  /** @format int32 */
-  a8?: number;
-  /** @format int32 */
-  b1?: number;
-  /** @format int32 */
-  b2?: number;
-  /** @format int32 */
-  b3?: number;
-  /** @format int32 */
-  b4?: number;
-  /** @format int32 */
-  b5?: number;
-  /** @format int32 */
-  b6?: number;
-  /** @format int32 */
-  b7?: number;
-  /** @format int32 */
-  b8?: number;
-  /** @format int32 */
-  c1?: number;
-  /** @format int32 */
-  c2?: number;
-  /** @format int32 */
-  d1?: number;
-  /** @format int32 */
-  d2?: number;
-  /** @format int32 */
-  d3?: number;
-  /** @format int32 */
-  d4?: number;
-  /** @format int32 */
-  d5?: number;
-  /** @format int32 */
-  d6?: number;
-  /** @format int32 */
-  d7?: number;
-  /** @format int32 */
-  d8?: number;
-  /** @format int32 */
-  e1?: number;
-  /** @format int32 */
-  e2?: number;
-  /** @format int32 */
-  e3?: number;
-  /** @format int32 */
-  e4?: number;
-  /** @format int32 */
-  e5?: number;
-  /** @format int32 */
-  e6?: number;
-  /** @format int32 */
-  e7?: number;
-  /** @format int32 */
-  e8?: number;
-}
-
-export interface AquaMaiUXConfig {
-  locale?: string | null;
-  singlePlayer?: boolean;
-  hideMask?: boolean;
-  loadAssetsPng?: boolean;
-  loadAssetBundleWithoutManifest?: boolean;
-  randomBgm?: boolean;
-  demoMaster?: boolean;
-  extendTimer?: boolean;
-  immediateSave?: boolean;
-  loadLocalBga?: boolean;
-  customFont?: boolean;
-  touchToButtonInput?: boolean;
-  hideHanabi?: boolean;
-  customVersionString?: string | null;
-  customPlaceName?: string | null;
-  execOnIdle?: string | null;
-  execOnEntry?: string | null;
-}
-
-export interface AquaMaiUtilsConfig {
-  logUserId?: boolean;
-  /** @format float */
-  judgeAdjustA?: number;
-  /** @format float */
-  judgeAdjustB?: number;
-  /** @format int32 */
-  touchDelay?: number;
-  selectionDetail?: boolean;
-  showNetErrorDetail?: boolean;
-  showErrorLog?: boolean;
-  frameRateDisplay?: boolean;
-  /** @format int32 */
-  touchPanelBaudRate?: number;
-}
-
-export interface AquaMaiVisualConfig {
-  customSkins?: boolean;
-  judgeDisplay4B?: boolean;
-  customTrackStartDiff?: boolean;
-  trackStartProcessTweak?: boolean;
-  disableTrackStartTabs?: boolean;
-  fanJudgeFlip?: boolean;
-  breakSlideJudgeBlink?: boolean;
-}
-
-export interface AquaMaiWindowStateConfig {
-  enable?: boolean;
-  windowed?: boolean;
-  /** @format int32 */
-  width?: number;
-  /** @format int32 */
-  height?: number;
-}
-
-export interface AquaMaiConfigAndComments {
-  config?: AquaMaiConfig;
-  comments?: Record<string, Record<string, string>>;
-}
-
 export enum AssetType {
   Music = "Music",
   Movie = "Movie",
@@ -296,10 +65,28 @@ export interface CheckConflictEntry {
   musicName?: string | null;
 }
 
+export interface ConfigDto {
+  sections?: Section[] | null;
+  sectionStates?: Record<string, ISectionState>;
+  entryStates?: Record<string, IEntryState>;
+}
+
+export interface ConfigSaveDto {
+  sectionStates?: Record<string, ISectionState>;
+  entryStates?: Record<string, IEntryState>;
+}
+
 export interface DeleteAssetRequest {
   assetDir?: string | null;
   type?: AssetType;
   fileName?: string | null;
+}
+
+export interface Entry {
+  path?: string | null;
+  name?: string | null;
+  attribute?: IConfigEntryAttribute;
+  fieldType?: string | null;
 }
 
 export interface GameModInfo {
@@ -359,6 +146,35 @@ export enum HardwareAccelerationStatus {
   Disabled = "Disabled",
 }
 
+export interface IConfigComment {
+  commentEn?: string | null;
+  commentZh?: string | null;
+}
+
+export interface IConfigEntryAttribute {
+  comment?: IConfigComment;
+  hideWhenDefault?: boolean;
+}
+
+export interface IConfigSectionAttribute {
+  comment?: IConfigComment;
+  exampleHidden?: boolean;
+  defaultOn?: boolean;
+  alwaysEnabled?: boolean;
+}
+
+export interface IEntryState {
+  isDefault?: boolean;
+  defaultValue?: any;
+  value?: any;
+}
+
+export interface ISectionState {
+  isDefault?: boolean;
+  defaultEnabled?: boolean;
+  enabled?: boolean;
+}
+
 export interface ImportChartCheckResult {
   accept?: boolean;
   errors?: ImportChartMessage[] | null;
@@ -382,150 +198,6 @@ export interface ImportChartResult {
   fatal?: boolean;
 }
 
-export enum KeyCodeID {
-  None = "None",
-  Backspace = "Backspace",
-  Tab = "Tab",
-  Clear = "Clear",
-  Return = "Return",
-  Pause = "Pause",
-  Escape = "Escape",
-  Space = "Space",
-  Exclaim = "Exclaim",
-  DoubleQuote = "DoubleQuote",
-  Hash = "Hash",
-  Dollar = "Dollar",
-  Ampersand = "Ampersand",
-  Quote = "Quote",
-  LeftParen = "LeftParen",
-  RightParen = "RightParen",
-  Asterisk = "Asterisk",
-  Plus = "Plus",
-  Comma = "Comma",
-  Minus = "Minus",
-  Period = "Period",
-  Slash = "Slash",
-  Alpha0 = "Alpha0",
-  Alpha1 = "Alpha1",
-  Alpha2 = "Alpha2",
-  Alpha3 = "Alpha3",
-  Alpha4 = "Alpha4",
-  Alpha5 = "Alpha5",
-  Alpha6 = "Alpha6",
-  Alpha7 = "Alpha7",
-  Alpha8 = "Alpha8",
-  Alpha9 = "Alpha9",
-  Colon = "Colon",
-  Semicolon = "Semicolon",
-  Less = "Less",
-  Equals = "Equals",
-  Greater = "Greater",
-  Question = "Question",
-  At = "At",
-  LeftBracket = "LeftBracket",
-  Backslash = "Backslash",
-  RightBracket = "RightBracket",
-  Caret = "Caret",
-  Underscore = "Underscore",
-  BackQuote = "BackQuote",
-  A = "A",
-  B = "B",
-  C = "C",
-  D = "D",
-  E = "E",
-  F = "F",
-  G = "G",
-  H = "H",
-  I = "I",
-  J = "J",
-  K = "K",
-  L = "L",
-  M = "M",
-  N = "N",
-  O = "O",
-  P = "P",
-  Q = "Q",
-  R = "R",
-  S = "S",
-  T = "T",
-  U = "U",
-  V = "V",
-  W = "W",
-  X = "X",
-  Y = "Y",
-  Z = "Z",
-  Delete = "Delete",
-  Keypad0 = "Keypad0",
-  Keypad1 = "Keypad1",
-  Keypad2 = "Keypad2",
-  Keypad3 = "Keypad3",
-  Keypad4 = "Keypad4",
-  Keypad5 = "Keypad5",
-  Keypad6 = "Keypad6",
-  Keypad7 = "Keypad7",
-  Keypad8 = "Keypad8",
-  Keypad9 = "Keypad9",
-  KeypadPeriod = "KeypadPeriod",
-  KeypadDivide = "KeypadDivide",
-  KeypadMultiply = "KeypadMultiply",
-  KeypadMinus = "KeypadMinus",
-  KeypadPlus = "KeypadPlus",
-  KeypadEnter = "KeypadEnter",
-  KeypadEquals = "KeypadEquals",
-  UpArrow = "UpArrow",
-  DownArrow = "DownArrow",
-  RightArrow = "RightArrow",
-  LeftArrow = "LeftArrow",
-  Insert = "Insert",
-  Home = "Home",
-  End = "End",
-  PageUp = "PageUp",
-  PageDown = "PageDown",
-  F1 = "F1",
-  F2 = "F2",
-  F3 = "F3",
-  F4 = "F4",
-  F5 = "F5",
-  F6 = "F6",
-  F7 = "F7",
-  F8 = "F8",
-  F9 = "F9",
-  F10 = "F10",
-  F11 = "F11",
-  F12 = "F12",
-  F13 = "F13",
-  F14 = "F14",
-  F15 = "F15",
-  Numlock = "Numlock",
-  CapsLock = "CapsLock",
-  ScrollLock = "ScrollLock",
-  RightShift = "RightShift",
-  LeftShift = "LeftShift",
-  RightControl = "RightControl",
-  LeftControl = "LeftControl",
-  RightAlt = "RightAlt",
-  LeftAlt = "LeftAlt",
-  RightCommand = "RightCommand",
-  RightApple = "RightApple",
-  LeftCommand = "LeftCommand",
-  LeftApple = "LeftApple",
-  LeftWindows = "LeftWindows",
-  RightWindows = "RightWindows",
-  AltGr = "AltGr",
-  Help = "Help",
-  Print = "Print",
-  SysReq = "SysReq",
-  Break = "Break",
-  Menu = "Menu",
-  Mouse0 = "Mouse0",
-  Mouse1 = "Mouse1",
-  Mouse2 = "Mouse2",
-  Mouse3 = "Mouse3",
-  Mouse4 = "Mouse4",
-  Mouse5 = "Mouse5",
-  Mouse6 = "Mouse6",
-}
-
 export enum LicenseStatus {
   Pending = "Pending",
   Active = "Active",
@@ -536,56 +208,6 @@ export enum MessageLevel {
   Info = "Info",
   Warning = "Warning",
   Fatal = "Fatal",
-}
-
-export enum ModKeyCode {
-  None = "None",
-  Alpha0 = "Alpha0",
-  Alpha1 = "Alpha1",
-  Alpha2 = "Alpha2",
-  Alpha3 = "Alpha3",
-  Alpha4 = "Alpha4",
-  Alpha5 = "Alpha5",
-  Alpha6 = "Alpha6",
-  Alpha7 = "Alpha7",
-  Alpha8 = "Alpha8",
-  Alpha9 = "Alpha9",
-  Keypad0 = "Keypad0",
-  Keypad1 = "Keypad1",
-  Keypad2 = "Keypad2",
-  Keypad3 = "Keypad3",
-  Keypad4 = "Keypad4",
-  Keypad5 = "Keypad5",
-  Keypad6 = "Keypad6",
-  Keypad7 = "Keypad7",
-  Keypad8 = "Keypad8",
-  Keypad9 = "Keypad9",
-  F1 = "F1",
-  F2 = "F2",
-  F3 = "F3",
-  F4 = "F4",
-  F5 = "F5",
-  F6 = "F6",
-  F7 = "F7",
-  F8 = "F8",
-  F9 = "F9",
-  F10 = "F10",
-  F11 = "F11",
-  F12 = "F12",
-  Insert = "Insert",
-  Delete = "Delete",
-  Home = "Home",
-  End = "End",
-  PageUp = "PageUp",
-  PageDown = "PageDown",
-  UpArrow = "UpArrow",
-  DownArrow = "DownArrow",
-  LeftArrow = "LeftArrow",
-  RightArrow = "RightArrow",
-  Select1P = "Select1P",
-  Select2P = "Select2P",
-  Service = "Service",
-  Test = "Test",
 }
 
 export interface MusicIdAndAssetDirPair {
@@ -637,6 +259,12 @@ export interface RequestCopyToRequest {
 export interface RequestPurchaseResult {
   errorMessage?: string | null;
   status?: StorePurchaseStatus;
+}
+
+export interface Section {
+  path?: string | null;
+  entries?: Entry[] | null;
+  attribute?: IConfigSectionAttribute;
 }
 
 export interface SetAudioPreviewRequest {
@@ -1616,7 +1244,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/MaiChartManagerServlet/GetAquaMaiConfigApi
      */
     GetAquaMaiConfig: (params: RequestParams = {}) =>
-      this.request<AquaMaiConfigAndComments, any>({
+      this.request<ConfigDto, any>({
         path: `/MaiChartManagerServlet/GetAquaMaiConfigApi`,
         method: "GET",
         format: "json",
@@ -1630,7 +1258,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name SetAquaMaiConfig
      * @request PUT:/MaiChartManagerServlet/SetAquaMaiConfigApi
      */
-    SetAquaMaiConfig: (data: AquaMaiConfig, params: RequestParams = {}) =>
+    SetAquaMaiConfig: (data: ConfigSaveDto, params: RequestParams = {}) =>
       this.request<void, any>({
         path: `/MaiChartManagerServlet/SetAquaMaiConfigApi`,
         method: "PUT",

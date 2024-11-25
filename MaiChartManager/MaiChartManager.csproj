@@ -44,6 +44,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\AquaDX\AquaMai\AquaMai.Config.HeadlessLoader\AquaMai.Config.HeadlessLoader.csproj"/>
       <ProjectReference Include="..\Sitreamai\Sitreamai.csproj" />
       <ProjectReference Include="..\SonicAudioTools\Source\SonicAudioLib\SonicAudioLib.csproj" />
       <ProjectReference Include="..\XV2-Tools\LB_Common\LB_Common.csproj" />
@@ -58,7 +59,6 @@
       <PackageReference Include="NAudio.Lame" Version="2.1.0" />
       <PackageReference Include="Pluralsight.Crypto" Version="1.1.0" />
       <PackageReference Include="pythonnet" Version="3.0.4" />
-      <PackageReference Include="Samboy063.Tomlet" Version="5.4.0" />
       <PackageReference Include="Sentry" Version="4.10.2" />
       <PackageReference Include="Sentry.AspNetCore" Version="4.10.2" />
       <PackageReference Include="SixLabors.ImageSharp" Version="2.1.9" />
@@ -123,14 +123,14 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Reference Include="AquaMai">
-        <HintPath>Libs\AquaMai.dll</HintPath>
-      </Reference>
       <Reference Include="AssetStudio">
         <HintPath>Libs\AssetStudio.dll</HintPath>
       </Reference>
       <Reference Include="AssetStudioUtility">
         <HintPath>Libs\AssetStudioUtility.dll</HintPath>
+      </Reference>
+        <Reference Include="Mono.Cecil">
+            <HintPath>Libs\Mono.Cecil.dll</HintPath>
       </Reference>
       <Reference Include="WinBlur">
         <HintPath>Libs\WinBlur.dll</HintPath>

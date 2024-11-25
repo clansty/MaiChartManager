@@ -60,7 +60,7 @@ public sealed partial class Browser : Form
 
     private static void webView21_PermissionRequested(object? sender, CoreWebView2PermissionRequestedEventArgs e)
     {
-        if (e.PermissionKind == CoreWebView2PermissionKind.FileReadWrite)
+        if (e.PermissionKind is CoreWebView2PermissionKind.FileReadWrite or CoreWebView2PermissionKind.Autoplay)
         {
             e.State = CoreWebView2PermissionState.Allow;
         }

@@ -1,11 +1,12 @@
-import { computed, defineComponent, onMounted, PropType, ref, watch } from "vue";
-import { NAnchor, NAnchorLink, NButton, NCheckbox, NDivider, NFlex, NFormItem, NInput, NInputNumber, NModal, NScrollbar, NSelect, NSwitch, useDialog } from "naive-ui";
-import { AquaMaiConfig, GameModInfo } from "@/client/apiGen";
+import {computed, defineComponent, onMounted, ref, watch} from "vue";
+import {NAnchor, NAnchorLink, NButton, NCheckbox, NDivider, NFlex, NFormItem, NInput, NInputNumber, NModal, NScrollbar, NSelect, NSwitch, useDialog} from "naive-ui";
 import comments from './modComments.yaml';
 import api from "@/client/api";
-import { capitalCase, pascalCase } from "change-case";
+import {capitalCase, pascalCase} from "change-case";
 import ProblemsDisplay from "@/components/ProblemsDisplay";
-import { globalCapture, modInfo, updateModInfo } from "@/store/refs";
+import {globalCapture, modInfo, updateModInfo} from "@/store/refs";
+import {ConfigDto} from "@/client/apiGen";
+import AquaMaiConfigurator from "@/components/ModManager/AquaMaiConfigurator";
 
 export default defineComponent({
   props: {
@@ -23,19 +24,39 @@ export default defineComponent({
       set: (val) => emit('update:disableBadge', val)
     })
 
-    const config = ref<AquaMaiConfig>()
-    const commentsEmbedded = ref<Record<string, Record<string, string>>>({})
+    const config = ref<ConfigDto>()
+    const configReadErr = ref('')
     const dialog = useDialog()
     const installingMelonLoader = ref(false)
     const installingAquaMai = ref(false)
     const showAquaMaiInstallDone = ref(false)
-    const customSettingsPanels = import.meta.glob('./customSettingPanels/**/Panel.tsx', {eager: true})
 
-    onMounted(async () => {
-      const ret = (await api.GetAquaMaiConfig()).data;
-      config.value = ret.config
-      commentsEmbedded.value = ret.comments!
-    })
+    const updateAquaMaiConfig = async () => {
+      try {
+        configReadErr.value = ''
+        config.value = (await api.GetAquaMaiConfig()).data;
+      } catch (err: any) {
+        if (err instanceof Response) {
+          if (!err.bodyUsed) {
+            // @ts-ignore
+            const text = await err.text();
+            configReadErr.value = text.split('\n')[0];
+            return
+          }
+        }
+        if (err.error instanceof Error) {
+          configReadErr.value = err.error.message.split('\n')[0];
+          return
+        }
+        if (err.error) {
+          configReadErr.value = err.error.toString().split('\n')[0];
+          return
+        }
+        configReadErr.value = err.toString().split('\n')[0];
+      }
+    }
+
+    onMounted(updateAquaMaiConfig)
 
     const installMelonLoader = async () => {
       try {
@@ -55,6 +76,7 @@ export default defineComponent({
         installingAquaMai.value = true
         await api.InstallAquaMai()
         await updateModInfo()
+        await updateAquaMaiConfig()
         showAquaMaiInstallDone.value = true
         setTimeout(() => showAquaMaiInstallDone.value = false, 3000);
       } catch (e: any) {
@@ -74,14 +96,6 @@ export default defineComponent({
       }
     })
 
-    const getSectionTitle = (key: string) => comments.sections[key] || commentsEmbedded.value.sections?.[pascalCase(key)]
-
-    const getCustomPanelForSetting = (section: string, key?: string) => {
-      if (!key) {
-        return (customSettingsPanels[`./customSettingPanels/${section}/Panel.tsx`] as any)?.default
-      }
-      return (customSettingsPanels[`./customSettingPanels/${section}/${key}/Panel.tsx`] as any)?.default
-    }
 
     return () => <NModal
       preset="card"
@@ -109,55 +123,10 @@ export default defineComponent({
           <span class={modInfo.value.aquaMaiVersion === modInfo.value.bundledAquaMaiVersion ? "" : "c-orange"}>{modInfo.value.bundledAquaMaiVersion}</span>
         </NFlex>
         {props.badgeType && <NCheckbox v-model:checked={disableBadge.value}>隐藏按钮上的角标</NCheckbox>}
-        <div class="grid cols-[17em_auto]">
-          <NAnchor type="block" offsetTarget="#scroll">
-            {Object.keys(config.value!).map((key) => <NAnchorLink key={key} title={getSectionTitle(key)} href={`#${key}`}/>)}
-          </NAnchor>
-          {config.value && <NScrollbar class="max-h-60vh p-2"
-            // @ts-ignore
-                                       id="scroll"
-          >
-            {Object.entries(config.value).map(([key, section]) => {
-              // 这里开始某个分类设置的渲染
-              const CustomPanel = getCustomPanelForSetting(key)
-
-              return !!section && <div id={key} key={key}>
-                  <NDivider titlePlacement="left" key={key}>{getSectionTitle(key)}</NDivider>
-                {CustomPanel ?
-                  <CustomPanel config={section} commentsEmbedded={commentsEmbedded.value}/> :
-                  Object.keys(section).map((k) => {
-                    // 这里开始某个设置子项的渲染
-                    const CustomPanelSub = getCustomPanelForSetting(key, k)
-
-                    if (CustomPanelSub) {
-                      return <CustomPanelSub config={section} commentsEmbedded={commentsEmbedded.value} key={k}/>
-                    }
-
-                    return <NFormItem key={k} label={capitalCase(k)} labelPlacement="left" labelWidth="10em">
-                      <NFlex vertical class="w-full ws-pre-line">
-                        <NFlex class="h-34px" align="center">
-                          {(() => {
-                            const choices = comments.options[key]?.[k]
-                            if (choices) {
-                              return <NSelect v-model:value={section[k]} options={choices} clearable/>
-                            }
-                            return <>
-                              {typeof section[k] === 'boolean' && <NSwitch v-model:value={section[k]}/>}
-                              {typeof section[k] === 'string' && <NInput v-model:value={section[k]} placeholder="" onUpdateValue={v => section[k] = typeof v === 'string' ? v : ''}/>}
-                              {typeof section[k] === 'number' && <NInputNumber value={section[k]} onUpdateValue={v => section[k] = typeof v === 'number' ? v : 0} placeholder="" step={comments.steps[k] || 1}/>}
-                            </>
-                          })()}
-                          {comments.shouldEnableOptions[key]?.[k] && !section[k] && <ProblemsDisplay problems={['需要开启此选项']}/>}
-                        </NFlex>
-                        {comments[key]?.[k] || commentsEmbedded.value[pascalCase(key)]?.[pascalCase(k)]}
-                      </NFlex>
-                    </NFormItem>;
-                  })
-                }
-              </div>;
-            })}
-          </NScrollbar>}
-        </div>
+        {configReadErr.value ? <NFlex vertical justify="center">
+          <div class="text-8">AquaMai 未安装或需要更新</div>
+          <div class="c-gray-5">{configReadErr.value}</div>
+        </NFlex> : <AquaMaiConfigurator config={config.value!}/>}
       </NFlex>}
     </NModal>;
   }
