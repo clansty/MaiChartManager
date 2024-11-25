@@ -1,4 +1,4 @@
-export enum ModKeyCode {
+export enum KeyCodeName {
   None = "None",
   Alpha0 = "Alpha0",
   Alpha1 = "Alpha1",

@@ -154,18 +154,30 @@ visual:
     需开启 CustomSkins 并安装资源文件
 
 shouldEnableOptions:
-  ux:
-    loadAssetsPng: true
-    loadLocalBga: true
+  GameSystem.Assets.LoadLocalImages: true
+  GameSystem.Assets.UseJacketAsDummyMovie: true
 
 steps:
   judgeAdjustA: 0.1
   judgeAdjustB: 0.1
 
 options:
-  ux:
-    locale:
-      - value: zh
-        label: 让我们说中文！
-      - value: en
-        label: Let's speak English!
+  General.Locale:
+    - value: zh
+      label: 让我们说中文！
+    - value: en
+      label: Let's speak English!
+
+commentOverrides:
+  Fancy.GamePlay.JudgeDisplay4B: |
+    更精细的判定表示
+    需开启 CustomSkins 并安装资源文件
+    作者 @Minepig
+  GameSettings.TouchSensitivity: |
+    使用自定义的触摸灵敏度
+    这里启用之后 Test 里的设置就不再起作用了，不过还是可以使用 Test 测试（使用测试需要关闭 1P 模式）
+  GameSystem.KeyMap: |
+    这里的设置无论你是否启用了 segatools 的 io4 模拟都会工作
+    但是它可能会和其他 Mod 类型的输入插件冲突，比如说 Mai2InputMod.dll。如有需要可以期待后续更新兼容的版本
+nameOverrides:
+  Fancy.GamePlay.JudgeDisplay4B: Judge Display 4B

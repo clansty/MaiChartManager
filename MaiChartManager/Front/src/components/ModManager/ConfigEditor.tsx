@@ -123,7 +123,7 @@ export default defineComponent({
           <span class={modInfo.value.aquaMaiVersion === modInfo.value.bundledAquaMaiVersion ? "" : "c-orange"}>{modInfo.value.bundledAquaMaiVersion}</span>
         </NFlex>
         {props.badgeType && <NCheckbox v-model:checked={disableBadge.value}>隐藏按钮上的角标</NCheckbox>}
-        {configReadErr.value ? <NFlex vertical justify="center">
+        {configReadErr.value ? <NFlex vertical justify="center" align="center" class="min-h-100">
           <div class="text-8">AquaMai 未安装或需要更新</div>
           <div class="c-gray-5">{configReadErr.value}</div>
         </NFlex> : <AquaMaiConfigurator config={config.value!}/>}
