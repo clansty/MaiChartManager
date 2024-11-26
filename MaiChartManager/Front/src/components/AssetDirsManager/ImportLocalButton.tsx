@@ -15,7 +15,7 @@ export default defineComponent({
 
     const importLocal = async () => {
       importWait.value = true;
-      if (location.hostname !== '127.0.0.1') {
+      if (location.hostname !== 'mcm.invalid') {
         // 浏览器模式
         let folderHandle: FileSystemDirectoryHandle;
         try {

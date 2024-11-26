@@ -76,7 +76,7 @@ export default defineComponent({
 
     const copy = async (type: DROPDOWN_OPTIONS) => {
       wait.value = true;
-      if (location.hostname !== '127.0.0.1' || type === DROPDOWN_OPTIONS.exportMaidata || type === DROPDOWN_OPTIONS.exportMaidataIgnoreVideo) {
+      if (location.hostname !== 'mcm.invalid' || type === DROPDOWN_OPTIONS.exportMaidata || type === DROPDOWN_OPTIONS.exportMaidataIgnoreVideo) {
         // 浏览器模式，使用 zip.js 获取并解压
         let folderHandle: FileSystemDirectoryHandle;
         try {

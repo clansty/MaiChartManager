@@ -7,7 +7,7 @@ export default defineComponent({
     const dialog = useDialog();
 
     const onClick = () => {
-      if (location.hostname !== '127.0.0.1') {
+      if (location.hostname !== 'mcm.invalid') {
         dialog.info({
           title: '提示',
           content: '你需要在运行服务器端的设备上操作购买',
