@@ -71,15 +71,36 @@ public class ModController(StaticSettings settings, ILogger<ModController> logge
         }
     }
 
+    public class UnsupportedConfigApiVersionException() : Exception("无法兼容的配置文件版本");
+
+    public class AquaMaiNotInstalledException() : Exception("AquaMai 没有安装");
+
+    [NonAction]
+    private static void CheckConfigApiVersion(HeadlessConfigInterface configInterface)
+    {
+        var currentSupportedApiVersion = new Version(1, 0);
+        var configApiVersion = new Version(configInterface.ApiVersion);
+        if (currentSupportedApiVersion.Major != configApiVersion.Major)
+        {
+            throw new UnsupportedConfigApiVersionException();
+        }
+
+        if (currentSupportedApiVersion.Minor < configApiVersion.Minor)
+        {
+            throw new UnsupportedConfigApiVersionException();
+        }
+    }
+
     [HttpGet]
     public AquaMaiConfigDto.ConfigDto GetAquaMaiConfig()
     {
         if (!IsAquaMaiInstalled())
         {
-            throw new InvalidOperationException("AquaMai 没有安装");
+            throw new AquaMaiNotInstalledException();
         }
 
         var configInterface = HeadlessConfigLoader.LoadFromPacked(AquaMaiDllInstalledPath);
+        CheckConfigApiVersion(configInterface);
         var view = configInterface.CreateConfigView(System.IO.File.ReadAllText(AquaMaiConfigPath));
         var migrationManager = configInterface.GetConfigMigrationManager();
 
@@ -123,6 +144,7 @@ public class ModController(StaticSettings settings, ILogger<ModController> logge
         jsonOptions.Converters.Add(new JsonStringEnumConverter());
 
         var configInterface = HeadlessConfigLoader.LoadFromPacked(AquaMaiDllInstalledPath);
+        CheckConfigApiVersion(configInterface);
         var configEdit = configInterface.CreateConfig();
 
         foreach (var section in configEdit.ReflectionManager.Sections)
