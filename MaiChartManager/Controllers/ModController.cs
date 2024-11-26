@@ -85,7 +85,7 @@ public class ModController(StaticSettings settings, ILogger<ModController> logge
             throw new UnsupportedConfigApiVersionException();
         }
 
-        if (currentSupportedApiVersion.Minor < configApiVersion.Minor)
+        if (currentSupportedApiVersion.Minor > configApiVersion.Minor)
         {
             throw new UnsupportedConfigApiVersionException();
         }
