@@ -14,6 +14,7 @@ export enum OPTIONS {
   CreateNewOptCompatible,
   ConvertToMaidata,
   ConvertToMaidataIgnoreVideo,
+  CreateNewOptMa2_103,
 }
 
 export default defineComponent({
@@ -41,7 +42,13 @@ export default defineComponent({
         case OPTIONS.CreateNewOptCompatible:
           if (location.hostname === '127.0.0.1') {
             props.continue(STEP.None);
-            await api.RequestCopyTo({music: props.selectedMusic, removeEvents: selectedOption.value === OPTIONS.CreateNewOptCompatible});
+            await api.RequestCopyTo({music: props.selectedMusic, removeEvents: selectedOption.value === OPTIONS.CreateNewOptCompatible, legacyFormat: false});
+            break;
+          }
+        case OPTIONS.CreateNewOptMa2_103:
+          if (location.hostname === '127.0.0.1') {
+            props.continue(STEP.None);
+            await api.RequestCopyTo({music: props.selectedMusic, removeEvents: true, legacyFormat: true});
             break;
           }
         case OPTIONS.ConvertToMaidata:
@@ -89,7 +96,10 @@ export default defineComponent({
             导出为 Opt（原始）
           </NRadio>
           <NRadio value={OPTIONS.CreateNewOptCompatible}>
-            导出为 Opt（兼容任意版本游戏，移除 Event 等）
+            导出为 Opt（保持谱面格式，移除 Event 等）
+          </NRadio>
+          <NRadio value={OPTIONS.CreateNewOptMa2_103}>
+            导出为 Opt（Ma2 103 格式，移除 Event 等）
           </NRadio>
           <NRadio value={OPTIONS.ConvertToMaidata}>
             转换为 Maidata

@@ -39,6 +39,9 @@ export default async (setStep: (step: STEP) => void, musicList: MusicXmlWithABJa
       case OPTIONS.CreateNewOptCompatible:
         url = `ExportOptApi/${music.assetDir}/${music.id}?removeEvents=true`;
         break;
+      case OPTIONS.CreateNewOptMa2_103:
+        url = `ExportOptApi/${music.assetDir}/${music.id}?removeEvents=true&legacyFormat=true`;
+        break;
       case OPTIONS.ConvertToMaidata:
         url = `ExportAsMaidataApi/${music.assetDir}/${music.id}`;
         break;

@@ -72,8 +72,8 @@ export interface ConfigDto {
 }
 
 export interface ConfigSaveDto {
-  sectionStates?: Record<string, ISectionState>;
-  entryStates?: Record<string, IEntryState>;
+  sectionStates?: Record<string, SectionSaveDto>;
+  entryStates?: Record<string, EntrySaveDto>;
 }
 
 export interface DeleteAssetRequest {
@@ -87,6 +87,12 @@ export interface Entry {
   name?: string | null;
   attribute?: IConfigEntryAttribute;
   fieldType?: string | null;
+}
+
+export interface EntrySaveDto {
+  isDefault?: boolean;
+  defaultValue?: any;
+  value?: any;
 }
 
 export interface GameModInfo {
@@ -254,6 +260,7 @@ export interface PutAssetDirTxtValueRequest {
 export interface RequestCopyToRequest {
   music?: MusicIdAndAssetDirPair[] | null;
   removeEvents?: boolean;
+  legacyFormat?: boolean;
 }
 
 export interface RequestPurchaseResult {
@@ -265,6 +272,12 @@ export interface Section {
   path?: string | null;
   entries?: Entry[] | null;
   attribute?: IConfigSectionAttribute;
+}
+
+export interface SectionSaveDto {
+  isDefault?: boolean;
+  defaultEnabled?: boolean;
+  enabled?: boolean;
 }
 
 export interface SetAudioPreviewRequest {
@@ -1651,6 +1664,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       query?: {
         /** @default false */
         removeEvents?: boolean;
+        /** @default false */
+        legacyFormat?: boolean;
       },
       params: RequestParams = {},
     ) =>

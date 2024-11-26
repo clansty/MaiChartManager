@@ -15,7 +15,7 @@ namespace MaiChartManager.Controllers.Music;
 [Route("MaiChartManagerServlet/[action]Api/{assetDir}/{id:int}")]
 public class MusicTransferController(StaticSettings settings, ILogger<MusicTransferController> logger) : ControllerBase
 {
-    public record RequestCopyToRequest(MusicBatchController.MusicIdAndAssetDirPair[] music, bool removeEvents);
+    public record RequestCopyToRequest(MusicBatchController.MusicIdAndAssetDirPair[] music, bool removeEvents, bool legacyFormat);
 
     [HttpPost]
     [Route("/MaiChartManagerServlet/[action]Api")]
@@ -71,6 +71,16 @@ public class MusicTransferController(StaticSettings settings, ILogger<MusicTrans
                 xmlDoc.Save(Path.Combine(dest, $@"music\music{music.Id:000000}\Music.xml"));
             }
 
+            if (request.legacyFormat)
+            {
+                foreach (var file in Directory.EnumerateFiles(Path.Combine(dest, $@"music\music{music.Id:000000}"), "*.ma2", new EnumerationOptions() { MatchCasing = MatchCasing.CaseInsensitive }))
+                {
+                    var ma2 = System.IO.File.ReadAllLines(file);
+                    var ma2_103 = new Ma2Parser().ChartOfToken(ma2).Compose(ChartEnum.ChartVersion.Ma2_103);
+                    System.IO.File.WriteAllText(file, ma2_103);
+                }
+            }
+
             // copy jacket
             Directory.CreateDirectory(Path.Combine(dest, @"AssetBundleImages\jacket"));
             if (music.JacketPath is not null)
@@ -114,7 +124,7 @@ public class MusicTransferController(StaticSettings settings, ILogger<MusicTrans
     }
 
     [HttpGet]
-    public void ExportOpt(int id, string assetDir, bool removeEvents = false)
+    public void ExportOpt(int id, string assetDir, bool removeEvents = false, bool legacyFormat = false)
     {
         var music = settings.GetMusic(id, assetDir);
         if (music is null) return;
@@ -135,7 +145,20 @@ public class MusicTransferController(StaticSettings settings, ILogger<MusicTrans
                 continue;
             }
 
-            zipArchive.CreateEntryFromFile(file, $"music/music{music.Id:000000}/{Path.GetFileName(file)}");
+            if (legacyFormat)
+            {
+                var ma2 = System.IO.File.ReadAllLines(file);
+                var ma2_103 = new Ma2Parser().ChartOfToken(ma2).Compose(ChartEnum.ChartVersion.Ma2_103);
+                var entry = zipArchive.CreateEntry($"music/music{music.Id:000000}/{Path.GetFileName(file)}");
+                using var stream = entry.Open();
+                using var writer = new StreamWriter(stream);
+                writer.Write(ma2_103);
+                writer.Close();
+            }
+            else
+            {
+                zipArchive.CreateEntryFromFile(file, $"music/music{music.Id:000000}/{Path.GetFileName(file)}");
+            }
         }
 
         // copy jacket
