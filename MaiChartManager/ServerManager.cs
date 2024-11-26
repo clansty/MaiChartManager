@@ -122,7 +122,13 @@ public static class ServerManager
                     .AllowAnyMethod()
                     .AllowAnyHeader();
             }))
-            .AddProblemDetails()
+            .AddProblemDetails(options =>
+                options.CustomizeProblemDetails = (context) =>
+                {
+                    context.ProblemDetails.Title = context.Exception?.GetType()?.FullName ?? "未知错误";
+                    context.ProblemDetails.Detail = context.Exception?.Message ?? "未知错误";
+                }
+            )
             .AddControllers()
             .AddJsonOptions(options =>
                 options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
@@ -150,7 +156,10 @@ public static class ServerManager
         if (onStart != null)
             app.Lifetime.ApplicationStarted.Register(onStart);
 
-        app.UseSwagger()
+        app
+            .UseExceptionHandler()
+            .UseStatusCodePages()
+            .UseSwagger()
             .UseSwaggerUI()
             .UseCors("qwq");
         if (export)
