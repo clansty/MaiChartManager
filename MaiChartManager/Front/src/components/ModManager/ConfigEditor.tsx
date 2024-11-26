@@ -99,6 +99,7 @@ export default defineComponent({
     }
 
     watch(() => show.value, async (val) => {
+      if (configReadErr.value) return
       if (!val && config.value) {
         try {
           await api.SetAquaMaiConfig(config.value)
