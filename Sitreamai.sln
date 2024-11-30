@@ -16,9 +16,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LB_Common", "XV2-Tools\LB_C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xv2CoreLib", "XV2-Tools\Xv2CoreLib\Xv2CoreLib.csproj", "{FDB88E51-0D73-47B9-A342-E574EC0BA583}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AquaMai.Config.Interfaces", "AquaDX\AquaMai\AquaMai.Config.Interfaces\AquaMai.Config.Interfaces.csproj", "{DF1536F9-3B06-4463-B654-4CC3E708B610}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AquaMai.Config.Interfaces", "AquaMai\AquaMai.Config.Interfaces\AquaMai.Config.Interfaces.csproj", "{DF1536F9-3B06-4463-B654-4CC3E708B610}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AquaMai.Config.HeadlessLoader", "AquaDX\AquaMai\AquaMai.Config.HeadlessLoader\AquaMai.Config.HeadlessLoader.csproj", "{6B5E1F3E-D012-4CFB-A2FA-26A6CE06BE66}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AquaMai.Config.HeadlessLoader", "AquaMai\AquaMai.Config.HeadlessLoader\AquaMai.Config.HeadlessLoader.csproj", "{6B5E1F3E-D012-4CFB-A2FA-26A6CE06BE66}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,24 +57,22 @@ Global
 		{513B1851-4576-45EC-8F8E-400A38B05502}.Debug|x64.Build.0 = Debug|Any CPU
 		{513B1851-4576-45EC-8F8E-400A38B05502}.Release|x64.ActiveCfg = Release|Any CPU
 		{513B1851-4576-45EC-8F8E-400A38B05502}.Release|x64.Build.0 = Release|Any CPU
-		{513B1851-4576-45EC-8F8E-400A38B05502}.Crack|x64.ActiveCfg = Debug|Any CPU
+		{513B1851-4576-45EC-8F8E-400A38B05502}.Crack|x64.ActiveCfg = Release|Any CPU
 		{FDB88E51-0D73-47B9-A342-E574EC0BA583}.Debug|x64.ActiveCfg = Debug|Any CPU
 		{FDB88E51-0D73-47B9-A342-E574EC0BA583}.Debug|x64.Build.0 = Debug|Any CPU
 		{FDB88E51-0D73-47B9-A342-E574EC0BA583}.Release|x64.ActiveCfg = Release|Any CPU
 		{FDB88E51-0D73-47B9-A342-E574EC0BA583}.Release|x64.Build.0 = Release|Any CPU
-		{FDB88E51-0D73-47B9-A342-E574EC0BA583}.Crack|x64.ActiveCfg = Debug|Any CPU
+		{FDB88E51-0D73-47B9-A342-E574EC0BA583}.Crack|x64.ActiveCfg = Release|Any CPU
 		{DF1536F9-3B06-4463-B654-4CC3E708B610}.Debug|x64.ActiveCfg = Debug|Any CPU
 		{DF1536F9-3B06-4463-B654-4CC3E708B610}.Debug|x64.Build.0 = Debug|Any CPU
 		{DF1536F9-3B06-4463-B654-4CC3E708B610}.Release|x64.ActiveCfg = Release|Any CPU
 		{DF1536F9-3B06-4463-B654-4CC3E708B610}.Release|x64.Build.0 = Release|Any CPU
-		{DF1536F9-3B06-4463-B654-4CC3E708B610}.Crack|x64.ActiveCfg = Debug|Any CPU
-		{DF1536F9-3B06-4463-B654-4CC3E708B610}.Crack|x64.Build.0 = Debug|Any CPU
+		{DF1536F9-3B06-4463-B654-4CC3E708B610}.Crack|x64.ActiveCfg = Release|Any CPU
 		{6B5E1F3E-D012-4CFB-A2FA-26A6CE06BE66}.Debug|x64.ActiveCfg = Debug|Any CPU
 		{6B5E1F3E-D012-4CFB-A2FA-26A6CE06BE66}.Debug|x64.Build.0 = Debug|Any CPU
 		{6B5E1F3E-D012-4CFB-A2FA-26A6CE06BE66}.Release|x64.ActiveCfg = Release|Any CPU
 		{6B5E1F3E-D012-4CFB-A2FA-26A6CE06BE66}.Release|x64.Build.0 = Release|Any CPU
-		{6B5E1F3E-D012-4CFB-A2FA-26A6CE06BE66}.Crack|x64.ActiveCfg = Debug|Any CPU
-		{6B5E1F3E-D012-4CFB-A2FA-26A6CE06BE66}.Crack|x64.Build.0 = Debug|Any CPU
+		{6B5E1F3E-D012-4CFB-A2FA-26A6CE06BE66}.Crack|x64.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

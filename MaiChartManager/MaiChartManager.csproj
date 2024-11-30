@@ -44,7 +44,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\AquaDX\AquaMai\AquaMai.Config.HeadlessLoader\AquaMai.Config.HeadlessLoader.csproj"/>
+        <ProjectReference Include="..\AquaMai\AquaMai.Config.HeadlessLoader\AquaMai.Config.HeadlessLoader.csproj"/>
       <ProjectReference Include="..\Sitreamai\Sitreamai.csproj" />
       <ProjectReference Include="..\SonicAudioTools\Source\SonicAudioLib\SonicAudioLib.csproj" />
       <ProjectReference Include="..\XV2-Tools\LB_Common\LB_Common.csproj" />

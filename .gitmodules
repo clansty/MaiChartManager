@@ -10,6 +10,6 @@
 [submodule "XV2-Tools"]
 	path = XV2-Tools
 	url = git@github.com:clansty/XV2-Tools.git
-[submodule "AquaDX"]
-	path = AquaDX
-	url = git@github.com:hykilpikonna/AquaDX.git
+[submodule "AquaMai"]
+	path = AquaMai
+	url = git@github.com:MewoLab/AquaMai.git
