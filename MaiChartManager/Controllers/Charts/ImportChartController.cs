@@ -93,6 +93,7 @@ public partial class ImportChartController(StaticSettings settings, ILogger<Stat
         try
         {
             var normalizedText = SimaiCommentRegex().Replace(chartText, "");
+            normalizedText = SimaiCommentRegex2().Replace(normalizedText, "");
             return new SimaiParser().ChartOfToken(new SimaiTokenizer().TokensFromText(normalizedText));
         }
         catch (Exception)
@@ -107,6 +108,7 @@ public partial class ImportChartController(StaticSettings settings, ILogger<Stat
                 .Replace("-?", "?-");
             // 移除注释
             normalizedText = SimaiCommentRegex().Replace(normalizedText, "");
+            normalizedText = SimaiCommentRegex2().Replace(normalizedText, "");
             var tokens = new SimaiTokenizer().TokensFromText(normalizedText);
             for (var i = 0; i < tokens.Length; i++)
             {
@@ -150,6 +152,11 @@ public partial class ImportChartController(StaticSettings settings, ILogger<Stat
     private static float getFirstBarFromChart(MaiChart chart)
     {
         var bpm = chart.TimingChanges[0].tempo;
+        if (bpm == 0)
+        {
+            throw new DivideByZeroException("BPM 等于 0");
+        }
+
         return 60 / bpm * 4;
     }
 
@@ -319,6 +326,9 @@ public partial class ImportChartController(StaticSettings settings, ILogger<Stat
 
     [GeneratedRegex(@"\|\|.*$", RegexOptions.Multiline)]
     private static partial Regex SimaiCommentRegex();
+
+    [GeneratedRegex(@"#.*$", RegexOptions.Multiline)]
+    private static partial Regex SimaiCommentRegex2();
 
     [HttpPost]
     // 创建完 Music 后调用
