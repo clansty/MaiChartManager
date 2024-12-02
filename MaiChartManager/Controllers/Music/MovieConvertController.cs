@@ -108,8 +108,14 @@ public class MovieConvertController(StaticSettings settings, ILogger<MovieConver
                 .AddStream(srcMedia.VideoStreams.First().SetCodec(Vp9Encoding));
             if (file.ContentType.StartsWith("image/"))
             {
+                padding = 0;
                 conversion.AddParameter("-r 1 -t 2");
                 conversion.AddParameter("-loop 1", ParameterPosition.PreInput);
+            }
+
+            if (padding is > 0 and < 0.05)
+            {
+                padding = 0;
             }
 
             if (padding < 0)
@@ -122,7 +128,7 @@ public class MovieConvertController(StaticSettings settings, ILogger<MovieConver
                 var blank = FFmpeg.Conversions.New()
                     .SetOutputTime(TimeSpan.FromSeconds(padding))
                     .SetInputFormat(Format.lavfi)
-                    .AddParameter($"-i color=c=black:s={srcMedia.VideoStreams.First().Width}x{srcMedia.VideoStreams.First().Height}:r=1")
+                    .AddParameter($"-i color=c=black:s={srcMedia.VideoStreams.First().Width}x{srcMedia.VideoStreams.First().Height}:r=30")
                     .UseMultiThread(true)
                     .SetOutput(blankPath);
                 logger.LogInformation("About to run FFMpeg with params: {params}", blank.Build());
