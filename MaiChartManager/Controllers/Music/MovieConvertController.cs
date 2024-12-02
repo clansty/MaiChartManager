@@ -49,7 +49,7 @@ public class MovieConvertController(StaticSettings settings, ILogger<MovieConver
         Error
     }
 
-    private static IConversion Concatenate(bool scale, params IMediaInfo[] mediaInfos)
+    private static IConversion Concatenate(string vf, params IMediaInfo[] mediaInfos)
     {
         var conversion = FFmpeg.Conversions.New();
         foreach (var inputVideo in mediaInfos)
@@ -61,14 +61,7 @@ public class MovieConvertController(StaticSettings settings, ILogger<MovieConver
         var videoStream = mediaInfos.Select((Func<IMediaInfo, IVideoStream>)(x => x.VideoStreams.OrderByDescending<IVideoStream, int>(z => z.Width).First())).OrderByDescending((Func<IVideoStream, int>)(x => x.Width)).First();
         for (var index = 0; index < mediaInfos.Length; ++index)
             conversion.AddParameter($"[{index}:v] ");
-        if (scale)
-        {
-            conversion.AddParameter($"concat=n={mediaInfos.Length}:v=1 [v]; [v]scale=1080:-1[vout]\" -map \"[vout]\"");
-        }
-        else
-        {
-            conversion.AddParameter($"concat=n={mediaInfos.Length}:v=1 [v]\" -map \"[v]\"");
-        }
+        conversion.AddParameter($"concat=n={mediaInfos.Length}:v=1 [v]; [v]{vf}[vout]\" -map \"[vout]\"");
 
         conversion.AddParameter("-aspect " + videoStream.Ratio);
         return conversion;
@@ -76,8 +69,9 @@ public class MovieConvertController(StaticSettings settings, ILogger<MovieConver
 
     [HttpPut]
     [DisableRequestSizeLimit]
-    public async Task SetMovie(int id, [FromForm] double padding, IFormFile file, [FromForm] bool noScale, string assetDir)
+    public async Task SetMovie(int id, [FromForm] double padding, IFormFile file, [FromForm] bool noScale, [FromForm] bool h264, string assetDir)
     {
+        h264 = true;
         id %= 10000;
 
         if (Path.GetExtension(file.FileName).Equals(".dat", StringComparison.InvariantCultureIgnoreCase))
@@ -95,7 +89,7 @@ public class MovieConvertController(StaticSettings settings, ILogger<MovieConver
         var tmpDir = Directory.CreateTempSubdirectory();
         logger.LogInformation("Temp dir: {tmpDir}", tmpDir.FullName);
         // Convert vp9
-        var outVideoPath = Path.Combine(tmpDir.FullName, "out.ivf");
+        var outVideoPath = Path.Combine(tmpDir.FullName, h264 ? "out.mp4" : "out.ivf");
         try
         {
             var srcFilePath = Path.Combine(tmpDir.FullName, Path.GetFileName(file.FileName));
@@ -104,8 +98,9 @@ public class MovieConvertController(StaticSettings settings, ILogger<MovieConver
             await srcFileStream.DisposeAsync();
 
             var srcMedia = await FFmpeg.GetMediaInfo(srcFilePath);
+            var firstStream = h264 ? srcMedia.VideoStreams.First().SetCodec(VideoCodec.h264) : srcMedia.VideoStreams.First().SetCodec(Vp9Encoding);
             var conversion = FFmpeg.Conversions.New()
-                .AddStream(srcMedia.VideoStreams.First().SetCodec(Vp9Encoding));
+                .AddStream(firstStream);
             if (file.ContentType.StartsWith("image/"))
             {
                 padding = 0;
@@ -116,6 +111,13 @@ public class MovieConvertController(StaticSettings settings, ILogger<MovieConver
             if (padding is > 0 and < 0.05)
             {
                 padding = 0;
+            }
+
+            var vf = "";
+            if (!noScale)
+            {
+                var scale = h264 ? 2160 : 1080;
+                vf = $"scale={scale}:-1,pad=2160:2160:(2160-iw)/2:(2160-ih)/2:black";
             }
 
             if (padding < 0)
@@ -134,18 +136,19 @@ public class MovieConvertController(StaticSettings settings, ILogger<MovieConver
                 logger.LogInformation("About to run FFMpeg with params: {params}", blank.Build());
                 await blank.Start();
                 var blankVideoInfo = await FFmpeg.GetMediaInfo(blankPath);
-                conversion = Concatenate(!noScale, blankVideoInfo, srcMedia);
-                conversion.AddParameter($"-c:v {Vp9Encoding}");
+                conversion = Concatenate(vf, blankVideoInfo, srcMedia);
+                conversion.AddParameter($"-c:v {(h264 ? "h264" : Vp9Encoding)}");
             }
 
             conversion
                 .SetOutput(outVideoPath)
                 .AddParameter("-hwaccel dxva2", ParameterPosition.PreInput)
-                .UseMultiThread(true)
-                .AddParameter("-cpu-used 5");
+                .UseMultiThread(true);
+            if (!h264)
+                conversion.AddParameter("-cpu-used 5");
             if (!noScale && padding <= 0)
             {
-                conversion.AddParameter("-vf scale=1080:-1");
+                conversion.AddParameter($"-vf {vf}");
             }
 
             logger.LogInformation("About to run FFMpeg with params: {params}", conversion.Build());
@@ -174,26 +177,31 @@ public class MovieConvertController(StaticSettings settings, ILogger<MovieConver
         }
 
         var outputFile = Path.Combine(tmpDir.FullName, "out.usm");
-        try
+        if (h264)
         {
-            WannaCRI.WannaCRI.CreateUsm(outVideoPath);
-            if (!System.IO.File.Exists(outputFile) || new FileInfo(outputFile).Length == 0)
+            outputFile = outVideoPath;
+        }
+        else
+            try
             {
-                throw new Exception("Output file not found or empty");
+                WannaCRI.WannaCRI.CreateUsm(outVideoPath);
+                if (!System.IO.File.Exists(outputFile) || new FileInfo(outputFile).Length == 0)
+                {
+                    throw new Exception("Output file not found or empty");
+                }
             }
-        }
-        catch (Exception e)
-        {
-            logger.LogError(e, "Failed to convert ivf to usm");
-            SentrySdk.CaptureException(e);
-            await Response.WriteAsync($"event: {SetMovieEventType.Error}\ndata: 视频转换为 USM 失败：{e.Message}\n\n");
-            await Response.Body.FlushAsync();
-            return;
-        }
+            catch (Exception e)
+            {
+                logger.LogError(e, "Failed to convert ivf to usm");
+                SentrySdk.CaptureException(e);
+                await Response.WriteAsync($"event: {SetMovieEventType.Error}\ndata: 视频转换为 USM 失败：{e.Message}\n\n");
+                await Response.Body.FlushAsync();
+                return;
+            }
 
         try
         {
-            var targetPath = Path.Combine(StaticSettings.StreamingAssets, assetDir, $@"MovieData\{id:000000}.dat");
+            var targetPath = Path.Combine(StaticSettings.StreamingAssets, assetDir, $@"MovieData\{id:000000}.{(h264 ? "mp4" : "dat")}");
             Directory.CreateDirectory(Path.GetDirectoryName(targetPath));
             FileSystem.CopyFile(outputFile, targetPath, true);
 
