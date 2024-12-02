@@ -14,7 +14,7 @@ public class LocalAssetsController(StaticSettings settings, ILogger<StaticSettin
         var fileNameSanitized = Path.GetFileName(fileName);
         foreach (var extension in MusicXml.jacketExtensions)
         {
-            var path = Path.Combine(StaticSettings.GamePath, "LocalAssets", $"{fileNameSanitized}.{extension}");
+            var path = Path.Combine(StaticSettings.ImageAssetsDir, $"{fileNameSanitized}.{extension}");
             if (System.IO.File.Exists(path))
             {
                 return PhysicalFile(path, "image/png");

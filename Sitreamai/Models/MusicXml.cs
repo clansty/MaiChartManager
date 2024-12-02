@@ -22,7 +22,7 @@ public class MusicXml
         Refresh();
     }
 
-    public void Refresh()
+    public virtual void Refresh()
     {
         var notes = xmlDoc.SelectSingleNode("MusicData/notesData")?.ChildNodes;
         for (var i = 0; i < 6; i++)

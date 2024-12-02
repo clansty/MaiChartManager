@@ -18,6 +18,25 @@ public class MusicXmlWithABJacket(string filePath, string gamePath, string asset
         return new MusicXmlWithABJacket(old.FilePath, old.GamePath, assetDir);
     }
 
+    public override void Refresh()
+    {
+        var notes = xmlDoc.SelectSingleNode("MusicData/notesData")?.ChildNodes;
+        for (var i = 0; i < 6; i++)
+        {
+            Charts[i] = new Chart(notes[i], this);
+        }
+
+        foreach (var ext in jacketExtensions)
+        {
+            var path = Path.Combine(StaticSettings.ImageAssetsDir, $"{NonDxId:000000}.{ext}");
+            if (File.Exists(path))
+            {
+                JacketPath = path;
+                break;
+            }
+        }
+    }
+
     public bool isAcbAwbExist => StaticSettings.AcbAwb.ContainsKey($"music{NonDxId:000000}.acb") && StaticSettings.AcbAwb.ContainsKey($"music{NonDxId:000000}.awb");
 
     public XmlDocument GetInnerXmlClone()

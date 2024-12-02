@@ -71,8 +71,7 @@ public class GenreController(StaticSettings settings, ILogger<StaticSettings> lo
 
         genre.FileName = $"UI_CMN_TabTitle_{id}";
         genre.Save();
-        Directory.CreateDirectory(Path.Combine(StaticSettings.GamePath, "LocalAssets"));
-        var path = Path.Combine(genre.GamePath, "LocalAssets", genre.FileName + Path.GetExtension(image.FileName));
+        var path = Path.Combine(StaticSettings.ImageAssetsDir, genre.FileName + Path.GetExtension(image.FileName));
         using var stream = new FileStream(path, FileMode.Create);
         image.CopyTo(stream);
     }

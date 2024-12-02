@@ -4,7 +4,7 @@ import comments from './modComments.yaml';
 import api from "@/client/api";
 import {capitalCase, pascalCase} from "change-case";
 import ProblemsDisplay from "@/components/ProblemsDisplay";
-import {globalCapture, modInfo, updateModInfo} from "@/store/refs";
+import {globalCapture, modInfo, updateModInfo, updateMusicList} from "@/store/refs";
 import {ConfigDto} from "@/client/apiGen";
 import AquaMaiConfigurator from "@/components/ModManager/AquaMaiConfigurator";
 
@@ -103,6 +103,7 @@ export default defineComponent({
       if (!val && config.value) {
         try {
           await api.SetAquaMaiConfig(config.value)
+          await updateMusicList()
         } catch (e) {
           globalCapture(e, "保存 AquaMai 配置失败")
         }

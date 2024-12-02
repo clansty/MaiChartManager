@@ -34,7 +34,6 @@ public class ModController(StaticSettings settings, ILogger<ModController> logge
     private static string AquaMaiConfigBackupDirPath => Path.Combine(StaticSettings.GamePath, "AquaMai.toml.bak");
     private static string AquaMaiDllInstalledPath => Path.Combine(StaticSettings.GamePath, @"Mods\AquaMai.dll");
     private static string AquaMaiDllBuiltinPath => Path.Combine(StaticSettings.exeDir, "AquaMai.dll");
-    private static string SkinPath => Path.Combine(StaticSettings.GamePath, "LocalAssets", "Skins");
 
     [HttpGet]
     public GameModInfo GetGameModInfo()
@@ -54,20 +53,20 @@ public class ModController(StaticSettings settings, ILogger<ModController> logge
     [NonAction]
     private static bool GetIsJudgeDisplay4BInstalled()
     {
-        if (!Directory.Exists(SkinPath)) return false;
+        if (!Directory.Exists(StaticSettings.SkinAssetsDir)) return false;
 
         var filesShouldBeInstalled = Directory.EnumerateFiles(judgeDisplay4BPath);
-        return filesShouldBeInstalled.Select(file => Path.Combine(SkinPath, Path.GetFileName(file))).All(System.IO.File.Exists);
+        return filesShouldBeInstalled.Select(file => Path.Combine(StaticSettings.SkinAssetsDir, Path.GetFileName(file))).All(System.IO.File.Exists);
     }
 
     [HttpPost]
     public void InstallJudgeDisplay4B()
     {
-        Directory.CreateDirectory(SkinPath);
+        Directory.CreateDirectory(StaticSettings.SkinAssetsDir);
 
         foreach (var file in Directory.EnumerateFiles(judgeDisplay4BPath))
         {
-            System.IO.File.Copy(file, Path.Combine(SkinPath, Path.GetFileName(file)), true);
+            System.IO.File.Copy(file, Path.Combine(StaticSettings.SkinAssetsDir, Path.GetFileName(file)), true);
         }
     }
 
@@ -91,10 +90,10 @@ public class ModController(StaticSettings settings, ILogger<ModController> logge
         }
     }
 
-    [HttpGet]
-    public AquaMaiConfigDto.ConfigDto GetAquaMaiConfig()
+    [NonAction]
+    public static IConfig GetCurrentAquaMaiConfig()
     {
-        if (!IsAquaMaiInstalled())
+        if (!System.IO.File.Exists(AquaMaiDllInstalledPath))
         {
             throw new AquaMaiNotInstalledException();
         }
@@ -106,13 +105,20 @@ public class ModController(StaticSettings settings, ILogger<ModController> logge
 
         if (migrationManager.GetVersion(view) != migrationManager.LatestVersion)
         {
-            logger.LogInformation("Migrating AquaMai config from {0} to {1}", migrationManager.GetVersion(view), migrationManager.LatestVersion);
+            Console.WriteLine("Migrating AquaMai config from {0} to {1}", migrationManager.GetVersion(view), migrationManager.LatestVersion);
             view = migrationManager.Migrate(view);
         }
 
         var parser = configInterface.GetConfigParser();
         var config = configInterface.CreateConfig();
+        parser.Parse(config, view);
+        return config;
+    }
 
+    [HttpGet]
+    public AquaMaiConfigDto.ConfigDto GetAquaMaiConfig()
+    {
+        var config = GetCurrentAquaMaiConfig();
         // 未解之谜
         // logger.LogInformation("{}", lockCredits.GetType());
         // var type = typeof(ModController).GetField("lockCredits", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null);
@@ -122,7 +128,6 @@ public class ModController(StaticSettings settings, ILogger<ModController> logge
         // logger.LogInformation("{}", config.GetEntryState(config.ReflectionManager.Entries.First(it => it.Path == "GameSettings.CreditConfig.LockCredits")).Value.GetType());
         // logger.LogInformation("{}", config.ReflectionManager.Entries.First(it => it.Path == "GameSettings.CreditConfig.LockCredits").Field.FieldType);
         //
-        parser.Parse(config, view);
         // logger.LogInformation("{}", config.GetEntryState(config.ReflectionManager.Entries.First(it => it.Path == "GameSettings.CreditConfig.LockCredits")).Value.GetType());
         // logger.LogInformation("{}", config.ReflectionManager.Entries.First(it => it.Path == "GameSettings.CreditConfig.LockCredits").Field.FieldType);
 
@@ -176,6 +181,9 @@ public class ModController(StaticSettings settings, ILogger<ModController> logge
             }
         }
 
+        StaticSettings.UpdateAssetPathsFromAquaMaiConfig(configEdit);
+        // 可能修改了歌曲封面目录
+        settings.ScanMusicList();
         var serializer = configInterface.CreateConfigSerializer(new IConfigSerializer.Options()
         {
             Lang = "zh",

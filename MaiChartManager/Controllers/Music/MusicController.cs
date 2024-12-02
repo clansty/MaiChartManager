@@ -135,7 +135,6 @@ public class MusicController(StaticSettings settings, ILogger<MusicController> l
     public string SetMusicJacket(int id, IFormFile file, string assetDir)
     {
         var nonDxId = id % 10000;
-        Directory.CreateDirectory(Path.Combine(StaticSettings.GamePath, "LocalAssets"));
         var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
         if (!MusicXml.jacketExtensions.Contains(ext[1..]))
         {
@@ -148,7 +147,7 @@ public class MusicController(StaticSettings settings, ILogger<MusicController> l
             FileSystem.DeleteFile(music.JacketPath, UIOption.OnlyErrorDialogs, RecycleOption.SendToRecycleBin);
         }
 
-        var path = Path.Combine(StaticSettings.GamePath, "LocalAssets", $"{nonDxId:000000}{ext}");
+        var path = Path.Combine(StaticSettings.ImageAssetsDir, $"{nonDxId:000000}{ext}");
         using var write = System.IO.File.Open(path, FileMode.Create);
         file.CopyTo(write);
         write.Close();

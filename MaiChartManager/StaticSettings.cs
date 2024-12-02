@@ -1,6 +1,9 @@
 ﻿using System.Text.RegularExpressions;
 using System.Xml;
+using AquaMai.Config.Interfaces;
+using MaiChartManager.Controllers;
 using MaiChartManager.Models;
+using MaiChartManager.Utils;
 
 namespace MaiChartManager;
 
@@ -9,6 +12,13 @@ public partial class StaticSettings
     public static readonly string tempPath = Path.Combine(Path.GetTempPath(), "MaiChartManager");
     public static readonly string appData = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "MaiChartManager");
     public static readonly string exeDir = Path.GetDirectoryName(Application.ExecutablePath);
+
+    private static string _imageAssetsDir = "LocalAssets";
+    private static string _movieAssetsDir = "LocalAssets";
+    private static string _skinAssetsDir = "LocalAssets/Skins";
+    public static string ImageAssetsDir => Path.Combine(GamePath, _imageAssetsDir);
+    public static string MovieAssetsDir => Path.Combine(GamePath, _movieAssetsDir);
+    public static string SkinAssetsDir => Path.Combine(GamePath, _skinAssetsDir);
 
     public static Config Config { get; set; } = new();
 
@@ -67,6 +77,7 @@ public partial class StaticSettings
 
     public void RescanAll()
     {
+        UpdateAssetPathsFromAquaMaiConfig();
         ScanMusicList();
         ScanGenre();
         ScanVersionList();
@@ -241,5 +252,48 @@ public partial class StaticSettings
         }
 
         return $"A{id:000}";
+    }
+
+    public static void UpdateAssetPathsFromAquaMaiConfig(IConfig? config = null)
+    {
+        if (config == null)
+        {
+            try
+            {
+                config = ModController.GetCurrentAquaMaiConfig();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("无法获取 AquaMai 配置");
+                return;
+            }
+        }
+
+        var imageAssetsDir = config.GetEntryState("GameSystem.Assets.LoadLocalImages.ImageAssetsDir");
+        var localAssetsDir = config.GetEntryState("GameSystem.Assets.LoadLocalImages.LocalAssetsDir");
+        var movieAssetsDir = config.GetEntryState("GameSystem.Assets.MovieLoader.MovieAssetsDir");
+        var skinAssetsDir = config.GetEntryState("Fancy.CustomSkins.SkinsDir");
+
+        if (imageAssetsDir != null)
+        {
+            _imageAssetsDir = imageAssetsDir.Value.ToString();
+        }
+        else if (localAssetsDir != null)
+        {
+            _imageAssetsDir = localAssetsDir.Value.ToString();
+        }
+
+        if (movieAssetsDir != null)
+        {
+            _movieAssetsDir = movieAssetsDir.Value.ToString();
+        }
+
+        if (skinAssetsDir != null)
+        {
+            _skinAssetsDir = skinAssetsDir.Value.ToString();
+        }
+
+        Directory.CreateDirectory(ImageAssetsDir);
+        Directory.CreateDirectory(MovieAssetsDir);
     }
 }

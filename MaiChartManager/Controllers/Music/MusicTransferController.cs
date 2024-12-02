@@ -232,14 +232,14 @@ public class MusicTransferController(StaticSettings settings, ILogger<MusicTrans
         // jacket
         if (music.JacketPath is not null)
         {
-            var localJacketTarget = Path.Combine(StaticSettings.GamePath, "LocalAssets", $"{newNonDxId:000000}{Path.GetExtension(music.JacketPath)}");
+            var localJacketTarget = Path.Combine(StaticSettings.ImageAssetsDir, $"{newNonDxId:000000}{Path.GetExtension(music.JacketPath)}");
             DeleteIfExists(localJacketTarget);
             logger.LogInformation("Move jacket: {music.JacketPath} -> {localJacketTarget}", music.JacketPath, localJacketTarget);
             FileSystem.MoveFile(music.JacketPath, localJacketTarget, UIOption.OnlyErrorDialogs);
         }
         else if (music.PseudoAssetBundleJacket is not null)
         {
-            var localJacketTarget = Path.Combine(StaticSettings.GamePath, "LocalAssets", $"{newNonDxId:000000}{Path.GetExtension(music.PseudoAssetBundleJacket)}");
+            var localJacketTarget = Path.Combine(StaticSettings.ImageAssetsDir, $"{newNonDxId:000000}{Path.GetExtension(music.PseudoAssetBundleJacket)}");
             DeleteIfExists(localJacketTarget);
             logger.LogInformation("Move jacket: {music.PseudoAssetBundleJacket} -> {localJacketTarget}", music.PseudoAssetBundleJacket, localJacketTarget);
             FileSystem.MoveFile(music.PseudoAssetBundleJacket, localJacketTarget, UIOption.OnlyErrorDialogs);

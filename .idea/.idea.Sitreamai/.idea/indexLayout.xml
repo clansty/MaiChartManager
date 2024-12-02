@@ -3,6 +3,8 @@
   <component name="UserContentModel">
     <attachedFolders />
     <explicitIncludes />
-    <explicitExcludes />
+    <explicitExcludes>
+      <Path>MaiChartManager/wwwroot</Path>
+    </explicitExcludes>
   </component>
 </project>
