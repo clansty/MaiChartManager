@@ -15,6 +15,7 @@ export interface AppVersionResult {
   gameVersion?: number;
   license?: LicenseStatus;
   hardwareAcceleration?: HardwareAccelerationStatus;
+  h264Encoder?: string | null;
 }
 
 export enum AssetType {
@@ -1324,6 +1325,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         /** @format binary */
         file?: File;
         noScale?: boolean;
+        h264?: boolean;
       },
       params: RequestParams = {},
     ) =>

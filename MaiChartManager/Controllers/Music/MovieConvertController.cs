@@ -16,6 +16,7 @@ public class MovieConvertController(StaticSettings settings, ILogger<MovieConver
     }
 
     public static HardwareAccelerationStatus HardwareAcceleration { get; private set; } = HardwareAccelerationStatus.Pending;
+    public static string H264Encoder { get; private set; } = "libx264";
 
     public static async Task CheckHardwareAcceleration()
     {
@@ -38,6 +39,30 @@ public class MovieConvertController(StaticSettings settings, ILogger<MovieConver
             Console.WriteLine(e);
             HardwareAcceleration = HardwareAccelerationStatus.Disabled;
         }
+
+        foreach (var encoder in ((string[]) ["h264_nvenc", "h264_qsv", "h264_vaapi", "h264_amf", "h264_mf", "h264_vulkan"]))
+        {
+            try
+            {
+                var blankPath = Path.Combine(tmpDir.FullName, $"{encoder}.mp4");
+                await FFmpeg.Conversions.New()
+                    .SetOutputTime(TimeSpan.FromSeconds(2))
+                    .SetInputFormat(Format.lavfi)
+                    .AddParameter("-i color=c=black:s=720x720:r=1")
+                    .AddParameter($"-c:v {encoder}")
+                    .UseMultiThread(true)
+                    .SetOutput(blankPath)
+                    .Start();
+                H264Encoder = encoder;
+                break;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+        }
+
+        Console.WriteLine($"H264 encoder: {H264Encoder}");
     }
 
     private static string Vp9Encoding => HardwareAcceleration == HardwareAccelerationStatus.Enabled ? "vp9_qsv" : "vp9";
@@ -71,7 +96,6 @@ public class MovieConvertController(StaticSettings settings, ILogger<MovieConver
     [DisableRequestSizeLimit]
     public async Task SetMovie(int id, [FromForm] double padding, IFormFile file, [FromForm] bool noScale, [FromForm] bool h264, string assetDir)
     {
-        h264 = true;
         id %= 10000;
 
         if (Path.GetExtension(file.FileName).Equals(".dat", StringComparison.InvariantCultureIgnoreCase))
@@ -98,7 +122,7 @@ public class MovieConvertController(StaticSettings settings, ILogger<MovieConver
             await srcFileStream.DisposeAsync();
 
             var srcMedia = await FFmpeg.GetMediaInfo(srcFilePath);
-            var firstStream = h264 ? srcMedia.VideoStreams.First().SetCodec(VideoCodec.h264) : srcMedia.VideoStreams.First().SetCodec(Vp9Encoding);
+            var firstStream = srcMedia.VideoStreams.First().SetCodec(h264 ? H264Encoder : Vp9Encoding);
             var conversion = FFmpeg.Conversions.New()
                 .AddStream(firstStream);
             if (file.ContentType.StartsWith("image/"))

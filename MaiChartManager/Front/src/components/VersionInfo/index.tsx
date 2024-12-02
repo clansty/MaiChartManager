@@ -39,11 +39,14 @@ export default defineComponent({
             游戏版本: 1.{version.value.gameVersion}
           </div>
           {version.value.hardwareAcceleration === HardwareAccelerationStatus.Enabled && <div>
-            硬件加速作用中
+            VP9 硬件加速作用中
           </div>}
           {version.value.hardwareAcceleration === HardwareAccelerationStatus.Disabled && <div>
-            硬件加速不可用（开启英特尔核显可加速视频转码）
+            VP9 硬件加速不可用（开启英特尔核显可加速视频转码）
           </div>}
+          <div>
+            H264 编码器: {version.value.h264Encoder}
+          </div>
           {version.value.license === LicenseStatus.Active && <div>
             感谢你的支持！
             <NA
