@@ -26,7 +26,7 @@ export default defineComponent({
             onUpdateValue={setAssetsDir}
           />
           <RefreshAllButton/>
-          {selectedADir.value !== 'A000' && <BatchActionButton/>}
+          <BatchActionButton/>
         </NFlex>
         <NVirtualList class="flex-1" itemSize={20 / 4 * 16} items={musicList.value}>
           {{
