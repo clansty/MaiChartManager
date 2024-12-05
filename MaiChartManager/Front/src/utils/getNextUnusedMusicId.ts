@@ -1,7 +1,7 @@
-import { musicList } from "@/store/refs";
+import {musicListAll} from "@/store/refs";
 
 export default (extraExistedIds = [] as number[]) => {
-  const existedIds = musicList.value.map(v => v.id!).concat(extraExistedIds).map(it => it % 1e4);
+  const existedIds = musicListAll.value.map(v => v.id!).concat(extraExistedIds).map(it => it % 1e4);
   let id = 4999;
   for (const existed of existedIds) {
     if (id < existed) {
