@@ -201,7 +201,7 @@ public partial class StaticSettings
         foreach (var a in AssetsDirs)
         {
             if (!Directory.Exists(Path.Combine(StreamingAssets, a, "MovieData"))) continue;
-            foreach (var dat in Directory.EnumerateFiles(Path.Combine(StreamingAssets, a, @"MovieData"), "*.dat"))
+            foreach (var dat in Directory.EnumerateFiles(Path.Combine(StreamingAssets, a, @"MovieData")))
             {
                 if (!int.TryParse(Path.GetFileNameWithoutExtension(dat), out var id)) continue;
                 MovieDataMap[id] = dat;

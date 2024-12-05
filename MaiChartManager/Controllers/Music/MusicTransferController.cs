@@ -116,7 +116,7 @@ public class MusicTransferController(StaticSettings settings, ILogger<MusicTrans
             if (StaticSettings.MovieDataMap.TryGetValue(music.NonDxId, out var movie))
             {
                 Directory.CreateDirectory(Path.Combine(dest, "MovieData"));
-                FileSystem.CopyFile(movie, Path.Combine(dest, $@"MovieData\{music.NonDxId:000000}.dat"), UIOption.OnlyErrorDialogs);
+                FileSystem.CopyFile(movie, Path.Combine(dest, $@"MovieData\{music.NonDxId:000000}{Path.GetExtension(movie)}"), UIOption.OnlyErrorDialogs);
             }
         }
 
@@ -193,7 +193,7 @@ public class MusicTransferController(StaticSettings settings, ILogger<MusicTrans
         // copy movie data
         if (StaticSettings.MovieDataMap.TryGetValue(music.NonDxId, out var movie))
         {
-            zipArchive.CreateEntryFromFile(movie, $"MovieData/{music.NonDxId:000000}.dat");
+            zipArchive.CreateEntryFromFile(movie, $"MovieData/{music.NonDxId:000000}{Path.GetExtension(movie)}");
         }
     }
 
@@ -225,9 +225,9 @@ public class MusicTransferController(StaticSettings settings, ILogger<MusicTrans
 
         var abJacketTarget = Path.Combine(StaticSettings.StreamingAssets, assetDir, "AssetBundleImages", "jacket", $"ui_jacket_{newNonDxId:000000}.ab");
         var acbawbTarget = Path.Combine(StaticSettings.StreamingAssets, assetDir, "SoundData", $"music{newNonDxId:000000}");
-        var movieTarget = Path.Combine(StaticSettings.StreamingAssets, assetDir, "MovieData", $"{newNonDxId:000000}.dat");
+        var movieTarget = Path.Combine(StaticSettings.StreamingAssets, assetDir, "MovieData", $"{newNonDxId:000000}");
         var newMusicDir = Path.Combine(StaticSettings.StreamingAssets, assetDir, "music", $"music{newNonDxId:000000}");
-        DeleteIfExists(abJacketTarget, abJacketTarget + ".manifest", acbawbTarget + ".acb", acbawbTarget + ".awb", movieTarget, newMusicDir);
+        DeleteIfExists(abJacketTarget, abJacketTarget + ".manifest", acbawbTarget + ".acb", acbawbTarget + ".awb", movieTarget + ".dat", movieTarget + ".mp4", newMusicDir);
 
         // jacket
         if (music.JacketPath is not null)
@@ -274,7 +274,7 @@ public class MusicTransferController(StaticSettings settings, ILogger<MusicTrans
         if (StaticSettings.MovieDataMap.TryGetValue(music.NonDxId, out var movie))
         {
             logger.LogInformation("Move movie: {movie} -> {movieTarget}", movie, movieTarget);
-            FileSystem.MoveFile(movie, movieTarget, UIOption.OnlyErrorDialogs);
+            FileSystem.MoveFile(movie, movieTarget + Path.GetExtension(movie), UIOption.OnlyErrorDialogs);
         }
 
         // 谱面
@@ -359,23 +359,32 @@ public class MusicTransferController(StaticSettings settings, ILogger<MusicTrans
 
         if (!ignoreVideo && StaticSettings.MovieDataMap.TryGetValue(music.NonDxId, out var movieUsmPath))
         {
-            var tmpDir = Directory.CreateTempSubdirectory();
-            logger.LogInformation("Temp dir: {tmpDir}", tmpDir.FullName);
-            var movieUsm = Path.Combine(tmpDir.FullName, "movie.usm");
-            FileSystem.CopyFile(movieUsmPath, movieUsm, UIOption.OnlyErrorDialogs);
-            WannaCRI.WannaCRI.UnpackUsm(movieUsm);
-            var outputIvfFile = Directory.EnumerateFiles(Path.Combine(tmpDir.FullName, @"output\movie.usm\videos")).FirstOrDefault();
-            if (outputIvfFile is not null)
+            string? pvMp4Path = null;
+            if (Path.GetExtension(movieUsmPath).Equals(".dat", StringComparison.InvariantCultureIgnoreCase))
             {
-                var pvMp4Path = Path.Combine(tmpDir.FullName, "pv.mp4");
-                await FFmpeg.Conversions.New()
-                    .AddParameter("-i " + outputIvfFile.Escape())
-                    .AddParameter("-c:v copy")
-                    .SetOutput(pvMp4Path)
-                    .Start();
-
-                zipArchive.CreateEntryFromFile(pvMp4Path, "pv.mp4");
+                var tmpDir = Directory.CreateTempSubdirectory();
+                logger.LogInformation("Temp dir: {tmpDir}", tmpDir.FullName);
+                var movieUsm = Path.Combine(tmpDir.FullName, "movie.usm");
+                FileSystem.CopyFile(movieUsmPath, movieUsm, UIOption.OnlyErrorDialogs);
+                WannaCRI.WannaCRI.UnpackUsm(movieUsm);
+                var outputIvfFile = Directory.EnumerateFiles(Path.Combine(tmpDir.FullName, @"output\movie.usm\videos")).FirstOrDefault();
+                if (outputIvfFile is not null)
+                {
+                    pvMp4Path = Path.Combine(tmpDir.FullName, "pv.mp4");
+                    await FFmpeg.Conversions.New()
+                        .AddParameter("-i " + outputIvfFile.Escape())
+                        .AddParameter("-c:v copy")
+                        .SetOutput(pvMp4Path)
+                        .Start();
+                }
             }
+            else if (Path.GetExtension(movieUsmPath).Equals(".mp4", StringComparison.InvariantCultureIgnoreCase))
+            {
+                pvMp4Path = movieUsmPath;
+            }
+
+            if (pvMp4Path is not null)
+                zipArchive.CreateEntryFromFile(pvMp4Path, "pv.mp4");
         }
     }
 }
