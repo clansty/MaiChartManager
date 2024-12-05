@@ -5,7 +5,7 @@ namespace MaiChartManager.Utils;
 
 public static class ImageConvert
 {
-    public static byte[]? GetMusicJacketPngData(MusicXmlWithABJacket? music)
+    public static byte[]? GetMusicJacketPngData(this MusicXmlWithABJacket? music)
     {
         if (music == null)
         {

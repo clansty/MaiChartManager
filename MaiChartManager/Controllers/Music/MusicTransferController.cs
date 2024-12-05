@@ -246,11 +246,12 @@ public class MusicTransferController(StaticSettings settings, ILogger<MusicTrans
         }
         else if (music.AssetBundleJacket is not null)
         {
-            logger.LogInformation("Move jacket: {music.AssetBundleJacket} -> {abJacketTarget}", music.AssetBundleJacket, abJacketTarget);
-            FileSystem.MoveFile(music.AssetBundleJacket, abJacketTarget, UIOption.OnlyErrorDialogs);
+            var localJacketTarget = Path.Combine(StaticSettings.ImageAssetsDir, $"{newNonDxId:000000}.png");
+            logger.LogInformation("Convert jacket: {music.AssetBundleJacket} -> {abJacketTarget}", music.AssetBundleJacket, abJacketTarget);
+            System.IO.File.WriteAllBytes(localJacketTarget, music.GetMusicJacketPngData()!);
+            FileSystem.DeleteFile(music.AssetBundleJacket, UIOption.OnlyErrorDialogs, RecycleOption.SendToRecycleBin);
             if (System.IO.File.Exists(music.AssetBundleJacket + ".manifest"))
             {
-                logger.LogInformation("Move jacket manifest: {music.AssetBundleJacket}.manifest -> {abJacketTarget}.manifest", music.AssetBundleJacket, abJacketTarget);
                 FileSystem.MoveFile(music.AssetBundleJacket + ".manifest", abJacketTarget + ".manifest", UIOption.OnlyErrorDialogs);
             }
         }
