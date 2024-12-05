@@ -42,6 +42,12 @@ export const defaultTempOptions = {
   shift: ShiftMethod.Bar,
 }
 
+export enum MOVIE_CODEC {
+  PreferH264,
+  ForceH264,
+  ForceVP9,
+}
+
 export const defaultSavedOptions = {
   ignoreLevel: false,
   addVersionId: 0,
@@ -50,6 +56,7 @@ export const defaultSavedOptions = {
   version: 22001,
   disableBga: false,
   noScale: false,
+  movieCodec: MOVIE_CODEC.PreferH264,
 }
 
 export type TempOptions = typeof defaultTempOptions;

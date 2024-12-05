@@ -4,7 +4,7 @@ import comments from './modComments.yaml';
 import api from "@/client/api";
 import {capitalCase, pascalCase} from "change-case";
 import ProblemsDisplay from "@/components/ProblemsDisplay";
-import {globalCapture, modInfo, updateModInfo, updateMusicList} from "@/store/refs";
+import {globalCapture, modInfo, updateModInfo, updateMusicList, aquaMaiConfig as config} from "@/store/refs";
 import {ConfigDto} from "@/client/apiGen";
 import AquaMaiConfigurator from "@/components/ModManager/AquaMaiConfigurator";
 
@@ -24,7 +24,6 @@ export default defineComponent({
       set: (val) => emit('update:disableBadge', val)
     })
 
-    const config = ref<ConfigDto>()
     const configReadErr = ref('')
     const configReadErrTitle = ref('')
     const dialog = useDialog()

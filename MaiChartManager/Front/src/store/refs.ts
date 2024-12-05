@@ -1,5 +1,5 @@
 import {computed, ref} from "vue";
-import {AppVersionResult, GameModInfo, GenreXml, GetAssetsDirsResult, MusicXmlWithABJacket, VersionXml} from "@/client/apiGen";
+import { AppVersionResult, ConfigDto, GameModInfo, GenreXml, GetAssetsDirsResult, MusicXmlWithABJacket, VersionXml } from "@/client/apiGen";
 import api from "@/client/api";
 import {captureException} from "@sentry/vue";
 import posthog from "posthog-js";
@@ -52,6 +52,8 @@ export const modInfo = ref<GameModInfo>();
 
 export const musicList = computed(() => musicListAll.value.filter(m => m.assetDir === selectedADir.value));
 export const selectedMusic = computed(() => musicList.value.find(m => m.id === selectMusicId.value));
+
+export const aquaMaiConfig = ref<ConfigDto>()
 
 export const updateGenreList = async () => {
   const response = await api.GetAllGenres();

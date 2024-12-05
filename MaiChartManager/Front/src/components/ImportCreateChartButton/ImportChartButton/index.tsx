@@ -4,13 +4,13 @@ import SelectFileTypeTip from "./SelectFileTypeTip";
 import { LicenseStatus, MessageLevel, ShiftMethod } from "@/client/apiGen";
 import CheckingModal from "./CheckingModal";
 import api, { getUrl } from "@/client/api";
-import { globalCapture, musicList, selectedADir, selectMusicId, updateMusicList, version as appVersion } from "@/store/refs";
+import { aquaMaiConfig, globalCapture, musicList, selectedADir, selectMusicId, updateMusicList, version as appVersion } from "@/store/refs";
 import ErrorDisplayIdInput from "./ErrorDisplayIdInput";
 import ImportStepDisplay from "./ImportStepDisplay";
 import { useStorage } from "@vueuse/core";
 import { captureException } from "@sentry/vue";
 import { fetchEventSource } from "@microsoft/fetch-event-source";
-import { defaultSavedOptions, defaultTempOptions, dummyMeta, IMPORT_STEP, ImportChartMessageEx, ImportMeta, STEP } from "./types";
+import { defaultSavedOptions, defaultTempOptions, dummyMeta, IMPORT_STEP, ImportChartMessageEx, ImportMeta, MOVIE_CODEC, STEP } from "./types";
 import getNextUnusedMusicId from "@/utils/getNextUnusedMusicId";
 
 const tryGetFile = async (dir: FileSystemDirectoryHandle, file: string) => {
@@ -24,7 +24,7 @@ const tryGetFile = async (dir: FileSystemDirectoryHandle, file: string) => {
 
 export default defineComponent({
   setup(props) {
-    const savedOptions = useStorage('importMusicOptions', defaultSavedOptions);
+    const savedOptions = useStorage('importMusicOptions', defaultSavedOptions, undefined, {mergeDefaults: true});
     const tempOptions = ref({...defaultTempOptions});
     const step = ref(STEP.none);
     const dialog = useDialog();
@@ -88,9 +88,18 @@ export default defineComponent({
       return !reject;
     }
 
+    const shouldUseH264 = () => {
+      if (savedOptions.value.movieCodec === MOVIE_CODEC.ForceH264) return true;
+      if (savedOptions.value.movieCodec === MOVIE_CODEC.ForceVP9) return false;
+      return aquaMaiConfig.value?.sectionStates?.['GameSystem.Assets.MovieLoader']?.enabled && aquaMaiConfig.value?.entryStates?.['GameSystem.Assets.MovieLoader.LoadMp4Movie']?.value;
+    }
+
     const uploadMovie = (id: number, movie: File, offset: number) => new Promise<void>((resolve, reject) => {
       currentMovieProgress.value = 0;
       const body = new FormData();
+      const h264 = shouldUseH264();
+      console.log('use h264', h264);
+      body.append('h264', h264.toString());
       body.append('file', movie);
       body.append('padding', offset.toString());
       body.append('noScale', savedOptions.value.noScale.toString());

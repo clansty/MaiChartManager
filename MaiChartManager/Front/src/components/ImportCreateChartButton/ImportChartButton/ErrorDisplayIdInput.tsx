@@ -1,7 +1,7 @@
 import { computed, defineComponent, effect, PropType, watch } from "vue";
 import { NAlert, NButton, NCheckbox, NCollapse, NCollapseItem, NFlex, NForm, NFormItem, NInputNumber, NModal, NPopover, NRadio, NRadioButton, NRadioGroup, NScrollbar, NSelect, SelectOption } from "naive-ui";
 import { ImportChartMessage, MessageLevel, ShiftMethod } from "@/client/apiGen";
-import { ImportChartMessageEx, ImportMeta, SavedOptions, TempOptions } from "./types";
+import { ImportChartMessageEx, ImportMeta, MOVIE_CODEC, SavedOptions, TempOptions } from "./types";
 import noJacket from '@/assets/noJacket.webp';
 import { addVersionList, genreList, showNeedPurchaseDialog } from "@/store/refs";
 import GenreInput from "@/components/GenreInput";
@@ -142,6 +142,17 @@ export default defineComponent({
                         <NCheckbox v-model:checked={props.savedOptions.noScale}>
                             不要缩放 BGA 到 1080 宽度，此选项会记住
                         </NCheckbox>
+                        <NFormItem label="PV 编码" labelPlacement="left" showFeedback={false}>
+                            <NFlex vertical class="w-full">
+                                <NFlex class="h-34px" align="center">
+                                    <NSelect v-model:value={props.savedOptions.movieCodec} options={[
+                                      {label: '优先 H264', value: MOVIE_CODEC.PreferH264},
+                                      {label: '强制 H264', value: MOVIE_CODEC.ForceH264},
+                                      {label: '强制 VP9 USM', value: MOVIE_CODEC.ForceVP9},
+                                    ]}/>
+                                </NFlex>
+                            </NFlex>
+                        </NFormItem>
                     </NFlex>
                 </NCollapseItem>
             </NCollapse>
