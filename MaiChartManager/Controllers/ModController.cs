@@ -99,19 +99,23 @@ public class ModController(StaticSettings settings, ILogger<ModController> logge
         }
 
         var configInterface = HeadlessConfigLoader.LoadFromPacked(AquaMaiDllInstalledPath);
+        var config = configInterface.CreateConfig();
         CheckConfigApiVersion(configInterface);
-        var view = configInterface.CreateConfigView(System.IO.File.ReadAllText(AquaMaiConfigPath));
-        var migrationManager = configInterface.GetConfigMigrationManager();
-
-        if (migrationManager.GetVersion(view) != migrationManager.LatestVersion)
+        if (System.IO.File.Exists(AquaMaiConfigPath))
         {
-            Console.WriteLine("Migrating AquaMai config from {0} to {1}", migrationManager.GetVersion(view), migrationManager.LatestVersion);
-            view = migrationManager.Migrate(view);
+            var view = configInterface.CreateConfigView(System.IO.File.ReadAllText(AquaMaiConfigPath));
+            var migrationManager = configInterface.GetConfigMigrationManager();
+
+            if (migrationManager.GetVersion(view) != migrationManager.LatestVersion)
+            {
+                Console.WriteLine("Migrating AquaMai config from {0} to {1}", migrationManager.GetVersion(view), migrationManager.LatestVersion);
+                view = migrationManager.Migrate(view);
+            }
+
+            var parser = configInterface.GetConfigParser();
+            parser.Parse(config, view);
         }
 
-        var parser = configInterface.GetConfigParser();
-        var config = configInterface.CreateConfig();
-        parser.Parse(config, view);
         return config;
     }
 
