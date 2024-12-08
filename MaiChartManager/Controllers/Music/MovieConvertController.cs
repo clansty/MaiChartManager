@@ -83,12 +83,13 @@ public class MovieConvertController(StaticSettings settings, ILogger<MovieConver
         }
 
         conversion.AddParameter("-filter_complex \"");
-        var videoStream = mediaInfos.Select((Func<IMediaInfo, IVideoStream>)(x => x.VideoStreams.OrderByDescending<IVideoStream, int>(z => z.Width).First())).OrderByDescending((Func<IVideoStream, int>)(x => x.Width)).First();
         for (var index = 0; index < mediaInfos.Length; ++index)
-            conversion.AddParameter($"[{index}:v] ");
+            conversion.AddParameter($"[{index}:v]setsar=1[{index}s];");
+        for (var index = 0; index < mediaInfos.Length; ++index)
+            conversion.AddParameter($"[{index}s] ");
         conversion.AddParameter($"concat=n={mediaInfos.Length}:v=1 [v]; [v]{vf}[vout]\" -map \"[vout]\"");
 
-        conversion.AddParameter("-aspect " + videoStream.Ratio);
+        conversion.AddParameter("-aspect 1:1");
         return conversion;
     }
 
@@ -138,10 +139,10 @@ public class MovieConvertController(StaticSettings settings, ILogger<MovieConver
             }
 
             var vf = "";
+            var scale = h264 ? 2160 : 1080;
             if (!noScale)
             {
-                var scale = h264 ? 2160 : 1080;
-                vf = $"scale={scale}:-1,pad=2160:2160:(2160-iw)/2:(2160-ih)/2:black";
+                vf = $"scale={scale}:-1,pad={scale}:{scale}:({scale}-iw)/2:({scale}-ih)/2:black";
             }
 
             if (padding < 0)
