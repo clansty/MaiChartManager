@@ -2,9 +2,9 @@ cd %~dp0
 del .\*.appx
 rmdir /s /q Pack
 
-pushd ..\AquaDX\AquaMai
+pushd ..\AquaMai
 dotnet build -c Release
-copy /y Output\AquaMai.dll ..\..\MaiChartManager\Resources
+copy /y Output\AquaMai.dll ..\MaiChartManager\Resources
 popd
 
 pushd ..\MaiChartManager\Front

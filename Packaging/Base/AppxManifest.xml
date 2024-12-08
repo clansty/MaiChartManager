@@ -20,7 +20,7 @@
       MaxVersionTested="10.0.22621.0" />
     <win32dependencies:ExternalDependency Name="Microsoft.WebView2"
       Publisher="CN=Microsoft Windows, O=Microsoft Corporation, L=Redmond, S=Washington, C=US"
-      MinVersion="1.1.1.1" Optional="false"/>
+      MinVersion="1.1.1.1" Optional="true"/>
   </Dependencies>
   <Resources>
     <Resource Language="zh-cn" />
