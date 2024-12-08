@@ -1,10 +1,12 @@
 import { defineComponent, PropType, ref } from "vue";
-import { NButton, NCheckbox, NDrawer, NDrawerContent, NFlex, NInputNumber, NModal, NProgress, useDialog, useMessage } from "naive-ui";
+import { NButton, NCheckbox, NDrawer, NDrawerContent, NFlex, NFormItem, NInputNumber, NModal, NProgress, NSelect, useDialog, useMessage } from "naive-ui";
 import FileTypeIcon from "@/components/FileTypeIcon";
 import { LicenseStatus, MusicXmlWithABJacket } from "@/client/apiGen";
 import api, { getUrl } from "@/client/api";
-import { globalCapture, selectedADir, showNeedPurchaseDialog, version } from "@/store/refs";
+import { aquaMaiConfig, globalCapture, selectedADir, showNeedPurchaseDialog, version } from "@/store/refs";
 import { fetchEventSource } from "@microsoft/fetch-event-source";
+import { defaultSavedOptions, MOVIE_CODEC } from "@/components/ImportCreateChartButton/ImportChartButton/types";
+import { useStorage } from "@vueuse/core";
 
 enum STEP {
   None,
@@ -27,10 +29,20 @@ export default defineComponent({
     const progress = ref(0)
     const message = useMessage();
     const noScale = ref(false)
+    const savedOptions = useStorage('importMusicOptions', defaultSavedOptions, undefined, {mergeDefaults: true});
+
+    const shouldUseH264 = () => {
+      if (savedOptions.value.movieCodec === MOVIE_CODEC.ForceH264) return true;
+      if (savedOptions.value.movieCodec === MOVIE_CODEC.ForceVP9) return false;
+      return aquaMaiConfig.value?.sectionStates?.['GameSystem.Assets.MovieLoader']?.enabled && aquaMaiConfig.value?.entryStates?.['GameSystem.Assets.MovieLoader.LoadMp4Movie']?.value;
+    }
 
     const uploadMovie = (id: number, movie: File, offset: number) => new Promise<void>((resolve, reject) => {
       progress.value = 0;
       const body = new FormData();
+      const h264 = shouldUseH264();
+      console.log('use h264', h264);
+      body.append('h264', h264.toString());
       body.append('file', movie);
       body.append('padding', offset.toString());
       body.append('noScale', noScale.value.toString());
@@ -147,6 +159,17 @@ export default defineComponent({
           <NCheckbox v-model:checked={noScale.value}>
             不要缩放 BGA 到 1080 宽度
           </NCheckbox>
+          <NFormItem label="PV 编码" labelPlacement="left" showFeedback={false}>
+            <NFlex vertical class="w-full">
+              <NFlex class="h-34px" align="center">
+                <NSelect v-model:value={savedOptions.value.movieCodec} options={[
+                  {label: '优先 H264', value: MOVIE_CODEC.PreferH264},
+                  {label: '强制 H264', value: MOVIE_CODEC.ForceH264},
+                  {label: '强制 VP9 USM', value: MOVIE_CODEC.ForceVP9},
+                ]}/>
+              </NFlex>
+            </NFlex>
+          </NFormItem>
         </NFlex>,
         footer: () => <NFlex justify="end">
           <NButton onClick={okResolve.value as any}>确定</NButton>
