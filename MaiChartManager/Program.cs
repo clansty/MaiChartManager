@@ -9,8 +9,9 @@ using Xabe.FFmpeg;
 
 namespace MaiChartManager;
 
-static partial class Program
+public static partial class Program
 {
+    public const string Version = "1.3.1";
     public static Browser? BrowserWin { get; set; }
 
     [LibraryImport("kernel32.dll", SetLastError = true)]
@@ -28,7 +29,7 @@ static partial class Program
     ///  The main entry point for the application.
     /// </summary>
     [STAThread]
-    static void Main()
+    public static void Main()
     {
         SetConsoleOutputCP(65001);
         try
