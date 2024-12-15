@@ -1,9 +1,11 @@
 ﻿using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
+using System.Security.Claims;
 using System.Security.Cryptography.X509Certificates;
 using System.Text.Json.Serialization;
 using System.Windows.Forms;
+using idunno.Authentication.Basic;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Server.Kestrel.Https;
 using Microsoft.Extensions.FileProviders;
@@ -133,6 +135,28 @@ public static class ServerManager
             .AddJsonOptions(options =>
                 options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
+        if (StaticSettings.Config.UseAuth)
+        {
+            builder.Services.AddAuthentication(BasicAuthenticationDefaults.AuthenticationScheme)
+                .AddBasic(options =>
+                {
+                    options.Events = new BasicAuthenticationEvents
+                    {
+                        OnValidateCredentials = context =>
+                        {
+                            if (context.Username == StaticSettings.Config.AuthUsername && context.Password == StaticSettings.Config.AuthPassword)
+                            {
+                                context.Principal = new ClaimsPrincipal(new ClaimsIdentity([], context.Scheme.Name));
+                                context.Success();
+                            }
+
+                            return Task.CompletedTask;
+                        }
+                    };
+                });
+            builder.Services.AddAuthorization();
+        }
+
 # if !DEBUG
         builder.WebHost.ConfigureKestrel((context, serverOptions) =>
         {
@@ -151,6 +175,13 @@ public static class ServerManager
 # endif
 
         app = builder.Build();
+        if (StaticSettings.Config.UseAuth)
+        {
+            app.UseAuthentication();
+            app.UseAuthorization();
+            app.UseMiddleware<AuthenticationMiddleware>();
+        }
+
         app.Lifetime.ApplicationStarted.Register(() => { app.Services.GetService<StaticSettings>(); });
 
         if (onStart != null)

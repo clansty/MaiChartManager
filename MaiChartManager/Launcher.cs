@@ -21,6 +21,9 @@ public partial class Launcher : Form
 # endif
         checkBox1.Checked = StaticSettings.Config.Export;
         textBox1.Text = StaticSettings.Config.GamePath;
+        checkBoxLanAuth.Checked = StaticSettings.Config.UseAuth;
+        textBoxLanAuthUser.Text = StaticSettings.Config.AuthUsername;
+        textBoxLanAuthPass.Text = StaticSettings.Config.AuthPassword;
         CheckStartupStatus();
 # if DEBUG
         checkBox1.Checked = true;
@@ -110,6 +113,9 @@ public partial class Launcher : Form
             textBox1.Enabled = true;
             button1.Enabled = true;
             checkBox1.Enabled = true;
+            checkBoxLanAuth.Enabled = true;
+            textBoxLanAuthUser.Enabled = true;
+            textBoxLanAuthPass.Enabled = true;
             label1.Text = "";
             ServerManager.StopAsync();
             return;
@@ -142,12 +148,18 @@ public partial class Launcher : Form
 
 # if !DEBUG
         StaticSettings.Config.GamePath = textBox1.Text;
+        StaticSettings.Config.UseAuth = checkBoxLanAuth.Checked;
+        StaticSettings.Config.AuthUsername = textBoxLanAuthUser.Text;
+        StaticSettings.Config.AuthPassword = textBoxLanAuthPass.Text;
         File.WriteAllText(Path.Combine(StaticSettings.appData, "config.json"), JsonSerializer.Serialize(StaticSettings.Config));
 # endif
 
         textBox1.Enabled = false;
         button1.Enabled = false;
         checkBox1.Enabled = false;
+        checkBoxLanAuth.Enabled = false;
+        textBoxLanAuthUser.Enabled = false;
+        textBoxLanAuthPass.Enabled = false;
         button2.Text = "停止";
 
         ServerManager.StartApp(checkBox1.Checked, () =>
@@ -197,6 +209,11 @@ public partial class Launcher : Form
     {
         StaticSettings.Config.Export = checkBox1.Checked;
         checkBox_startup.Visible = checkBox1.Checked;
+        checkBoxLanAuth.Visible = checkBox1.Checked;
+        if (!checkBox1.Checked)
+        {
+            checkBoxLanAuth.Checked = false;
+        }
     }
 
     private async void checkBox_startup_Click(object sender, EventArgs e)
@@ -245,5 +262,11 @@ public partial class Launcher : Form
         StaticSettings.Config.OfflineKey = input;
         await SaveConfigFileAsync();
         await IapManager.Init();
+    }
+
+    private void checkBoxLanAuth_CheckedChanged(object sender, EventArgs e)
+    {
+        textBoxLanAuthUser.Visible = checkBoxLanAuth.Checked;
+        textBoxLanAuthPass.Visible = checkBoxLanAuth.Checked;
     }
 }
