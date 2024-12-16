@@ -11,7 +11,7 @@ namespace MaiChartManager;
 
 public static partial class Program
 {
-    public const string Version = "1.3.1";
+    public const string Version = "1.3.2";
     public static Browser? BrowserWin { get; set; }
 
     [LibraryImport("kernel32.dll", SetLastError = true)]
