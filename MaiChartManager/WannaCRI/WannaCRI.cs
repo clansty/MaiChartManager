@@ -11,7 +11,7 @@ public static class WannaCRI
         PythonEngine.PythonPath = $"{Path.Combine(StaticSettings.exeDir, "WannaCRI")};{Path.Combine(StaticSettings.exeDir, "Python")}";
     }
 
-    private static void RunWannaCRIWithArgs(string[] args, string workDir)
+    private static void RunWannaCRIWithArgs(params string[] args)
     {
         PythonEngine.Initialize();
         using (Py.GIL())
@@ -45,10 +45,6 @@ public static class WannaCRI
                 argv.Append(new PyString(arg));
             }
 
-            argv.Append(new PyString("--ffprobe"));
-            argv.Append(new PyString(Path.Combine(StaticSettings.exeDir, "ffprobe.exe")));
-            argv.Append(new PyString("--output"));
-            argv.Append(new PyString(workDir));
             sys.SetAttr("argv", argv);
 
             var wannacri = scope.Import("wannacri");
@@ -63,11 +59,11 @@ public static class WannaCRI
 
     public static void CreateUsm(string src, string key = defaultKey)
     {
-        RunWannaCRIWithArgs(["createusm", src, "--key", key], Path.GetDirectoryName(src));
+        RunWannaCRIWithArgs("createusm", src, "--key", key, "--ffprobe", Path.Combine(StaticSettings.exeDir, "ffprobe.exe"), "--output", Path.GetDirectoryName(src));
     }
 
-    public static void UnpackUsm(string src, string key = defaultKey)
+    public static void UnpackUsm(string src, string output, string key = defaultKey)
     {
-        RunWannaCRIWithArgs(["extractusm", src, "--key", key], Path.GetDirectoryName(src));
+        RunWannaCRIWithArgs("extractusm", src, "--key", key, "--output", output);
     }
 }
