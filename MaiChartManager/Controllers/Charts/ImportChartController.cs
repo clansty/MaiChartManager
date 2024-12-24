@@ -44,6 +44,9 @@ public partial class ImportChartController(StaticSettings settings, ILogger<Stat
     [GeneratedRegex(@",[csbx\.\{\}],")]
     private static partial Regex SimaiError4();
 
+    [GeneratedRegex(@"(\d)qx(\d)")]
+    private static partial Regex SimaiError5();
+
     private static string FixChartSimaiSharp(string chart)
     {
         chart = chart.Replace("\n", "").Replace("\r", "").Replace("{{", "{").Replace("}}", "}");
@@ -51,6 +54,7 @@ public partial class ImportChartController(StaticSettings settings, ILogger<Stat
         chart = SimaiError3().Replace(chart, "$1,(");
         chart = SimaiError2().Replace(chart, "[$1:$2]");
         chart = SimaiError4().Replace(chart, ",,");
+        chart = SimaiError5().Replace(chart, "$1xq$2");
         return chart;
     }
 
