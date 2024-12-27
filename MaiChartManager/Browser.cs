@@ -6,7 +6,7 @@ namespace MaiChartManager;
 public sealed partial class Browser : Form
 {
     private readonly Uri loopbackUrl;
-    private static ILogger logger = Program.GetLogger<Browser>();
+    private static ILogger logger = AppMain.GetLogger<Browser>();
 
     private static bool IsRunningAsUwp()
     {

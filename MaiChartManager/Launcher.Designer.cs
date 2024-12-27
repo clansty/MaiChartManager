@@ -275,8 +275,8 @@ partial class Launcher
         // 
         notifyIcon1.Icon = (Icon)resources.GetObject("notifyIcon1.Icon");
         notifyIcon1.Text = "MaiChartManager";
-        notifyIcon1.Click += notifyIcon1_Click;
-        notifyIcon1.DoubleClick += notifyIcon1_Click;
+        notifyIcon1.Click += ShowWindow;
+        notifyIcon1.DoubleClick += ShowWindow;
         // 
         // Launcher
         // 

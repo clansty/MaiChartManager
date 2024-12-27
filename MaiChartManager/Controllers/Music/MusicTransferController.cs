@@ -21,12 +21,12 @@ public class MusicTransferController(StaticSettings settings, ILogger<MusicTrans
     [Route("/MaiChartManagerServlet/[action]Api")]
     public void RequestCopyTo(RequestCopyToRequest request)
     {
-        if (Program.BrowserWin is null) return;
+        if (AppMain.BrowserWin is null) return;
         var dialog = new FolderBrowserDialog
         {
             Description = "请选择目标位置"
         };
-        if (Program.BrowserWin.Invoke(() => dialog.ShowDialog(Program.BrowserWin)) != DialogResult.OK) return;
+        if (AppMain.BrowserWin.Invoke(() => dialog.ShowDialog(AppMain.BrowserWin)) != DialogResult.OK) return;
         var dest = dialog.SelectedPath;
         logger.LogInformation("CopyTo: {dest}", dest);
 
@@ -41,7 +41,7 @@ public class MusicTransferController(StaticSettings settings, ILogger<MusicTrans
                 CancelMessage = "正在取消…",
                 HideTimeRemaining = true,
             };
-            progress.Start(Program.BrowserWin);
+            progress.Start(AppMain.BrowserWin);
             progress.UpdateProgress(0, (ulong)request.music.Length);
         }
 

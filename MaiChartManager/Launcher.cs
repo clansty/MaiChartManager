@@ -189,14 +189,14 @@ public partial class Launcher : Form
 
     private void label1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
     {
-        if (Program.BrowserWin is null || Program.BrowserWin.IsDisposed)
+        if (AppMain.BrowserWin is null || AppMain.BrowserWin.IsDisposed)
         {
-            Program.BrowserWin = new Browser(loopbackUrl);
-            Program.BrowserWin.Show();
+            AppMain.BrowserWin = new Browser(loopbackUrl);
+            AppMain.BrowserWin.Show();
         }
         else
         {
-            Program.BrowserWin.Activate();
+            AppMain.BrowserWin.Activate();
         }
     }
 
@@ -230,11 +230,13 @@ public partial class Launcher : Form
         }
     }
 
-    private void notifyIcon1_Click(object sender, EventArgs e)
+    public void ShowWindow(object sender = null, EventArgs e = null)
     {
         Visible = true;
         WindowState = FormWindowState.Normal;
         notifyIcon1.Visible = false;
+        Show();
+        Focus();
     }
 
     private static async Task SaveConfigFileAsync()

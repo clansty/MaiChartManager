@@ -55,13 +55,13 @@ public class AssetDirController(StaticSettings settings, ILogger<AssetDirControl
     [HttpPost]
     public void RequestLocalImportDir()
     {
-        if (Program.BrowserWin is null) return;
+        if (AppMain.BrowserWin is null) return;
         var dialog = new FolderBrowserDialog
         {
             Description = "请选择资源目录（OPT）的文件夹",
             ShowNewFolderButton = false
         };
-        if (Program.BrowserWin.Invoke(() => dialog.ShowDialog(Program.BrowserWin)) != DialogResult.OK) return;
+        if (AppMain.BrowserWin.Invoke(() => dialog.ShowDialog(AppMain.BrowserWin)) != DialogResult.OK) return;
         var src = dialog.SelectedPath;
         logger.LogInformation("LocalImportDir: {src}", src);
         if (src is null) return;
