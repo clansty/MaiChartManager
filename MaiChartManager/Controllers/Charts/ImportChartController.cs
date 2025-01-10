@@ -60,6 +60,7 @@ public partial class ImportChartController(StaticSettings settings, ILogger<Stat
 
     private MaiChart TryParseChartSimaiSharp(string chartText, int level, List<ImportChartMessage> errors)
     {
+        chartText = chartText.ReplaceLineEndings();
         try
         {
             return SimaiConvert.Deserialize(chartText);
@@ -85,6 +86,7 @@ public partial class ImportChartController(StaticSettings settings, ILogger<Stat
     [NonAction]
     private Chart? TryParseChart(string chartText, MaiChart? simaiSharpChart, int level, List<ImportChartMessage> errors)
     {
+        chartText = chartText.ReplaceLineEndings();
         try
         {
             return new SimaiParser().ChartOfToken(new SimaiTokenizer().TokensFromText(chartText));
