@@ -1312,6 +1312,20 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
+     * @tags Mod
+     * @name OpenJudgeAccuracyInfoPdf
+     * @request POST:/MaiChartManagerServlet/OpenJudgeAccuracyInfoPdfApi
+     */
+    OpenJudgeAccuracyInfoPdf: (params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/MaiChartManagerServlet/OpenJudgeAccuracyInfoPdfApi`,
+        method: "POST",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
      * @tags MovieConvert
      * @name SetMovie
      * @request PUT:/MaiChartManagerServlet/SetMovieApi/{assetDir}/{id}

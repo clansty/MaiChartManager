@@ -1,4 +1,5 @@
-﻿using System.IO.Compression;
+﻿using System.Diagnostics;
+using System.IO.Compression;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using AquaMai.Config.HeadlessLoader;
@@ -231,5 +232,15 @@ public class ModController(StaticSettings settings, ILogger<ModController> logge
         var dest = Path.Combine(StaticSettings.GamePath, @"Mods\AquaMai.dll");
         Directory.CreateDirectory(Path.GetDirectoryName(dest));
         System.IO.File.Copy(src, dest, true);
+    }
+
+    [HttpPost]
+    public void OpenJudgeAccuracyInfoPdf()
+    {
+        Process.Start(new ProcessStartInfo
+        {
+            FileName = Path.Combine(StaticSettings.exeDir, "Judge Accuracy Info 功能简介.pdf"),
+            UseShellExecute = true
+        });
     }
 }
