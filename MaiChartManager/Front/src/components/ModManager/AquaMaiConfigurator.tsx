@@ -1,13 +1,14 @@
-import {defineComponent, PropType, ref, computed} from 'vue';
-import {ConfigDto, Entry, IEntryState, ISectionState, Section} from "@/client/apiGen";
-import {NAnchor, NAnchorLink, NDivider, NFlex, NForm, NFormItem, NInput, NInputNumber, NScrollbar, NSelect, NSwitch} from "naive-ui";
-import {capitalCase} from "change-case";
+import { defineComponent, PropType, ref, computed } from 'vue';
+import { ConfigDto, Entry, IEntryState, ISectionState, Section } from "@/client/apiGen";
+import { NAnchor, NAnchorLink, NDivider, NFlex, NForm, NFormItem, NInput, NInputNumber, NScrollbar, NSelect, NSwitch } from "naive-ui";
+import { capitalCase } from "change-case";
 import comments from "./modComments.yaml";
 import _ from "lodash";
-import {KeyCodeName} from "@/components/ModManager/types/KeyCodeName";
+import { KeyCodeName } from "@/components/ModManager/types/KeyCodeName";
 import ProblemsDisplay from "@/components/ProblemsDisplay";
+import configSort from './configSort.yaml'
 
-const sectionPanelOverrides = import.meta.glob('./sectionPanelOverride/*/index.tsx', {eager: true})
+const sectionPanelOverrides = import.meta.glob('./sectionPanelOverride/*/index.tsx', { eager: true })
 const getSectionPanelOverride = (path: string) => {
   return (sectionPanelOverrides[`./sectionPanelOverride/${path}/index.tsx`] as any)?.default
 }
@@ -19,10 +20,10 @@ const getNameForPath = (path: string, name: string) => {
 
 const ConfigEntry = defineComponent({
   props: {
-    entry: {type: Object as PropType<Entry>, required: true},
-    entryState: {type: Object as PropType<IEntryState>, required: true},
+    entry: { type: Object as PropType<Entry>, required: true },
+    entryState: { type: Object as PropType<IEntryState>, required: true },
   },
-  setup(props, {emit}) {
+  setup(props, { emit }) {
     return () => <NFormItem label={getNameForPath(props.entry.path!, props.entry.name!)} labelPlacement="left" labelWidth="10em"
       // @ts-ignore
                             title={props.entry.path!}
@@ -48,7 +49,7 @@ const ConfigEntry = defineComponent({
               case 'System.Double':
                 return <NInputNumber value={props.entryState.value} onUpdateValue={v => props.entryState.value = typeof v === 'number' ? v : 0} placeholder="" step={.1}/>;
               case 'AquaMai.Config.Types.KeyCodeOrName':
-                return <NSelect v-model:value={props.entryState.value} options={Object.entries(KeyCodeName).map(([label, value]) => ({label, value}))}/>;
+                return <NSelect v-model:value={props.entryState.value} options={Object.entries(KeyCodeName).map(([label, value]) => ({ label, value }))}/>;
             }
             return `不支持的类型: ${props.entry.fieldType}`;
           })()}
@@ -62,14 +63,14 @@ const ConfigEntry = defineComponent({
 
 const ConfigSection = defineComponent({
   props: {
-    section: {type: Object as PropType<Section>, required: true},
-    entryStates: {type: Object as PropType<Record<string, IEntryState>>, required: true},
-    sectionState: {type: Object as PropType<ISectionState>, required: true},
+    section: { type: Object as PropType<Section>, required: true },
+    entryStates: { type: Object as PropType<Record<string, IEntryState>>, required: true },
+    sectionState: { type: Object as PropType<ISectionState>, required: true },
   },
-  setup(props, {emit}) {
+  setup(props, { emit }) {
     const CustomPanel = getSectionPanelOverride(props.section.path!);
 
-    return () => <NFlex vertical>
+    return () => <NFlex vertical class="p-1 border-transparent border-solid border-1px rd hover:border-yellow-5">
       {!props.section.attribute!.alwaysEnabled && <NFormItem label={getNameForPath(props.section.path!, props.section.path!.split('.').pop()!)} labelPlacement="left" labelWidth="10em"
         // @ts-ignore
                                                              title={props.section.path!}
@@ -96,14 +97,27 @@ const ConfigSection = defineComponent({
 
 export default defineComponent({
   props: {
-    config: {type: Object as PropType<ConfigDto>, required: true},
+    config: { type: Object as PropType<ConfigDto>, required: true },
+    useNewSort: { type: Boolean, default: false },
   },
-  setup(props, {emit}) {
-    const bigSections = computed(() => _.uniq(props.config.sections!.filter(it => !it.attribute?.exampleHidden).map(s => s.path?.split('.')[0])));
+  setup(props, { emit }) {
+    const bigSections = computed(() => {
+      if (props.useNewSort) {
+        return Object.keys(configSort)
+      }
+      return _.uniq(props.config.sections!.filter(it => !it.attribute?.exampleHidden).map(s => s.path?.split('.')[0]));
+    });
+
+    const otherSection = computed(() => {
+      if (!props.useNewSort) return [];
+      const knownSections = _.flatten(Object.values(configSort) as string[][]);
+      return props.config.sections?.filter(it => !knownSections.includes(it.path!) && !it.attribute!.exampleHidden) || [];
+    });
 
     return () => <div class="grid cols-[14em_auto]">
       <NAnchor type="block" offsetTarget="#scroll">
         {bigSections.value.map((key) => <NAnchorLink key={key} title={key} href={`#${key}`}/>)}
+        {otherSection.value.length > 0 && <NAnchorLink key="其他" title="其他" href="#其他"/>}
       </NAnchor>
       <NScrollbar class="max-h-60vh p-2"
         // @ts-ignore
@@ -111,12 +125,25 @@ export default defineComponent({
       >
         {bigSections.value.map((big) => <div id={big} key={big}>
           <NDivider titlePlacement="left" class="mt-2!">{big}</NDivider>
-          {props.config.sections?.filter(it => it.path!.split('.')[0] === big && !it.attribute!.exampleHidden).map((section) => {
+          {props.config.sections?.filter(it => {
+            if (props.useNewSort) {
+              return configSort[big!].includes(it.path!);
+            }
+            return it.path!.split('.')[0] === big && !it.attribute!.exampleHidden;
+          }).map((section) => {
             return <ConfigSection key={section.path!} section={section}
                                   entryStates={props.config.entryStates!}
                                   sectionState={props.config.sectionStates![section.path!]}/>;
           })}
         </div>)}
+        {otherSection.value.length > 0 &&
+          <div id={"其他"}>
+            <NDivider titlePlacement="left" class="mt-2!">其他</NDivider>
+            {otherSection.value.map((section) =>
+              <ConfigSection key="其他" section={section}
+                             entryStates={props.config.entryStates!}
+                             sectionState={props.config.sectionStates![section.path!]}/>)}
+          </div>}
       </NScrollbar>
     </div>;
   },

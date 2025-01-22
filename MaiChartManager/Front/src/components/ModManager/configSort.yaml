@@ -1,0 +1,86 @@
+常用:
+  - General
+  - GameSystem.SinglePlayer
+  - GameSystem.DisableTimeout
+  - UX.ImmediateSave
+  - GameSystem.QuickRetry
+  - UX.OneKeyEntryEnd
+  - UX.OneKeyRetrySkip
+  - GameSystem.TouchToButtonInput
+  - GameSystem.TestProof
+  - GameSettings.CreditConfig
+  - Fancy.GamePlay.ExtendNotesPool
+
+直读:
+  - GameSystem.Assets.LoadAssetBundleWithoutManifest
+  - GameSystem.Assets.LoadLocalImages
+  - GameSystem.Assets.MovieLoader
+
+全解和跳过:
+  - GameSystem.Unlock
+  - Tweaks.TimeSaving.SkipStartupWarning
+  - Tweaks.TimeSaving.EntryToMusicSelection
+  - Tweaks.TimeSaving.SkipStartupDelays
+  - Tweaks.TimeSaving.SkipEventInfo
+  - Tweaks.TimeSaving.SkipTrackStart
+  - Tweaks.TimeSaving.SkipGoodbyeScreen
+  - Tweaks.TimeSaving.IWontTapOrSlideVigorously
+  - UX.QuickEndPlay
+
+美化:
+  - GameSystem.Assets.Fonts
+  - Fancy.CustomLogo
+  - Fancy.CustomPlaceName
+  - Fancy.CustomSkins
+  - Fancy.CustomVersionString
+  - Fancy.RandomBgm
+  - Fancy.DemoMaster
+  - Fancy.GamePlay.AlignCircleSlideJudgeDisplay
+  - Fancy.GamePlay.SlideArrowAnimation
+  - Fancy.GamePlay.SlideFadeInTweak
+  - Fancy.GamePlay.SlideLayerReverse
+
+实用工具:
+  - UX.HideSelfMadeCharts
+  - UX.JudgeAccuracyInfo
+  - UX.PracticeMode
+  - UX.SelectionDetail
+  - Fancy.GamePlay.HideHanabi
+  - Fancy.GamePlay.JudgeDisplay4B
+  - Fancy.Triggers
+
+调试:
+  - GameSystem.Window
+  - GameSettings.JudgeAdjust
+  - Tweaks.IgnoreAimeServerError
+  - Utils.ShowNetErrorDetail
+  - Tweaks.LockFrameRate
+  - Tweaks.ResetTouch
+  - Tweaks.SkipUserVersionCheck
+  - Utils.DisplayFrameRate
+  - Utils.LogUserId
+  - Utils.LogNetworkRequests
+  - Utils.ShowErrorLog
+
+高级设置:
+  - Fancy.HideMask
+  - GameSettings.ForceAsServer
+  - GameSystem.RemoveEncryption
+  - GameSystem.Sound
+  - GameSystem.TouchPanelBaudRate
+  - GameSystem.TouchPanelBaudRate
+  - GameSystem.CustomCameraId
+  - UX.ServerAnnouncement
+
+键位和灵敏度:
+  - GameSystem.KeyMap
+  - GameSettings.TouchSensitivity
+
+过新过热:
+  - Fancy.CustomTrackStartDiff
+  - Fancy.GamePlay.BreakSlideJudgeBlink
+  - Fancy.GamePlay.CustomNoteTypes
+  - Fancy.GamePlay.DisableTrackStartTabs
+  - Fancy.GamePlay.FanJudgeFlip
+  - Fancy.GamePlay.RealisticRandomJudge
+  - Fancy.GamePlay.TrackStartProcessTweak

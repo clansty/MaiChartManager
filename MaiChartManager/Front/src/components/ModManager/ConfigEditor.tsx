@@ -1,9 +1,10 @@
 import { computed, defineComponent, onMounted, ref, watch } from "vue";
-import { NButton, NCheckbox, NFlex, NModal, useDialog } from "naive-ui";
+import { NButton, NCheckbox, NFlex, NModal, NSwitch, useDialog } from "naive-ui";
 import api from "@/client/api";
 import { globalCapture, modInfo, updateModInfo, updateMusicList, aquaMaiConfig as config } from "@/store/refs";
 import AquaMaiConfigurator from "./AquaMaiConfigurator";
 import { shouldShowUpdate } from "./shouldShowUpdateController";
+import { useStorage } from "@vueuse/core";
 
 export default defineComponent({
   props: {
@@ -27,6 +28,7 @@ export default defineComponent({
     const installingMelonLoader = ref(false)
     const installingAquaMai = ref(false)
     const showAquaMaiInstallDone = ref(false)
+    const useNewSort = useStorage('useNewSort', false)
 
     const updateAquaMaiConfig = async () => {
       try {
@@ -107,10 +109,9 @@ export default defineComponent({
     })
 
 
-
     return () => <NModal
       preset="card"
-      class="w-[min(90vw,90em)]"
+      class="w-[min(90vw,100em)]"
       title="Mod 管理"
       v-model:show={show.value}
     >
@@ -132,13 +133,15 @@ export default defineComponent({
           <span>{modInfo.value.aquaMaiVersion}</span>
           可安装:
           <span class={shouldShowUpdate.value ? "c-orange" : ""}>{modInfo.value.bundledAquaMaiVersion}</span>
+          <NSwitch v-model:value={useNewSort.value} class="m-l"/>
+          使用新的排序方式
         </NFlex>
         {props.badgeType && <NCheckbox v-model:checked={disableBadge.value}>隐藏按钮上的角标</NCheckbox>}
         {configReadErr.value ? <NFlex vertical justify="center" align="center" class="min-h-100">
           <div class="text-8">AquaMai 未安装或需要更新</div>
           <div class="c-gray-5 text-lg">{configReadErr.value}</div>
           <div class="c-gray-4 text-sm">{configReadErrTitle.value}</div>
-        </NFlex> : <AquaMaiConfigurator config={config.value!}/>}
+        </NFlex> : <AquaMaiConfigurator config={config.value!} useNewSort={useNewSort.value}/>}
       </NFlex>}
     </NModal>;
   }
