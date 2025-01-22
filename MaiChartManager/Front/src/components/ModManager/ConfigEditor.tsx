@@ -1,12 +1,9 @@
-import {computed, defineComponent, onMounted, ref, watch} from "vue";
-import {NAnchor, NAnchorLink, NButton, NCheckbox, NDivider, NFlex, NFormItem, NInput, NInputNumber, NModal, NScrollbar, NSelect, NSwitch, useDialog} from "naive-ui";
-import comments from './modComments.yaml';
+import { computed, defineComponent, onMounted, ref, watch } from "vue";
+import { NButton, NCheckbox, NFlex, NModal, useDialog } from "naive-ui";
 import api from "@/client/api";
-import {capitalCase, pascalCase} from "change-case";
-import ProblemsDisplay from "@/components/ProblemsDisplay";
-import {globalCapture, modInfo, updateModInfo, updateMusicList, aquaMaiConfig as config} from "@/store/refs";
-import {ConfigDto} from "@/client/apiGen";
-import AquaMaiConfigurator from "@/components/ModManager/AquaMaiConfigurator";
+import { globalCapture, modInfo, updateModInfo, updateMusicList, aquaMaiConfig as config } from "@/store/refs";
+import AquaMaiConfigurator from "./AquaMaiConfigurator";
+import { shouldShowUpdate } from "./shouldShowUpdateController";
 
 export default defineComponent({
   props: {
@@ -14,7 +11,7 @@ export default defineComponent({
     disableBadge: Boolean,
     badgeType: String,
   },
-  setup(props, {emit}) {
+  setup(props, { emit }) {
     const show = computed({
       get: () => props.show,
       set: (val) => emit('update:show', val)
@@ -110,6 +107,7 @@ export default defineComponent({
     })
 
 
+
     return () => <NModal
       preset="card"
       class="w-[min(90vw,90em)]"
@@ -124,7 +122,7 @@ export default defineComponent({
           <div class="w-8"/>
           AquaMai:
           {modInfo.value.aquaMaiInstalled ?
-            modInfo.value.aquaMaiVersion === modInfo.value.bundledAquaMaiVersion ? <span class="c-green-6">已安装</span> : <span class="c-orange">可更新</span> :
+            !shouldShowUpdate.value ? <span class="c-green-6">已安装</span> : <span class="c-orange">可更新</span> :
             <span class="c-red-6">未安装</span>}
           <NButton secondary loading={installingAquaMai.value} onClick={() => installAquaMai()}
                    type={showAquaMaiInstallDone.value ? 'success' : 'default'}>
@@ -133,7 +131,7 @@ export default defineComponent({
           已安装:
           <span>{modInfo.value.aquaMaiVersion}</span>
           可安装:
-          <span class={modInfo.value.aquaMaiVersion === modInfo.value.bundledAquaMaiVersion ? "" : "c-orange"}>{modInfo.value.bundledAquaMaiVersion}</span>
+          <span class={shouldShowUpdate.value ? "c-orange" : ""}>{modInfo.value.bundledAquaMaiVersion}</span>
         </NFlex>
         {props.badgeType && <NCheckbox v-model:checked={disableBadge.value}>隐藏按钮上的角标</NCheckbox>}
         {configReadErr.value ? <NFlex vertical justify="center" align="center" class="min-h-100">

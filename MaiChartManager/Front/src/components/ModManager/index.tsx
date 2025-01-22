@@ -6,6 +6,7 @@ import api from "@/client/api";
 import ConfigEditor from "@/components/ModManager/ConfigEditor";
 import { GameModInfo } from "@/client/apiGen";
 import { modInfo } from "@/store/refs";
+import { shouldShowUpdate } from "@/components/ModManager/shouldShowUpdateController";
 
 export default defineComponent({
   setup(props) {
@@ -23,7 +24,7 @@ export default defineComponent({
     const badgeType = computed(() => {
       if (!modInfo.value) return
       if (!modInfo.value.aquaMaiInstalled || !modInfo.value.melonLoaderInstalled) return 'error'
-      if (modInfo.value.aquaMaiVersion !== modInfo.value.bundledAquaMaiVersion) return 'warning'
+      if (shouldShowUpdate.value) return 'warning'
     })
 
     return () => <>
