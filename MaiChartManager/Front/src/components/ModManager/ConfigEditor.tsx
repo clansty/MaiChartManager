@@ -28,7 +28,7 @@ export default defineComponent({
     const installingMelonLoader = ref(false)
     const installingAquaMai = ref(false)
     const showAquaMaiInstallDone = ref(false)
-    const useNewSort = useStorage('useNewSort', false)
+    const useNewSort = useStorage('useNewSort', true)
 
     const updateAquaMaiConfig = async () => {
       try {

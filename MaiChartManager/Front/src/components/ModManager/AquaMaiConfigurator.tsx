@@ -7,6 +7,7 @@ import _ from "lodash";
 import { KeyCodeName } from "@/components/ModManager/types/KeyCodeName";
 import ProblemsDisplay from "@/components/ProblemsDisplay";
 import configSort from './configSort.yaml'
+import { useMagicKeys, whenever } from "@vueuse/core";
 
 const sectionPanelOverrides = import.meta.glob('./sectionPanelOverride/*/index.tsx', { eager: true })
 const getSectionPanelOverride = (path: string) => {
@@ -101,17 +102,41 @@ export default defineComponent({
     useNewSort: { type: Boolean, default: false },
   },
   setup(props, { emit }) {
+    const search = ref('');
+    const searchRef = ref();
+
+    const { ctrl_f } = useMagicKeys({
+      passive: false,
+      onEventFired(e) {
+        if (e.ctrlKey && e.key === 'f' && e.type === 'keydown')
+          e.preventDefault()
+      },
+    })
+    whenever(ctrl_f, () => searchRef.value?.select());
+
+    const filteredSections = computed(() => {
+      if (!search.value) return props.config.sections;
+      const s = search.value.toLowerCase();
+      return props.config.sections?.filter(it =>
+        it.path?.toLowerCase().includes(s) ||
+        it.attribute?.comment?.commentZh?.toLowerCase().includes(s) ||
+        it.attribute?.comment?.commentEn?.toLowerCase().includes(s) ||
+        it.entries?.some(entry => entry.name?.toLowerCase().includes(s) || entry.path?.toLowerCase().includes(s) ||
+          entry.attribute?.comment?.commentZh?.toLowerCase().includes(s) || entry.attribute?.comment?.commentEn?.toLowerCase().includes(s))
+      );
+    })
+
     const bigSections = computed(() => {
       if (props.useNewSort) {
-        return Object.keys(configSort)
+        return Object.keys(configSort).filter(it => filteredSections.value!.some(s => configSort[it].includes(s.path!)));
       }
-      return _.uniq(props.config.sections!.filter(it => !it.attribute?.exampleHidden).map(s => s.path?.split('.')[0]));
+      return _.uniq(filteredSections.value!.filter(it => !it.attribute?.exampleHidden).map(s => s.path?.split('.')[0]));
     });
 
     const otherSection = computed(() => {
       if (!props.useNewSort) return [];
       const knownSections = _.flatten(Object.values(configSort) as string[][]);
-      return props.config.sections?.filter(it => !knownSections.includes(it.path!) && !it.attribute!.exampleHidden) || [];
+      return filteredSections.value?.filter(it => !knownSections.includes(it.path!) && !it.attribute!.exampleHidden) || [];
     });
 
     return () => <div class="grid cols-[14em_auto]">
@@ -119,13 +144,14 @@ export default defineComponent({
         {bigSections.value.map((key) => <NAnchorLink key={key} title={key} href={`#${key}`}/>)}
         {otherSection.value.length > 0 && <NAnchorLink key="其他" title="其他" href="#其他"/>}
       </NAnchor>
-      <NScrollbar class="max-h-75vh p-2"
+      <NScrollbar class="h-75vh p-2 relative"
         // @ts-ignore
                   id="scroll"
       >
+        <NInput v-model:value={search.value} placeholder="搜索" size="small" clearable class="sticky top-0 z-200" ref={searchRef}/>
         {bigSections.value.map((big) => <div id={big} key={big}>
           <NDivider titlePlacement="left" class="mt-2!">{big}</NDivider>
-          {props.config.sections?.filter(it => {
+          {filteredSections.value?.filter(it => {
             if (props.useNewSort) {
               return configSort[big!].includes(it.path!);
             }
