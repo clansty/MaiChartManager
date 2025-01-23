@@ -6,6 +6,7 @@ using AquaMai.Config.HeadlessLoader;
 using AquaMai.Config.Interfaces;
 using MaiChartManager.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualBasic.FileIO;
 
 namespace MaiChartManager.Controllers;
 
@@ -29,12 +30,19 @@ public class ModController(StaticSettings settings, ILogger<ModController> logge
         return System.IO.File.Exists(AquaMaiDllInstalledPath);
     }
 
-    public record GameModInfo(bool MelonLoaderInstalled, bool AquaMaiInstalled, string AquaMaiVersion, string BundledAquaMaiVersion, bool IsJudgeDisplay4BInstalled);
+    public record GameModInfo(
+        bool MelonLoaderInstalled,
+        bool AquaMaiInstalled,
+        string AquaMaiVersion,
+        string BundledAquaMaiVersion,
+        bool IsJudgeDisplay4BInstalled,
+        bool IsHidConflictExist);
 
     private static string AquaMaiConfigPath => Path.Combine(StaticSettings.GamePath, "AquaMai.toml");
     private static string AquaMaiConfigBackupDirPath => Path.Combine(StaticSettings.GamePath, "AquaMai.toml.bak");
     private static string AquaMaiDllInstalledPath => Path.Combine(StaticSettings.GamePath, @"Mods\AquaMai.dll");
     private static string AquaMaiDllBuiltinPath => Path.Combine(StaticSettings.exeDir, "AquaMai.dll");
+    private static readonly string[] HidModPaths = [@"Mods\Mai2InputMod.dll", @"Mods\hid_input_lib.dll", "hid_input_lib.dll", "mai2io.dll"];
 
     [HttpGet]
     public GameModInfo GetGameModInfo()
@@ -43,12 +51,12 @@ public class ModController(StaticSettings settings, ILogger<ModController> logge
         var aquaMaiVersion = "N/A";
         if (aquaMaiInstalled)
         {
-            aquaMaiVersion = System.Diagnostics.FileVersionInfo.GetVersionInfo(AquaMaiDllInstalledPath).ProductVersion ?? "N/A";
+            aquaMaiVersion = FileVersionInfo.GetVersionInfo(AquaMaiDllInstalledPath).ProductVersion ?? "N/A";
         }
 
-        var aquaMaiBuiltinVersion = System.Diagnostics.FileVersionInfo.GetVersionInfo(AquaMaiDllBuiltinPath).ProductVersion;
+        var aquaMaiBuiltinVersion = FileVersionInfo.GetVersionInfo(AquaMaiDllBuiltinPath).ProductVersion;
 
-        return new GameModInfo(IsMelonInstalled(), aquaMaiInstalled, aquaMaiVersion, aquaMaiBuiltinVersion!, GetIsJudgeDisplay4BInstalled());
+        return new GameModInfo(IsMelonInstalled(), aquaMaiInstalled, aquaMaiVersion, aquaMaiBuiltinVersion!, GetIsJudgeDisplay4BInstalled(), GetIsHidConflictExist());
     }
 
     [NonAction]
@@ -58,6 +66,32 @@ public class ModController(StaticSettings settings, ILogger<ModController> logge
 
         var filesShouldBeInstalled = Directory.EnumerateFiles(judgeDisplay4BPath);
         return filesShouldBeInstalled.Select(file => Path.Combine(StaticSettings.SkinAssetsDir, Path.GetFileName(file))).All(System.IO.File.Exists);
+    }
+
+    [NonAction]
+    private static bool GetIsHidConflictExist()
+    {
+        foreach (var mod in HidModPaths)
+        {
+            if (System.IO.File.Exists(Path.Combine(StaticSettings.GamePath, mod)))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    [HttpPost]
+    public void DeleteHidConflict()
+    {
+        foreach (var mod in HidModPaths)
+        {
+            if (System.IO.File.Exists(Path.Combine(StaticSettings.GamePath, mod)))
+            {
+                FileSystem.DeleteFile(Path.Combine(StaticSettings.GamePath, mod), UIOption.OnlyErrorDialogs, RecycleOption.SendToRecycleBin);
+            }
+        }
     }
 
     [HttpPost]

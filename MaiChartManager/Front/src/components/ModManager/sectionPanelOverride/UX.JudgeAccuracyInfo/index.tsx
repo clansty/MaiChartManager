@@ -11,7 +11,7 @@ export default defineComponent({
   setup(props, { emit }) {
     return () => <NFlex align="center" class="m-l-35 translate-y--3">
       作者：Minepig
-      <NButton onClick={() => api.OpenJudgeAccuracyInfoPdf()}>查看说明文件</NButton>
+      <NButton secondary onClick={() => api.OpenJudgeAccuracyInfoPdf()}>查看说明文件</NButton>
     </NFlex>;
   },
 });

@@ -119,7 +119,7 @@ export default defineComponent({
         {bigSections.value.map((key) => <NAnchorLink key={key} title={key} href={`#${key}`}/>)}
         {otherSection.value.length > 0 && <NAnchorLink key="其他" title="其他" href="#其他"/>}
       </NAnchor>
-      <NScrollbar class="max-h-60vh p-2"
+      <NScrollbar class="max-h-75vh p-2"
         // @ts-ignore
                   id="scroll"
       >

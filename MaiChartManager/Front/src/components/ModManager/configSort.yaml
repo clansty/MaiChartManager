@@ -49,6 +49,12 @@
   - Fancy.GamePlay.JudgeDisplay4B
   - Fancy.Triggers
 
+键位和灵敏度:
+  - GameSystem.HidInput
+  - GameSystem.AdxHidInput
+  - GameSystem.KeyMap
+  - GameSettings.TouchSensitivity
+
 调试:
   - GameSystem.Window
   - GameSettings.JudgeAdjust
@@ -71,10 +77,6 @@
   - GameSystem.TouchPanelBaudRate
   - GameSystem.CustomCameraId
   - UX.ServerAnnouncement
-
-键位和灵敏度:
-  - GameSystem.KeyMap
-  - GameSettings.TouchSensitivity
 
 过新过热:
   - Fancy.CustomTrackStartDiff

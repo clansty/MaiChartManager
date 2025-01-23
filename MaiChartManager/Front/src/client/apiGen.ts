@@ -102,6 +102,7 @@ export interface GameModInfo {
   aquaMaiVersion?: string | null;
   bundledAquaMaiVersion?: string | null;
   isJudgeDisplay4BInstalled?: boolean;
+  isHidConflictExist?: boolean;
 }
 
 export interface GenreAddRequest {
@@ -1233,6 +1234,20 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         path: `/MaiChartManagerServlet/GetGameModInfoApi`,
         method: "GET",
         format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Mod
+     * @name DeleteHidConflict
+     * @request POST:/MaiChartManagerServlet/DeleteHidConflictApi
+     */
+    DeleteHidConflict: (params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/MaiChartManagerServlet/DeleteHidConflictApi`,
+        method: "POST",
         ...params,
       }),
 
