@@ -11,24 +11,9 @@ importers:
       '@fontsource/nerko-one':
         specifier: ^5.1.0
         version: 5.1.0
-      '@iconify-json/fluent':
-        specifier: ^1.2.2
-        version: 1.2.2
-      '@iconify-json/ic':
-        specifier: ^1.2.0
-        version: 1.2.0
-      '@iconify-json/material-symbols':
-        specifier: ^1.2.2
-        version: 1.2.2
-      '@iconify-json/mdi':
-        specifier: ^1.2.0
-        version: 1.2.0
-      '@iconify-json/ph':
-        specifier: ^1.2.0
-        version: 1.2.0
-      '@iconify-json/ri':
-        specifier: ^1.2.0
-        version: 1.2.0
+      '@iconify/json':
+        specifier: ^2.2.308
+        version: 2.2.308
       '@microsoft/fetch-event-source':
         specifier: ^2.0.1
         version: 2.0.1
@@ -635,23 +620,8 @@ packages:
   '@fontsource/nerko-one@5.1.0':
     resolution: {integrity: sha512-gjtge/eeVxWisONX4/0hbu+6Z9HZG5Gh9Psbpc7izjDNCLTWvN44PkXnS+ka/xpvr4kG1vTX7JvvDzPEmjHO9A==}
 
-  '@iconify-json/fluent@1.2.2':
-    resolution: {integrity: sha512-eYPjqGfTDno2VOyRWiEQkiNXb2RtjYsxfnzyEWWZYE9w35Svph4bPsZG3IXf7+D3r1mk9bYreX+h7Ywyy0L5RQ==}
-
-  '@iconify-json/ic@1.2.0':
-    resolution: {integrity: sha512-L4+m77xTQB08X3I+3xs1+IrvK+aNcuN/7ODu5aUPznHKLU+/8UYcsjUgNHze6vPOGPQ0AG+kCwvy91EYPXSRxw==}
-
-  '@iconify-json/material-symbols@1.2.2':
-    resolution: {integrity: sha512-IDVSCt44kaiKIT9C32t/KLOCk7wR7HbLTsVDHdT477dYyp13gsmH6ovd1zN+Ir3x/FPW07e17HJt6BVn0hw7/g==}
-
-  '@iconify-json/mdi@1.2.0':
-    resolution: {integrity: sha512-E9/3l5Syg3wfuarorFodhn4s8YorxhH3U3U20LaNBNiqw1kFNIDWhF6HymuzAD35k7RH0OBasJ+ZUyFtVVV6eg==}
-
-  '@iconify-json/ph@1.2.0':
-    resolution: {integrity: sha512-013eLpgTmX1lACOuDnkuhC7gRHyYj9w/j8SyDmlyUYvsKQrwdRsv1otcXtwH3DevuDAzSkreeeRsCeez+gTyVA==}
-
-  '@iconify-json/ri@1.2.0':
-    resolution: {integrity: sha512-br8It3uRHylNhEH72aU9VF6gIdL4BAi6JMdcxsCaVbAyWBJ0jd4RxfmsYnil6TmEfP5wxihiCKbtbQmIHZdqKg==}
+  '@iconify/json@2.2.308':
+    resolution: {integrity: sha512-tT+fOVu/cU9Q6GOZfFE+rcfrK4rqwM7ucn3PnTXG+bIcr9PmuvJExZ4oSXwdgPKLdjPqFnQFGgEvDtWFfJVP2g==}
 
   '@iconify/types@2.0.0':
     resolution: {integrity: sha512-+wluvCrRhXrhyOmRDJ3q8mux9JkKy5SJ/v8ol2tu4FVjyYvtEzkc/3pK15ET6RKg4b4w4BmTk1+gsCUhf21Ykg==}
@@ -2554,29 +2524,10 @@ snapshots:
 
   '@fontsource/nerko-one@5.1.0': {}
 
-  '@iconify-json/fluent@1.2.2':
+  '@iconify/json@2.2.308':
     dependencies:
       '@iconify/types': 2.0.0
-
-  '@iconify-json/ic@1.2.0':
-    dependencies:
-      '@iconify/types': 2.0.0
-
-  '@iconify-json/material-symbols@1.2.2':
-    dependencies:
-      '@iconify/types': 2.0.0
-
-  '@iconify-json/mdi@1.2.0':
-    dependencies:
-      '@iconify/types': 2.0.0
-
-  '@iconify-json/ph@1.2.0':
-    dependencies:
-      '@iconify/types': 2.0.0
-
-  '@iconify-json/ri@1.2.0':
-    dependencies:
-      '@iconify/types': 2.0.0
+      pathe: 1.1.2
 
   '@iconify/types@2.0.0': {}
 

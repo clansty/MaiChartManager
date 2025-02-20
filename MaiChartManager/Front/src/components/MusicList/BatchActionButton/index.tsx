@@ -25,7 +25,7 @@ export default defineComponent({
     }
 
     return () => <NButton secondary onClick={show}>
-      批量操作
+      批量操作与搜索
 
       <NModal
         preset="card"
@@ -37,7 +37,7 @@ export default defineComponent({
         closable={step.value !== STEP.ProgressDisplay}
         closeOnEsc={step.value !== STEP.ProgressDisplay}
       >
-        {step.value === STEP.Select && <MusicSelector v-model:selectedMusicIds={selectedMusic.value} continue={() => step.value = STEP.ChooseAction}/>}
+        {step.value === STEP.Select && <MusicSelector v-model:selectedMusicIds={selectedMusic.value} continue={() => step.value = STEP.ChooseAction} cancel={() => step.value = STEP.None}/>}
         {step.value === STEP.ChooseAction && <ChooseAction selectedMusic={selectedMusic.value} continue={(action: STEP) => step.value = action}/>}
         {step.value === STEP.EditProps && <EditProps selectedMusicIds={selectedMusic.value} closeModal={() => step.value = STEP.None}/>}
         {step.value === STEP.ProgressDisplay && <ProgressDisplay/>}
