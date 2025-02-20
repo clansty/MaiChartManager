@@ -2,7 +2,7 @@ import { defineComponent, onMounted } from 'vue';
 import { NFlex, NScrollbar, useDialog, useNotification } from "naive-ui";
 import MusicList from "@/components/MusicList";
 import GenreVersionManager from "@/components/GenreVersionManager";
-import { globalCapture, selectedADir, updateAddVersionList, updateAll, updateAssetDirs, updateGenreList, updateMusicList, updateVersion, version } from "@/store/refs";
+import { globalCapture, selectedADir, selectedMusic, updateAddVersionList, updateAll, updateAssetDirs, updateGenreList, updateMusicList, updateVersion, version } from "@/store/refs";
 import MusicEdit from "@/components/MusicEdit";
 import MusicSelectedTopRightToolbar from "@/components/MusicSelectedTopRightToolbar";
 import ModManager from "@/components/ModManager";
@@ -72,7 +72,7 @@ export default defineComponent({
 
             <div class="grow-1"/>
 
-            <CopyToButton/>
+            {!!selectedMusic.value && <CopyToButton/>}
             {selectedADir.value !== 'A000' && <>
                 <MusicSelectedTopRightToolbar/>
                 <ImportCreateChartButton/>
