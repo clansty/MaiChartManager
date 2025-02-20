@@ -11,6 +11,7 @@
   },
   "devDependencies": {
     "@fontsource/nerko-one": "^5.1.0",
+    "@gekichumai/dxdata": "https://gitpkg.now.sh/gekichumai/dxrating/packages/dxdata?2bf234befeca795cf5f78e59d42d911e5c4edf08",
     "@iconify/json": "^2.2.308",
     "@microsoft/fetch-event-source": "^2.0.1",
     "@modyfi/vite-plugin-yaml": "^1.1.0",
