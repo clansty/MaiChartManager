@@ -48,6 +48,7 @@ const ConfigEntry = defineComponent({
               case 'System.Byte':
                 return <NInputNumber value={props.entryState.value} onUpdateValue={v => props.entryState.value = typeof v === 'number' ? v : 0} placeholder="" precision={0} step={1} min={0} max={255}/>;
               case 'System.Double':
+              case 'System.Single':
                 return <NInputNumber value={props.entryState.value} onUpdateValue={v => props.entryState.value = typeof v === 'number' ? v : 0} placeholder="" step={.1}/>;
               case 'AquaMai.Config.Types.KeyCodeOrName':
                 return <NSelect v-model:value={props.entryState.value} options={Object.entries(KeyCodeName).map(([label, value]) => ({ label, value }))}/>;
