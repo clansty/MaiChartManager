@@ -31,9 +31,11 @@
   - GameSystem.Assets.Fonts
   - Fancy.CustomLogo
   - Fancy.CustomPlaceName
-  - Fancy.CustomSkins
   - Fancy.CustomVersionString
+  - Fancy.CustomCreditsString
   - Fancy.RandomBgm
+  - Fancy.CustomSkins
+  - Fancy.CustomButton
   - Fancy.DemoMaster
   - Fancy.GamePlay.AlignCircleSlideJudgeDisplay
   - Fancy.GamePlay.SlideArrowAnimation

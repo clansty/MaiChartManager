@@ -1,9 +1,10 @@
-import {computed, ref} from "vue";
+import { computed, ref } from "vue";
 import { AppVersionResult, ConfigDto, GameModInfo, GenreXml, GetAssetsDirsResult, MusicXmlWithABJacket, VersionXml } from "@/client/apiGen";
 import api from "@/client/api";
-import {captureException} from "@sentry/vue";
+import { captureException } from "@sentry/vue";
 import posthog from "posthog-js";
-import {useStorage} from "@vueuse/core";
+import { useStorage } from "@vueuse/core";
+import deniedOgg from "@/assets/Denied.ogg";
 
 export const error = ref();
 export const errorId = ref<string>();
@@ -37,6 +38,7 @@ export const globalCapture = async (err: any, context: string) => {
     errorId: errorId.value,
     message: error.value?.error?.message || error.value?.error?.toString() || error.value?.message || error.value?.toString(),
   })
+  new Audio(deniedOgg).play();
 }
 
 export const showNeedPurchaseDialog = ref(false);

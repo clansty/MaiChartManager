@@ -157,6 +157,9 @@ export default defineComponent({
               return configSort[big!].includes(it.path!);
             }
             return it.path!.split('.')[0] === big && !it.attribute!.exampleHidden;
+          }).sort((a, b) => {
+            if (!props.useNewSort) return 0;
+            return configSort[big!].indexOf(a.path!) - configSort[big!].indexOf(b.path!);
           }).map((section) => {
             return <ConfigSection key={section.path!} section={section}
                                   entryStates={props.config.entryStates!}
