@@ -1,4 +1,5 @@
 ﻿using System.Xml;
+using Microsoft.VisualBasic.FileIO;
 using Sitreamai.Models;
 
 namespace MaiChartManager.Models;
@@ -96,5 +97,30 @@ public class MusicXmlWithABJacket(string filePath, string gamePath, string asset
 
             return res;
         }
+    }
+
+    public void Delete()
+    {
+        if (HasJacket)
+        {
+            FileSystem.DeleteFile(JacketPath, UIOption.OnlyErrorDialogs, RecycleOption.SendToRecycleBin);
+        }
+
+        if (StaticSettings.AcbAwb.TryGetValue($"music{NonDxId:000000}.acb", out var acb))
+        {
+            FileSystem.DeleteFile(acb, UIOption.OnlyErrorDialogs, RecycleOption.SendToRecycleBin);
+        }
+
+        if (StaticSettings.AcbAwb.TryGetValue($"music{NonDxId:000000}.awb", out var awb))
+        {
+            FileSystem.DeleteFile(awb, UIOption.OnlyErrorDialogs, RecycleOption.SendToRecycleBin);
+        }
+
+        if (StaticSettings.MovieDataMap.TryGetValue(NonDxId, out var movieData))
+        {
+            FileSystem.DeleteFile(movieData, UIOption.OnlyErrorDialogs, RecycleOption.SendToRecycleBin);
+        }
+
+        FileSystem.DeleteDirectory(Path.GetDirectoryName(FilePath), UIOption.OnlyErrorDialogs, RecycleOption.SendToRecycleBin);
     }
 }

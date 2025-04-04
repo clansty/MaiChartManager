@@ -453,9 +453,4 @@ public class MusicXml
         Modified = false;
         xmlDoc.Save(FilePath);
     }
-
-    public void Delete()
-    {
-        FileSystem.DeleteDirectory(Path.GetDirectoryName(FilePath), UIOption.OnlyErrorDialogs, RecycleOption.SendToRecycleBin);
-    }
 }
