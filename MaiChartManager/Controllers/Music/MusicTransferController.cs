@@ -316,7 +316,7 @@ public class MusicTransferController(StaticSettings settings, ILogger<MusicTrans
         simaiFile.AppendLine($"&title={music.Name}");
         simaiFile.AppendLine($"&artist={music.Artist}");
         simaiFile.AppendLine($"&wholebpm={music.Bpm}");
-        simaiFile.AppendLine("&first=0");
+        simaiFile.AppendLine("&first=0.0333");
         simaiFile.AppendLine($"&shortid={music.Id}");
         simaiFile.AppendLine($"&genreid={music.GenreId}");
         var genre = StaticSettings.GenreList.FirstOrDefault(it => it.Id == music.GenreId);
@@ -357,7 +357,7 @@ public class MusicTransferController(StaticSettings settings, ILogger<MusicTrans
         soundStream.Close();
 
         // copy jacket
-        var img = ImageConvert.GetMusicJacketPngData(music);
+        var img = music.GetMusicJacketPngData();
         if (img is not null)
         {
             var imgExt = (Path.GetExtension(music.JacketPath ?? music.PseudoAssetBundleJacket ?? music.AssetBundleJacket) ?? ".png").ToLowerInvariant();
