@@ -17,7 +17,7 @@ enum STEP {
 
 export default defineComponent({
   props: {
-    song: {type: Object as PropType<MusicXmlWithABJacket>, required: true},
+    song: { type: Object as PropType<MusicXmlWithABJacket>, required: true },
   },
   setup(props) {
     const offset = ref(0)
@@ -29,12 +29,12 @@ export default defineComponent({
     const progress = ref(0)
     const message = useMessage();
     const noScale = ref(false)
-    const savedOptions = useStorage('importMusicOptions', defaultSavedOptions, undefined, {mergeDefaults: true});
+    const savedOptions = useStorage('importMusicOptions', defaultSavedOptions, undefined, { mergeDefaults: true });
 
     const shouldUseH264 = () => {
       if (savedOptions.value.movieCodec === MOVIE_CODEC.ForceH264) return true;
       if (savedOptions.value.movieCodec === MOVIE_CODEC.ForceVP9) return false;
-      return aquaMaiConfig.value?.sectionStates?.['GameSystem.Assets.MovieLoader']?.enabled && aquaMaiConfig.value?.entryStates?.['GameSystem.Assets.MovieLoader.LoadMp4Movie']?.value;
+      return (aquaMaiConfig.value?.sectionStates?.['GameSystem.Assets.MovieLoader']?.enabled && aquaMaiConfig.value?.entryStates?.['GameSystem.Assets.MovieLoader.LoadMp4Movie']?.value) || false;
     }
 
     const uploadMovie = (id: number, movie: File, offset: number) => new Promise<void>((resolve, reject) => {
@@ -103,7 +103,7 @@ export default defineComponent({
 
         if (file.name.endsWith('.dat')) {
           load.value = true;
-          await api.SetMovie(props.song.id!, selectedADir.value, {file, padding: 0});
+          await api.SetMovie(props.song.id!, selectedADir.value, { file, padding: 0 });
         } else if (version.value?.license !== LicenseStatus.Active) {
           showNeedPurchaseDialog.value = true;
         } else {
@@ -163,9 +163,9 @@ export default defineComponent({
             <NFlex vertical class="w-full">
               <NFlex class="h-34px" align="center">
                 <NSelect v-model:value={savedOptions.value.movieCodec} options={[
-                  {label: '优先 H264', value: MOVIE_CODEC.PreferH264},
-                  {label: '强制 H264', value: MOVIE_CODEC.ForceH264},
-                  {label: '强制 VP9 USM', value: MOVIE_CODEC.ForceVP9},
+                  { label: '优先 H264', value: MOVIE_CODEC.PreferH264 },
+                  { label: '强制 H264', value: MOVIE_CODEC.ForceH264 },
+                  { label: '强制 VP9 USM', value: MOVIE_CODEC.ForceVP9 },
                 ]}/>
               </NFlex>
             </NFlex>
