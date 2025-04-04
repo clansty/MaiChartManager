@@ -318,7 +318,17 @@ public class MusicTransferController(StaticSettings settings, ILogger<MusicTrans
         simaiFile.AppendLine($"&wholebpm={music.Bpm}");
         simaiFile.AppendLine("&first=0");
         simaiFile.AppendLine($"&shortid={music.Id}");
+        simaiFile.AppendLine($"&genreid={music.GenreId}");
+        var genre = StaticSettings.GenreList.FirstOrDefault(it => it.Id == music.GenreId);
+        if (genre is not null)
+            simaiFile.AppendLine($"&genre={genre.GenreName}");
+        simaiFile.AppendLine($"&versionid={music.AddVersionId}");
+        var version = StaticSettings.VersionList.FirstOrDefault(it => it.Id == music.AddVersionId);
+        if (version is not null)
+            simaiFile.AppendLine($"&version={version.GenreName}");
         simaiFile.AppendLine($"&chartconverter=MaiChartManager v{Application.ProductVersion}");
+        simaiFile.AppendLine("&ChartConvertTool=MaiChartManager");
+        simaiFile.AppendLine($"&ChartConvertToolVersion={Application.ProductVersion}");
 
         for (var i = 0; i < 5; i++)
         {
@@ -331,6 +341,7 @@ public class MusicTransferController(StaticSettings settings, ILogger<MusicTrans
             var ma2 = parser.ChartOfToken(ma2Content);
             var simai = ma2.Compose(ChartEnum.ChartVersion.SimaiFes);
             simaiFile.AppendLine($"&lv_{i + 2}={chart.Level}.{chart.LevelDecimal}");
+            simaiFile.AppendLine($"&des_{i + 2}={chart.Designer}");
             simaiFile.AppendLine($"&inote_{i + 2}={simai}");
         }
 
