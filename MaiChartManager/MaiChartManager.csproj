@@ -64,7 +64,7 @@
       <PackageReference Include="Sentry" Version="4.10.2" />
       <PackageReference Include="Sentry.AspNetCore" Version="4.10.2" />
         <PackageReference Include="SingleInstanceCore" Version="2.2.2"/>
-      <PackageReference Include="SixLabors.ImageSharp" Version="2.1.9" />
+        <PackageReference Include="SixLabors.ImageSharp" Version="2.1.10"/>
       <PackageReference Include="Standart.Hash.xxHash" Version="4.0.5" />
       <PackageReference Include="Swashbuckle.AspNetCore" Version="6.7.1" />
       <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.7.1" />

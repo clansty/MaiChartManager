@@ -28,7 +28,7 @@ public partial class Launcher : Form
 # if DEBUG
         checkBox1.Checked = true;
         StaticSettings.Config.Export = true;
-        textBox1.Text = @"E:\Maimai HDD\Package";
+        textBox1.Text = @"F:\Package";
         StartClicked(null, null);
         notifyIcon1.Visible = true;
         WindowState = FormWindowState.Minimized;

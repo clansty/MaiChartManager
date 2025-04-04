@@ -44,8 +44,21 @@ public class AppMain : ISingleInstance
 
             Directory.CreateDirectory(StaticSettings.appData);
             Directory.CreateDirectory(StaticSettings.tempPath);
-            if (File.Exists(Path.Combine(StaticSettings.appData, "config.json")))
-                StaticSettings.Config = JsonSerializer.Deserialize<Config>(File.ReadAllText(Path.Combine(StaticSettings.appData, "config.json")));
+            var cfgFilePath = Path.Combine(StaticSettings.appData, "config.json");
+            if (File.Exists(cfgFilePath))
+            {
+                try
+                {
+                    StaticSettings.Config = JsonSerializer.Deserialize<Config>(File.ReadAllText(Path.Combine(StaticSettings.appData, "config.json")));
+                }
+                catch (Exception e)
+                {
+                    SentrySdk.CaptureException(e, s => s.TransactionName = "读取配置文件");
+                    MessageBox.Show("看起来配置文件损坏了…已经重置配置文件", "不太对劲", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    File.Delete(cfgFilePath);
+                }
+            }
+
             IapManager.Init();
 
             _launcher = new Launcher();
