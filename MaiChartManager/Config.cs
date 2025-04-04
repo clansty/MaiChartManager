@@ -8,4 +8,5 @@ public class Config
     public bool UseAuth { get; set; } = false;
     public string AuthUsername { get; set; } = "";
     public string AuthPassword { get; set; } = "";
+    public HashSet<string> HistoryPath { get; set; } = [];
 }

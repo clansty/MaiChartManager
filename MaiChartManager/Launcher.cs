@@ -24,6 +24,7 @@ public partial class Launcher : Form
         checkBoxLanAuth.Checked = StaticSettings.Config.UseAuth;
         textBoxLanAuthUser.Text = StaticSettings.Config.AuthUsername;
         textBoxLanAuthPass.Text = StaticSettings.Config.AuthPassword;
+        textBox1.Items.AddRange(StaticSettings.Config.HistoryPath.ToArray());
         CheckStartupStatus();
 # if DEBUG
         checkBox1.Checked = true;
@@ -148,6 +149,7 @@ public partial class Launcher : Form
 
 # if !DEBUG
         StaticSettings.Config.GamePath = textBox1.Text;
+        StaticSettings.Config.HistoryPath.Add(textBox1.Text);
         StaticSettings.Config.UseAuth = checkBoxLanAuth.Checked;
         StaticSettings.Config.AuthUsername = textBoxLanAuthUser.Text;
         StaticSettings.Config.AuthPassword = textBoxLanAuthPass.Text;

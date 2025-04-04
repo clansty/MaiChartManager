@@ -35,7 +35,7 @@ partial class Launcher
         components = new Container();
         ComponentResourceManager resources = new ComponentResourceManager(typeof(Launcher));
         folderBrowserDialog1 = new FolderBrowserDialog();
-        textBox1 = new TextBox();
+        textBox1 = new ComboBox();
         button1 = new Button();
         button2 = new Button();
         button4 = new Button();
@@ -303,7 +303,7 @@ partial class Launcher
     #endregion
 
     private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
-    private System.Windows.Forms.TextBox textBox1;
+    private System.Windows.Forms.ComboBox textBox1;
     private Button button1;
     private Button button2;
     private Button button4;
