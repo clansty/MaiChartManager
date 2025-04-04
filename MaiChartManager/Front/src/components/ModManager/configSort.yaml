@@ -78,6 +78,7 @@
   - GameSystem.TouchPanelBaudRate
   - GameSystem.TouchPanelBaudRate
   - GameSystem.CustomCameraId
+  - GameSystem.OptionLoadFix
   - UX.ServerAnnouncement
 
 过新过热:
