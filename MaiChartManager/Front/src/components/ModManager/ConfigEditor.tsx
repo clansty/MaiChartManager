@@ -1,10 +1,11 @@
 import { computed, defineComponent, onMounted, ref, watch } from "vue";
-import { NButton, NCheckbox, NFlex, NModal, NSwitch, useDialog } from "naive-ui";
+import { NButton, NCheckbox, NFlex, NModal, NSwitch, useDialog, useMessage } from "naive-ui";
 import api from "@/client/api";
 import { globalCapture, modInfo, updateModInfo, updateMusicList, aquaMaiConfig as config } from "@/store/refs";
 import AquaMaiConfigurator from "./AquaMaiConfigurator";
 import { shouldShowUpdate } from "./shouldShowUpdateController";
 import { useStorage } from "@vueuse/core";
+import _ from "lodash";
 
 export default defineComponent({
   props: {
@@ -29,6 +30,7 @@ export default defineComponent({
     const installingAquaMai = ref(false)
     const showAquaMaiInstallDone = ref(false)
     const useNewSort = useStorage('useNewSort', true)
+    const message = useMessage();
 
     const updateAquaMaiConfig = async () => {
       try {
@@ -96,17 +98,26 @@ export default defineComponent({
       }
     }
 
-    watch(() => show.value, async (val) => {
-      if (configReadErr.value) return
-      if (!val && config.value) {
-        try {
-          await api.SetAquaMaiConfig(config.value)
-          await updateMusicList()
-        } catch (e) {
-          globalCapture(e, "保存 AquaMai 配置失败")
-        }
+    const saveImpl = async () => {
+      if (!config.value) return;
+      try {
+        await api.SetAquaMaiConfig(config.value)
+        await updateMusicList()
+        message.success("保存配置文件成功")
+      } catch (e) {
+        globalCapture(e, "保存 AquaMai 配置失败")
       }
-    })
+    }
+    const save = _.debounce(saveImpl, 2000);
+
+    watch(() => config.value, async (val) => {
+      if (configReadErr.value) return
+      if (!show.value) return
+      if (val) {
+        console.log('配置变动')
+        save()
+      }
+    }, { deep: true })
 
 
     return () => <NModal
