@@ -29,7 +29,7 @@ public partial class Launcher : Form
 # if DEBUG
         checkBox1.Checked = true;
         StaticSettings.Config.Export = true;
-        textBox1.Text = @"F:\Package";
+        textBox1.Text = @"M:\Package";
         StartClicked(null, null);
         notifyIcon1.Visible = true;
         WindowState = FormWindowState.Minimized;
