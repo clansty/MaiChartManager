@@ -149,7 +149,9 @@ export default defineComponent({
         // @ts-ignore
                   id="scroll"
       >
-        <NInput v-model:value={search.value} placeholder="搜索" size="small" clearable class="sticky top-0 z-200" ref={searchRef}/>
+        <div class={'px-2 sticky top-0 z-200'}>
+          <NInput v-model:value={search.value} placeholder="搜索" size="small" clearable ref={searchRef}/>
+        </div>
         {bigSections.value.map((big) => <div id={big} key={big}>
           <NDivider titlePlacement="left" class="mt-2!">{big}</NDivider>
           {filteredSections.value?.filter(it => {
