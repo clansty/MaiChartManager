@@ -47,7 +47,7 @@ public partial class StaticSettings
         }
     }
 
-    [GeneratedRegex(@"^A(\d{3})$")]
+    [GeneratedRegex(@"^[A-Z](\d{3})$")]
     public static partial Regex ADirRegex();
 
     public static string GamePath { get; set; }
