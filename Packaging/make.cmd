@@ -12,7 +12,7 @@ call pnpm build
 popd
 
 pushd ..
-msbuild /p:Configuration=Release /p:DeployOnBuild=true /p:PublishProfile=FolderProfile
+dotnet publish /p:Configuration=Release
 popd
 
 mkdir Pack

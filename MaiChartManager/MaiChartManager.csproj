@@ -12,6 +12,8 @@
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <PublishTrimmed>False</PublishTrimmed>
     <PublishAot>False</PublishAot>
+    <PublishReadyToRun>true</PublishReadyToRun>
+    <SelfContained>true</SelfContained>
     <StartupObject>MaiChartManager.Program</StartupObject>
     <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
     <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
@@ -19,6 +21,7 @@
     <NoWarn>NU1605</NoWarn>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Configurations>Debug;Release;Crack</Configurations>
+    <PublishDir>..\Packaging\Pack</PublishDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IsPublishable>False</IsPublishable>
@@ -35,8 +38,6 @@
     <PlatformTarget>x64</PlatformTarget>
     <DefineConstants>CRACK</DefineConstants>
     <Optimize Condition=" '$(Optimize)' == '' ">true</Optimize>
-    <PublishReadyToRun>true</PublishReadyToRun>
-    <SelfContained>true</SelfContained>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\AquaMai\AquaMai.Config.HeadlessLoader\AquaMai.Config.HeadlessLoader.csproj"/>
