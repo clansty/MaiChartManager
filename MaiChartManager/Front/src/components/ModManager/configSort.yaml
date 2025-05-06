@@ -20,6 +20,7 @@
   - GameSystem.Unlock
   - Tweaks.TimeSaving.SkipStartupWarning
   - Tweaks.TimeSaving.EntryToMusicSelection
+  - Tweaks.TimeSaving.ExitToSave
   - Tweaks.TimeSaving.SkipStartupDelays
   - Tweaks.TimeSaving.SkipEventInfo
   - Tweaks.TimeSaving.SkipTrackStart
@@ -47,6 +48,7 @@
   - UX.JudgeAccuracyInfo
   - UX.PracticeMode
   - UX.SelectionDetail
+  - UX.DisableLightOutGame
   - Fancy.GamePlay.HideHanabi
   - Fancy.GamePlay.JudgeDisplay4B
   - Fancy.Triggers
@@ -59,6 +61,7 @@
 
 调试:
   - GameSystem.Window
+  - Utils.AntiLag
   - GameSettings.JudgeAdjust
   - Tweaks.IgnoreAimeServerError
   - Utils.ShowNetErrorDetail
