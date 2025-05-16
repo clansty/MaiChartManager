@@ -8,7 +8,7 @@ namespace MaiChartManager.Controllers.Music;
 
 [ApiController]
 [Route("MaiChartManagerServlet/[action]Api/{assetDir}/{id:int}")]
-public class CueConvertController(StaticSettings settings, ILogger<MusicController> logger) : ControllerBase
+public class CueConvertController(StaticSettings settings, ILogger<CueConvertController> logger) : ControllerBase
 {
     [NoCache]
     [HttpGet]
