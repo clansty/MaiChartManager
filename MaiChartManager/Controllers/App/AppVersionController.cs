@@ -5,7 +5,7 @@ namespace MaiChartManager.Controllers.App;
 
 [ApiController]
 [Route("MaiChartManagerServlet/[action]Api")]
-public class AppVersionController(StaticSettings settings, ILogger<StaticSettings> logger) : ControllerBase
+public class AppVersionController(StaticSettings settings, ILogger<AppVersionController> logger) : ControllerBase
 {
     public record AppVersionResult(string Version, int GameVersion, IapManager.LicenseStatus License, MovieConvertController.HardwareAccelerationStatus HardwareAcceleration, string H264Encoder);
 

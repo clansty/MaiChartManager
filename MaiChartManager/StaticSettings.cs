@@ -19,6 +19,7 @@ public partial class StaticSettings
     public static string ImageAssetsDir => Path.Combine(GamePath, _imageAssetsDir);
     public static string MovieAssetsDir => Path.Combine(GamePath, _movieAssetsDir);
     public static string SkinAssetsDir => Path.Combine(GamePath, _skinAssetsDir);
+    public static List<string> StartupErrorsList { get; } = new();
 
     public static Config Config { get; set; } = new();
 
@@ -77,6 +78,7 @@ public partial class StaticSettings
 
     public void RescanAll()
     {
+        StartupErrorsList.Clear();
         UpdateAssetPathsFromAquaMaiConfig();
         ScanMusicList();
         ScanGenre();
@@ -97,8 +99,17 @@ public partial class StaticSettings
             foreach (var subDir in Directory.EnumerateDirectories(musicDir))
             {
                 if (!File.Exists(Path.Combine(subDir, "Music.xml"))) continue;
-                var musicXml = new MusicXmlWithABJacket(Path.Combine(subDir, "Music.xml"), GamePath, a);
-                _musicList.Add(musicXml);
+                try
+                {
+                    var musicXml = new MusicXmlWithABJacket(Path.Combine(subDir, "Music.xml"), GamePath, a);
+                    _musicList.Add(musicXml);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "加载乐曲数据 {SubDir} 失败", subDir);
+                    SentrySdk.CaptureException(ex);
+                    StartupErrorsList.Add($"加载乐曲数据 {subDir} 失败: {ex.Message}");
+                }
             }
         }
 
@@ -116,16 +127,25 @@ public partial class StaticSettings
             {
                 if (!File.Exists(Path.Combine(genreDir, "MusicGenre.xml"))) continue;
                 if (!Path.GetFileName(genreDir).StartsWith("musicgenre", StringComparison.InvariantCultureIgnoreCase)) continue;
-                var id = int.Parse(Path.GetFileName(genreDir).Substring("musicgenre".Length));
-                var genreXml = new GenreXml(id, a, GamePath);
-
-                var existed = GenreList.Find(it => it.Id == id);
-                if (existed != null)
+                try
                 {
-                    GenreList.Remove(existed);
-                }
+                    var id = int.Parse(Path.GetFileName(genreDir).Substring("musicgenre".Length));
+                    var genreXml = new GenreXml(id, a, GamePath);
 
-                GenreList.Add(genreXml);
+                    var existed = GenreList.Find(it => it.Id == id);
+                    if (existed != null)
+                    {
+                        GenreList.Remove(existed);
+                    }
+
+                    GenreList.Add(genreXml);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "加载分类数据 {SubDir} 失败", genreDir);
+                    SentrySdk.CaptureException(ex);
+                    StartupErrorsList.Add($"加载分类数据 {genreDir} 失败: {ex.Message}");
+                }
             }
         }
 
@@ -142,20 +162,29 @@ public partial class StaticSettings
             {
                 if (!File.Exists(Path.Combine(versionDir, "MusicVersion.xml"))) continue;
                 if (!Path.GetFileName(versionDir).StartsWith("musicversion", StringComparison.InvariantCultureIgnoreCase)) continue;
-                var id = int.Parse(Path.GetFileName(versionDir).Substring("musicversion".Length));
-                var versionXml = new VersionXml(id, a, GamePath);
-
-                var existed = VersionList.Find(it => it.Id == id);
-                if (existed != null)
+                try
                 {
-                    VersionList.Remove(existed);
-                }
+                    var id = int.Parse(Path.GetFileName(versionDir).Substring("musicversion".Length));
+                    var versionXml = new VersionXml(id, a, GamePath);
 
-                VersionList.Add(versionXml);
+                    var existed = VersionList.Find(it => it.Id == id);
+                    if (existed != null)
+                    {
+                        VersionList.Remove(existed);
+                    }
+
+                    VersionList.Add(versionXml);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "加载版本数据 {SubDir} 失败", versionDir);
+                    SentrySdk.CaptureException(ex);
+                    StartupErrorsList.Add($"加载版本数据 {versionDir} 失败: {ex.Message}");
+                }
             }
         }
 
-        _logger.LogInformation($"Scan version list, found {VersionList.Count} version.");
+        _logger.LogInformation("Scan version list, found {VersionListCount} version.", VersionList.Count);
     }
 
     public void ScanAssetBundles()
