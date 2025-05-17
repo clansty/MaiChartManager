@@ -645,6 +645,21 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
+     * @tags AppStatus
+     * @name GetAppStartupErrors
+     * @request GET:/MaiChartManagerServlet/GetAppStartupErrorsApi
+     */
+    GetAppStartupErrors: (params: RequestParams = {}) =>
+      this.request<string[], any>({
+        path: `/MaiChartManagerServlet/GetAppStartupErrorsApi`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
      * @tags AppVersion
      * @name GetAppVersion
      * @request GET:/MaiChartManagerServlet/GetAppVersionApi
@@ -1743,6 +1758,29 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         path: `/MaiChartManagerServlet/ExportAsMaidataApi/${assetDir}/${id}`,
         method: "GET",
         query: query,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags VrcProcess
+     * @name GenAllMusicPreviewMp3ForVrc
+     * @request POST:/MaiChartManagerServlet/GenAllMusicPreviewMp3ForVrcApi
+     */
+    GenAllMusicPreviewMp3ForVrc: (
+      data: {
+        targetDir?: string;
+        /** @format int32 */
+        maxConcurrency?: number;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<void, any>({
+        path: `/MaiChartManagerServlet/GenAllMusicPreviewMp3ForVrcApi`,
+        method: "POST",
+        body: data,
+        type: ContentType.FormData,
         ...params,
       }),
   };

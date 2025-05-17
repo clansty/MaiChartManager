@@ -3,6 +3,7 @@ import { dateZhCN, NConfigProvider, NDialogProvider, NMessageProvider, NNotifica
 import FeedbackErrorDialog from "@/components/FeedbackErrorDialog";
 import NeedPurchaseDialog from "@/components/NeedPurchaseDialog";
 import Index from "@/views/Index";
+import StartupErrorDialog from "@/components/StartupErrorDialog";
 
 export default defineComponent({
   render() {
@@ -14,6 +15,7 @@ export default defineComponent({
               <Index/>
               <FeedbackErrorDialog/>
               <NeedPurchaseDialog/>
+              <StartupErrorDialog/>
             </NMessageProvider>
           </NDialogProvider>
         </NNotificationProvider>
