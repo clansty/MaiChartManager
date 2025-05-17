@@ -210,7 +210,7 @@ public class MusicXml
         return new MusicXml(Path.Combine(path, "Music.xml"), gamePath);
     }
 
-    private XmlNode RootNode => xmlDoc.SelectSingleNode("/MusicData");
+    protected XmlNode RootNode => xmlDoc.SelectSingleNode("/MusicData");
 
     public int Id
     {
@@ -228,7 +228,7 @@ public class MusicXml
 
     public int NonDxId => Id % 10000;
 
-    public bool Modified { get; private set; }
+    public bool Modified { get; protected set; }
 
     // netOpenName 和 releaseTagName 游戏里看起来没有用到
 

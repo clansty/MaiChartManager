@@ -38,7 +38,7 @@ public class MusicXmlWithABJacket(string filePath, string gamePath, string asset
         }
     }
 
-    public bool isAcbAwbExist => StaticSettings.AcbAwb.ContainsKey($"music{NonDxId:000000}.acb") && StaticSettings.AcbAwb.ContainsKey($"music{NonDxId:000000}.awb");
+    public bool isAcbAwbExist => StaticSettings.AcbAwb.ContainsKey($"music{CueId:000000}.acb") && StaticSettings.AcbAwb.ContainsKey($"music{CueId:000000}.awb");
 
     public XmlDocument GetInnerXmlClone()
     {
@@ -58,6 +58,28 @@ public class MusicXmlWithABJacket(string filePath, string gamePath, string asset
         root.SelectSingleNode("subLockType").InnerText = "0";
 
         return clone;
+    }
+
+    public int CueId
+    {
+        get => int.Parse(RootNode.SelectSingleNode("cueName/id")?.InnerText);
+        set
+        {
+            Modified = true;
+            var nonDxId = value % 10000;
+            RootNode.SelectSingleNode("cueName/id").InnerText = nonDxId.ToString();
+        }
+    }
+
+    public int MovieId
+    {
+        get => int.Parse(RootNode.SelectSingleNode("movieName/id")?.InnerText);
+        set
+        {
+            Modified = true;
+            var nonDxId = value % 10000;
+            RootNode.SelectSingleNode("movieName/id").InnerText = nonDxId.ToString();
+        }
     }
 
     public List<string> Problems

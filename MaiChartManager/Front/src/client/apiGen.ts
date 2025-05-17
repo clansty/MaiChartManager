@@ -250,6 +250,10 @@ export interface MusicXmlWithABJacket {
   assetDir?: string | null;
   hasJacket?: boolean;
   isAcbAwbExist?: boolean;
+  /** @format int32 */
+  cueId?: number;
+  /** @format int32 */
+  movieId?: number;
   problems?: string[] | null;
 }
 

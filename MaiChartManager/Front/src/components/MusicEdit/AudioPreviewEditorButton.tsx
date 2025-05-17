@@ -4,6 +4,9 @@ import AudioPreviewEditor from "@/components/MusicEdit/AudioPreviewEditor";
 import { showNeedPurchaseDialog, version } from "@/store/refs";
 
 export default defineComponent({
+  props: {
+    disabled: Boolean,
+  },
   setup(props) {
     const show = ref(false)
 
@@ -15,7 +18,7 @@ export default defineComponent({
       show.value = true
     }
 
-    return () => <NButton secondary onClick={handleClick}>
+    return () => <NButton secondary onClick={handleClick} disabled={props.disabled}>
       编辑预览
 
       <NModal

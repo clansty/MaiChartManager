@@ -17,6 +17,7 @@ enum STEP {
 
 export default defineComponent({
   props: {
+    disabled: Boolean,
     song: { type: Object as PropType<MusicXmlWithABJacket>, required: true },
   },
   setup(props) {
@@ -131,7 +132,7 @@ export default defineComponent({
       }
     }
 
-    return () => <NButton secondary onClick={uploadFlow} loading={load.value}>
+    return () => <NButton secondary onClick={uploadFlow} loading={load.value} disabled={props.disabled}>
       设置 PV
 
       <NDrawer show={step.value === STEP.Select} height={250} placement="bottom">

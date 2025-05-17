@@ -1,6 +1,6 @@
 import { computed, defineComponent, PropType, ref } from "vue";
 import { HttpResponse, MusicXmlWithABJacket } from "@/client/apiGen";
-import { NButton, NDrawer, NDrawerContent, NFlex, NForm, NFormItem, NInputNumber, NModal, NRadio, useDialog } from "naive-ui";
+import { NButton, NDrawer, NDrawerContent, NFlex, NForm, NFormItem, NInputNumber, NModal, NPopover, NRadio, useDialog } from "naive-ui";
 import noJacket from "@/assets/noJacket.webp";
 import { globalCapture, selectedADir } from "@/store/refs";
 import FileTypeIcon from "@/components/FileTypeIcon";
@@ -12,11 +12,11 @@ import SetMovieButton from "@/components/MusicEdit/SetMovieButton";
 
 export default defineComponent({
   props: {
-    song: {type: Object as PropType<MusicXmlWithABJacket>, required: true},
+    song: { type: Object as PropType<MusicXmlWithABJacket>, required: true },
   },
   setup(props) {
     const updateTime = ref(0)
-    const url = computed(() => getUrl(`GetMusicWavApi/${selectedADir.value}/${props.song.id}?${updateTime.value}`))
+    const url = computed(() => getUrl(`GetMusicWavApi/${selectedADir.value}/${props.song.cueId}?${updateTime.value}`))
     const tipShow = ref(false)
     const tipSelectAwbShow = ref(false)
     const setOffsetShow = ref(false)
@@ -25,6 +25,8 @@ export default defineComponent({
     const okResolve = ref<Function>(() => {
     })
     const dialog = useDialog();
+    const cueIdNotMatch = computed(() => props.song.nonDxId !== props.song.cueId)
+    const movieIdNotMatch = computed(() => props.song.nonDxId !== props.song.movieId)
 
     const uploadFlow = async () => {
       tipShow.value = true
@@ -65,7 +67,7 @@ export default defineComponent({
 
           load.value = true;
           const awb = await fileHandle.getFile() as File;
-          res = await api.SetAudio(props.song.id!, selectedADir.value, {file, awb, padding: 0});
+          res = await api.SetAudio(props.song.id!, selectedADir.value, { file, awb, padding: 0 });
         } else {
           offset.value = 0;
           setOffsetShow.value = true;
@@ -74,11 +76,11 @@ export default defineComponent({
           });
           load.value = true;
           setOffsetShow.value = false;
-          res = await api.SetAudio(props.song.id!, selectedADir.value, {file, padding: offset.value});
+          res = await api.SetAudio(props.song.id!, selectedADir.value, { file, padding: offset.value });
         }
         if (res.error) {
           const error = res.error as any;
-          dialog.warning({title: '设置失败', content: error.message || error});
+          dialog.warning({ title: '设置失败', content: error.message || error });
           return;
         }
         updateTime.value = Date.now()
@@ -97,9 +99,24 @@ export default defineComponent({
 
     return () => <NFlex align="center">
       {props.song.isAcbAwbExist && <audio controls src={url.value} class="w-0 grow"/>}
-      {selectedADir.value !== 'A000' && <NButton secondary class={`${!props.song.isAcbAwbExist && "w-full"}`} onClick={uploadFlow} loading={load.value}>{props.song.isAcbAwbExist ? '替换' : '设置'}音频</NButton>}
-      {selectedADir.value !== 'A000' && props.song.isAcbAwbExist && <AudioPreviewEditorButton/>}
-      {selectedADir.value !== 'A000' && props.song.isAcbAwbExist && <SetMovieButton song={props.song}/>}
+      {selectedADir.value !== 'A000' &&
+        <NPopover trigger="hover" disabled={!cueIdNotMatch.value}>{{
+          trigger: () => <NButton secondary class={`${!props.song.isAcbAwbExist && "w-full"}`} onClick={uploadFlow} loading={load.value} disabled={cueIdNotMatch.value}>{props.song.isAcbAwbExist ? '替换' : '设置'}音频</NButton>,
+          default: () => '由于 XML 内自行设置了不同的 CueID，不支持在这里替换音频'
+        }}</NPopover>
+      }
+      {selectedADir.value !== 'A000' && props.song.isAcbAwbExist &&
+        <NPopover trigger="hover" disabled={!cueIdNotMatch.value}>{{
+          trigger: () => <AudioPreviewEditorButton disabled={cueIdNotMatch.value}/>,
+          default: () => '由于 XML 内自行设置了不同的 CueID，不支持在这里修改设置'
+        }}</NPopover>
+      }
+      {selectedADir.value !== 'A000' && props.song.isAcbAwbExist &&
+        <NPopover trigger="hover" disabled={!movieIdNotMatch.value}>{{
+          trigger: () => <SetMovieButton song={props.song} disabled={movieIdNotMatch.value}/>,
+          default: () => '由于 XML 内自行设置了不同的 MovieID，不支持在这里替换 PV'
+        }}</NPopover>
+      }
 
       {/* 打开文件对话框一般在左上角，所以在下边显示一个 Drawer */}
       <NDrawer v-model:show={tipShow.value} height={200} placement="bottom">
