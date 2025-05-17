@@ -19,7 +19,7 @@ export default defineComponent({
 
     return () => <NModal
       preset="card"
-      class="w-[min(50vw,60em)] bg-red-1!"
+      class="w-[min(50vw,60em)] bg-#FCEEEE!"
       title="启动过程中发生错误"
       v-model:show={show.value}
     >
