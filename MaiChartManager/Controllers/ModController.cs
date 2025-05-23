@@ -19,9 +19,8 @@ public class ModController(StaticSettings settings, ILogger<ModController> logge
     [HttpGet]
     public bool IsMelonInstalled()
     {
-        return System.IO.File.Exists(Path.Combine(StaticSettings.GamePath, "dobby.dll"))
-               && System.IO.File.Exists(Path.Combine(StaticSettings.GamePath, "version.dll"))
-               && Directory.Exists(Path.Combine(StaticSettings.GamePath, "MelonLoader"));
+        return System.IO.File.Exists(Path.Combine(StaticSettings.GamePath, "version.dll"))
+            && Directory.Exists(Path.Combine(StaticSettings.GamePath, "MelonLoader"));
     }
 
     [HttpGet]
@@ -36,7 +35,8 @@ public class ModController(StaticSettings settings, ILogger<ModController> logge
         string AquaMaiVersion,
         string BundledAquaMaiVersion,
         bool IsJudgeDisplay4BInstalled,
-        bool IsHidConflictExist);
+        bool IsHidConflictExist
+    );
 
     private static string AquaMaiConfigPath => Path.Combine(StaticSettings.GamePath, "AquaMai.toml");
     private static string AquaMaiConfigBackupDirPath => Path.Combine(StaticSettings.GamePath, "AquaMai.toml.bak");
@@ -209,7 +209,8 @@ public class ModController(StaticSettings settings, ILogger<ModController> logge
                 var newEntryValue = newEntryState.Value.Deserialize(entry.Field.FieldType, jsonOptions);
                 if (!oldEntryState.Value.Equals(newEntryValue))
                 {
-                    logger.LogInformation("Not same: {Path}, {type1}, {newEntryValue}, {type2}, {oldEntryState}", entry.Path, newEntryValue?.GetType(), newEntryValue, oldEntryState.Value?.GetType(), oldEntryState.Value);
+                    logger.LogInformation("Not same: {Path}, {type1}, {newEntryValue}, {type2}, {oldEntryState}", entry.Path, newEntryValue?.GetType(), newEntryValue, oldEntryState.Value?.GetType(),
+                        oldEntryState.Value);
                     configEdit.SetEntryValue(entry, newEntryValue);
                 }
                 else if (!newEntryState.IsDefault)
