@@ -7,6 +7,8 @@ using AquaMai.Config.Interfaces;
 using MaiChartManager.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualBasic.FileIO;
+using Mono.Cecil;
+using YamlDotNet.Serialization;
 
 namespace MaiChartManager.Controllers;
 
@@ -157,6 +159,19 @@ public class ModController(StaticSettings settings, ILogger<ModController> logge
     [HttpGet]
     public AquaMaiConfigDto.ConfigDto GetAquaMaiConfig()
     {
+        Dictionary<string, string[]>? configSort = null;
+        using (var stream = new FileStream(AquaMaiDllInstalledPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+        {
+            var asm = ModuleDefinition.ReadModule(stream);
+            var configSortRes = asm.Resources.FirstOrDefault(it => it is EmbeddedResource { Name: "configSort.yaml.compressed" } or EmbeddedResource { Name: "configSort.yaml" });
+            if (configSortRes != null)
+            {
+                var (name, res) = ResourceLoader.LoadResource(configSortRes);
+                var deserializer = new DeserializerBuilder().Build();
+                var yaml = new StreamReader(res).ReadToEnd();
+                configSort = deserializer.Deserialize<Dictionary<string, string[]>>(yaml);
+            }
+        }
         var config = GetCurrentAquaMaiConfig();
         // 未解之谜
         // logger.LogInformation("{}", lockCredits.GetType());
@@ -177,7 +192,8 @@ public class ModController(StaticSettings settings, ILogger<ModController> logge
                 return new AquaMaiConfigDto.Section(section.Path, entries, section.Attribute);
             }),
             config.ReflectionManager.Sections.ToDictionary(section => section.Path, section => config.GetSectionState(section)),
-            config.ReflectionManager.Entries.ToDictionary(entry => entry.Path, entry => config.GetEntryState(entry))
+            config.ReflectionManager.Entries.ToDictionary(entry => entry.Path, entry => config.GetEntryState(entry)),
+            configSort
         );
     }
 

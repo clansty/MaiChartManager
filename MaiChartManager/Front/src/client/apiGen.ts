@@ -70,6 +70,7 @@ export interface ConfigDto {
   sections?: Section[] | null;
   sectionStates?: Record<string, ISectionState>;
   entryStates?: Record<string, IEntryState>;
+  configSort?: Record<string, string[]>;
 }
 
 export interface ConfigSaveDto {

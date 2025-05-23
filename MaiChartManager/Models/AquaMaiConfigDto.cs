@@ -9,7 +9,12 @@ public static class AquaMaiConfigDto
 
     public record Section(string Path, IEnumerable<Entry> Entries, IConfigSectionAttribute Attribute);
 
-    public record ConfigDto(IEnumerable<Section> Sections, Dictionary<string, IConfig.ISectionState> SectionStates, Dictionary<string, IConfig.IEntryState> EntryStates);
+    public record ConfigDto(
+        IEnumerable<Section> Sections,
+        Dictionary<string, IConfig.ISectionState> SectionStates,
+        Dictionary<string, IConfig.IEntryState> EntryStates,
+        Dictionary<string, string[]>? ConfigSort
+    );
 
     public record SectionSaveDto : IConfig.ISectionState
     {

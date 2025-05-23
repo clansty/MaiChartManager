@@ -6,7 +6,7 @@ import comments from "./modComments.yaml";
 import _ from "lodash";
 import { KeyCodeName } from "@/components/ModManager/types/KeyCodeName";
 import ProblemsDisplay from "@/components/ProblemsDisplay";
-import configSort from './configSort.yaml'
+import configSortStub from './configSort.yaml'
 import { useMagicKeys, whenever } from "@vueuse/core";
 
 const sectionPanelOverrides = import.meta.glob('./sectionPanelOverride/*/index.tsx', { eager: true })
@@ -105,6 +105,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const search = ref('');
     const searchRef = ref();
+    const configSort = computed(() => props.config?.configSort || configSortStub)
 
     const { ctrl_f } = useMagicKeys({
       passive: false,
@@ -129,14 +130,14 @@ export default defineComponent({
 
     const bigSections = computed(() => {
       if (props.useNewSort) {
-        return Object.keys(configSort).filter(it => filteredSections.value!.some(s => configSort[it].includes(s.path!)));
+        return Object.keys(configSort.value).filter(it => filteredSections.value!.some(s => configSort.value[it].includes(s.path!)));
       }
       return _.uniq(filteredSections.value!.filter(it => !it.attribute?.exampleHidden).map(s => s.path?.split('.')[0]));
     });
 
     const otherSection = computed(() => {
       if (!props.useNewSort) return [];
-      const knownSections = _.flatten(Object.values(configSort) as string[][]);
+      const knownSections = _.flatten(Object.values(configSort.value) as string[][]);
       return filteredSections.value?.filter(it => !knownSections.includes(it.path!) && !it.attribute!.exampleHidden) || [];
     });
 
@@ -156,12 +157,12 @@ export default defineComponent({
           <NDivider titlePlacement="left" class="mt-2!">{big}</NDivider>
           {filteredSections.value?.filter(it => {
             if (props.useNewSort) {
-              return configSort[big!].includes(it.path!);
+              return configSort.value[big!].includes(it.path!);
             }
             return it.path!.split('.')[0] === big && !it.attribute!.exampleHidden;
           }).sort((a, b) => {
             if (!props.useNewSort) return 0;
-            return configSort[big!].indexOf(a.path!) - configSort[big!].indexOf(b.path!);
+            return configSort.value[big!].indexOf(a.path!) - configSort.value[big!].indexOf(b.path!);
           }).map((section) => {
             return <ConfigSection key={section.path!} section={section}
                                   entryStates={props.config.entryStates!}
