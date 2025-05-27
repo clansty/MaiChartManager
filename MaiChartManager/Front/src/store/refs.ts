@@ -1,6 +1,6 @@
 import { computed, ref } from "vue";
 import { AppVersionResult, ConfigDto, GameModInfo, GenreXml, GetAssetsDirsResult, MusicXmlWithABJacket, VersionXml } from "@/client/apiGen";
-import api from "@/client/api";
+import api, { aquaMaiVersionConfig } from "@/client/api";
 import { captureException } from "@sentry/vue";
 import posthog from "posthog-js";
 import { useStorage } from "@vueuse/core";
@@ -56,6 +56,9 @@ export const musicList = computed(() => musicListAll.value.filter(m => m.assetDi
 export const selectedMusic = computed(() => musicList.value.find(m => m.id === selectMusicId.value));
 
 export const aquaMaiConfig = ref<ConfigDto>()
+export const modUpdateInfo = ref<Awaited<ReturnType<typeof aquaMaiVersionConfig.getGetConfig>>['data']>([{
+  type: 'builtin',
+}])
 
 export const updateGenreList = async () => {
   const response = await api.GetAllGenres();
@@ -83,6 +86,20 @@ export const updateModInfo = async () => {
   modInfo.value = (await api.GetGameModInfo()).data;
 }
 
+export const updateModUpdateInfo = async () => {
+  try {
+    const ret = await aquaMaiVersionConfig.getGetConfig();
+    if (ret.error) {
+      console.error('Failed to get mod update info:', ret.error);
+      return;
+    }
+    modUpdateInfo.value = ret.data;
+  } catch (e) {
+    console.error('Failed to get mod update info:', e);
+  }
+}
+
+
 export const updateAll = async () => Promise.all([
   updateGenreList(),
   updateAddVersionList(),
@@ -90,4 +107,5 @@ export const updateAll = async () => Promise.all([
   updateVersion(),
   updateMusicList(),
   updateModInfo(),
+  updateModUpdateInfo(),
 ])

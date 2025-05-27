@@ -1,4 +1,5 @@
 import { Api } from "@/client/apiGen";
+import { Api as AquaMaiVersionConfigApi } from "@/client/aquaMaiVersionConfigApiGen";
 
 declare global {
   const backendUrl: string | undefined;
@@ -13,6 +14,15 @@ export default (new Api({
     },
   },
 })).maiChartManagerServlet
+
+export const aquaMaiVersionConfig = new AquaMaiVersionConfigApi({
+  baseUrl: 'https://aquamai-version-config.init.ink',
+  baseApiParams: {
+    headers: {
+      accept: 'application/json',
+    },
+  },
+}).api
 
 export const getUrl = (suffix: string) => {
   // @ts-ignore

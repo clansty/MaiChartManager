@@ -207,6 +207,12 @@ export interface ImportChartResult {
   fatal?: boolean;
 }
 
+export interface InstallAquaMaiOnlineDto {
+  url?: string | null;
+  type?: string | null;
+  sign?: string | null;
+}
+
 export enum LicenseStatus {
   Pending = "Pending",
   Active = "Active",
@@ -1355,6 +1361,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       this.request<void, any>({
         path: `/MaiChartManagerServlet/OpenJudgeAccuracyInfoPdfApi`,
         method: "POST",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Mod
+     * @name InstallAquaMaiOnline
+     * @request POST:/MaiChartManagerServlet/InstallAquaMaiOnlineApi
+     */
+    InstallAquaMaiOnline: (data: InstallAquaMaiOnlineDto, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/MaiChartManagerServlet/InstallAquaMaiOnlineApi`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
         ...params,
       }),
 

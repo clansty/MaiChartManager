@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.IO.Compression;
+using System.Security.Cryptography;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using AquaMai.Config.HeadlessLoader;
@@ -282,7 +283,7 @@ public class ModController(StaticSettings settings, ILogger<ModController> logge
         var src = Path.Combine(StaticSettings.exeDir, "AquaMai.dll");
         var dest = Path.Combine(StaticSettings.GamePath, @"Mods\AquaMai.dll");
         Directory.CreateDirectory(Path.GetDirectoryName(dest));
-        System.IO.File.Copy(src, dest, true);
+        FileSystem.CopyFile(src, dest, true);
     }
 
     [HttpPost]
@@ -293,5 +294,48 @@ public class ModController(StaticSettings settings, ILogger<ModController> logge
             FileName = Path.Combine(StaticSettings.exeDir, "Judge Accuracy Info 功能简介.pdf"),
             UseShellExecute = true
         });
+    }
+
+    private const string CI_KEY =
+        "MIGbMBAGByqGSM49AgEGBSuBBAAjA4GGAAQBmXJFYcg9YMi5i7tcPxc29Lxb/8OwGBUA5zi0cN4Apvp/J+zBaeY7EB9clDcRh8sjXRgSc7/JXYrUn8LDPHoCuuMB2W6HAxV+NtQamITaUNJD89LM0NpubbTUeKYjUThXpr/otDWq8kk5hvwkk62ByqG/2EXnH6WhlrI81I9H4l5adi4=";
+
+    private const string RELEASE_KEY =
+        "MIGbMBAGByqGSM49AgEGBSuBBAAjA4GGAAQBysJuWwvK1gK0Da9fnQgaiJpXH495QGEdGW/l3fj9g5X9v7TZCBPetUM7zDbMyMxLL+G4R1KQYvxcfKyvJz0h/woBkQ0nznNTCrkdBiB0xsNQrCBf8DDAJVw9w8X01rQeSxcnOZi2KBzixeMZZEqWnGtU/f3kDThWmRPaZ8Ptz8KynUU=";
+
+    [NonAction]
+    private static bool VerifyBinary(byte[] data, string sign, string key)
+    {
+        byte[] signature = Convert.FromBase64String(sign);
+        byte[] publicKey = Convert.FromBase64String(key);
+
+        using var ecdsa = ECDsa.Create();
+        ecdsa.ImportSubjectPublicKeyInfo(publicKey, out _);
+        return ecdsa.VerifyData(data, signature, HashAlgorithmName.SHA256, DSASignatureFormat.Rfc3279DerSequence);
+    }
+
+    public record InstallAquaMaiOnlineDto(string Url, string Type, string Sign);
+
+    [HttpPost]
+    public async Task InstallAquaMaiOnline(InstallAquaMaiOnlineDto req)
+    {
+        var key = req.Type switch
+        {
+            "ci" => CI_KEY,
+            "release" => RELEASE_KEY,
+            _ => throw new ArgumentException("Invalid type", nameof(req.Type)),
+        };
+        // Download from url
+        using var client = new HttpClient();
+        var data = await client.GetByteArrayAsync(req.Url);
+
+        if (!VerifyBinary(data, req.Sign, key))
+        {
+            throw new InvalidOperationException("Invalid signature");
+        }
+
+        // Save to Mods folder
+        var dest = Path.Combine(StaticSettings.GamePath, @"Mods\AquaMai.dll");
+        Directory.CreateDirectory(Path.GetDirectoryName(dest));
+        await System.IO.File.WriteAllBytesAsync(dest, data);
     }
 }

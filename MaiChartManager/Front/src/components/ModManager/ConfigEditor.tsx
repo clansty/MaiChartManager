@@ -1,11 +1,12 @@
 import { computed, defineComponent, onMounted, ref, watch } from "vue";
 import { NButton, NCheckbox, NFlex, NModal, NSwitch, useDialog, useMessage } from "naive-ui";
 import api from "@/client/api";
-import { globalCapture, modInfo, updateModInfo, updateMusicList, aquaMaiConfig as config } from "@/store/refs";
+import { globalCapture, modInfo, updateModInfo, updateMusicList, aquaMaiConfig as config, modUpdateInfo } from "@/store/refs";
 import AquaMaiConfigurator from "./AquaMaiConfigurator";
 import { shouldShowUpdate } from "./shouldShowUpdateController";
 import { useStorage } from "@vueuse/core";
 import _ from "lodash";
+import ModInstallDropdown from "@/components/ModManager/ModInstallDropdown";
 
 export default defineComponent({
   props: {
@@ -27,10 +28,18 @@ export default defineComponent({
     const configReadErrTitle = ref('')
     const dialog = useDialog()
     const installingMelonLoader = ref(false)
-    const installingAquaMai = ref(false)
-    const showAquaMaiInstallDone = ref(false)
     const useNewSort = useStorage('useNewSort', true)
     const message = useMessage();
+    const latestAquaMaiVersion = computed(() => {
+      const defaultVersionInfo =
+        modUpdateInfo.value?.find(it => it.default) ||
+        modUpdateInfo.value?.[0] || { type: 'builtin' };
+      let latestVersion = defaultVersionInfo.type === "builtin" ? modInfo.value!.bundledAquaMaiVersion! : defaultVersionInfo.version!;
+      if (latestVersion.startsWith('v')) {
+        latestVersion = latestVersion.substring(1);
+      }
+      return latestVersion;
+    })
 
     const updateAquaMaiConfig = async () => {
       try {
@@ -82,22 +91,6 @@ export default defineComponent({
       }
     }
 
-    const installAquaMai = async () => {
-      try {
-        // 但是你根本看不到这个加载图标，因为太快了
-        installingAquaMai.value = true
-        await api.InstallAquaMai()
-        await updateModInfo()
-        await updateAquaMaiConfig()
-        showAquaMaiInstallDone.value = true
-        setTimeout(() => showAquaMaiInstallDone.value = false, 3000);
-      } catch (e: any) {
-        globalCapture(e, "安装 AquaMai 失败，文件可能被占用了？")
-      } finally {
-        installingAquaMai.value = false
-      }
-    }
-
     const saveImpl = async () => {
       if (!config.value) return;
       try {
@@ -136,14 +129,11 @@ export default defineComponent({
           {modInfo.value.aquaMaiInstalled ?
             !shouldShowUpdate.value ? <span class="c-green-6">已安装</span> : <span class="c-orange">可更新</span> :
             <span class="c-red-6">未安装</span>}
-          <NButton secondary loading={installingAquaMai.value} onClick={() => installAquaMai()}
-                   type={showAquaMaiInstallDone.value ? 'success' : 'default'}>
-            {showAquaMaiInstallDone.value ? <span class="i-material-symbols-done"/> : modInfo.value.aquaMaiInstalled ? '重新安装 / 更新' : '安装'}
-          </NButton>
+          <ModInstallDropdown updateAquaMaiConfig={updateAquaMaiConfig}/>
           已安装:
           <span>{modInfo.value.aquaMaiVersion}</span>
           可安装:
-          <span class={shouldShowUpdate.value ? "c-orange" : ""}>{modInfo.value.bundledAquaMaiVersion}</span>
+          <span class={shouldShowUpdate.value ? "c-orange" : ""}>{latestAquaMaiVersion.value}</span>
           <NSwitch v-model:value={useNewSort.value} class="m-l"/>
           使用新的排序方式
         </NFlex>
