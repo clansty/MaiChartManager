@@ -23,8 +23,13 @@ export default defineComponent({
       filter: (value, row) => {
         if (!value) return true;
         value = value.toString().toLowerCase();
-        return row.name!.toLowerCase().includes(value) || row.artist!.toLowerCase().includes(value) || row.charts!.some(chart => chart.designer?.toLowerCase().includes(value)) ||
-          dxdata.songs.find(it => it.title.toLowerCase() === row.name?.toLowerCase())?.searchAcronyms?.some(acronym => acronym.toLowerCase().includes(value)) || false;
+        return row.name!.toLowerCase().includes(value) || 
+          row.artist!.toLowerCase().includes(value) || 
+          row.charts!.some(chart => chart.designer?.toLowerCase().includes(value)) ||
+          dxdata.songs.find(it => it.title.toLowerCase() === row.name?.toLowerCase())?.searchAcronyms?.some(acronym => acronym.toLowerCase().includes(value)) ||
+          row.id!.toString().includes(value) || // match by ID
+          false;
+
       }
     } satisfies DataTableBaseColumn<MusicXmlWithABJacket>)
     const columns = computed(() => [
@@ -130,7 +135,7 @@ export default defineComponent({
       {/*    emit('update:selectedMusicIds', musicListAll.value.filter(it => !props.selectedMusicIds!.includes(it)));*/}
       {/*  }}>反选</NButton>*/}
       {/*</NFlex>*/}
-      <NInput placeholder="搜索名称 / 作曲 / 谱师 / 别名" v-model:value={filter.value}/>
+      <NInput placeholder="搜索名称 / 作曲 / 谱师 / 别名 / ID" v-model:value={filter.value}/>
       <NDataTable
         columns={columns.value}
         data={musicListAll.value}
