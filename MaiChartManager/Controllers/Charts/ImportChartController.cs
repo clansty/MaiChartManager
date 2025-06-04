@@ -513,7 +513,11 @@ public partial class ImportChartController(StaticSettings settings, ILogger<Stat
                 logger.LogWarning("BUG! shiftedConverted: {shiftedLen}, originalConverted: {originalLen}", shiftedConverted.Split('\n').Length, originalConverted.Split('\n').Length);
             }
 
-            targetChart.MaxNotes = maiLibChart.AllNoteNum;
+            // Just use T_NUM_ALL value in ma2 file
+            targetChart.MaxNotes = ParseTNumAllFromMa2(shiftedConverted);
+            // Fallback to maiLibChart if T_NUM_ALL not found
+            if (targetChart.MaxNotes == 0) targetChart.MaxNotes = maiLibChart.AllNoteNum;
+
             System.IO.File.WriteAllText(Path.Combine(Path.GetDirectoryName(music.FilePath), targetChart.Path), shiftedConverted);
             if (debug)
             {
@@ -531,5 +535,26 @@ public partial class ImportChartController(StaticSettings settings, ILogger<Stat
         music.Save();
         music.Refresh();
         return new ImportChartResult(errors, false);
+    }
+
+
+    private static int ParseTNumAllFromMa2(string ma2Content)
+    {
+        var lines = ma2Content.Split('\n');
+        // 从后往前读取，因为 T_NUM_ALL 在文件最后
+        for (int i = lines.Length - 1; i >= 0; i--)
+        {
+            var trimmedLine = lines[i].Trim();
+            if (trimmedLine.StartsWith("T_NUM_ALL", StringComparison.OrdinalIgnoreCase))
+            {
+                var parts = trimmedLine.Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+                if (parts.Length >= 2 && int.TryParse(parts[1], out int tNumAll))
+                {
+                    return tNumAll;
+                }
+            }
+        }
+        // Fallback to 0 in case
+        return 0;
     }
 }
