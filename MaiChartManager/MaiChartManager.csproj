@@ -23,6 +23,7 @@
     <Configurations>Debug;Release;Crack</Configurations>
     <PublishDir>..\Packaging\Pack</PublishDir>
     <EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
+    <CETCompat>false</CETCompat>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IsPublishable>False</IsPublishable>
