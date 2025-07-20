@@ -44,7 +44,7 @@ export default defineComponent({
               </span>
                 QQ 群
               </NButton>,
-              default: () => <div><NQrCode value="https://qm.qq.com/q/xA4HgfhIM8"/></div>
+              default: () => <div><NQrCode value="https://qm.qq.com/q/U3gT7CDuy6"/></div>
             }}
           </NPopover>
         </NFlex>

@@ -28,7 +28,7 @@ export default defineComponent({
             <NPopover trigger="hover">
               {{
                 trigger: () => <div class="i-ri-qq-fill hover:c-#e31b25 transition-300"/>,
-                default: () => <div><NQrCode value="https://qm.qq.com/q/xA4HgfhIM8"/></div>
+                default: () => <div><NQrCode value="https://qm.qq.com/q/U3gT7CDuy6"/></div>
               }}
             </NPopover>
           </div>
