@@ -34,7 +34,7 @@ public partial class Launcher : Form
         notifyIcon1.Visible = true;
         WindowState = FormWindowState.Minimized;
 # endif
-        if (!isFromStartup())
+        if (!AppMain.IsFromStartup)
         {
             Visible = true;
             IapManager.BindToForm(this);
@@ -47,22 +47,6 @@ public partial class Launcher : Form
         checkBox1.Checked = true;
         StaticSettings.Config.Export = true;
         StartClicked(null, null);
-    }
-
-    private bool isFromStartup()
-    {
-        try
-        {
-            var aeArgs = AppInstance.GetActivatedEventArgs();
-            return aeArgs?.Kind == ActivationKind.StartupTask;
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            SentrySdk.CaptureException(e);
-        }
-
-        return false;
     }
 
     private async Task CheckStartupStatus()

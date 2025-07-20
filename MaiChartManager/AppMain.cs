@@ -1,6 +1,10 @@
-﻿using SingleInstanceCore;
+﻿using System.Diagnostics;
+using SingleInstanceCore;
 using System.Text.Json;
+using Windows.ApplicationModel;
+using Windows.ApplicationModel.Activation;
 using MaiChartManager.Controllers.Music;
+using Microsoft.Web.WebView2.Core;
 using Xabe.FFmpeg;
 
 namespace MaiChartManager;
@@ -49,13 +53,35 @@ public class AppMain : ISingleInstance
             {
                 try
                 {
-                    StaticSettings.Config = JsonSerializer.Deserialize<Config>(File.ReadAllText(Path.Combine(StaticSettings.appData, "config.json")));
+                    var cfg = JsonSerializer.Deserialize<Config>(File.ReadAllText(Path.Combine(StaticSettings.appData, "config.json")));
+                    if (cfg == null)
+                    {
+                        throw new Exception("config.json is null");
+                    }
+                    StaticSettings.Config = cfg;
                 }
                 catch (Exception e)
                 {
                     SentrySdk.CaptureException(e, s => s.TransactionName = "读取配置文件");
                     MessageBox.Show("看起来配置文件损坏了…已经重置配置文件", "不太对劲", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     File.Delete(cfgFilePath);
+                }
+            }
+
+            string? availableVersion = null;
+            try
+            {
+                availableVersion = CoreWebView2Environment.GetAvailableBrowserVersionString();
+            }
+            catch (WebView2RuntimeNotFoundException) { }
+
+            if (availableVersion == null && !IsFromStartup)
+            {
+                var answer = MessageBox.Show("WebView2 运行时未安装，在启动之后可能会白屏…\n\n如果你觉得你已经安装了 WebView2 运行时，请尝试重启电脑。\n\n要尝试安装一下 WebView2 吗？", "WebView2 未安装", MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Warning);
+                if (answer == DialogResult.Yes)
+                {
+                    Process.Start(new ProcessStartInfo(Path.Combine(StaticSettings.exeDir, "MicrosoftEdgeWebview2Setup.exe")) { UseShellExecute = true });
                 }
             }
 
@@ -70,6 +96,31 @@ public class AppMain : ISingleInstance
             SentrySdk.CaptureException(e);
             MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             throw;
+        }
+    }
+
+    private static bool? _isFromStartup;
+
+    public static bool IsFromStartup
+    {
+        get
+        {
+            if (_isFromStartup.HasValue)
+                return _isFromStartup.Value;
+            try
+            {
+                var aeArgs = AppInstance.GetActivatedEventArgs();
+                _isFromStartup = aeArgs?.Kind == ActivationKind.StartupTask;
+                return _isFromStartup.Value;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                SentrySdk.CaptureException(e);
+            }
+
+            _isFromStartup = false;
+            return false;
         }
     }
 
