@@ -63,9 +63,7 @@ public class CueConvertController(StaticSettings settings, ILogger<CueConvertCon
         var loopStart = TimeSpan.FromSeconds(request.StartTime);
         var loopEnd = TimeSpan.FromSeconds(request.EndTime);
 
-        using var sha1 = SHA1.Create();
-        var awbHash = await sha1.ComputeHashAsync(System.IO.File.OpenRead(StaticSettings.AcbAwb[$"music{id:000000}.awb"]));
-        var acbBytes = CriUtils.CreateAcbWithPreview(cachePath, awbHash, loopStart, loopEnd);
+        var acbBytes = await CriUtils.CreateAcbWithPreview(cachePath, await System.IO.File.ReadAllBytesAsync(StaticSettings.AcbAwb[$"music{id:000000}.awb"]), loopStart, loopEnd);
         await System.IO.File.WriteAllBytesAsync(targetAcbPath, acbBytes);
     }
 

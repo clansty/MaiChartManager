@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Security.Cryptography;
 using System.Text;
 using SonicAudioLib.CriMw;
 using VGAudio.Containers.Wave;
@@ -29,8 +30,11 @@ public static class CriUtils
         return criTable.Save();
     }
 
-    public static byte[] CreateAcbWithPreview(string wavPath, byte[] sha1HashOfAwb, TimeSpan loopStart, TimeSpan loopEnd)
+    public static async Task<byte[]> CreateAcbWithPreview(string wavPath, byte[] awbBytes, TimeSpan loopStart, TimeSpan loopEnd)
     {
+        using var sha1 = SHA1.Create();
+        var sha1HashOfAwb = await sha1.ComputeHashAsync(new MemoryStream(awbBytes));
+
         var waveReader = new WaveReader();
         var audioData = waveReader.Read(File.ReadAllBytes(wavPath));
         var format = audioData.GetFormat<Pcm16Format>();
@@ -55,6 +59,16 @@ public static class CriUtils
         waveFormTable.Rows[0]["SamplingRate"] = (ushort)format.SampleRate;
         waveFormTable.Rows[0]["NumSamples"] = (byte)format.SampleCount;
         criTable.Rows[0]["WaveformTable"] = waveFormTable.Save();
+
+        // 修复歌曲持续时间
+        var count = BitConverter.ToInt32(awbBytes, 8) + 1;
+        var headSize = 16 + awbBytes[5] * count + awbBytes[6] * count + awbBytes[7] * count;
+        var header = new byte[headSize];
+        Array.Copy(awbBytes, header, headSize);
+        var streamAwbAfs2Header = new CriTable();
+        streamAwbAfs2Header.Load(criTable.Rows[0]["StreamAwbAfs2Header"] as byte[]);
+        streamAwbAfs2Header.Rows[0]["Header"] = header;
+        criTable.Rows[0]["StreamAwbAfs2Header"] = streamAwbAfs2Header.Save();
 
         criTable.WriterSettings = CriTableWriterSettings.Adx2Settings;
         return criTable.Save();
