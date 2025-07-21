@@ -65,8 +65,7 @@ public static class CriUtils
         var headSize = 16 + awbBytes[5] * count + awbBytes[6] * count + awbBytes[7] * count;
         var header = new byte[headSize];
         Array.Copy(awbBytes, header, headSize);
-        var streamAwbAfs2Header = new CriTable();
-        streamAwbAfs2Header.Load(criTable.Rows[0]["StreamAwbAfs2Header"] as byte[]);
+        var streamAwbAfs2Header = criTable.Rows[0].GetTable("StreamAwbAfs2Header");
         streamAwbAfs2Header.Rows[0]["Header"] = header;
         criTable.Rows[0]["StreamAwbAfs2Header"] = streamAwbAfs2Header.Save();
 

@@ -3,6 +3,7 @@ del .\*.appx
 rmdir /s /q Pack
 
 pushd ..\AquaMai
+taskkill /f /im dotnet.exe
 dotnet cake
 copy /y Output\AquaMai.dll ..\MaiChartManager\Resources
 popd
