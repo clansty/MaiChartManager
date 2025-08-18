@@ -208,7 +208,7 @@ export interface ImportChartResult {
 }
 
 export interface InstallAquaMaiOnlineDto {
-  url?: string | null;
+  urls?: string[] | null;
   type?: string | null;
   sign?: string | null;
 }

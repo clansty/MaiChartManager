@@ -88,12 +88,19 @@ export const updateModInfo = async () => {
 
 export const updateModUpdateInfo = async () => {
   try {
-    const ret = await aquaMaiVersionConfig.getGetConfig();
-    if (ret.error) {
-      console.error('Failed to get mod update info:', ret.error);
-      return;
-    }
-    modUpdateInfo.value = ret.data;
+    modUpdateInfo.value = await Promise.any([
+      (async () => {
+        const res = await aquaMaiVersionConfig.getGetConfig();
+        return res.data;
+      })(),
+      (async () => {
+        const res = await fetch('https://munet-version-config-1251600285.cos.ap-shanghai.myqcloud.com/aquamai.json');
+        if (!res.ok) {
+          throw new Error(`Failed to fetch mod update info: ${res.status} ${res.statusText}`);
+        }
+        return await res.json();
+      })(),
+    ]);
   } catch (e) {
     console.error('Failed to get mod update info:', e);
   }

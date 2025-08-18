@@ -24,9 +24,13 @@ export default defineComponent({
           if (!version) {
             throw new Error('未找到对应版本');
           }
+          const urls = [version.url!];
+          if (version.url2) {
+            urls.push(version.url2);
+          }
           await api.InstallAquaMaiOnline({
             type,
-            url: version.url,
+            urls,
             sign: version.sign,
           });
         }

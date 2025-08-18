@@ -16,7 +16,7 @@ export default (new Api({
 })).maiChartManagerServlet
 
 export const aquaMaiVersionConfig = new AquaMaiVersionConfigApi({
-  baseUrl: 'https://aquamai-version-config.init.ink',
+  baseUrl: 'https://aquamai-version-config.mumur.net',
   baseApiParams: {
     headers: {
       accept: 'application/json',

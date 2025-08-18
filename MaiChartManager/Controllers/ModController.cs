@@ -313,7 +313,7 @@ public class ModController(StaticSettings settings, ILogger<ModController> logge
         return ecdsa.VerifyData(data, signature, HashAlgorithmName.SHA256, DSASignatureFormat.Rfc3279DerSequence);
     }
 
-    public record InstallAquaMaiOnlineDto(string Url, string Type, string Sign);
+    public record InstallAquaMaiOnlineDto(string[] Urls, string Type, string Sign);
 
     [HttpPost]
     public async Task InstallAquaMaiOnline(InstallAquaMaiOnlineDto req)
@@ -326,16 +326,32 @@ public class ModController(StaticSettings settings, ILogger<ModController> logge
         };
         // Download from url
         using var client = new HttpClient();
-        var data = await client.GetByteArrayAsync(req.Url);
-
-        if (!VerifyBinary(data, req.Sign, key))
+        client.Timeout = TimeSpan.FromSeconds(15);
+        Exception? lastException = null;
+        foreach (var url in req.Urls)
         {
-            throw new InvalidOperationException("Invalid signature");
-        }
+            byte[] data;
+            try
+            {
+                data = await client.GetByteArrayAsync(url);
 
-        // Save to Mods folder
-        var dest = Path.Combine(StaticSettings.GamePath, @"Mods\AquaMai.dll");
-        Directory.CreateDirectory(Path.GetDirectoryName(dest));
-        await System.IO.File.WriteAllBytesAsync(dest, data);
+                if (!VerifyBinary(data, req.Sign, key))
+                {
+                    throw new InvalidOperationException("Invalid signature");
+                }
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "Failed to download AquaMai from {Url}", url);
+                lastException = e;
+                continue;
+            }
+            // Save to Mods folder
+            var dest = Path.Combine(StaticSettings.GamePath, @"Mods\AquaMai.dll");
+            Directory.CreateDirectory(Path.GetDirectoryName(dest));
+            await System.IO.File.WriteAllBytesAsync(dest, data);
+            return;
+        }
+        throw new InvalidOperationException("Failed to download AquaMai from all urls", lastException);
     }
 }

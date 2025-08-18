@@ -1,23 +1,22 @@
 import { computed, defineComponent, PropType } from "vue";
-import { AquaMaiTouchSensitivityConfig } from "@/client/apiGen";
 import styles from "./TouchSensitivityDisplay.module.sass";
 
 const CLASS_NOT_SELECTED = styles.region;
 const CLASS_SELECTED = `${styles.region} ${styles.selected}`;
 export default defineComponent({
   props: {
-    currentSelected: String as PropType<keyof AquaMaiTouchSensitivityConfig>,
-    config: {type: Object as PropType<AquaMaiTouchSensitivityConfig>, required: true},
+    currentSelected: String,
+    config: {type: Object, required: true},
   },
   setup(props, {emit}) {
     const currentSelected = computed({
       get: () => props.currentSelected,
       set: (val) => emit('update:currentSelected', val)
     })
-    const onRegionClick = (region: keyof AquaMaiTouchSensitivityConfig) => {
+    const onRegionClick = (region: string) => {
       currentSelected.value = region
     }
-    const regionClick = (region: keyof AquaMaiTouchSensitivityConfig) => () => onRegionClick(region)
+    const regionClick = (region: string) => () => onRegionClick(region)
     return () => <svg
       width="30em"
       height="30em"

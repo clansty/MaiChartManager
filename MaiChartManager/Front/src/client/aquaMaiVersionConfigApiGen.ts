@@ -241,6 +241,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
           type: "builtin" | "release" | "ci";
           /** @format uri */
           url?: string;
+          /** @format uri */
+          url2?: string;
           sign?: string;
           /** @default false */
           default?: boolean;
@@ -270,6 +272,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
           type: "builtin" | "release" | "ci";
           /** @format uri */
           url?: string;
+          /** @format uri */
+          url2?: string;
           sign?: string;
           /** @default false */
           default?: boolean;
