@@ -85,14 +85,16 @@ public class MusicTransferController(StaticSettings settings, ILogger<MusicTrans
             Directory.CreateDirectory(Path.Combine(dest, @"AssetBundleImages\jacket"));
             if (music.JacketPath is not null)
             {
-                FileSystem.CopyFile(music.JacketPath, Path.Combine(dest, $@"AssetBundleImages\jacket\ui_jacket_{music.NonDxId:000000}{Path.GetExtension(music.JacketPath)}"), UIOption.OnlyErrorDialogs);
+                FileSystem.CopyFile(music.JacketPath, Path.Combine(dest, $@"AssetBundleImages\jacket\ui_jacket_{music.NonDxId:000000}{Path.GetExtension(music.JacketPath)}"),
+                    UIOption.OnlyErrorDialogs);
             }
             else if (music.AssetBundleJacket is not null)
             {
                 FileSystem.CopyFile(music.AssetBundleJacket, Path.Combine(dest, $@"AssetBundleImages\jacket\{Path.GetFileName(music.AssetBundleJacket)}"), UIOption.OnlyErrorDialogs);
                 if (System.IO.File.Exists(music.AssetBundleJacket + ".manifest"))
                 {
-                    FileSystem.CopyFile(music.AssetBundleJacket + ".manifest", Path.Combine(dest, $@"AssetBundleImages\jacket\{Path.GetFileName(music.AssetBundleJacket)}.manifest"), UIOption.OnlyErrorDialogs);
+                    FileSystem.CopyFile(music.AssetBundleJacket + ".manifest", Path.Combine(dest, $@"AssetBundleImages\jacket\{Path.GetFileName(music.AssetBundleJacket)}.manifest"),
+                        UIOption.OnlyErrorDialogs);
                 }
             }
             else if (music.PseudoAssetBundleJacket is not null)
@@ -228,25 +230,27 @@ public class MusicTransferController(StaticSettings settings, ILogger<MusicTrans
         var movieTarget = Path.Combine(StaticSettings.StreamingAssets, assetDir, "MovieData", $"{newNonDxId:000000}");
         var newMusicDir = Path.Combine(StaticSettings.StreamingAssets, assetDir, "music", $"music{newNonDxId:000000}");
         DeleteIfExists(abJacketTarget, abJacketTarget + ".manifest", acbawbTarget + ".acb", acbawbTarget + ".awb", movieTarget + ".dat", movieTarget + ".mp4", newMusicDir);
+        var abiDir = Path.Combine(StaticSettings.GamePath, "StreamingAssets", assetDir, @"AssetBundleImages\jacket");
+        Directory.CreateDirectory(abiDir);
 
         // jacket
         if (music.JacketPath is not null)
         {
-            var localJacketTarget = Path.Combine(StaticSettings.ImageAssetsDir, $"{newNonDxId:000000}{Path.GetExtension(music.JacketPath)}");
+            var localJacketTarget = Path.Combine(abiDir, $"ui_jacket_{newNonDxId:000000}{Path.GetExtension(music.JacketPath)}");
             DeleteIfExists(localJacketTarget);
             logger.LogInformation("Move jacket: {music.JacketPath} -> {localJacketTarget}", music.JacketPath, localJacketTarget);
             FileSystem.MoveFile(music.JacketPath, localJacketTarget, UIOption.OnlyErrorDialogs);
         }
         else if (music.PseudoAssetBundleJacket is not null)
         {
-            var localJacketTarget = Path.Combine(StaticSettings.ImageAssetsDir, $"{newNonDxId:000000}{Path.GetExtension(music.PseudoAssetBundleJacket)}");
+            var localJacketTarget = Path.Combine(abiDir, $"ui_jacket_{newNonDxId:000000}{Path.GetExtension(music.PseudoAssetBundleJacket)}");
             DeleteIfExists(localJacketTarget);
             logger.LogInformation("Move jacket: {music.PseudoAssetBundleJacket} -> {localJacketTarget}", music.PseudoAssetBundleJacket, localJacketTarget);
             FileSystem.MoveFile(music.PseudoAssetBundleJacket, localJacketTarget, UIOption.OnlyErrorDialogs);
         }
         else if (music.AssetBundleJacket is not null)
         {
-            var localJacketTarget = Path.Combine(StaticSettings.ImageAssetsDir, $"{newNonDxId:000000}.png");
+            var localJacketTarget = Path.Combine(abiDir, $"ui_jacket_{newNonDxId:000000}.png");
             logger.LogInformation("Convert jacket: {music.AssetBundleJacket} -> {abJacketTarget}", music.AssetBundleJacket, abJacketTarget);
             System.IO.File.WriteAllBytes(localJacketTarget, music.GetMusicJacketPngData()!);
             FileSystem.DeleteFile(music.AssetBundleJacket, UIOption.OnlyErrorDialogs, RecycleOption.SendToRecycleBin);

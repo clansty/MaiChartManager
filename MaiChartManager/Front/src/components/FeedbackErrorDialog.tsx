@@ -11,7 +11,7 @@ export default defineComponent({
       let msg: string;
       if (!error.value) return "";
       if (error.value.error) {
-        msg = error.value.error.message || error.value.error.toString();
+        msg = error.value.error.message || error.value.error.detail || error.value.error.toString();
       } else if (error.value.message) {
         msg = error.value.message;
       } else {
@@ -49,10 +49,7 @@ export default defineComponent({
         default: () => <NFlex vertical size="large">
           <div class="text-lg">{errorContext.value}</div>
           {message.value}
-          <NInput v-model:value={userInput.value} class="w-full" type="textarea" placeholder="可以提供一下相关背景和上下文吗？比如说你的游戏或者乐曲有没有什么特别之处"/>
-        </NFlex>,
-        footer: () => <NFlex justify="end">
-          <NButton onClick={report}>发送反馈</NButton>
+          {/*<NInput v-model:value={userInput.value} class="w-full" type="textarea" placeholder="可以提供一下相关背景和上下文吗？比如说你的游戏或者乐曲有没有什么特别之处"/>*/}
         </NFlex>
       }}
     </NModal>;

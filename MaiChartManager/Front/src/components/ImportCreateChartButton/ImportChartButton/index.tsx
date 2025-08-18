@@ -189,7 +189,7 @@ export default defineComponent({
           try {
             await uploadMovie(music.id, music.movie, padding);
           } catch (e: any) {
-            errors.value.push({level: MessageLevel.Warning, message: `视频转换失败: ${e?.message || e?.toString() || '我也不知道为什么'}`, name: music.name});
+            errors.value.push({level: MessageLevel.Warning, message: `视频转换失败: ${e.error?.message || e.error?.detail || e?.message || e?.toString() || '我也不知道为什么'}`, name: music.name});
           }
         }
 
@@ -205,7 +205,7 @@ export default defineComponent({
             step: music.importStep,
           }
         })
-        errors.value.push({level: MessageLevel.Fatal, message: e.error?.message || e.message || e.toString(), name: music.name});
+        errors.value.push({level: MessageLevel.Fatal, message: e.error?.message || e.error?.detail || e.message || e.toString(), name: music.name});
         try {
           await api.DeleteMusic(music.id, selectedADir.value);
         } catch {
