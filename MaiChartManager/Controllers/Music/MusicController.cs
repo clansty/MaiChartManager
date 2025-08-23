@@ -147,7 +147,7 @@ public class MusicController(StaticSettings settings, ILogger<MusicController> l
             FileSystem.DeleteFile(music.JacketPath, UIOption.OnlyErrorDialogs, RecycleOption.SendToRecycleBin);
         }
 
-        var abiDir = Path.Combine(StaticSettings.GamePath, "StreamingAssets", assetDir, @"AssetBundleImages\jacket");
+        var abiDir = Path.Combine(StaticSettings.StreamingAssets, assetDir, @"AssetBundleImages\jacket");
         Directory.CreateDirectory(abiDir);
         var path = Path.Combine(abiDir, $"ui_jacket_{nonDxId:000000}{ext}");
         using var write = System.IO.File.Open(path, FileMode.Create);
