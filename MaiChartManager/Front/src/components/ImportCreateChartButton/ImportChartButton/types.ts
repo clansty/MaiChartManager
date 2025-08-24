@@ -56,7 +56,7 @@ export const defaultSavedOptions = {
   version: 22001,
   disableBga: false,
   noScale: false,
-  movieCodec: MOVIE_CODEC.PreferH264,
+  movieCodec: MOVIE_CODEC.ForceVP9,
 }
 
 export type TempOptions = typeof defaultTempOptions;
