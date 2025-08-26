@@ -90,11 +90,15 @@ export const updateModUpdateInfo = async () => {
   try {
     modUpdateInfo.value = await Promise.any([
       (async () => {
-        const res = await aquaMaiVersionConfig.getGetConfig();
+        const res = await aquaMaiVersionConfig.getGetConfig({
+          cache: 'no-cache',
+        });
         return res.data;
       })(),
       (async () => {
-        const res = await fetch('https://munet-version-config-1251600285.cos.ap-shanghai.myqcloud.com/aquamai.json');
+        const res = await fetch('https://munet-version-config-1251600285.cos.ap-shanghai.myqcloud.com/aquamai.json', {
+          cache: 'no-cache',
+        });
         if (!res.ok) {
           throw new Error(`Failed to fetch mod update info: ${res.status} ${res.statusText}`);
         }
