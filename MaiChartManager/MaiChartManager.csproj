@@ -56,6 +56,7 @@
       <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.14.0"/>
       <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.3405.78"/>
     <PackageReference Include="NAudio.Lame" Version="2.1.0"/>
+      <PackageReference Include="OSVersionExt" Version="3.0.0"/>
     <PackageReference Include="Pluralsight.Crypto" Version="1.1.0"/>
     <PackageReference Include="pythonnet" Version="3.0.5"/>
       <PackageReference Include="Sentry" Version="5.14.1"/>
