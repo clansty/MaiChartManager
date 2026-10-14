@@ -36,7 +36,7 @@ MaiChartManager/
 | 请求鉴权 | `AuthenticationMiddleware.cs` | 可选启用的 ASP.NET Core 中间件 |
 | XML 数据模型 | `Models/MusicXml.cs`, `GenreXml.cs`, `VersionXml.cs` | maimai 谱面元数据结构 |
 | 增强型模型 | `Models/MusicXmlWithABJacket.cs` | API 返回时附带封面等附加信息 |
-| AquaMai 配置模型 | `Models/AquaMaiConfigDto.cs` | mod 配置 DTO |
+| AquaMai 配置模型 | `../AquaMai.Config.Dto/` | mod 配置 DTO，与 WASM 共用一份 |
 | 谱面导入服务 | `Controllers/Charts/Services/` | `IMaidataImportService` 接口 + 新旧两套实现 |
 | 音频处理 | `Utils/Audio.cs`, `AudioConvert.cs`, `CriUtils.cs` | FFmpeg + CRI SDK 封装 |
 | 视频/图片处理 | `Utils/VideoConvert.cs`, `ImageConvert.cs` | 媒体转换工具 |

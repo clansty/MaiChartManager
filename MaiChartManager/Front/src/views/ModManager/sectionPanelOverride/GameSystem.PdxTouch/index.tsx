@@ -1,58 +1,74 @@
+import { Button, DropMenu, TextInput, addToast } from '@munet/ui';
+import type { AquaMaiConfigSection, EntryState, SectionState } from '@aquamai/config-editor';
+import { ConfigEntry, ENTRY_GROUP_PADDING, ENTRY_LABEL_CLASS } from '@aquamai/config-editor';
+import { defineComponent, onMounted, ref, type PropType } from 'vue';
+import { useI18n } from 'vue-i18n';
 import api from '@/client/api';
-import { IEntryState, ISectionState, Section } from '@/client/apiGen';
-import { t } from '@/locales';
 import { globalCapture } from '@/store/refs';
-import { useAsyncState } from '@vueuse/core';
-import { Button, TextInput, DropMenu, addToast } from '@munet/ui';
-import { defineComponent, PropType } from 'vue';
-import ConfigEntry from '../../ConfigEntry';
-import useAsync from '@/hooks/useAsync';
-import { ENTRY_GROUP_PADDING, ENTRY_LABEL_CLASS } from '../../constants';
 
-const deviceStatus = useAsync(
-  async () => {
-    const status = await api.GetPdxDriverStatus();
-    return status.data;
-  },
-  null, true,
-);
+interface PdxDriverStatus {
+  available: boolean;
+  deviceCount: number;
+  isUsingWinusb: boolean;
+  devicePaths: string[];
+}
 
 export default defineComponent({
   props: {
-    section: { type: Object as PropType<Section>, required: true },
-    entryStates: { type: Object as PropType<Record<string, IEntryState>>, required: true },
-    sectionState: { type: Object as PropType<ISectionState>, required: true },
+    section: { type: Object as PropType<AquaMaiConfigSection>, required: true },
+    entryStates: { type: Object as PropType<Record<string, EntryState>>, required: true },
+    sectionState: { type: Object as PropType<SectionState>, required: true },
   },
   setup(props) {
+    const { t } = useI18n();
+    const deviceStatus = ref<PdxDriverStatus | null>(null);
+    const statusLoading = ref(false);
+    const switchLoading = ref(false);
     const PREFIX = 'GameSystem.PdxTouch.';
     const knownPaths = [PREFIX + 'Path1p', PREFIX + 'Path2p'];
 
-
-    const refresh = () => {
-      deviceStatus.refresh();
+    const refresh = async () => {
+      statusLoading.value = true;
+      try {
+        const status = (await api.GetPdxDriverStatus()).data;
+        // apiGen 生成的字段全是可选的，收窄成面板要的形状
+        deviceStatus.value = status
+          ? {
+            available: status.available ?? false,
+            deviceCount: status.deviceCount ?? 0,
+            isUsingWinusb: status.isUsingWinusb ?? false,
+            devicePaths: status.devicePaths ?? [],
+          }
+          : null;
+      } catch (error) {
+        globalCapture(error, t('mod.pdx.switchFailed'));
+      } finally {
+        statusLoading.value = false;
+      }
     };
 
-    // Driver switch
-    const switchDriver = useAsyncState(async () => {
-      const isWinusb = deviceStatus.data.value?.isUsingWinusb;
+    const switchDriver = async () => {
+      const isWinusb = deviceStatus.value?.isUsingWinusb;
       const direction = isWinusb ? 'wintouch' : 'exclusive';
-      await api.SwitchPdxDriver({ direction });
-      addToast({message: t('mod.pdx.switchSuccess'), type: 'success'});
-      refresh();
-    }, undefined, {
-      immediate: false,
-      onError(e: any) {
-        if (e?.status === 400) {
-          globalCapture(e, t('mod.pdx.switchCancelled'));
-        } else {
-          globalCapture(e, t('mod.pdx.switchFailed'));
-        }
-        refresh();
-      },
-    });
+      switchLoading.value = true;
+      try {
+        await api.SwitchPdxDriver({ direction });
+        addToast({ message: t('mod.pdx.switchSuccess'), type: 'success' });
+      } catch (error) {
+        const fallback = (error as { status?: number } | null)?.status === 400
+          ? 'mod.pdx.switchCancelled'
+          : 'mod.pdx.switchFailed';
+        globalCapture(error, t(fallback));
+      } finally {
+        switchLoading.value = false;
+        await refresh();
+      }
+    };
+
+    onMounted(refresh);
 
     return () => {
-      const status = deviceStatus.data.value;
+      const status = deviceStatus.value;
       const paths = status?.devicePaths ?? [];
 
       return <div class={["flex flex-col gap-2", ENTRY_GROUP_PADDING]}>
@@ -66,13 +82,13 @@ export default defineComponent({
               {status.isUsingWinusb ? t('mod.pdx.driverWinusb') : t('mod.pdx.driverDefault')}
             </span>
           </>}
-          <Button onClick={refresh} ing={deviceStatus.loading.value}>
+          <Button onClick={refresh} ing={statusLoading.value}>
             {t('mod.pdx.refresh')}
           </Button>
           {status?.available && (status?.deviceCount ?? 0) > 0 &&
             <Button
-              onClick={() => switchDriver.execute()}
-              ing={switchDriver.isLoading.value}
+              onClick={switchDriver}
+              ing={switchLoading.value}
             >
               {status?.isUsingWinusb ? t('mod.pdx.switchToWintouch') : t('mod.pdx.switchToExclusive')}
             </Button>
@@ -88,14 +104,14 @@ export default defineComponent({
                 <DropMenu
                   options={(paths).map(p => ({
                     label: p,
-                    action: () => { props.entryStates[PREFIX + 'Path1p'].value = p; },
+                    action: () => { props.entryStates[PREFIX + 'Path1p']!.value = p; },
                   }))}
                 >
                   {{
                     trigger: (toggle: (val?: boolean) => void) =>
                       <TextInput
                         class="w-full" innerClass="h-42px!"
-                        v-model:value={props.entryStates[PREFIX + 'Path1p'].value}
+                        v-model:value={props.entryStates[PREFIX + 'Path1p']!.value}
                         onFocus={() => paths.length > 0 && toggle(true)}
                       />,
                   }}
@@ -113,14 +129,14 @@ export default defineComponent({
                 <DropMenu
                   options={(paths).map(p => ({
                     label: p,
-                    action: () => { props.entryStates[PREFIX + 'Path2p'].value = p; },
+                    action: () => { props.entryStates[PREFIX + 'Path2p']!.value = p; },
                   }))}
                 >
                   {{
                     trigger: (toggle: (val?: boolean) => void) =>
                       <TextInput
                         class="w-full" innerClass="h-42px!"
-                        v-model:value={props.entryStates[PREFIX + 'Path2p'].value}
+                        v-model:value={props.entryStates[PREFIX + 'Path2p']!.value}
                         onFocus={() => paths.length > 0 && toggle(true)}
                       />,
                   }}
@@ -132,7 +148,10 @@ export default defineComponent({
 
         {/* remaining entries (e.g. radius) */}
         {props.section.entries?.filter(it => !knownPaths.includes(it.path!))
-          .map((entry) => <ConfigEntry key={entry.path!} entry={entry} entryState={props.entryStates[entry.path!]}/>)}
+          .map((entry) => {
+            const state = props.entryStates[entry.path];
+            return state ? <ConfigEntry key={entry.path} entry={entry} entryState={state} /> : null;
+          })}
       </div>;
     };
   },

@@ -11,6 +11,7 @@
     "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.node.json"
   },
   "devDependencies": {
+    "@aquamai/config-editor": "workspace:*",
     "@chenfengyuan/vue-qrcode": "^2.0.0",
     "@fontsource/nerko-one": "^5.2.7",
     "@fontsource/noto-sans-sc": "^5.2.8",

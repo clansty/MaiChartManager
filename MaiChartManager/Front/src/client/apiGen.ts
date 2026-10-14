@@ -157,6 +157,12 @@ export interface CheckConflictEntry {
   musicName?: string | null;
 }
 
+export interface Comment {
+  commentEn?: string | null;
+  commentZh?: string | null;
+  nameZh?: string | null;
+}
+
 export interface CompleteSetupRequest {
   export?: boolean;
   useAuth?: boolean;
@@ -167,14 +173,14 @@ export interface CompleteSetupRequest {
 
 export interface ConfigDto {
   sections?: Section[] | null;
-  sectionStates?: Record<string, ISectionState>;
-  entryStates?: Record<string, IEntryState>;
-  configSort?: Record<string, string[]>;
+  sectionStates?: Record<string, SectionState>;
+  entryStates?: Record<string, EntryState>;
+  configSortYaml?: string | null;
 }
 
-export interface ConfigSaveDto {
-  sectionStates?: Record<string, SectionSaveDto>;
-  entryStates?: Record<string, EntrySaveDto>;
+export interface ConfigSave {
+  sectionStates?: Record<string, SectionSave>;
+  entryStates?: Record<string, EntrySave>;
 }
 
 export interface DeleteAssetRequest {
@@ -192,11 +198,22 @@ export interface EnsureCacheResultDto {
 export interface Entry {
   path?: string | null;
   name?: string | null;
-  attribute?: IConfigEntryAttribute;
+  attribute?: EntryAttribute;
   fieldType?: string | null;
 }
 
-export interface EntrySaveDto {
+export interface EntryAttribute {
+  comment?: Comment;
+  hideWhenDefault?: boolean;
+}
+
+export interface EntrySave {
+  isDefault?: boolean;
+  defaultValue?: any;
+  value?: any;
+}
+
+export interface EntryState {
   isDefault?: boolean;
   defaultValue?: any;
   value?: any;
@@ -260,36 +277,6 @@ export interface GetAssetsDirsResult {
   dirName?: string | null;
   subFiles?: string[] | null;
   version?: string | null;
-}
-
-export interface IConfigComment {
-  commentEn?: string | null;
-  commentZh?: string | null;
-  nameZh?: string | null;
-}
-
-export interface IConfigEntryAttribute {
-  comment?: IConfigComment;
-  hideWhenDefault?: boolean;
-}
-
-export interface IConfigSectionAttribute {
-  comment?: IConfigComment;
-  exampleHidden?: boolean;
-  defaultOn?: boolean;
-  alwaysEnabled?: boolean;
-}
-
-export interface IEntryState {
-  isDefault?: boolean;
-  defaultValue?: any;
-  value?: any;
-}
-
-export interface ISectionState {
-  isDefault?: boolean;
-  defaultEnabled?: boolean;
-  enabled?: boolean;
 }
 
 export interface ImportChartCheckResult {
@@ -453,10 +440,23 @@ export interface ResourceJunctionOverview {
 export interface Section {
   path?: string | null;
   entries?: Entry[] | null;
-  attribute?: IConfigSectionAttribute;
+  attribute?: SectionAttribute;
 }
 
-export interface SectionSaveDto {
+export interface SectionAttribute {
+  comment?: Comment;
+  exampleHidden?: boolean;
+  defaultOn?: boolean;
+  alwaysEnabled?: boolean;
+}
+
+export interface SectionSave {
+  isDefault?: boolean;
+  defaultEnabled?: boolean;
+  enabled?: boolean;
+}
+
+export interface SectionState {
   isDefault?: boolean;
   defaultEnabled?: boolean;
   enabled?: boolean;
@@ -769,7 +769,7 @@ export class HttpClient<SecurityDataType = unknown> {
 }
 
 /**
- * @title MaiChartManager
+ * @title MaiChartManager.GenClient
  * @version 1.0
  */
 export class Api<
@@ -1324,7 +1324,7 @@ export class Api<
      * @name SetAquaMaiConfig
      * @request PUT:/MaiChartManagerServlet/SetAquaMaiConfigApi
      */
-    SetAquaMaiConfig: (data: ConfigSaveDto, params: RequestParams = {}) =>
+    SetAquaMaiConfig: (data: ConfigSave, params: RequestParams = {}) =>
       this.request<void, any>({
         path: `/MaiChartManagerServlet/SetAquaMaiConfigApi`,
         method: "PUT",

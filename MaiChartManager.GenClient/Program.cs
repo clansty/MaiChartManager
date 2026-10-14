@@ -50,10 +50,11 @@ app.Lifetime.ApplicationStarted.Register(() =>
         {
             Console.WriteLine($"Running genClient in {frontDir} ...");
 
+            // Linux 下没有 cmd.exe，直接调 pnpm
             var psi = new ProcessStartInfo
             {
-                FileName = "cmd.exe",
-                Arguments = "/c pnpm exec tsx genClient.ts",
+                FileName = OperatingSystem.IsWindows() ? "cmd.exe" : "pnpm",
+                Arguments = OperatingSystem.IsWindows() ? "/c pnpm exec tsx genClient.ts" : "exec tsx genClient.ts",
                 WorkingDirectory = frontDir,
                 UseShellExecute = false,
             };

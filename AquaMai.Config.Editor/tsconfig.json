@@ -1,0 +1,19 @@
+{
+  // @munet/ui 以源码（workspace:*）被引入，源码没有按本项目的严格度编写，
+  // 因此不启用 exactOptionalPropertyTypes / noUncheckedIndexedAccess / verbatimModuleSyntax：
+  // 否则 tsc 会连带检查 ../MuNET-UI/src，产生大量与编辑器无关的错误。
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "strict": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "jsx": "preserve",
+    "jsxImportSource": "vue",
+    "types": ["vite/client"]
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.d.ts", "vite.config.ts", "uno.config.ts"]
+}

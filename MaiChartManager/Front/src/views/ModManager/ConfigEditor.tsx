@@ -1,8 +1,11 @@
-import { defineComponent, ref, watch } from "vue";
+import { defineComponent, nextTick, ref, watch } from "vue";
 
 import api from "@/client/api";
 import { globalCapture, modInfo, updateModInfo, updateMusicList } from "@/store/refs";
-import AquaMaiConfigurator from "./AquaMaiConfigurator";
+import { AquaMaiConfigurator } from '@aquamai/config-editor';
+import type { ConfigDto as EditorConfigDto } from '@aquamai/config-editor';
+import { toEditorConfig, toSaveDto } from './editorAdapter';
+import { getMcmSectionPanelOverride } from './sectionPanelOverride';
 import { latestVersion, shouldShowUpdate, isMuModMode } from "./shouldShowUpdateController";
 import ModInstallDropdown from "@/views/ModManager/ModInstallDropdown";
 import { useI18n } from 'vue-i18n';
@@ -16,7 +19,7 @@ export default defineComponent({
   setup() {
 
     const { t } = useI18n();
-
+    const editorConfig = ref<EditorConfigDto>();
     const { isLoading: installingMelonLoader, execute: installMelonLoader } = useAsyncState(async () => {
       await api.InstallMelonLoader()
       await updateModInfo()
@@ -27,9 +30,9 @@ export default defineComponent({
 
 
     const saveImpl = async () => {
-      if (!config.value) return;
+      if (!editorConfig.value) return;
       try {
-        await api.SetAquaMaiConfig(config.value)
+        await api.SetAquaMaiConfig(toSaveDto(editorConfig.value))
         await updateMusicList()
         addToast({ message: t('music.save.saveSuccess'), type: 'success' })
       } catch (e) {
@@ -38,21 +41,25 @@ export default defineComponent({
     }
     const save = debounce(saveImpl, 2000);
 
-    watch(() => config.value, async (val) => {
+    watch(() => config.value, (value) => {
+      editorConfig.value = value ? toEditorConfig(value) : undefined;
+    }, { immediate: true });
+
+    watch(editorConfig, async () => {
+      if (!editorConfig.value) return;
       if (configJustLoaded.value) {
         configJustLoaded.value = false;
         console.log('配置刚加载')
         return;
       }
-      if (configReadErr.value) return
-      if (val) {
-        console.log('配置变动')
-        save()
-      }
+      if (configReadErr.value) return;
+      console.log('配置变动');
+      save();
     }, { deep: true })
 
     const resetToDefault = async () => {
       await updateAquaMaiConfig(true);
+      await nextTick();
       await saveImpl();
     }
 
@@ -122,7 +129,9 @@ export default defineComponent({
         </div>
       }
       else {
-        editorPart = <AquaMaiConfigurator config={config.value!} useNewSort={true}/>
+        editorPart = editorConfig.value
+          ? <AquaMaiConfigurator config={editorConfig.value} useNewSort={true} getSectionPanelOverride={getMcmSectionPanelOverride}/>
+          : <></>
       }
 
       return <div class="flex flex-col gap-2 flex-1 min-h-0">

@@ -13,3 +13,6 @@ nul
 .omo
 *.lscache
 .vscode/tasks.json
+
+# AquaMai 配置编辑器的独立网页版构建产物
+/AquaMai.Config.Editor/dist/

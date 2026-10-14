@@ -323,13 +323,6 @@ mod:
   resourcesNotInstalled: Resources not installed
   update: Update
   search: Search
-  searchPlaceholder: Search config...
-  favorite: Favorites
-  addFavorite: Add to favorites
-  removeFavorite: Remove from favorites
-  other: Other
-  needEnableOption: Need to enable this option
-  unsupportedType: 'Unsupported type: {type}'
   dontShowAgain: Don't show again
   versionNotFound: Version not found
   installFailed: Failed to install AquaMai, files may be in use?
@@ -343,14 +336,6 @@ mod:
   loaded: Loaded
   killGameProcess: Kill Game Process
   needInstallOrUpdate: AquaMai not installed or needs update
-  ioKeyMap:
-    disabled: Disabled
-    select: Select
-    select1P: 1P Select
-    select2P: 2P Select
-    service: Service
-    test: Test
-    customFn: 'Custom FnKey '
   adxHid:
     disabled: Disabled
     select1P: 1P Select
@@ -369,73 +354,13 @@ mod:
     button4: Button 4
     button4Desc: Bottom round button
     select: Select
-  touchSensitivity:
-    applyPresetToGlobal: Apply Preset to Global
-    settingsFor: '{area} Sensitivity Settings'
-    applyToGlobal: Apply to Global
-    applyToArea: Apply to {area} Area
-    selectAreaHint: Select an area on the left to fine-tune sensitivity here
-    helpText: >-
-      Sensitivity in Test mode is not linear
-
-      Area A default sensitivity: 90, 80, 70, 60, 50, 40, 30, 26, 23, 20, 10
-
-      Other areas default sensitivity: 70, 60, 50, 40, 30, 20, 15, 10, 5, 1, 1
-
-      Test 0 corresponds to 40, 20 level, -5 is 90, 70, +5 is 10, 1
-
-      Higher level in Test, lower number here = higher sensitivity for official
-      cabinet
-
-      ADX sensitivity is reversed, so higher number here = higher sensitivity
-      for ADX
   keyMap:
-    button1P: 1P Button {index}
-    button2P: 2P Button {index}
-    select1P: 1P Select
-    select2P: 2P Select
-    disableIO4: Disable IO4 Input
-    disableIO4Tip: >-
-      Toggle on to disable corresponding input. After disabling IO4 input, your
-      compatible IO4 board or segatools IO4 simulation will be ignored.
     disableIO4System: System Buttons (Test, Service)
-    disable1P: Disable 1P
-    enable1P: Enable 1P
-    disable2P: Disable 2P
-    enable2P: Enable 2P
-    disableSystem: Disable System Buttons
-    enableSystem: Enable System Buttons
-  soundChannel:
-    P1SpeakerLeft: Front Left
-    P1SpeakerRight: Front Right
-    P1HeadphoneLeft: Center/Sub Left
-    P1HeadphoneRight: Center/Sub Right
-    P2SpeakerLeft: Rear Left
-    P2SpeakerRight: Rear Right
-    P2HeadphoneLeft: Side Left
-    P2HeadphoneRight: Side Right
-    None: Disabled
   judgeAccuracyInfo:
     author: 'Author: '
     viewDoc: View Documentation
-  trackCamouflage:
-    viewDoc: View Configuration Instructions
-  commentOverrides:
-    Fancy_GamePlay_JudgeDisplay4B: |
-      More detailed judge display
-      Requires CustomSkins enabled and resource files installed
-      Author {'@'}Minepig
-    GameSettings_TouchSensitivity: >
-      Use custom touch sensitivity
-
-      After enabling this, the settings in Test menu will no longer work, but
-      you can still test (testing requires disabling 1P mode)
-
-      If your controller has corresponding host software, it's recommended to
-      disable this option and use the host software for adjustments
   configCorrupted: AquaMai config file corrupted
   configCorruptedMessage: Please manually check AquaMai.toml and try to fix possible issues
-  resetToDefault: Reset to default settings
   configVersionHigher: Config file version higher than AquaMai version
   aquaMaiSignatureVerificationFailed: AquaMai signature verification failed
   aquaMaiSignatureVerificationFailedMessage: >-
@@ -457,14 +382,6 @@ mod:
     buildDate: Build Date
     installFailed: Failed to manually install AquaMai
     installSuccess: Installation successful
-  community:
-    title: Community Contributed Features
-    description: >-
-      This feature is contributed by community members and may not receive the
-      same level of technical support as core features
-
-      We will do our best to coordinate and handle technical issues if they
-      arise
   mmlIo:
     notInstalled: Dependencies not installed or conflicts exist
     oneClickInstall: One-Click Install
@@ -480,20 +397,6 @@ mod:
     Button2p: 2P Buttons
     Led1p: 1P LEDs
     Led2p: 2P LEDs
-    Touch: Touchscreen
-    Button: Buttons
-    Led: LEDs
-    P1: Enable 1P
-    P2: Enable 2P
-    tip: >-
-      If mixing Maimoller with other protocols, disable this for the
-      non-Maimoller side
-  'on': 'On'
-  'off': 'Off'
-  enable: Enable
-  disable: Disable
-  stableChannel: Stable Channel
-  fastChannel: Fast Channel
   mumod: MuMod
   mumodDesc: Auto-update Loader
   mumodInstalled: Installed

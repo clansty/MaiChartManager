@@ -1,0 +1,97 @@
+# 兜底分组，只给没有内嵌 configSort.yaml 的旧版 AquaMai 用：
+# configSortYaml 为 null 时 AquaMaiConfigurator 会退回这一份。
+# 下面这些分组名是老内核里的，别对照新版的分组重写，也别删——新版内核自带 configSort，走不到这里。
+常用:
+  - General
+  - GameSystem.SinglePlayer
+  - GameSystem.DisableTimeout
+  - UX.ImmediateSave
+  - GameSystem.QuickRetry
+  - UX.OneKeyEntryEnd
+  - UX.OneKeyRetrySkip
+  - GameSystem.TouchToButtonInput
+  - GameSystem.TestProof
+  - GameSettings.CreditConfig
+  - Fancy.GamePlay.ExtendNotesPool
+
+直读:
+  - GameSystem.Assets.LoadAssetBundleWithoutManifest
+  - GameSystem.Assets.LoadLocalImages
+  - GameSystem.Assets.MovieLoader
+
+全解和跳过:
+  - GameSystem.Unlock
+  - Tweaks.TimeSaving.SkipStartupWarning
+  - Tweaks.TimeSaving.EntryToMusicSelection
+  - Tweaks.TimeSaving.ExitToSave
+  - Tweaks.TimeSaving.SkipStartupDelays
+  - Tweaks.TimeSaving.SkipEventInfo
+  - Tweaks.TimeSaving.SkipTrackStart
+  - Tweaks.TimeSaving.SkipGoodbyeScreen
+  - Tweaks.TimeSaving.IWontTapOrSlideVigorously
+  - UX.QuickEndPlay
+
+美化:
+  - GameSystem.Assets.Fonts
+  - Fancy.CustomLogo
+  - Fancy.CustomPlaceName
+  - Fancy.CustomVersionString
+  - Fancy.CustomCreditsString
+  - Fancy.RandomBgm
+  - Fancy.CustomSkins
+  - Fancy.CustomButton
+  - Fancy.DemoMaster
+  - Fancy.GamePlay.AlignCircleSlideJudgeDisplay
+  - Fancy.GamePlay.SlideArrowAnimation
+  - Fancy.GamePlay.SlideFadeInTweak
+  - Fancy.GamePlay.SlideLayerReverse
+
+实用工具:
+  - UX.HideSelfMadeCharts
+  - UX.JudgeAccuracyInfo
+  - UX.PracticeMode
+  - UX.SelectionDetail
+  - UX.DisableLightOutGame
+  - Fancy.GamePlay.HideHanabi
+  - Fancy.GamePlay.JudgeDisplay4B
+  - Fancy.Triggers
+
+键位和灵敏度:
+  - GameSystem.HidInput
+  - GameSystem.AdxHidInput
+  - GameSystem.KeyMap
+  - GameSettings.TouchSensitivity
+
+调试:
+  - GameSystem.Window
+  - Utils.AntiLag
+  - GameSettings.JudgeAdjust
+  - Tweaks.IgnoreAimeServerError
+  - Utils.ShowNetErrorDetail
+  - Tweaks.LockFrameRate
+  - Tweaks.ResetTouch
+  - Tweaks.SkipUserVersionCheck
+  - Utils.DisplayFrameRate
+  - Utils.LogUserId
+  - Utils.LogNetworkRequests
+  - Utils.ShowErrorLog
+
+高级设置:
+  - Fancy.HideMask
+  - GameSettings.ForceAsServer
+  - GameSystem.RemoveEncryption
+  - GameSystem.Sound
+  - GameSystem.TouchPanelBaudRate
+  - GameSystem.TouchPanelBaudRate
+  - GameSystem.CustomCameraId
+  - GameSystem.OptionLoadFix
+  - UX.ServerAnnouncement
+
+过新过热:
+  - Fancy.CustomTrackStartDiff
+  - Fancy.GamePlay.BreakSlideJudgeBlink
+  - Fancy.GamePlay.CustomNoteTypes
+  - Fancy.GamePlay.DisableTrackStartTabs
+  - Fancy.GamePlay.FanJudgeFlip
+  - Fancy.GamePlay.RealisticRandomJudge
+  - Fancy.GamePlay.TrackStartProcessTweak

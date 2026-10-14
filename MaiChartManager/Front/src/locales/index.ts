@@ -3,16 +3,18 @@ import zh from './zh.yaml';
 import zhTW from './zh-TW.yaml';
 import en from './en.yaml';
 import api from '@/client/api';
+import { mergeEditorMessages } from '@aquamai/config-editor';
 
 // 定义支持的语言列表
 export const availableLocales = ['zh', 'zh-TW', 'en'] as const;
 export type Locale = typeof availableLocales[number];
 
-// 语言文件
+// 语言文件。配置编辑器界面的文案（AquaMai.Config.Editor/src/locales）归编辑器维护，
+// 这里用 mergeEditorMessages 合并，两边的 `mod` 不能各写一份；同名键以 MCM 的 yaml 为准
 const localeMessages: Record<string, any> = {
-  zh,
-  'zh-TW': zhTW,
-  en,
+  zh: mergeEditorMessages(zh, 'zh'),
+  'zh-TW': mergeEditorMessages(zhTW, 'zh-TW'),
+  en: mergeEditorMessages(en, 'en'),
 };
 
 // 根据浏览器语言自动匹配

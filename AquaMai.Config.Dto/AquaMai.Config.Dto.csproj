@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <RootNamespace>AquaMai.Config.Dto</RootNamespace>
+    <AssemblyName>AquaMai.Config.Dto</AssemblyName>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>12</LangVersion>
+    <!-- AquaMai.Config.Interfaces 是 net472（游戏侧程序集），跨 TFM 引用会产生 NU1702 -->
+    <NoWarn>$(NoWarn);NU1702</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AquaMai\AquaMai.Config.Interfaces\AquaMai.Config.Interfaces.csproj" />
+  </ItemGroup>
+
+</Project>

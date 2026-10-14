@@ -47,8 +47,10 @@ jobs:
     - name: Install dependencies
       run: pnpm install --frozen-lockfile
 
-    # 根目录 pnpm typecheck = pnpm -r run typecheck，同时覆盖 MaiChartManager/Front
-    # 和 MuNET-UI（被 pin 的子模块），所以这条也能挡住把类型有问题的子模块指针合进来。
+    # 根目录 pnpm typecheck = pnpm -r run typecheck，覆盖所有定义了 typecheck 脚本的成员
+    # （MaiChartManager/Front、AquaMai.Config.Editor、MuNET-UI），所以这条也能挡住把类型
+    # 有问题的子模块指针合进来。新增 workspace 成员时记得给它加 typecheck 脚本，
+    # 没脚本的成员会被静默跳过。
     # 注意它只跑 tsc、不跑 vite build，打包坏掉要等 build.yml 在 main 上才发现。
     - name: Typecheck
       run: pnpm typecheck

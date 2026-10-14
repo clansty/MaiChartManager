@@ -1,12 +1,11 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
+using AquaMai.Config.Dto;
 using AquaMai.Config.HeadlessLoader;
 using AquaMai.Config.Interfaces;
-using MaiChartManager.Models;
 using MaiChartManager.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Mono.Cecil;
-using YamlDotNet.Serialization;
 
 namespace MaiChartManager.Controllers.Mod;
 
@@ -29,35 +28,14 @@ public class ConfigurationController : ControllerBase
     public async Task<AquaMaiConfigDto.ConfigDto> GetAquaMaiConfig(bool forceDefault = false, bool skipSignatureCheck = false)
     {
         var dllPath = await modConfigService.GetAquaMaiDllPath();
-        Dictionary<string, string[]>? configSort = null;
-        using (var stream = new FileStream(dllPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-        {
-            var asm = ModuleDefinition.ReadModule(stream);
-            var configSortRes = asm.Resources.FirstOrDefault(it => it is EmbeddedResource { Name: "configSort.yaml.compressed" } or EmbeddedResource { Name: "configSort.yaml" });
-            if (configSortRes != null)
-            {
-                var (name, res) = ResourceLoader.LoadResource(configSortRes);
-                var deserializer = new DeserializerBuilder().Build();
-                var yaml = new StreamReader(res).ReadToEnd();
-                configSort = deserializer.Deserialize<Dictionary<string, string[]>>(yaml);
-            }
-        }
+        var configSortYaml = ReadConfigSortYaml(dllPath);
         var shouldSkipSignatureCheck = skipSignatureCheck || !string.Equals(dllPath, ModPaths.AquaMaiDllInstalledPath, StringComparison.OrdinalIgnoreCase);
         var config = await modConfigService.GetCurrentAquaMaiConfig(forceDefault, shouldSkipSignatureCheck);
-        return new AquaMaiConfigDto.ConfigDto(
-            config.ReflectionManager.Sections.Select(section =>
-            {
-                var entries = section.Entries.Select(entry => new AquaMaiConfigDto.Entry(entry.Path, entry.Name, entry.Attribute, entry.Field.FieldType.FullName ?? entry.Field.FieldType.Name));
-                return new AquaMaiConfigDto.Section(section.Path, entries, section.Attribute);
-            }),
-            config.ReflectionManager.Sections.ToDictionary(section => section.Path, section => config.GetSectionState(section)),
-            config.ReflectionManager.Entries.ToDictionary(entry => entry.Path, entry => config.GetEntryState(entry)),
-            configSort
-        );
+        return AquaMaiConfigDto.From(config, configSortYaml);
     }
 
     [HttpPut]
-    public async Task SetAquaMaiConfig(AquaMaiConfigDto.ConfigSaveDto config)
+    public async Task SetAquaMaiConfig(AquaMaiConfigDto.ConfigSave config)
     {
         var dllPath = await modConfigService.GetAquaMaiDllPath();
         var jsonOptions = new JsonSerializerOptions();
@@ -120,5 +98,26 @@ public class ConfigurationController : ControllerBase
         StaticSettings.UpdateAssetPathsFromAquaMaiConfig(configEdit);
         // 可能修改了歌曲封面目录
         settings.ScanMusicList();
+    }
+
+    /// <summary>
+    /// 读 AquaMai.dll 里嵌入的 configSort.yaml 原文，交给前端解析（和 WASM 那条路保持一致）。
+    /// </summary>
+    private static string? ReadConfigSortYaml(string dllPath)
+    {
+        using var stream = new FileStream(dllPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+        var asm = ModuleDefinition.ReadModule(stream);
+        var configSortRes = asm.Resources.FirstOrDefault(it => it is EmbeddedResource { Name: "configSort.yaml.compressed" } or EmbeddedResource { Name: "configSort.yaml" });
+        if (configSortRes is null)
+        {
+            return null;
+        }
+
+        var (_, res) = ResourceLoader.LoadResource(configSortRes);
+        using (res)
+        using (var reader = new StreamReader(res))
+        {
+            return reader.ReadToEnd();
+        }
     }
 }

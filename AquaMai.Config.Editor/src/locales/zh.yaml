@@ -1,0 +1,127 @@
+mod:
+  addFavorite: 添加到收藏
+  commentOverrides:
+    Fancy_GamePlay_JudgeDisplay4B: |-
+      更精细的判定表示
+      需开启 CustomSkins 并安装资源文件
+      作者 {'@'}Minepig
+    GameSettings_TouchSensitivity: |-
+      使用自定义的触摸灵敏度
+      这里启用之后 Test 里的设置就不再起作用了，不过还是可以使用 Test 测试（使用测试需要关闭 1P 模式）
+      如果你的手台有对应的上位机，建议关闭本选项并使用上位机调整
+  community:
+    description: |-
+      此功能由社区成员贡献，可能无法获得与核心功能相同级别的技术支持
+      如遇技术问题，我们会尽力协调处理
+    title: 社区贡献功能
+  disable: 禁用
+  editorTitle: AquaMai 配置编辑器
+  enable: 启用
+  fastChannel: 快速通道
+  favorite: 收藏
+  ioKeyMap:
+    customFn: 自定义功能键
+    disabled: 禁用
+    select: 选择
+    select1P: 1P 选择
+    select2P: 2P 选择
+    service: 服务
+    test: 测试
+  keyMap:
+    button1P: 1P 按键 {index}
+    button2P: 2P 按键 {index}
+    disable1P: 禁用 1P
+    disable2P: 禁用 2P
+    disableIO4: 禁用 IO4 输入
+    disableIO4Tip: 开关打开为禁用对应输入。在禁用 IO4 输入后，你的兼容 IO4 板或 segatools IO4 模拟将被忽略。
+    disableSystem: 禁用系统按键
+    enable1P: 启用 1P
+    enable2P: 启用 2P
+    enableSystem: 启用系统按键
+    select1P: 1P 选择键
+    select2P: 2P 选择键
+  mmlIo:
+    P1: 启用 1P
+    P2: 启用 2P
+    Touch: 触屏
+    Button: 按键
+    Led: 灯光
+    tip: 如果混用 Maimoller 与其他协议，请对不是 Maimoller 的一侧禁用
+  needEnableOption: 需要开启此选项
+  'off': 关
+  'on': 开
+  openDll: 选择 DLL
+  openToml: 选择 TOML
+  other: 其他
+  removeFavorite: 取消收藏
+  resetToDefault: 重置回默认设置
+  save: 保存
+  searchPlaceholder: 搜索配置…
+  soundChannel:
+    None: 禁用
+    P1HeadphoneLeft: 中置重低音 左
+    P1HeadphoneRight: 中置重低音 右
+    P1SpeakerLeft: 前喇叭 左
+    P1SpeakerRight: 前喇叭 右
+    P2HeadphoneLeft: 侧喇叭 左
+    P2HeadphoneRight: 侧喇叭 右
+    P2SpeakerLeft: 后喇叭 左
+    P2SpeakerRight: 后喇叭 右
+  stableChannel: 稳定通道
+  touchSensitivity:
+    applyPresetToGlobal: 应用预设到全局
+    applyToArea: 应用到 {area} 区域
+    applyToGlobal: 应用到全局
+    helpText: |-
+      在 Test 模式下调整的灵敏度不是线性的
+      A 区默认灵敏度 90, 80, 70, 60, 50, 40, 30, 26, 23, 20, 10
+      其他区域默认灵敏度 70, 60, 50, 40, 30, 20, 15, 10, 5, 1, 1
+      Test 里设置的 0 对应的是 40, 20 这一档，-5 是 90, 70，+5 是 10, 1
+      Test 里的挡位更高，这里的数字越小，对于官机来说，灵敏度更大
+      而 ADX 的灵敏度是反的，所以对于 ADX，这里的数字越大，灵敏度越大
+    selectAreaHint: 在左侧选择区域后，可以在这里进行灵敏度微调
+    settingsFor: '{area} 的灵敏度设置'
+  trackCamouflage:
+    viewDoc: 查看配置说明
+  unsupportedType: '不支持的类型: {type}'
+  web:
+    cancel: 取消
+    chooseDll: 选择 AquaMai.dll
+    chooseToml: 选择 AquaMai.toml
+    configVersion: 配置版本 {version}
+    discard: 放弃修改
+    discardMessage: 导入新的配置文件会丢弃当前未保存的修改。
+    discardTitle: 放弃未保存的修改？
+    dllLoadFailed: 读取 AquaMai.dll 失败
+    dropDll: 松开以导入配置内核
+    dropFile: 松开以导入文件
+    dropToml: 松开以导入配置
+    emptyHint: |-
+      把 AquaMai.toml 拖到这里就能开始编辑
+      也可以拖入 AquaMai.dll 换一个配置内核
+    emptyTitle: 导入 AquaMai 配置
+    hostDllInvalidSignature: 宿主提供的 AquaMai DLL 签名无效：{status}
+    kernelFailed: 配置内核加载失败，请手动选择一个 AquaMai.dll
+    kernelLoading: 正在准备配置内核…
+    kernelReady: 已加载 AquaMai {version}
+    kernelSwitch: 保存并切换
+    kernelSwitchDiscard: 不保存
+    kernelSwitchMessage: 换内核之后，当前配置会用新内核重新解析，未保存的修改会丢失。
+    kernelSwitchTitle: 换配置内核前保存修改？
+    localDll: 本地 DLL 文件
+    localDllHint: 从电脑上选择 AquaMai.dll
+    notAquaMaiAssembly: 这不是 AquaMai 程序集（{name}）
+    notReady: 编辑器还没准备好，请稍候
+    parseFailed: 解析 AquaMai 配置失败
+    saveFailed: 保存 AquaMai 配置失败
+    saved: 已保存，配置版本 {version}
+    signatureInvalid: 签名无效
+    signatureInvalidKey: 未知的签名密钥
+    signatureKey: 签名密钥 {keyId}
+    signatureNotFound: 未找到签名
+    signatureUnsupported: 当前环境无法校验签名
+    signatureValid: 签名有效
+    unknownVersion: 未知
+    unsaved: 未保存
+    unsupportedDrop: 只能导入 .toml 或 .dll 文件
+    versionMigrated: 已迁移配置版本 {from} → {to}

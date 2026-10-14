@@ -290,13 +290,6 @@ mod:
   resourcesNotInstalled: 資源未安裝
   update: 更新
   search: 搜尋
-  searchPlaceholder: 搜尋設定…
-  favorite: 收藏
-  addFavorite: 新增到收藏
-  removeFavorite: 取消收藏
-  other: 其他
-  needEnableOption: 需要開啟此選項
-  unsupportedType: '不支援的類型: {type}'
   dontShowAgain: 不再提示
   versionNotFound: 未找到對應版本
   installFailed: 安裝 AquaMai 失敗，檔案可能被占用了？
@@ -310,14 +303,6 @@ mod:
   loaded: 已載入
   killGameProcess: 關閉遊戲處理程序
   needInstallOrUpdate: AquaMai 未安裝或需要更新
-  ioKeyMap:
-    disabled: 停用
-    select: 選擇
-    select1P: 1P 選擇
-    select2P: 2P 選擇
-    service: 服務
-    test: 測試
-    customFn: 自訂功能鍵
   adxHid:
     disabled: 停用
     select1P: 1P 選擇
@@ -336,60 +321,13 @@ mod:
     button4: 按鍵 4
     button4Desc: 最下方的圓形按鍵
     select: 選擇
-  touchSensitivity:
-    applyPresetToGlobal: 套用預設到全域
-    settingsFor: '{area} 的靈敏度設定'
-    applyToGlobal: 套用到全域
-    applyToArea: 套用到 {area} 區域
-    selectAreaHint: 在左側選擇區域後，可以在這裡進行靈敏度微調
-    helpText: |-
-      在 Test 模式下調整的靈敏度不是線性的
-      A 區預設靈敏度 90, 80, 70, 60, 50, 40, 30, 26, 23, 20, 10
-      其他區域預設靈敏度 70, 60, 50, 40, 30, 20, 15, 10, 5, 1, 1
-      Test 裡設定的 0 對應的是 40, 20 這一檔，-5 是 90, 70，+5 是 10, 1
-      Test 裡的檔位更高，這裡的數字越小，對於官機來說，靈敏度更大
-      而 ADX 的靈敏度是反的，所以對於 ADX，這裡的數字越大，靈敏度越大
   keyMap:
-    button1P: 1P 按鍵 {index}
-    button2P: 2P 按鍵 {index}
-    select1P: 1P 選擇鍵
-    select2P: 2P 選擇鍵
-    disableIO4: 停用 IO4 輸入
-    disableIO4Tip: 開關打開為停用對應輸入。在停用 IO4 輸入後，你的兼容 IO4 板或 segatools IO4 模擬將被忽略。
     disableIO4System: 系統按鍵（測試、服務）
-    disable1P: 停用 1P
-    enable1P: 啟用 1P
-    disable2P: 停用 2P
-    enable2P: 啟用 2P
-    disableSystem: 停用系統按鍵
-    enableSystem: 啟用系統按鍵
-  soundChannel:
-    P1SpeakerLeft: 前喇叭 左
-    P1SpeakerRight: 前喇叭 右
-    P1HeadphoneLeft: 中置重低音 左
-    P1HeadphoneRight: 中置重低音 右
-    P2SpeakerLeft: 後喇叭 左
-    P2SpeakerRight: 後喇叭 右
-    P2HeadphoneLeft: 側喇叭 左
-    P2HeadphoneRight: 側喇叭 右
-    None: 停用
   judgeAccuracyInfo:
     author: 作者：
     viewDoc: 檢視說明檔案
-  trackCamouflage:
-    viewDoc: 檢視設定說明
-  commentOverrides:
-    Fancy_GamePlay_JudgeDisplay4B: |
-      更精細的判定表示
-      需開啟 CustomSkins 並安裝資源檔案
-      作者 {'@'}Minepig
-    GameSettings_TouchSensitivity: |
-      使用自訂的觸控靈敏度
-      這裡啟用之後 Test 裡的設定就不再起作用了，不過還是可以使用 Test 測試（使用測試需要關閉 1P 模式）
-      如果你的手台有對應的上位機，建議關閉本選項並使用上位機調整
   configCorrupted: AquaMai 設定檔損壞
   configCorruptedMessage: 請手動檢查 AquaMai.toml 並嘗試修復可能的問題
-  resetToDefault: 重設回預設設定
   configVersionHigher: 設定檔版本高於 AquaMai 版本
   aquaMaiSignatureVerificationFailed: AquaMai 簽章驗證失敗
   aquaMaiSignatureVerificationFailedMessage: 無法驗證 AquaMai 來自官方來源。載入設定需要執行其中的程式碼，這可能存在安全風險。
@@ -409,11 +347,6 @@ mod:
     buildDate: 建置日期
     installFailed: 手動安裝 AquaMai 失敗
     installSuccess: 安裝成功
-  community:
-    title: 社群貢獻功能
-    description: |-
-      此功能由社群成員貢獻，可能無法獲得與核心功能相同級別的技術支援
-      如遇技術問題，我們會盡力協調處理
   mmlIo:
     notInstalled: 依賴庫未安裝或存在衝突
     oneClickInstall: 一鍵安裝
@@ -429,18 +362,6 @@ mod:
     Button2p: 2P 按鍵
     Led1p: 1P 燈光
     Led2p: 2P 燈光
-    Touch: 觸屏
-    Button: 按鍵
-    Led: 燈光
-    P1: 啟用 1P
-    P2: 啟用 2P
-    tip: 如果混用 Maimoller 與其他協議，請對不是 Maimoller 的一侧停用
-  'on': 開
-  'off': 關
-  enable: 啟用
-  disable: 停用
-  stableChannel: 穩定通道
-  fastChannel: 快速通道
   mumod: MuMod
   mumodDesc: 自動更新載入器
   mumodInstalled: 已安裝

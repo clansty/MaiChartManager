@@ -3,7 +3,11 @@ import { defineConfig, presetIcons, presetTypography, presetUno, presetAttributi
 
 export default defineConfig({
   content: {
-    filesystem: ['../../MuNET-UI/src/**/*.{ts,tsx}'],
+    filesystem: [
+      '../../MuNET-UI/src/**/*.{ts,tsx}',
+      // 编辑器的工具类常量在 .ts 里，不在 UnoCSS 默认的 transform pipeline 里，得显式扫
+      '../../AquaMai.Config.Editor/src/**/*.{ts,tsx}',
+    ],
   },
   presets: [
     presetUno(),

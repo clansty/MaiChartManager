@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk.WebAssembly">
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <PublishTrimmed>false</PublishTrimmed>
+    <StaticWebAssetFingerprintingEnabled>false</StaticWebAssetFingerprintingEnabled>
+    <CompressionEnabled>false</CompressionEnabled>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>12</LangVersion>
+    <NoWarn>$(NoWarn);NU1702</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="Mono.Cecil">
+      <HintPath>..\AquaMai\Libs\Mono.Cecil.dll</HintPath>
+    </Reference>
+    <ProjectReference Include="..\AquaMai.Config.Dto\AquaMai.Config.Dto.csproj" />
+    <ProjectReference Include="..\AquaMai\AquaMai.Config.HeadlessLoader\AquaMai.Config.HeadlessLoader.csproj" />
+    <ProjectReference Include="..\AquaMai\AquaMai.Config.Interfaces\AquaMai.Config.Interfaces.csproj" />
+  </ItemGroup>
+</Project>

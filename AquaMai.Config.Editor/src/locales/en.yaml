@@ -1,0 +1,127 @@
+mod:
+  addFavorite: Add to favorites
+  commentOverrides:
+    Fancy_GamePlay_JudgeDisplay4B: |-
+      More detailed judge display
+      Requires CustomSkins enabled and resource files installed
+      Author {'@'}Minepig
+    GameSettings_TouchSensitivity: |-
+      Use custom touch sensitivity
+      After enabling this, the settings in Test menu will no longer work, but you can still test (testing requires disabling 1P mode)
+      If your controller has corresponding host software, it's recommended to disable this option and use the host software for adjustments
+  community:
+    description: |-
+      This feature is contributed by community members and may not receive the same level of technical support as core features
+      We will do our best to coordinate and handle technical issues if they arise
+    title: Community Contributed Features
+  disable: Disable
+  editorTitle: AquaMai Config Editor
+  enable: Enable
+  fastChannel: Fast Channel
+  favorite: Favorites
+  ioKeyMap:
+    customFn: 'Custom FnKey '
+    disabled: Disabled
+    select: Select
+    select1P: 1P Select
+    select2P: 2P Select
+    service: Service
+    test: Test
+  keyMap:
+    button1P: 1P Button {index}
+    button2P: 2P Button {index}
+    disable1P: Disable 1P
+    disable2P: Disable 2P
+    disableIO4: Disable IO4 Input
+    disableIO4Tip: Toggle on to disable corresponding input. After disabling IO4 input, your compatible IO4 board or segatools IO4 simulation will be ignored.
+    disableSystem: Disable System Buttons
+    enable1P: Enable 1P
+    enable2P: Enable 2P
+    enableSystem: Enable System Buttons
+    select1P: 1P Select
+    select2P: 2P Select
+  mmlIo:
+    P1: Enable 1P
+    P2: Enable 2P
+    Touch: Touchscreen
+    Button: Buttons
+    Led: LEDs
+    tip: If mixing Maimoller with other protocols, disable this for the non-Maimoller side
+  needEnableOption: Need to enable this option
+  'off': 'Off'
+  'on': 'On'
+  openDll: Open DLL
+  openToml: Open TOML
+  other: Other
+  removeFavorite: Remove from favorites
+  resetToDefault: Reset to default settings
+  save: Save
+  searchPlaceholder: Search config...
+  soundChannel:
+    None: Disabled
+    P1HeadphoneLeft: Center/Sub Left
+    P1HeadphoneRight: Center/Sub Right
+    P1SpeakerLeft: Front Left
+    P1SpeakerRight: Front Right
+    P2HeadphoneLeft: Side Left
+    P2HeadphoneRight: Side Right
+    P2SpeakerLeft: Rear Left
+    P2SpeakerRight: Rear Right
+  stableChannel: Stable Channel
+  touchSensitivity:
+    applyPresetToGlobal: Apply Preset to Global
+    applyToArea: Apply to {area} Area
+    applyToGlobal: Apply to Global
+    helpText: |-
+      Sensitivity in Test mode is not linear
+      Area A default sensitivity: 90, 80, 70, 60, 50, 40, 30, 26, 23, 20, 10
+      Other areas default sensitivity: 70, 60, 50, 40, 30, 20, 15, 10, 5, 1, 1
+      Test 0 corresponds to 40, 20 level, -5 is 90, 70, +5 is 10, 1
+      Higher level in Test, lower number here = higher sensitivity for official cabinet
+      ADX sensitivity is reversed, so higher number here = higher sensitivity for ADX
+    selectAreaHint: Select an area on the left to fine-tune sensitivity here
+    settingsFor: '{area} Sensitivity Settings'
+  trackCamouflage:
+    viewDoc: View Configuration Instructions
+  unsupportedType: 'Unsupported type: {type}'
+  web:
+    cancel: Cancel
+    chooseDll: Choose AquaMai.dll
+    chooseToml: Choose AquaMai.toml
+    configVersion: Config version {version}
+    discard: Discard
+    discardMessage: Importing another config file discards the changes you have not saved.
+    discardTitle: Discard unsaved changes?
+    dllLoadFailed: Failed to read the AquaMai.dll
+    dropDll: Drop to import config core
+    dropFile: Drop to import file
+    dropToml: Drop to import config
+    emptyHint: |-
+      Drop an AquaMai.toml here to start editing
+      You can also drop an AquaMai.dll to switch the config core
+    emptyTitle: Import AquaMai config
+    hostDllInvalidSignature: 'The AquaMai DLL from the host has an invalid signature: {status}'
+    kernelFailed: Failed to load the config core, pick an AquaMai.dll manually
+    kernelLoading: Preparing config core…
+    kernelReady: AquaMai {version} loaded
+    kernelSwitch: Save and switch
+    kernelSwitchDiscard: Don't save
+    kernelSwitchMessage: Switching the core re-parses the current config with it; unsaved changes are lost.
+    kernelSwitchTitle: Save changes before switching the config core?
+    localDll: Local DLL file
+    localDllHint: Pick an AquaMai.dll from your computer
+    notAquaMaiAssembly: This is not the AquaMai assembly ({name})
+    notReady: The editor is still starting up, please wait
+    parseFailed: Failed to parse the AquaMai config
+    saveFailed: Failed to save the AquaMai config
+    saved: Saved, config version {version}
+    signatureInvalid: Invalid signature
+    signatureInvalidKey: Unknown signature key
+    signatureKey: 'Signature key {keyId}'
+    signatureNotFound: No signature found
+    signatureUnsupported: Signatures cannot be verified in this environment
+    signatureValid: Signature valid
+    unknownVersion: unknown
+    unsaved: Unsaved
+    unsupportedDrop: Only .toml and .dll files can be imported
+    versionMigrated: Migrated config version {from} → {to}

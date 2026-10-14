@@ -9,6 +9,9 @@
   <Project Path="MaiChartManager/MaiChartManager.csproj" />
   <Project Path="MaiChartManager.CLI/MaiChartManager.CLI.csproj" />
   <Project Path="MaiChartManager.GenClient/MaiChartManager.GenClient.csproj" />
+  <Project Path="AquaMai.Config.Dto/AquaMai.Config.Dto.csproj">
+    <BuildType Solution="Crack|*" Project="Release" />
+  </Project>
   <Project Path="AquaMai/AquaMai.Config.Interfaces/AquaMai.Config.Interfaces.csproj">
     <BuildType Solution="Crack|*" Project="Release" />
   </Project>

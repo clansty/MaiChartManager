@@ -1,44 +1,36 @@
-import { defineComponent, PropType, ref, computed, h } from 'vue';
-import { IEntryState, ISectionState, Section } from "@/client/apiGen";
-import { Button, Select } from '@munet/ui';
-import api from "@/client/api";
-import { modInfo, updateModInfo } from "@/store/refs";
+import { Button } from '@munet/ui';
+import type { AquaMaiConfigSection, EntryState, SectionState } from '@aquamai/config-editor';
+import { ENTRY_GROUP_PADDING } from '@aquamai/config-editor';
+import { defineComponent, ref, type PropType } from 'vue';
 import { useI18n } from 'vue-i18n';
-import ConfigEntry, { optionsIoKeyMap } from '../../ConfigEntry';
-import { ENTRY_GROUP_PADDING, ENTRY_LABEL_CLASS } from '../../constants';
+import api from '@/client/api';
+import { globalCapture, modInfo, updateModInfo } from '@/store/refs';
+
+// 只有 MCM 认得出 ADX 硬件上有没有冲突的 Mod、也只有它删得掉，所以这一层挂 top；
+// 条目排版（1P 左 / 2P 右）在 @aquamai/config-editor 的 overrides 里，独立编辑器也吃那一层
+export const panelPosition = 'top';
 
 export default defineComponent({
   props: {
-    section: { type: Object as PropType<Section>, required: true },
-    entryStates: { type: Object as PropType<Record<string, IEntryState>>, required: true },
-    sectionState: { type: Object as PropType<ISectionState>, required: true },
+    section: { type: Object as PropType<AquaMaiConfigSection>, required: true },
+    entryStates: { type: Object as PropType<Record<string, EntryState>>, required: true },
+    sectionState: { type: Object as PropType<SectionState>, required: true },
   },
-  setup(props, { emit }) {
-    const load = ref(false)
+  setup() {
+    const load = ref(false);
     const { t } = useI18n();
 
-
-    const PREFIX = 'GameSystem.AdxHidInput.';
-    const pathsLeft = [
-      'Button1', 'Button2',
-      'P1Button1', 'P1Button2', 'P1Button3', 'P1Button4', 'P1DisableButtons',
-    ].map(it => PREFIX + it);
-
-    const pathsRight = [
-      'Button3', 'Button4',
-      'P2Button1', 'P2Button2', 'P2Button3', 'P2Button4', 'P2DisableButtons',
-    ].map(it => PREFIX + it);
-
-    const knownPaths = [
-      ...pathsLeft, ...pathsRight,
-    ];
-
     const del = async () => {
-      load.value = true
-      await api.DeleteHidConflict();
-      await updateModInfo();
-      load.value = false
-    }
+      load.value = true;
+      try {
+        await api.DeleteHidConflict();
+        await updateModInfo();
+      } catch (error) {
+        globalCapture(error, t('mod.installFailed'));
+      } finally {
+        load.value = false;
+      }
+    };
 
     return () => <div class={["flex flex-col gap-2", ENTRY_GROUP_PADDING]}>
       {modInfo.value?.isHidConflictExist ? <div class="flex gap-2 items-center m-l-35">
@@ -47,19 +39,8 @@ export default defineComponent({
       </div>
         : <div class="flex gap-2 items-center m-l-35">
           <span class="c-green-6">{t('mod.adxHid.noConflict')}</span>
-        </div>}
-      <div class="grid grid-cols-1 min-[500px]:grid-cols-2 gap-y-12px">
-        <div class="flex flex-col gap-2">
-          {props.section.entries?.filter(it => pathsLeft.includes(it.path!))
-            .map((entry) => <ConfigEntry key={entry.path!} entry={entry} entryState={props.entryStates[entry.path!]} />)}
         </div>
-        <div class="flex flex-col gap-2">
-          {props.section.entries?.filter(it => pathsRight.includes(it.path!))
-            .map((entry) => <ConfigEntry key={entry.path!} entry={entry} entryState={props.entryStates[entry.path!]} />)}
-        </div>
-      </div>
-      {props.section.entries?.filter(it => !knownPaths.includes(it.path!))
-        .map((entry) => <ConfigEntry key={entry.path!} entry={entry} entryState={props.entryStates[entry.path!]} />)}
-    </div>
+      }
+    </div>;
   },
 });

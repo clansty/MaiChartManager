@@ -27,7 +27,10 @@ Sitreamai/
 │   ├── Resources/            # 应用资源
 │   └── wwwroot/              # ⚠️ 前端构建产物（勿手动修改）
 ├── MaiChartManager.CLI/      # 命令行工具 (mcm)，Spectre.Console
-├── MaiChartManager.GenClient/ # API client 生成辅助项目
+├── MaiChartManager.GenClient/ # API client 生成辅助项目，起一个只有 Swagger 的服务器跑 genClient.ts
+├── AquaMai.Config.Editor/    # AquaMai 配置编辑器组件 + 独立网页版（pnpm workspace 成员）
+├── AquaMai.Config.Wasm/      # 浏览器里跑 AquaMai 配置库的 WASM 桥（net9.0，故意不入 slnx）
+├── AquaMai.Config.Dto/       # AquaMai 配置的 JSON 契约，MCM 后端与 WASM 共用
 ├── AquaMai/                  # [submodule] BepInEx/MelonLoader 游戏 mod
 ├── MaiLib/                   # [submodule] maimai 谱面解析库
 ├── MuConvert/                # [submodule] 谱面格式转换工具
@@ -51,7 +54,8 @@ Sitreamai/
 | 桌面窗口 | `Browser.cs`, `OobeBrowser.cs`, `Launcher.cs` | Browser=主窗口, OobeBrowser=引导页, Launcher=无WebView2时的旧壳 |
 | IAP/授权 | `IapManager.cs`, `OfflineReg.cs` | Windows Store IAP |
 | CLI 工具 | `MaiChartManager.CLI/` | `makeusm`, `makeacb`, `makemp4`, `makeab` 命令 |
-| AquaMai mod 配置 | `Controllers/Mod/`, `Models/AquaMaiConfigDto.cs` | 管理游戏 mod 的安装和配置 |
+| AquaMai mod 配置 | `Controllers/Mod/`, `AquaMai.Config.Dto/` | 管理游戏 mod 的安装和配置 |
+| AquaMai 配置编辑器 | `AquaMai.Config.Editor/` | 组件被 Front 复用，也能单独构建成网页版 |
 | UI 组件库 | `MuNET-UI/` | @munet/ui, defineComponent + JSX，submodule |
 | 谱面格式转换 | `MuConvert/` | ANTLR 解析，submodule |
 | 打包发布 | `Packaging/Build.ps1` | PowerShell, dotnet publish → makeappx |
@@ -92,8 +96,11 @@ cd MaiChartManager/Front && pnpm install && pnpm dev
 # 前端构建（输出到 ../wwwroot）
 cd MaiChartManager/Front && pnpm build
 
-# 前端类型检查（根目录，检查 Front 与 MuNET-UI）
+# 前端类型检查（根目录，检查所有定义了 typecheck 脚本的 workspace 成员）
 pnpm typecheck
+
+# AquaMai 配置编辑器：构建独立网页版（需先 publish WASM）
+./build-web.ps1
 
 # 生成 API client（需先启动后端 localhost:5181）
 cd MaiChartManager/Front && pnpm genClient

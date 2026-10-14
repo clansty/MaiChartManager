@@ -1,4 +1,5 @@
 packages:
+  - AquaMai.Config.Editor
   - MaiChartManager/Front
   - MuNET-UI
 

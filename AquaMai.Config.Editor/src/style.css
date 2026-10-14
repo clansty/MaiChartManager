@@ -1,0 +1,14 @@
+/* 独立编辑器页面的外壳样式。
+   颜色 / 字体由 @munet/ui 的主题提供（GlobalElementsContainer 渲染出的根类激活），
+   这里只负责铺满视口。 */
+html,
+body,
+#app {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  overflow: hidden;
+}

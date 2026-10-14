@@ -37,6 +37,45 @@ jobs:
         name: wwwroot
         path: MaiChartManager/wwwroot
 
+  build-editor-web:
+    name: Build AquaMai Config Editor (standalone web)
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '9.0.x'
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '24'
+
+    - name: Install pnpm
+      uses: pnpm/action-setup@v4
+
+    # 浏览器里跑的是 AquaMai 自己的配置解析库，编辑器构建时需要它的 publish 产物
+    - name: Publish AquaMai config WASM
+      run: dotnet publish AquaMai.Config.Wasm/AquaMai.Config.Wasm.csproj -c Release
+
+    - name: Install and Build editor
+      working-directory: AquaMai.Config.Editor
+      run: |
+        pnpm install
+        pnpm typecheck
+        pnpm build
+
+    - name: Upload standalone editor
+      uses: actions/upload-artifact@v4
+      with:
+        name: aquamai-config-editor
+        path: AquaMai.Config.Editor/dist
+
   build:
     name: Build
     runs-on: self-hosted
