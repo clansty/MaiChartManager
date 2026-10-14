@@ -106,6 +106,10 @@ pnpm build
 所以 tsconfig 里没有开 `exactOptionalPropertyTypes` / `noUncheckedIndexedAccess` /
 `verbatimModuleSyntax`——开了会因为 UI 库的写法报一堆和编辑器无关的错误。
 
+`pnpm typecheck` 不需要 WASM 的 publish 产物（CI 的 Typecheck 任务不发布 WASM）：`dotnet.js` 和
+`blazor.boot.json` 这两处跨项目导入在 `src/vite-env.d.ts` 里有兜底声明。`pnpm build` 才真的需要
+产物，缺了会以 `UNRESOLVED_IMPORT` 直接失败，不会被那两份声明掩盖。
+
 ## 主题
 
 `@munet/ui` 的主题样式全部挂在 `body:has(.<root 类>)` 下，而那个 `<root 类>` 元素
