@@ -13,14 +13,23 @@ export default defineComponent({
   setup(props) {
     const show = ref(false);
     const { t } = useI18n();
-    const text = computed(() => props.type === EDIT_TYPE.Genre ? t('genre.title') : t('version.title'));
-    const list = props.type === EDIT_TYPE.Genre ? genreList : addVersionList;
+    const type = computed(() => props.type ?? EDIT_TYPE.Genre);
+    const text = computed(() => type.value === EDIT_TYPE.Genre ? t('genre.title') : t('version.title'));
+    // 必须响应 tab 切换，否则会拿错列表去找空 ID
+    const list = computed(() => type.value === EDIT_TYPE.Genre ? genreList.value : addVersionList.value);
+    // A000 是游戏内置资源目录，不可写；写进去的流派在列表里也删不掉，所以这里直接排除
+    const dirOptions = computed(() => assetDirs.value
+      .filter(it => it.dirName && it.dirName !== 'A000')
+      .map(dir => ({label: dir.dirName!, value: dir.dirName!})));
 
     const assetDir = ref('')
     const id = ref(0)
 
     const setShow = () => {
-      assetDir.value = selectedADir.value;
+      // 不能沿用可能是 A000 的 selectedADir，否则会出现"显示请选择但实际已绑定 A000"的情况
+      assetDir.value = dirOptions.value.some(it => it.value === selectedADir.value)
+        ? selectedADir.value
+        : (dirOptions.value[0]?.value ?? '');
       for (let i = 100; i < 1000; i++) {
         if (list.value.some(it => it.id === i)) continue
         id.value = i;
@@ -30,8 +39,12 @@ export default defineComponent({
     }
 
     const save = async () => {
+      if (!assetDir.value) {
+        await showTransactionalDialog(t('genre.createFailed'), t('genre.assetDirRequired'), undefined, true);
+        return;
+      }
       show.value = false
-      const res = await (props.type === EDIT_TYPE.Genre ? api.AddGenre : api.AddVersion)({
+      const res = await (type.value === EDIT_TYPE.Genre ? api.AddGenre : api.AddVersion)({
         assetDir: assetDir.value,
         id: id.value,
       });
@@ -67,7 +80,7 @@ export default defineComponent({
               <div class="ml-1 text-sm">Opt</div>
               <Select
                 v-model:value={assetDir.value}
-                options={assetDirs.value.filter(it => it.dirName !== 'A000').map(dir => ({label: dir.dirName!, value: dir.dirName!}))}
+                options={dirOptions.value}
               />
             </div>
           </div>,

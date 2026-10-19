@@ -64,8 +64,20 @@ export default defineComponent({
 
     const Buttons = defineComponent({
       render() {
-        if (props.genre.assetDir === 'A000')
+        if (props.genre.assetDir === 'A000') {
+          // 旧版本的 bug 会把流派创建到 A000 里，残留的空名流派无法使用，只放开删除方便清理
+          if (!props.genre.genreName) {
+            if (confirmDelete.value)
+              return <Button danger={!deleteLoad.value} variant="secondary" onClick={del} ing={deleteLoad.value}
+                             onMouseleave={() => confirmDelete.value = false}>
+                {!deleteLoad.value && <span class="i-material-symbols-delete-outline text-6 c-gray-6"/>}
+              </Button>
+            return <Button variant="secondary" onClick={() => confirmDelete.value = true}>
+              <span class="i-material-symbols-delete-outline text-6 c-gray-6"/>
+            </Button>
+          }
           return <div class="i-material-symbols-edit-off text-6 c-gray-6"/>
+        }
         if (props.editing)
           return <Button variant="primary" onClick={save}><span class="i-material-symbols-done text-6 c-gray-6"/></Button>
         if (confirmDelete.value)

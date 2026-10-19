@@ -18,6 +18,9 @@
     <data name="UnsupportedImageFormat" xml:space="preserve">
     <value>不支持的图片格式</value>
   </data>
+    <data name="GenreAssetDirInvalid" xml:space="preserve">
+    <value>不能创建到 A000（游戏内置资源目录）中，请先创建或选择一个其他资源目录</value>
+  </data>
     <!-- Genre Controller -->
     <data name="GenreIdExists" xml:space="preserve">
     <value>相同的资源目录里已经存在一个 ID 相同的流派了</value>

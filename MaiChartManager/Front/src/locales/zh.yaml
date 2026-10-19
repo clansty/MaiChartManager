@@ -187,6 +187,7 @@ genre:
   showBuiltIn: 显示内置
   create: 创建流派
   createFailed: 创建失败
+  assetDirRequired: 请选择要创建到的资源目录
   edit: 编辑流派
   delete: 删除流派
   image: 流派图标

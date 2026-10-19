@@ -34,6 +34,11 @@ public class AddVersionController(StaticSettings settings, ILogger<StaticSetting
     [HttpPost]
     public string AddVersion(GenreController.GenreAddRequest req)
     {
+        if (GenreController.IsUnwritableAssetDir(req.assetDir))
+        {
+            return Locale.GenreAssetDirInvalid;
+        }
+
         if (StaticSettings.VersionList.Any(x => x.Id == req.id))
         {
             var existed = StaticSettings.VersionList.First(x => x.Id == req.id);

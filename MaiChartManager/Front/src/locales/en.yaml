@@ -198,6 +198,7 @@ genre:
   showBuiltIn: Show Built-in
   create: Create Genre
   createFailed: Creation failed
+  assetDirRequired: Please select a resource directory
   edit: Edit Genre
   delete: Delete Genre
   image: Genre Icon

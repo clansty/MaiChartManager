@@ -38,6 +38,11 @@ public class GenreController(StaticSettings settings, ILogger<StaticSettings> lo
     [HttpPost]
     public string AddGenre(GenreAddRequest req)
     {
+        if (IsUnwritableAssetDir(req.assetDir))
+        {
+            return Locale.GenreAssetDirInvalid;
+        }
+
         if (StaticSettings.GenreList.Any(x => x.Id == req.id))
         {
             var existed = StaticSettings.GenreList.First(x => x.Id == req.id);
@@ -57,6 +62,12 @@ public class GenreController(StaticSettings settings, ILogger<StaticSettings> lo
         var genre = GenreXml.CreateNew(req.id, req.assetDir, StaticSettings.GamePath);
         StaticSettings.GenreList.Add(genre);
         return "";
+    }
+
+    // A000 是游戏内置资源目录，如果写入进去，产生的流派既不会被游戏正常加载，也无法在界面里删除
+    internal static bool IsUnwritableAssetDir(string? assetDir)
+    {
+        return string.IsNullOrWhiteSpace(assetDir) || string.Equals(assetDir, "A000", StringComparison.OrdinalIgnoreCase);
     }
 
     [HttpPut]

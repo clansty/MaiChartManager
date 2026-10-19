@@ -26,6 +26,9 @@
     <data name="UnsupportedImageFormat" xml:space="preserve">
     <value>Unsupported image format</value>
   </data>
+    <data name="GenreAssetDirInvalid" xml:space="preserve">
+    <value>Cannot create in A000 (the game's built-in resource directory). Please create or select another resource directory.</value>
+  </data>
     <!-- Genre Controller -->
     <data name="GenreIdExists" xml:space="preserve">
     <value>Genre with same ID already exists in this directory</value>

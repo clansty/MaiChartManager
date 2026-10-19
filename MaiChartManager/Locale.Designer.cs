@@ -513,6 +513,15 @@ namespace MaiChartManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot create in A000 (the game&apos;s built-in resource directory). Please create or select another resource directory..
+        /// </summary>
+        internal static string GenreAssetDirInvalid {
+            get {
+                return ResourceManager.GetString("GenreAssetDirInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Genre with same ID already exists in this directory.
         /// </summary>
         internal static string GenreIdExists {
